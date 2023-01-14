@@ -1,0 +1,47 @@
+@startuml
+title ProcessMap Class Diagram
+
+class ProcessMap
+class Painter
+class Pillow
+class Shape
+class Box
+class Circle
+class Triangle
+class Data
+class Drum
+class Activity
+class Event
+class Gateway
+class DataObject
+class DataInput
+class DataOutput
+class DataStore
+class Lane
+class Pool
+
+Box o-- Shape
+Circle o-- Shape
+Triangle o-- Shape
+Data o-- Shape
+Drum o-- Shape
+Activity o-- Box
+Event o-- Circle
+Gateway o-- Triangle
+DataObject o-- Data
+DataInput o-- Data
+DataOutput o-- Data
+DataStore o-- Drum
+
+Painter *-- Pillow
+ProcessMap *-- Painter
+ProcessMap *-- Event
+ProcessMap *-- Activity
+ProcessMap *-- Gateway
+ProcessMap *-- DataObject
+ProcessMap *-- DataInput
+ProcessMap *-- DataOutput
+ProcessMap *-- DataStore
+ProcessMap *-- Lane
+ProcessMap *-- Pool
+@enduml
