@@ -15,7 +15,6 @@ class Painter:
         self.__cr = ImageDraw.Draw(self.__surface)
         self.width = width
         self.height = height
-        self.set_background_colour("white")
 
     def set_background_colour(self, colour) -> None:
         self.__cr.rectangle((0, 0, self.width, self.height), fill=colour)
@@ -122,61 +121,6 @@ class Painter:
 
         shape = [(x2, y2), (left_x, left_y), (right_x, right_y), (x2, y2)]
         self.__cr.polygon(shape, fill="black")
-
-    def find_nearest_points(self, points_source, points_target):
-        smallest_x = 9999
-        smallest_y = 9999
-        score = 9999
-        nearest_points = {}
-        index = 0
-        for source_name, source_points in points_source.items():
-            for target_name, target_points in points_target.items():
-                source_x = source_points[0]
-                source_y = source_points[1]
-                target_x = target_points[0]
-                target_y = target_points[1]
-                if (abs(target_x - source_x)) < smallest_x or (
-                    abs(target_y - source_y)
-                ) <= smallest_y:
-                    smallest_x = abs(target_x - source_x)
-                    smallest_y = abs(target_y - source_y)
-
-                    if score > smallest_x + smallest_y:
-                        index = 0
-                        nearest_points = {}
-                        nearest_points[index] = {
-                            "source_name": source_name,
-                            "source_points": (source_x, source_y),
-                            "target_name": target_name,
-                            "target_points": (target_x, target_y),
-                            "score": score,
-                        }
-                        score = smallest_x + smallest_y
-                    elif score == smallest_x + smallest_y:
-                        index += 1
-
-                        nearest_points[index] = {
-                            "source_name": source_name,
-                            "source_points": (source_x, source_y),
-                            "target_name": target_name,
-                            "target_points": (target_x, target_y),
-                            "score": score,
-                        }
-        # find source_name contain "middle" and target_name contain "middle" in nearest_points
-        if len(nearest_points) <= 2:
-            return (
-                nearest_points[0]["source_points"],
-                nearest_points[0]["target_points"],
-            )
-        if len(nearest_points) == 3:
-            for index, points in nearest_points.items():
-                source_name = points["source_name"]
-                target_name = points["target_name"]
-                if "middle" in source_name:
-                    source_points = points["source_points"]
-                if "middle" in target_name:
-                    target_points = points["target_points"]
-            return source_points, target_points
 
     def draw_box(
         self, x: int, y: int, width: int, height: int, box_fill_colour: str
@@ -391,7 +335,12 @@ class Painter:
 
         return x + text_x_pos, y + text_y_pos
 
-    def save(self, filename):
+    def save_surface(self, filename: str) -> None:
+        """Save surface to PNG file
+
+        Args:
+            filename (str): PNG file name
+        """
         if self.output_type == "PNG":
             if self.__surface is not None:
                 self.__surface.save(filename)
