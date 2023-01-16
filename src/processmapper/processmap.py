@@ -1,25 +1,6 @@
-from PIL import Image, ImageDraw, ImageFont, ImageColor
 from dataclasses import dataclass, field
 from processmapper.lane import Lane
 from processmapper.painter import Painter
-
-
-class EventType:
-    START = "Start"
-    END = "End"
-    TIMER = "Timer"
-    INTERMEDIATE = "Intermediate"
-
-
-class ActivityType:
-    TASK = "Task"
-    SUBPROCESS = "Subprocess"
-
-
-class GatewayType:
-    EXCLUSIVE = "Exclusive"
-    PARALLEL = "Parallel"
-    INCLUSIVE = "Inclusive"
 
 
 @dataclass
@@ -31,13 +12,14 @@ class ProcessMap:
 
     def add_lane(self, lane_text: str) -> Lane:
         lane = Lane(lane_text)
-        self.shapes.append(lane)
+        self.lanes.append(lane)
         return lane
 
     def get_surface_size(self) -> tuple:
         x, y = 0, 0
         if self.lanes:
             for lane in self.lanes:
+                ### Calculate the x and y position of the lane and shapes in the lane
                 x, y, w, h = lane.set_draw_position(x, y)
                 self.width = max(self.width, x + w)
                 self.height = max(self.height, y + h)
@@ -63,5 +45,12 @@ class ProcessMap:
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         pass
 
-    def close(self) -> None:
-        ...
+    def print(self) -> None:
+        for lane in self.lanes:
+            print(f"[{lane.text}, number of elements: {len(lane.shapes)}]")
+            for shape in lane.shapes:
+                print(f'    ("{shape.text}", type: {shape.__class__.__name__})')
+                for connection in shape.connection_to:
+                    print(f"        ->: {connection.text}")
+                for connection in shape.connection_from:
+                    print(f"        <-: {connection.text}")
