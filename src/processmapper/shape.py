@@ -1,28 +1,30 @@
 from dataclasses import dataclass, field
-from processmapper import Shape
 from processmapper.painter import Painter
+from typing import TypeVar
+
+TShape = TypeVar("TShape", bound="Shape")
 
 
 @dataclass
 class Shape:
-    x: int = field(init=False)
-    y: int = field(init=False)
-    width: int = field(init=False)
-    height: int = field(init=False)
-    points: dict = field(init=False)
-    text: str = field(init=True)
+    x: int = field(init=False, default=0)
+    y: int = field(init=False, default=0)
+    width: int = field(init=False, default=0)
+    height: int = field(init=False, default=0)
+    points: dict = field(init=False, default_factory=dict)
+    text: str = field(init=True, default="")
 
     connection_from: list = field(init=False, default_factory=list)
     connection_to: list = field(init=False, default_factory=list)
 
     def connect(
-        self,
-        target: Shape,
+        self: TShape,
+        target: TShape,
         connection_type: str = "sequence",
     ) -> None:
-        point_from, point_to = self.find_nearest_points(self.points, target.points)
-        self.connection_to.append(point_to)
-        target.connection_from.append(point_from)
+        # point_from, point_to = self.find_nearest_points(self.points, target.points)
+        self.connection_to.append(target)
+        target.connection_from.append(self)
         return target
 
     def find_nearest_points(self, points_source, points_target):
