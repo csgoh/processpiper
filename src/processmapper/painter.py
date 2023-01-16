@@ -1,6 +1,4 @@
 from PIL import Image, ImageDraw, ImageFont, ImageColor
-from processmapper.box import Box
-from processmapper.circle import Circle
 
 
 class Painter:
@@ -139,10 +137,10 @@ class Painter:
         self.__cr.rectangle(shape, fill=box_fill_colour)
         return box
 
-    def draw_box_points(self, box: Box):
-        for point in box.points:
-            x, y = box.points.get(point)
-            self.draw_dot(x, y)
+    # def draw_box_points(self, box: Box):
+    #     for point in box.points:
+    #         x, y = box.points.get(point)
+    #         self.draw_dot(x, y)
 
     def get_box_connection_points(self, x, y, width, height):
         ### get the connection points for the corners of the box
