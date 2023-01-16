@@ -1,4 +1,4 @@
-from processmapper.triangle import Triangle
+from processmapper.shape import Triangle
 
 
 class Gateway(Triangle):
