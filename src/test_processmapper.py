@@ -38,6 +38,6 @@ with ProcessMap() as my_process_map:
     #     activity_5.connect(activity_6)
     #     activity_6.connect(end)
 
-    # my_process_map.draw()
-    # my_process_map.save("my_process_map.png")
+    my_process_map.draw()
+    my_process_map.save("my_process_map.png")
     my_process_map.print()
