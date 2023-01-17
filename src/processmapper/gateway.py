@@ -1,7 +1,7 @@
-from processmapper.shape import Triangle
+from processmapper.shape import Diamond
 
 
-class Gateway(Triangle):
+class Gateway(Diamond):
     def __init__(self, name: str) -> None:
         super().__init__(name)
         self.shape_type = "gateway"
