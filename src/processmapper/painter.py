@@ -13,17 +13,188 @@ class Painter:
         self.__cr = ImageDraw.Draw(self.__surface)
         self.width = width
         self.height = height
+        self.set_background_colour("white")
 
     def set_background_colour(self, colour) -> None:
         self.__cr.rectangle((0, 0, self.width, self.height), fill=colour)
+
+    def draw_box(
+        self, x: int, y: int, width: int, height: int, box_fill_colour: str
+    ) -> None:
+        """Draw a rectagle
+
+        Args:
+            x (int): X coordinate
+            y (int): Y coordinate
+            width (int): Rectangle width
+            height (int): Rectangle height
+            box_fill_colour (str: HTML colour name or hex code. Eg. #FFFFFF or LightGreen)
+        """
+        shape = [(x, y), (x + width, y + height)]
+        self.__cr.rectangle(shape, fill=box_fill_colour)
+
+    def draw_rounded_box(
+        self, x: int, y: int, width: int, height: int, box_fill_colour: str
+    ) -> None:
+        """Draw a rounded rectagle
+
+        Args:
+            x (int): X coordinate
+            y (int): Y coordinate
+            width (int): Rectangle width
+            height (int): Rectangle height
+            box_fill_colour (str: HTML colour name or hex code. Eg. #FFFFFF or LightGreen)
+        """
+        shape = [(x, y), (x + width, y + height)]
+        radius = 20
+        self.__cr.rounded_rectangle(shape, radius, fill=box_fill_colour)
+
+    def draw_arrowhead_box(
+        self, x: int, y: int, width: int, height: int, box_fill_colour: str
+    ) -> None:
+        """Draw a rounded rectagle
+
+        Args:
+            x (int): X coordinate
+            y (int): Y coordinate
+            width (int): Rectangle width
+            height (int): Rectangle height
+            box_fill_colour (str: HTML colour name or hex code. Eg. #FFFFFF or LightGreen)
+        """
+        arrowhead_width = 10
+        width = width - arrowhead_width
+        shape = [(x, y), (x + width, y + height)]
+
+        # Draw the rectangle
+        self.__cr.rectangle(shape, fill=box_fill_colour)
+
+        # Set the coordinates of the arrowhead
+        vertical_midpoint = (height / 2) + y
+        arrowhead_endpoint = x + width + arrowhead_width
+        arrowhead = [
+            (x + width, y),
+            (arrowhead_endpoint, vertical_midpoint),
+            (x + width, y + height),
+        ]
+
+        # Draw the arrowhead
+        self.__cr.polygon(arrowhead, fill=box_fill_colour)
+
+    def draw_box_with_text(
+        self,
+        box_x: int,
+        box_y: int,
+        box_width: int,
+        box_height: int,
+        box_fill_colour: int,
+        text: str,
+        text_alignment: str,
+        text_font: str,
+        text_font_size: int,
+        text_font_colour: str,
+        style: str = "rectangle",
+    ) -> None:
+        font = ImageFont.truetype(text_font, size=text_font_size)
+
+        multi_lines = []
+        wrap_lines = []
+
+        ### Make '\n' work
+        multi_lines = text.splitlines()
+
+        left, _, right, bottom = font.getbbox("a")
+        single_char_width = right - left
+
+        ### wrap text
+        for line in multi_lines:
+            wrap_lines.extend(textwrap.wrap(line, int(box_width / single_char_width)))
+
+        box_x1, box_y1, box_x2, box_y2 = (
+            box_x,
+            box_y,
+            box_x + box_width,
+            box_y + box_height,
+        )
+        match style:
+            case "rectangle":
+                self.draw_box(
+                    box_x1,
+                    box_y1,
+                    box_width,
+                    box_height,
+                    box_fill_colour=box_fill_colour,
+                )
+            case "rounded":
+                self.draw_rounded_box(
+                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                )
+            case "arrowhead":
+                self.draw_arrowhead_box(
+                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                )
+            case _:
+                raise ValueError("Invalid style")
+
+        pad = 4
+        line_count = len(wrap_lines)
+
+        for i, line in enumerate(wrap_lines):
+            font_width, font_height = self.get_text_dimension(
+                line, text_font, text_font_size
+            )
+
+            match text_alignment:
+                case "centre":
+                    x = box_x1 + (box_width - font_width) / 2
+                case "left":
+                    x = box_x1 + 15
+                case "right":
+                    x = box_x2 - font_width - 15
+                case _:
+                    x = box_x1 + (box_width - font_width) / 2
+
+            total_line_height = (font_height * line_count) + (pad * (line_count - 1))
+
+            single_line_height = font_height
+
+            y = (
+                box_y1
+                + ((box_height - total_line_height) / 2)
+                + ((single_line_height * i) + (pad * i))
+            )
+
+            self.__cr.text((x, y), line, fill=text_font_colour, anchor="la", font=font)
+
+    def draw_diamond(
+        self, x: int, y: int, width: int, height: int, fill_colour: str
+    ) -> None:
+        """Draw a diamond
+
+        Args:
+            x (int): X coordinate
+            y (int): Y coordinate
+            width (int): Diamond width
+            height (int): Diamond height
+            fill_colour (str): Diamond fill colour in HTML colour name or hex code. Eg. #FFFFFF or LightGreen
+        """
+
+        # Calculate the coordinates of the four points of the diamond.
+        points = [
+            (x + width / 2, y),
+            (x + width, y + height / 2),
+            (x + width / 2, y + height),
+            (x, y + height / 2),
+        ]
+
+        # Use Pillow's ImageDraw module to draw a polygon with the given points and fill color.
+        self.__cr.polygon(points, fill=fill_colour)
 
     def draw_circle(self, x: int, y: int, radius: int, colour: str) -> None:
         r, g, b = ImageColor.getrgb(colour)
         self.__cr.ellipse(
             (x - radius, y - radius, x + radius, y + radius), fill=(r, g, b)
         )
-        circle = Circle(x, y, radius)
-        return circle
+        # circle = Circle(x, y, radius)
 
     def draw_line(
         self,
@@ -87,7 +258,6 @@ class Painter:
     def draw_arrow(self, x1, y1, x2, y2):
         self.draw_line(x1, y1, x2, y2, "black", 1, 1, "solid")
         self.draw_arrow_head(x1, y1, x2, y2)
-        # draw arrow head
 
     def draw_arrow_head(self, x1, y1, x2, y2):
         # self.set_colour("black")
@@ -119,28 +289,6 @@ class Painter:
 
         shape = [(x2, y2), (left_x, left_y), (right_x, right_y), (x2, y2)]
         self.__cr.polygon(shape, fill="black")
-
-    def draw_box(
-        self, x: int, y: int, width: int, height: int, box_fill_colour: str
-    ) -> None:
-        """Draw a rectagle
-
-        Args:
-            x (int): X coordinate
-            y (int): Y coordinate
-            width (int): Rectangle width
-            height (int): Rectangle height
-            box_fill_colour (str: HTML colour name or hex code. Eg. #FFFFFF or LightGreen)
-        """
-        box = Box(x, y, width, height, box_fill_colour)
-        shape = [(x, y), (x + width, y + height)]
-        self.__cr.rectangle(shape, fill=box_fill_colour)
-        return box
-
-    # def draw_box_points(self, box: Box):
-    #     for point in box.points:
-    #         x, y = box.points.get(point)
-    #         self.draw_dot(x, y)
 
     def get_box_connection_points(self, x, y, width, height):
         ### get the connection points for the corners of the box
