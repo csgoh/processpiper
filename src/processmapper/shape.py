@@ -82,15 +82,15 @@ class Shape:
                     target_points = points["target_points"]
             return source_points, target_points
 
-    def draw(self) -> None:
-        raise NotImplementedError
+    # def draw(self) -> None:
+    #     raise NotImplementedError
 
 
 class Box(Shape):
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
         self.x = x
         self.y = y
-        font_w, font_h = painter.get_text_dimensions(self.text)
+        font_w, font_h = painter.get_text_dimension(self.text, "arial.ttf", 12)
         self.width = font_w + 20
         self.height = font_h + 10
         self.points = {
@@ -99,6 +99,14 @@ class Box(Shape):
             "bottom_left": (self.x, self.y + self.height),
             "bottom_right": (self.x + self.width, self.y + self.height),
         }
+        print(
+            f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.width: {self.width}, self.height: {self.height}"
+        )
+        return self.x, self.y, self.width, self.height
+
+    def draw(self, painter: Painter):
+        painter.draw_box(self.x, self.y, self.width, self.height, "gray")
+        painter.draw_text(self.x, self.y, self.text, "arial.ttf", 12, "black")
 
 
 class Circle(Shape):
@@ -118,12 +126,23 @@ class Circle(Shape):
             "bottom_left": (self.x - self.radius, self.y + self.radius),
             "bottom_right": (self.x + self.radius, self.y + self.radius),
         }
-        self.text_width, self.text_height = painter.get_text_dimensions(self.text)
+        self.text_width, self.text_height = painter.get_text_dimension(
+            self.text, "arial.ttf", 12
+        )
         self.text_x = self.x - self.text_width / 2
         self.text_y = self.y - self.text_height / 2
 
+        print(
+            f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.radius: {self.radius}"
+        )
+        return self.x, self.y, self.radius, self.radius
 
-class Triangle(Shape):
+    def draw(self, painter: Painter):
+        painter.draw_circle(self.x, self.y, self.radius, "blue")
+        painter.draw_text(self.text_x, self.text_y, self.text, "arial.ttf", 12, "blue")
+
+
+class Diamond(Shape):
     text_x: int = field(init=False)
     text_y: int = field(init=False)
     text_width: int = field(init=False)
@@ -138,6 +157,17 @@ class Triangle(Shape):
             (self.x + self.width / 2, self.y + self.height),
             (self.x, self.y + self.height / 2),
         ]
-        self.text_width, self.text_height = painter.get_text_dimensions(self.text)
+        self.text_width, self.text_height = painter.get_text_dimension(
+            self.text, "arial.ttf", 12
+        )
         self.text_x = self.x - self.text_width / 2
         self.text_y = self.y - self.text_height / 2
+
+        print(
+            f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.width: {self.width}, self.height: {self.height}"
+        )
+        return self.x, self.y, self.width, self.height
+
+    def draw(self, painter: Painter):
+        painter.draw_diamond(self.x, self.y, self.width, self.height)
+        painter.draw_text(self.text_x, self.text_y, self.text, "arial.ttf", 12)
