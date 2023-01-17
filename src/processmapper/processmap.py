@@ -20,21 +20,22 @@ class ProcessMap:
         if self.lanes:
             for lane in self.lanes:
                 ### Calculate the x and y position of the lane and shapes in the lane
-                x, y, w, h = lane.set_draw_position(x, y)
+                x, y, w, h = lane.set_draw_position(x, y, self.__painter)
                 self.width = max(self.width, x + w)
                 self.height = max(self.height, y + h)
 
         return self.width, self.height
 
     def draw(self) -> None:
+        self.__painter = Painter(self.width, self.height)
+
         ### Determine the size of the process map
         self.width, self.height = self.get_surface_size()
-        self.__painter = Painter(self.width, self.height)
 
         ### Draw the lanes and the shapes in the lanes
         if self.lanes:
             for lane in self.lanes:
-                lane.draw(self.__painter)
+                lane.draw()
 
     def save(self, filename: str) -> None:
         self.__painter.save_surface(filename)
