@@ -1,15 +1,21 @@
-from processmapper.lane import EventType, ActivityType, GatewayType
+from processmapper.lane import ElementType
 from processmapper.processmap import ProcessMap
 
 
-with ProcessMap() as my_process_map:
-    with my_process_map.add_lane("Lane 1") as lane1:
-        start = lane1.start("Start", EventType.START)
-        activity_1 = lane1.activity("Activity 1", ActivityType.TASK)
-        end = lane1.end("End", EventType.END)
+with ProcessMap(600, 150) as my_process_map:
+    with my_process_map.add_lane("User") as lane1:
+        start = lane1.add_element("Start", ElementType.START)
+        activity_1 = lane1.add_element("Login", ElementType.TASK)
+        activity_2 = lane1.add_element("Search Records", ElementType.TASK)
+        end = lane1.add_element("End", ElementType.END)
+
+        # start = lane1.start("Start", ActivityType.TASK)
+        # activity_1 = lane1.activity("Login", ActivityType.TASK)
+        # activity_2 = lane1.activity("Search Records", ActivityType.TASK)
+        # end = lane1.end("End", EventType.END)
 
         ### connect method 1
-        start.connect(activity_1).connect(end)
+        start.connect(activity_1).connect(activity_2).connect(end)
 
         # lane1.start("Start", EventType.START).connect(
         #     lane1.activity("Activity 1", ActivityType.TASK)
@@ -40,4 +46,4 @@ with ProcessMap() as my_process_map:
 
     my_process_map.draw()
     my_process_map.save("my_process_map.png")
-    my_process_map.print()
+    # my_process_map.print()
