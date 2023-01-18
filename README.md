@@ -2,6 +2,10 @@
 
 This is a python library to generate business process diagram using code.
 
+It is still under development :construction:
+
+You can see the sample code and output for design concept below.
+
 ```python
 from processmapper.lane import ElementType
 from processmapper.processmap import ProcessMap
