@@ -1,4 +1,6 @@
+import math
 from PIL import Image, ImageDraw, ImageFont, ImageColor
+import textwrap
 
 
 class Painter:
@@ -350,7 +352,7 @@ class Painter:
             box_y + box_height,
         )
 
-        box = Box(box_x, box_y, box_width, box_height, box_fill_colour)
+        # box = Box(box_x, box_y, box_width, box_height, box_fill_colour)
         match style:
             case "rectangle":
                 self.draw_box(
@@ -400,7 +402,6 @@ class Painter:
             )
 
             self.__cr.text((x, y), line, fill=text_font_colour, anchor="la", font=font)
-        return box
 
     def draw_text(
         self, x: int, y: int, text: str, font: str, font_size: int, font_colour: str
@@ -461,7 +462,7 @@ class Painter:
             width (int): Rectangle width
             height (int): Rectangle height
             text (str): Text used to calculate position
-            alignment (str): Text alignment. Eg. left, center, right
+            alignment (str): Text alignment. Eg. left, centre, right
 
         Returns:
             (text_x (int), text_y (int)): Text x and y coordinates
