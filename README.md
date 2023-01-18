@@ -17,4 +17,4 @@ with ProcessMap(600, 150) as my_process_map:
     my_process_map.save("my_process_map.png")
 ```
 
-![Process Map](https://raw.githubusercontent.com/abhishekkrthakur/processmapper/master/my_process_map.png)
+![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map.png)
