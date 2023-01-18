@@ -17,6 +17,8 @@ with ProcessMap(600, 150) as my_process_map:
         activity_1 = lane1.add_element("Login", ElementType.TASK)
         activity_2 = lane1.add_element("Search Records", ElementType.TASK)
         end = lane1.add_element("End", ElementType.END)
+        start.connect(activity_1).connect(activity_2).connect(end)
+        
     my_process_map.draw()
     my_process_map.save("my_process_map.png")
 ```
