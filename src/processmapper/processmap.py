@@ -7,8 +7,8 @@ from processmapper.painter import Painter
 class ProcessMap:
     lanes: list = field(init=False, default_factory=list)
 
-    width: int = field(init=False, default=1200)
-    height: int = field(init=False, default=800)
+    width: int = field(init=True, default=1200)
+    height: int = field(init=True, default=800)
 
     def add_lane(self, lane_text: str) -> Lane:
         lane = Lane(lane_text)
