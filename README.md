@@ -2,7 +2,7 @@
 
 # ProcessMapper
 
-This is a python library to generate business process diagram using code. The intention is to adhere to BPMN notation.
+This is a python library to generate business process diagram using code. The intention is adhere to BPMN notation.
 
 It is still under development :construction:
 
