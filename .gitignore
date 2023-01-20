@@ -127,4 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-my_process_map.png
+
+# My exclusion
+*.png
+
+
