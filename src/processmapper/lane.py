@@ -120,9 +120,11 @@ class Lane:
             text_font_size=12,
             text_font_colour="black",
         )
+        self.painter.draw_grid()
         if self.shapes:
             for shape in self.shapes:
                 shape.draw(self.painter)
+                
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> None:
         self.painter = painter
