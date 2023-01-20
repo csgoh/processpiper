@@ -16,8 +16,8 @@ class Painter:
         self.width = width
         self.height = height
         self.set_background_colour("white")
-        #self.draw_grid()
-        
+        # self.draw_grid()
+
     def draw_grid(self):
         # Set the dot size and spacing
         dot_size = 1
@@ -26,15 +26,13 @@ class Painter:
         # Draw the grid of dots
         for x in range(0, self.width, spacing):
             for y in range(0, self.height, spacing):
-                if (x > 0 and y > 0):
+                if x > 0 and y > 0:
                     self.draw_dot(x, y, "grey")
-                    if (x % 50 == 0 or y % 50 == 0):
+                    if x % 50 == 0 or y % 50 == 0:
                         self.draw_dot(x, y, "blue")
-                    if (x % 100 == 0 or y % 100 == 0):
-                        #self.draw_circle(x, y, dot_size, "red")
+                    if x % 100 == 0 or y % 100 == 0:
+                        # self.draw_circle(x, y, dot_size, "red")
                         self.draw_dot(x, y, "red")
-                    
-                
 
     def set_background_colour(self, colour) -> None:
         self.__cr.rectangle((0, 0, self.width, self.height), fill=colour)
@@ -53,7 +51,7 @@ class Painter:
         """
         shape = [(x, y), (x + width, y + height)]
         self.__cr.rectangle(shape, fill=box_fill_colour)
- 
+
     def draw_rounded_box(
         self, x: int, y: int, width: int, height: int, box_fill_colour: str
     ) -> None:
@@ -215,13 +213,10 @@ class Painter:
         self.__cr.ellipse(
             (x - radius, y - radius, x + radius, y + radius), fill=(r, g, b)
         )
-        
+
     def draw_dot(self, x: int, y: int, colour: str) -> None:
         r, g, b = ImageColor.getrgb(colour)
-        self.__cr.point(
-            (x, y), fill=(r, g, b)
-        )
-        
+        self.__cr.point((x, y), fill=(r, g, b))
 
     def draw_line(
         self,
