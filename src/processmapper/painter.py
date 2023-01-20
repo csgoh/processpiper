@@ -16,6 +16,25 @@ class Painter:
         self.width = width
         self.height = height
         self.set_background_colour("white")
+        #self.draw_grid()
+        
+    def draw_grid(self):
+        # Set the dot size and spacing
+        dot_size = 1
+        spacing = 10
+
+        # Draw the grid of dots
+        for x in range(0, self.width, spacing):
+            for y in range(0, self.height, spacing):
+                if (x > 0 and y > 0):
+                    self.draw_dot(x, y, "grey")
+                    if (x % 50 == 0 or y % 50 == 0):
+                        self.draw_dot(x, y, "blue")
+                    if (x % 100 == 0 or y % 100 == 0):
+                        #self.draw_circle(x, y, dot_size, "red")
+                        self.draw_dot(x, y, "red")
+                    
+                
 
     def set_background_colour(self, colour) -> None:
         self.__cr.rectangle((0, 0, self.width, self.height), fill=colour)
@@ -34,7 +53,7 @@ class Painter:
         """
         shape = [(x, y), (x + width, y + height)]
         self.__cr.rectangle(shape, fill=box_fill_colour)
-
+ 
     def draw_rounded_box(
         self, x: int, y: int, width: int, height: int, box_fill_colour: str
     ) -> None:
@@ -88,7 +107,7 @@ class Painter:
         box_y: int,
         box_width: int,
         box_height: int,
-        box_fill_colour: int,
+        box_fill_colour: str,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -191,12 +210,18 @@ class Painter:
         # Use Pillow's ImageDraw module to draw a polygon with the given points and fill color.
         self.__cr.polygon(points, fill=fill_colour)
 
-    def draw_circle(self, x: int, y: int, radius: int, colour: str) -> None:
+    def draw_circle(self, x: int, y: int, radius: float, colour: str) -> None:
         r, g, b = ImageColor.getrgb(colour)
         self.__cr.ellipse(
             (x - radius, y - radius, x + radius, y + radius), fill=(r, g, b)
         )
-        # circle = Circle(x, y, radius)
+        
+    def draw_dot(self, x: int, y: int, colour: str) -> None:
+        r, g, b = ImageColor.getrgb(colour)
+        self.__cr.point(
+            (x, y), fill=(r, g, b)
+        )
+        
 
     def draw_line(
         self,
@@ -306,102 +331,101 @@ class Painter:
             (x + width / 2, y + height),  # middle bottom
         ]
 
-    def draw_dot(self, x, y, radius=5):
+    # def draw_dot(self, x, y, radius=5):
 
-        # self.__cr.arc(x, y, radius, 0, 2 * 3.14)
+    #     # self.__cr.arc(x, y, radius, 0, 2 * 3.14)
 
-        # draw a dot using pillow library
-        self.__cr.arc((x, y), start=0, end=360, fill="black", width=2)
+    #     # draw a dot using pillow library
+    #     self.__cr.arc((x, y), start=0, end=360, fill="black", width=2)
 
-        self.__cr.fill()
+    #     self.__cr.fill()
 
-    def draw_box_with_text(
-        self,
-        box_x: int,
-        box_y: int,
-        box_width: int,
-        box_height: int,
-        box_fill_colour: int,
-        text: str,
-        text_alignment: str = "center",
-        text_font: str = "arial.ttf",
-        text_font_size: int = 12,
-        text_font_colour: str = "black",
-        style: str = "rectangle",
-    ) -> None:
+    # def draw_box_with_text(
+    #     self,
+    #     box_x: int,
+    #     box_y: int,
+    #     box_width: int,
+    #     box_height: int,
+    #     box_fill_colour: int,
+    #     text: str,
+    #     text_alignment: str = "center",
+    #     text_font: str = "arial.ttf",
+    #     text_font_size: int = 12,
+    #     text_font_colour: str = "black",
+    #     style: str = "rectangle",
+    # ) -> None:
 
-        font = ImageFont.truetype(text_font, size=12)
+    #     font = ImageFont.truetype(text_font, size=12)
 
-        multi_lines = []
-        wrap_lines = []
+    #     multi_lines = []
+    #     wrap_lines = []
 
-        ### Make '\n' work
-        multi_lines = text.splitlines()
+    #     ### Make '\n' work
+    #     multi_lines = text.splitlines()
 
-        left, _, right, bottom = font.getbbox("a")
-        single_char_width = right - left
+    #     left, _, right, bottom = font.getbbox("a")
+    #     single_char_width = right - left
 
-        ### wrap text
-        for line in multi_lines:
-            wrap_lines.extend(textwrap.wrap(line, int(box_width / single_char_width)))
+    #     ### wrap text
+    #     for line in multi_lines:
+    #         wrap_lines.extend(textwrap.wrap(line, int(box_width / single_char_width)))
 
-        box_x1, box_y1, box_x2, box_y2 = (
-            box_x,
-            box_y,
-            box_x + box_width,
-            box_y + box_height,
-        )
+    #     box_x1, box_y1, box_x2, box_y2 = (
+    #         box_x,
+    #         box_y,
+    #         box_x + box_width,
+    #         box_y + box_height,
+    #     )
 
-        # box = Box(box_x, box_y, box_width, box_height, box_fill_colour)
-        match style:
-            case "rectangle":
-                self.draw_box(
-                    box_x1,
-                    box_y1,
-                    box_width,
-                    box_height,
-                    box_fill_colour=box_fill_colour,
-                )
-            case "rounded":
-                self.draw_rounded_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
-                )
-            case "arrowhead":
-                self.draw_arrowhead_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
-                )
-            case _:
-                raise ValueError("Invalid style")
+    #     # box = Box(box_x, box_y, box_width, box_height, box_fill_colour)
+    #     match style:
+    #         case "rectangle":
+    #             self.draw_box(
+    #                 box_x1,
+    #                 box_y1,
+    #                 box_width,
+    #                 box_height,
+    #                 box_fill_colour=box_fill_colour,
+    #             )
+    #         case "rounded":
+    #             self.draw_rounded_box(
+    #                 box_x1, box_y1, box_width, box_height, box_fill_colour
+    #             )
+    #         case "arrowhead":
+    #             self.draw_arrowhead_box(
+    #                 box_x1, box_y1, box_width, box_height, box_fill_colour
+    #             )
+    #         case _:
+    #             raise ValueError("Invalid style")
 
-        pad = 4
-        line_count = len(wrap_lines)
+    #     pad = 4
+    #     line_count = len(wrap_lines)
 
-        for i, line in enumerate(wrap_lines):
-            font_width, font_height = self.get_text_dimension(
-                line, text_font, text_font_size
-            )
+    #     for i, line in enumerate(wrap_lines):
+    #         font_width, font_height = self.get_text_dimension(
+    #             line, text_font, text_font_size
+    #         )
 
-            match text_alignment:
-                case "centre":
-                    x = box_x1 + (box_width - font_width) / 2
-                case "left":
-                    x = box_x1 + 15
-                case "right":
-                    x = box_x2 - font_width - 15
-                case _:
-                    x = box_x1 + (box_width - font_width) / 2
+    #         match text_alignment:
+    #             case "centre":
+    #                 x = box_x1 + (box_width - font_width) / 2
+    #             case "left":
+    #                 x = box_x1 + 15
+    #             case "right":
+    #                 x = box_x2 - font_width - 15
+    #             case _:
+    #                 x = box_x1 + (box_width - font_width) / 2
 
-            total_line_height = (font_height * line_count) + (pad * (line_count - 1))
+    #         total_line_height = (font_height * line_count) + (pad * (line_count - 1))
 
-            single_line_height = font_height
+    #         single_line_height = font_height
 
-            y = (
-                box_y1
-                + ((box_height - total_line_height) / 2)
-                + ((single_line_height * i) + (pad * i))
-            )
+    #         y = (
+    #             + ((box_height - total_line_height) / 2)
+    #             + ((single_line_height * i) + (pad * i))
+    #         )
 
-            self.__cr.text((x, y), line, fill=text_font_colour, anchor="la", font=font)
+    #         self.__cr.text((x, y), line, fill=text_font_colour, anchor="la", font=font)
 
     def draw_text(
         self, x: int, y: int, text: str, font: str, font_size: int, font_colour: str
