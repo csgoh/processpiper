@@ -1,37 +1,40 @@
 from processmapper.shape import Diamond
+from processmapper.painter import Painter
+
+SYMBOL_SIZE = 23
 
 
 class Gateway(Diamond):
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
-        self.shape_type = "gateway"
-        self.shape_color = "white"
-        self.shape_text_color = "black"
-        self.shape_text = name
+    def draw_symbol(self, symbol: str, painter: Painter):
+        symbol_w, symbol_h = painter.get_text_dimension(
+            symbol, "arial.ttf", SYMBOL_SIZE
+        )
+        painter.draw_text(
+            self.x + (self.width / 2) - (symbol_w / 2),
+            self.y + (self.height / 2) - (symbol_h / 2),
+            symbol,
+            "arial.ttf",
+            SYMBOL_SIZE,
+            "black",
+        )
 
 
 class Exclusive(Gateway):
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
-        self.shape_type = "exclusive"
-        self.shape_color = "white"
-        self.shape_text_color = "black"
-        self.shape_text = name
+    def draw(self, painter: Painter):
+        super().draw(painter)
+        symbol = "X"
+        super().draw_symbol(symbol, painter)
 
 
 class Parallel(Gateway):
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
-        self.shape_type = "parallel"
-        self.shape_color = "white"
-        self.shape_text_color = "black"
-        self.shape_text = name
+    def draw(self, painter: Painter):
+        super().draw(painter)
+        symbol = "+"
+        super().draw_symbol(symbol, painter)
 
 
 class Inclusive(Gateway):
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
-        self.shape_type = "inclusive"
-        self.shape_color = "white"
-        self.shape_text_color = "black"
-        self.shape_text = name
+    def draw(self, painter: Painter):
+        super().draw(painter)
+        symbol = "O"
+        super().draw_symbol(symbol, painter)
