@@ -1,12 +1,14 @@
-from processmapper.lane import ElementType
+from processmapper.lane import ElementType, ActivityType, GatewayType
 from processmapper.processmap import ProcessMap
 
 
-with ProcessMap(600, 150) as my_process_map:
-    with my_process_map.add_lane("User") as lane1:
+with ProcessMap(800, 250) as my_process_map:
+    with my_process_map.add_lane("Application \nUser") as lane1:
         start = lane1.add_element("Start", ElementType.START)
-        activity_1 = lane1.add_element("Login", ElementType.TASK)
-        activity_2 = lane1.add_element("Search Records", ElementType.TASK)
+        activity_1 = lane1.add_element("Login", ActivityType.TASK)
+        activity_2 = lane1.add_element("Search Records", ActivityType.TASK)
+        gateway_1 = lane1.add_element("Result Found?", GatewayType.EXCLUSIVE)
+        activity_3 = lane1.add_element("Display Result", ActivityType.TASK)
         end = lane1.add_element("End", ElementType.END)
 
         # start = lane1.start("Start", ActivityType.TASK)
@@ -14,36 +16,20 @@ with ProcessMap(600, 150) as my_process_map:
         # activity_2 = lane1.activity("Search Records", ActivityType.TASK)
         # end = lane1.end("End", EventType.END)
 
+        ### Another method to add element
+        # start = Event("Start")
+        # activity_1 = Activitty("Logon")
+        # lane1.add_element(start)
+        # lane1.add_element(activity_1)
+
         ### connect method 1
-        start.connect(activity_1).connect(activity_2).connect(end)
+        start.connect(activity_1).connect(activity_2).connect(gateway_1).connect(end)
+        gateway_1.connect(activity_3).connect(end)
 
         # lane1.start("Start", EventType.START).connect(
         #     lane1.activity("Activity 1", ActivityType.TASK)
         # ).connect(lane1.end("End", EventType.END))
 
-    # with my_process_map.add_lane("Lane 1") as lane1:
-    #     start = lane1.start("Start", EventType.START)
-    #     activity_1 = lane1.activity("Activity 1", ActivityType.TASK)
-    #     activity_2 = lane1.activity("Activity 2", ActivityType.TASK)
-    #     activity_3 = lane1.activity("Activity 3", ActivityType.TASK)
-    #     end = lane1.end("End", EventType.END)
-
-    #     ### connect method 1
-    #     start.connect(activity_1).connect(activity_2).connect(end)
-    #     activity_1.connect(activity_3)
-    # with my_process_map.add_lane("Lane 2") as lane2:
-    #     start = lane2.start("Message Received", EventType.START)
-    #     activity_4 = lane2.activity("Activity 4", ActivityType.TASK)
-    #     activity_5 = lane2.activity("Activity 5", ActivityType.TASK)
-    #     activity_6 = lane2.activity("Activity 6", ActivityType.TASK)
-    #     end = lane2.end("End", EventType.END)
-
-    #     ### connect method 2
-    #     start.connect(activity_4)
-    #     activity_4.connect(activity_5)
-    #     activity_5.connect(activity_6)
-    #     activity_6.connect(end)
-
     my_process_map.draw()
-    my_process_map.save("my_process_map.png")
+    my_process_map.save("my_process_map_test.png")
     # my_process_map.print()
