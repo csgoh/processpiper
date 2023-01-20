@@ -7,7 +7,9 @@ TShape = TypeVar("TShape", bound="Shape")
 
 BOX_WIDTH = 100
 BOX_HEIGHT = 60
-CIRCLE_RADIUS = BOX_HEIGHT / 2
+CIRCLE_RADIUS = 20
+DIAMOND_WIDTH = 40
+DIAMOND_HEIGHT = DIAMOND_WIDTH
 
 
 @dataclass
@@ -32,20 +34,46 @@ class Shape:
         target.connection_from.append(self)
         return target
 
+    def get_distance(self, source, target):
+        """
+        Return euclidean distance between points source and target
+        assuming both to have the same number of dimensions
+        """
+        x1, y1 = source
+        x2, y2 = target
+        return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
+
     def find_nearest_points(self, points_source, points_target):
+        shortest_distance: int = 9_999_999
+        for source_name, source_points in points_source.items():
+            for target_name, target_points in points_target.items():
+                distance = self.get_distance(source_points, target_points)
+                if distance < shortest_distance:
+                    shortest_distance = distance
+                    nearest_points = {
+                        "source_name": source_name,
+                        "source_points": source_points,
+                        "target_name": target_name,
+                        "target_points": target_points,
+                        "distance": distance,
+                    }
+        return (
+            nearest_points["source_points"],
+            nearest_points["target_points"],
+        )
+
+    def find_nearest_points_X(self, points_source, points_target):
         smallest_x = 9999
         smallest_y = 9999
+        index = 0
         score = 9999
         nearest_points = {}
-        index = 0
         source_points = []
         target_points = []
         for source_name, source_points in points_source.items():
             for target_name, target_points in points_target.items():
-                source_x = source_points[0]
-                source_y = source_points[1]
-                target_x = target_points[0]
-                target_y = target_points[1]
+                source_x, source_y = source_points
+                target_x, target_y = target_points
                 if (abs(target_x - source_x)) < smallest_x or (
                     abs(target_y - source_y)
                 ) <= smallest_y:
@@ -79,7 +107,7 @@ class Shape:
                 nearest_points[0]["source_points"],
                 nearest_points[0]["target_points"],
             )
-        if len(nearest_points) == 3:
+        if len(nearest_points) >= 3:
             for index, points in nearest_points.items():
                 source_name = points["source_name"]
                 target_name = points["target_name"]
@@ -87,40 +115,53 @@ class Shape:
                     source_points = points["source_points"]
                 if "middle" in target_name:
                     target_points = points["target_points"]
-            return (source_points, target_points)
+            return source_points, target_points
 
-    # def draw(self) -> None:
-    #     raise NotImplementedError
+    def draw(self, painter: Painter):
+        # draw points
+        # for point_name, point in self.points.items():
+        #     painter.draw_circle(point[0], point[1], 3, "red")
+
+        # draw connection
+        source_points = self.points
+        if self.connection_to:
+            for connection in self.connection_to:
+                target_points = connection.points
+                point_from, point_to = self.find_nearest_points(
+                    source_points, target_points
+                )
+                painter.draw_arrow(
+                    point_from[0], point_from[1], point_to[0], point_to[1]
+                )
+
+        # painter.draw_line(
+        #     self.x, self.y, self.x + self.width, self.y, "black", 0.5, 1, "solid"
+        # )
 
 
 class Box(Shape):
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
         self.x = x
         self.y = y
-        # font_w, font_h = painter.get_text_dimension(self.text, "arial.ttf", 12)
-        # self.width = font_w + 20
-        # self.height = font_h + 20
         self.width = BOX_WIDTH
         self.height = BOX_HEIGHT
         self.points = {
-            "top_left": (self.x, self.y),
-            "top_right": (self.x + self.width, self.y),
-            "bottom_left": (self.x, self.y + self.height),
-            "bottom_right": (self.x + self.width, self.y + self.height),
+            # "top_left": (self.x, self.y),
+            # "top_right": (self.x + self.width, self.y),
+            # "bottom_left": (self.x, self.y + self.height),
+            # "bottom_right": (self.x + self.width, self.y + self.height),
             "middle_left": (self.x, self.y + self.height / 2),
             "middle_top": (self.x + self.width / 2, self.y),
             "middle_right": (self.x + self.width, self.y + self.height / 2),
             "middle_bottom": (self.x + self.width / 2, self.y + self.height),
         }
-        print(
-            f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.width: {self.width}, self.height: {self.height}"
-        )
+        # print(
+        #     f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.width: {self.width}, self.height: {self.height}"
+        # )
         return self.x, self.y, self.width, self.height
 
     def draw(self, painter: Painter):
-        print(f"draw [{self.text}], {self.x}, {self.y}, {self.width}, {self.height}")
-        # painter.draw_box(self.x, self.y, self.width, self.height, "darkgray")
-        # painter.draw_text(self.x, self.y, self.text, "arial.ttf", 12, "black")
+        # print(f"draw [{self.text}], {self.x}, {self.y}, {self.width}, {self.height}")
         painter.draw_box_with_text(
             self.x,
             self.y,
@@ -133,22 +174,7 @@ class Box(Shape):
             text_font_size=12,
             text_font_colour="black",
         )
-        # draw points
-        # for point_name, point in self.points.items():
-        #     painter.draw_circle(point[0], point[1], 3, "red")
-
-        # draw connection
-        source_points = self.points
-        if self.connection_to:
-            target_points = self.connection_to[0].points
-            point_from, point_to = self.find_nearest_points(
-                source_points, target_points
-            )
-            painter.draw_arrow(point_from[0], point_from[1], point_to[0], point_to[1])
-
-        # painter.draw_line(
-        #     self.x, self.y, self.x + self.width, self.y, "black", 0.5, 1, "solid"
-        # )
+        super().draw(painter)
 
 
 class Circle(Shape):
@@ -158,13 +184,10 @@ class Circle(Shape):
     text_height: int = field(init=False)
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
-        self.x = int(
-            x + CIRCLE_RADIUS
-        )  # Circle x position starts from the circle centre, so add radius to x.
-        self.y = int(
-            y
-            + CIRCLE_RADIUS  # Circle y position starts from the circle centre, so add radius to y.
-        )
+        # Circle x position starts from the circle centre, so add radius to x.
+        # But we want to cater for cases when circle and box aligned vertically.
+        self.x = int(x + CIRCLE_RADIUS + (BOX_WIDTH / 2) - (CIRCLE_RADIUS))
+        self.y = int(y + (BOX_HEIGHT / 2))
         self.radius = CIRCLE_RADIUS
         self.points = {
             "0": (
@@ -185,32 +208,21 @@ class Circle(Shape):
             ),
         }
         self.text_width, self.text_height = painter.get_text_dimension(
-            self.text, "arial.ttf", 12
+            self.text, "arial.ttf", 10
         )
-        self.text_x = self.x - self.text_width / 2
-        self.text_y = self.y - self.text_height / 2
+        self.text_x = self.x + (self.width / 2) - (self.text_width / 2)
+        self.text_y = self.y + self.radius
 
-        print(
-            f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.radius: {self.radius}"
-        )
+        # print(
+        #     f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.radius: {self.radius}"
+        # )
         return self.x, self.y, self.radius, self.radius
 
     def draw(self, painter: Painter):
-        print(f"draw ({self.text}), x: {self.x}, y: {self.y}, radius: {self.radius}")
+        # print(f"draw ({self.text}), x: {self.x}, y: {self.y}, radius: {self.radius}")
         painter.draw_circle(self.x, self.y, self.radius, "darkgray")
-        painter.draw_text(self.text_x, self.text_y, self.text, "arial.ttf", 12, "black")
-        # draw points
-        # for point_name, point in self.points.items():
-        #     painter.draw_circle(point[0], point[1], 3, "red")
-
-        # draw connection
-        source_points = self.points
-        if self.connection_to:
-            target_points = self.connection_to[0].points
-            point_from, point_to = self.find_nearest_points(
-                source_points, target_points
-            )
-            painter.draw_arrow(point_from[0], point_from[1], point_to[0], point_to[1])
+        painter.draw_text(self.text_x, self.text_y, self.text, "arial.ttf", 10, "black")
+        super().draw(painter)
 
 
 class Diamond(Shape):
@@ -220,28 +232,36 @@ class Diamond(Shape):
     text_height: int = field(init=False)
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
-        self.x = x
-        self.y = y
+        self.x = x + (BOX_WIDTH / 2) - (DIAMOND_WIDTH / 2)
+        self.y = y + (BOX_HEIGHT / 2) - (DIAMOND_HEIGHT / 2)
+        self.width = DIAMOND_WIDTH
+        self.height = DIAMOND_HEIGHT
         self.points = {
-            "middle_left": (self.x + self.width / 2, self.y),
-            "middle_top": (self.x + self.width, self.y + self.height / 2),
-            "middle_right": (self.x + self.width / 2, self.y + self.height),
-            "middle_bottom": (self.x, self.y + self.height / 2),
+            "middle_top": (self.x + self.width / 2, self.y),
+            "middle_right": (self.x + self.width, self.y + self.height / 2),
+            "middle_bottom": (self.x + self.width / 2, self.y + self.height),
+            "middle_left": (self.x, self.y + self.height / 2),
         }
         self.text_width, self.text_height = painter.get_text_dimension(
-            self.text, "arial.ttf", 12
+            self.text, "arial.ttf", 10
         )
-        self.text_x = self.x - self.text_width / 2
-        self.text_y = self.y - self.text_height / 2
+        self.text_x = self.x + (self.width / 2) - (self.text_width / 2)
+        self.text_y = self.y + self.height
 
-        print(
-            f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.width: {self.width}, self.height: {self.height}"
-        )
+        # print(
+        #     f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.width: {self.width}, self.height: {self.height}"
+        # )
         return self.x, self.y, self.width, self.height
 
     def draw(self, painter: Painter):
-        print(
-            f"draw <{self.text}>, x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
+        # print(
+        #     f"draw <{self.text}>, x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
+        # )
+        painter.draw_diamond(
+            self.x, self.y, self.width, self.height, fill_colour="grey"
         )
-        painter.draw_diamond(self.x, self.y, self.width, self.height, fill_colour="grey")
-        painter.draw_text(self.text_x, self.text_y, self.text, "arial.ttf", 12, font_colour="black")
+        painter.draw_text(
+            self.text_x, self.text_y, self.text, "arial.ttf", 10, font_colour="black"
+        )
+
+        super().draw(painter)
