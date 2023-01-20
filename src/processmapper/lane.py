@@ -7,22 +7,22 @@ from processmapper.gateway import Gateway, Exclusive, Parallel, Inclusive
 from processmapper.painter import Painter
 
 
-# class EventType:
-#     START = "Start"
-#     END = "End"
-#     TIMER = "Timer"
-#     INTERMEDIATE = "Intermediate"
+class EventType:
+    START = "Start"
+    END = "End"
+    TIMER = "Timer"
+    INTERMEDIATE = "Intermediate"
 
 
-# class ActivityType:
-#     TASK = "Task"
-#     SUBPROCESS = "Subprocess"
+class ActivityType:
+    TASK = "Task"
+    SUBPROCESS = "Subprocess"
 
 
-# class GatewayType:
-#     EXCLUSIVE = "Exclusive"
-#     PARALLEL = "Parallel"
-#     INCLUSIVE = "Inclusive"
+class GatewayType:
+    EXCLUSIVE = "Exclusive"
+    PARALLEL = "Parallel"
+    INCLUSIVE = "Inclusive"
 
 
 class ElementType(str, Enum):
@@ -57,7 +57,7 @@ class Lane:
     SURFACE_LEFT_MARGIN = SURFACE_TOP_MARGIN
     SURFACE_RIGHT_MARGIN = SURFACE_TOP_MARGIN
 
-    LANE_TEXT_WIDTH = 60
+    LANE_TEXT_WIDTH = 100
     LANE_TEXT_HEIGHT = 20
     LANE_SHAPE_TOP_MARGIN = 30
     LANE_SHAPE_BOTTOM_MARGIN = LANE_SHAPE_TOP_MARGIN
@@ -66,35 +66,13 @@ class Lane:
 
     SPACE_BETWEEN_SHAPES = 40
 
-    def add_element(self, text: str, type: ElementType) -> Shape:
+    def add_element(
+        self, text: str, type: EventType | ActivityType | GatewayType
+    ) -> Shape:
         event_class = globals()[type]
         start = event_class(text)
         self.shapes.append(start)
         return start
-
-    # def start(self, text: str, type: EventType) -> Event:
-    #     event_class = globals()[type]
-    #     start = event_class(text)
-    #     self.shapes.append(start)
-    #     return start
-
-    # def activity(self, text: str, type: ActivityType) -> Activity:
-    #     activity_class = globals()[type]
-    #     activity = activity_class(text)
-    #     self.shapes.append(activity)
-    #     return activity
-
-    # def gateway(self, text: str, type: GatewayType) -> Gateway:
-    #     gateway_class = globals()[type]
-    #     gateway = gateway_class(text)
-    #     self.shapes.append(gateway)
-    #     return gateway
-
-    # def end(self, text: str, type: EventType) -> Event:
-    #     event_class = globals()[type]
-    #     end = event_class(text)
-    #     self.shapes.append(end)
-    #     return end
 
     def __enter__(self):
         return self
@@ -104,61 +82,125 @@ class Lane:
 
     def draw(self) -> None:
         print(f"draw lane: {self.x}, {self.y}, {self.width}, {self.height}")
-        # self.painter.draw_box(self.x, self.y, self.width, self.height, "lightgrey")
-        # self.painter.draw_text(
-        #     self.x + 10, self.y + 10, self.text, "arial", 12, "black"
-        # )
-        self.painter.draw_box_with_text(
+        ### Draw the lane outline
+        self.painter.draw_box(
             self.x,
             self.y,
             self.width,
             self.height,
-            "lightgrey",
+            "#d9d9d9",
+        )
+        ### Draw the lane text box
+        self.painter.draw_box_with_text(
+            self.x,
+            self.y,
+            self.LANE_TEXT_WIDTH,
+            self.height,
+            "#333333",
             self.text,
             text_alignment="left",
             text_font="arial",
             text_font_size=12,
-            text_font_colour="black",
+            text_font_colour="white",
         )
-        self.painter.draw_grid()
+        ### Draw the lane text divider
+        self.painter.draw_line(
+            self.x + self.LANE_TEXT_WIDTH,
+            self.y,
+            self.x + self.LANE_TEXT_WIDTH,
+            self.y + self.height,
+            "white",
+            0.5,
+            5,
+            "solid",
+        )
+        # self.painter.draw_grid()
         if self.shapes:
             for shape in self.shapes:
                 shape.draw(self.painter)
-                
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> None:
         self.painter = painter
-        print(f"***[SETTINGS START]***")
-        print(
-            f"SURFACE MARGINS: {self.SURFACE_TOP_MARGIN}, {self.SURFACE_BOTTOM_MARGIN}, {self.SURFACE_LEFT_MARGIN}, {self.SURFACE_RIGHT_MARGIN}"
-        )
-        print(
-            f"+LANE MARGINS: {self.SURFACE_TOP_MARGIN+self.LANE_SHAPE_TOP_MARGIN}, {self.SURFACE_BOTTOM_MARGIN+self.LANE_SHAPE_BOTTOM_MARGIN}, {self.SURFACE_LEFT_MARGIN+self.LANE_SHAPE_LEFT_MARGIN}, {self.SURFACE_RIGHT_MARGIN+self.LANE_SHAPE_RIGHT_MARGIN}"
-        )
-        print(f"LANE TEXT: {self.LANE_TEXT_WIDTH}, {self.LANE_TEXT_HEIGHT}")
-        print(f"***[SETTINGS END]***")
         ### Determine the x and y position of the lane
         self.x = x if x > 0 else self.SURFACE_LEFT_MARGIN
         self.y = y if y > 0 else self.SURFACE_TOP_MARGIN
 
         if self.shapes:
             next_x = self.x + self.LANE_TEXT_WIDTH + self.LANE_SHAPE_LEFT_MARGIN
-            print(
-                f"next_x: {next_x} = {self.x} + {self.LANE_TEXT_WIDTH} + {self.LANE_SHAPE_LEFT_MARGIN}"
+
+            ### Set first shape position. The first one is always 'Start' Event
+            shape_x, shape_y, shape_w, shape_h = self.set_shape_draw_position(
+                next_x, self.y, self.shapes[0], painter
             )
-            for i, shape in enumerate(self.shapes):
-                shape_x, shape_y, shape_w, shape_h = shape.set_draw_position(
-                    (next_x),
-                    (self.y + self.LANE_SHAPE_TOP_MARGIN),
-                    painter,
+
+            self.width = max(self.width, shape_x + shape_w)
+            self.height = max(self.height, shape_y + shape_h)
+
+        # print(f"lane: {self.x}, {self.y}, {self.width}, {self.height}")
+        return self.x, self.y, self.width, self.height
+
+    def set_shape_draw_position(
+        self, next_x: int, next_y: int, shape: Shape, painter: Painter
+    ) -> None:
+        ### Set own shape position
+
+        print(
+            f">>>Shape Begin: {shape.text}, {next_x}, {(next_y + self.LANE_SHAPE_TOP_MARGIN)}"
+        )
+
+        shape_x, shape_y, shape_w, shape_h = shape.set_draw_position(
+            (next_x),
+            (next_y + self.LANE_SHAPE_TOP_MARGIN),
+            painter,
+        )
+        next_x = shape_x + shape_w + self.SPACE_BETWEEN_SHAPES
+
+        ### Set next elements' position
+        for index, next_shape in enumerate(shape.connection_to):
+            print(
+                f"index: {index}, next_shape: {next_shape.text}, next_shape_x: {next_x}"
+            )
+
+            ### Check whether thhe position has been set, if yes, skipped.
+            if next_shape.x > 0:
+                print(f"Skipped")
+                continue
+
+            if index == 0:
+                next_shape_y = next_y
+            else:
+                next_shape_y = (
+                    next_y
+                    + self.LANE_SHAPE_TOP_MARGIN
+                    + self.SPACE_BETWEEN_SHAPES
+                    + shape_h
                 )
-                # print(f"shape: {x}, {y}, {w}, {h}")
-                self.width = max(self.width, shape_x + shape_w)
-                self.height = max(self.height, shape_y + shape_h)
-                next_x = shape_x + shape_w + self.SPACE_BETWEEN_SHAPES
                 print(
-                    f"next_x: {next_x} = {shape_x} + {shape_w} + {self.SPACE_BETWEEN_SHAPES}"
+                    f"next_shape_y: {next_shape_y}= {next_y} + {self.SPACE_BETWEEN_SHAPES} + {shape_h}"
                 )
 
-        print(f"lane: {self.x}, {self.y}, {self.width}, {self.height}")
-        return self.x, self.y, self.width, self.height
+            next_shape_x = next_x
+
+            (
+                next_shape_x,
+                next_shape_y,
+                next_shape_w,
+                next_shape_h,
+            ) = self.set_shape_draw_position(
+                next_shape_x, next_shape_y, next_shape, painter
+            )
+            shape_x, shape_y, shape_w, shape_h = (
+                next_shape_x,
+                next_shape_y,
+                next_shape_w,
+                next_shape_h,
+            )
+
+        print(f">>>Shape End: {shape.text}, {shape_x}, {shape_y}, {shape_w}, {shape_h}")
+        return shape_x, shape_y, shape_w, shape_h
+
+    def get_outward_connection_count(self, shape: object) -> int:
+        count = 0
+        count += len(shape.connection_to)
+        print(f"{shape.text}, get_reference_link_count: {count}")
+        return count
