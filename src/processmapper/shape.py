@@ -26,7 +26,7 @@ class Shape:
         self: TShape,
         target: TShape,
         connection_type: str = "sequence",
-    ) -> None:
+    ) -> TShape:
 
         self.connection_to.append(target)
         target.connection_from.append(self)
@@ -38,6 +38,8 @@ class Shape:
         score = 9999
         nearest_points = {}
         index = 0
+        source_points = []
+        target_points = []
         for source_name, source_points in points_source.items():
             for target_name, target_points in points_target.items():
                 source_x = source_points[0]
@@ -85,7 +87,7 @@ class Shape:
                     source_points = points["source_points"]
                 if "middle" in target_name:
                     target_points = points["target_points"]
-            return source_points, target_points
+            return (source_points, target_points)
 
     # def draw(self) -> None:
     #     raise NotImplementedError
@@ -127,6 +129,7 @@ class Box(Shape):
             "darkgray",
             self.text,
             text_alignment="centre",
+            text_font="arial.ttf",
             text_font_size=12,
             text_font_colour="black",
         )
@@ -155,10 +158,10 @@ class Circle(Shape):
     text_height: int = field(init=False)
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
-        self.x = (
+        self.x = int(
             x + CIRCLE_RADIUS
         )  # Circle x position starts from the circle centre, so add radius to x.
-        self.y = (
+        self.y = int(
             y
             + CIRCLE_RADIUS  # Circle y position starts from the circle centre, so add radius to y.
         )
@@ -219,12 +222,12 @@ class Diamond(Shape):
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
         self.x = x
         self.y = y
-        self.points = [
-            (self.x + self.width / 2, self.y),
-            (self.x + self.width, self.y + self.height / 2),
-            (self.x + self.width / 2, self.y + self.height),
-            (self.x, self.y + self.height / 2),
-        ]
+        self.points = {
+            "middle_left": (self.x + self.width / 2, self.y),
+            "middle_top": (self.x + self.width, self.y + self.height / 2),
+            "middle_right": (self.x + self.width / 2, self.y + self.height),
+            "middle_bottom": (self.x, self.y + self.height / 2),
+        }
         self.text_width, self.text_height = painter.get_text_dimension(
             self.text, "arial.ttf", 12
         )
@@ -240,5 +243,5 @@ class Diamond(Shape):
         print(
             f"draw <{self.text}>, x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
         )
-        painter.draw_diamond(self.x, self.y, self.width, self.height)
-        painter.draw_text(self.text_x, self.text_y, self.text, "arial.ttf", 12)
+        painter.draw_diamond(self.x, self.y, self.width, self.height, fill_colour="grey")
+        painter.draw_text(self.text_x, self.text_y, self.text, "arial.ttf", 12, font_colour="black")
