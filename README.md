@@ -16,13 +16,19 @@ from processmapper.processmap import ProcessMap
 with ProcessMap(600, 150) as my_process_map:
     with my_process_map.add_lane("User") as lane1:
         start = lane1.add_element("Start", ElementType.START)
-        activity_1 = lane1.add_element("Login", ElementType.TASK)
-        activity_2 = lane1.add_element("Search Records", ElementType.TASK)
+        login = lane1.add_element("Login", ActivityType.TASK)
+        search_records = lane1.add_element("Search Records", ActivityType.TASK)
+        result_found = lane1.add_element("Result Found?", GatewayType.EXCLUSIVE)
+        display_result = lane1.add_element("Display Result", ActivityType.TASK)
+        logout = lane1.add_element("Logout", ActivityType.TASK)
         end = lane1.add_element("End", ElementType.END)
-        start.connect(activity_1).connect(activity_2).connect(end)
-        
+
+        start.connect(login).connect(search_records).connect(result_found)
+        result_found.connect(display_result).connect(logout).connect(end)
+        result_found.connect(search_records)
+      
     my_process_map.draw()
-    my_process_map.save("my_process_map.png")
+    my_process_map.save("my_process_map_demo.png")
 ```
 
-![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map.png)
+![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_demo.png)
