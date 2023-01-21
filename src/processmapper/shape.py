@@ -19,6 +19,8 @@ class Shape:
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
     points: dict = field(init=False, default_factory=dict)
+    incoming_points: list = field(init=False, default_factory=list)
+    outgoing_points: list = field(init=False, default_factory=list)
     text: str = field(init=True, default="")
 
     connection_from: list = field(init=False, default_factory=list)
@@ -48,7 +50,11 @@ class Shape:
         for source_name, source_points in points_source.items():
             for target_name, target_points in points_target.items():
                 distance = self.get_distance(source_points, target_points)
-                if distance < shortest_distance:
+                if (
+                    distance
+                    < shortest_distance
+                    # and source_points not in self.incoming_points
+                ):
                     shortest_distance = distance
                     nearest_points = {
                         "source_name": source_name,
@@ -57,6 +63,7 @@ class Shape:
                         "target_points": target_points,
                         "distance": distance,
                     }
+
         return (
             nearest_points["source_points"],
             nearest_points["target_points"],
@@ -118,18 +125,29 @@ class Shape:
             return source_points, target_points
 
     def draw(self, painter: Painter):
-        # draw points
-        # for point_name, point in self.points.items():
-        #     painter.draw_circle(point[0], point[1], 3, "red")
 
         # draw connection
         source_points = self.points
         if self.connection_to:
             for connection in self.connection_to:
+                ### remove points from source_points is it exist in incoming_points
+                for point_name, point in source_points.items():
+                    if point in self.incoming_points:
+                        del source_points[point_name]
+                        break
+
                 target_points = connection.points
+                ### remove points from target_points is it exist in outgoing_points
+                for point_name, point in target_points.items():
+                    if point in connection.outgoing_points:
+                        del target_points[point_name]
+                        break
+
                 point_from, point_to = self.find_nearest_points(
                     source_points, target_points
                 )
+                self.outgoing_points.append(point_from)
+                connection.incoming_points.append(point_to)
                 painter.draw_arrow(
                     point_from[0], point_from[1], point_to[0], point_to[1]
                 )
