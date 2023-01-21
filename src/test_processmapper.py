@@ -2,13 +2,14 @@ from processmapper.lane import ElementType, ActivityType, GatewayType
 from processmapper.processmap import ProcessMap
 
 
-with ProcessMap(800, 250) as my_process_map:
+with ProcessMap(1150, 220) as my_process_map:
     with my_process_map.add_lane("Application \nUser") as lane1:
         start = lane1.add_element("Start", ElementType.START)
-        activity_1 = lane1.add_element("Login", ActivityType.TASK)
-        activity_2 = lane1.add_element("Search Records", ActivityType.TASK)
-        gateway_1 = lane1.add_element("Result Found?", GatewayType.EXCLUSIVE)
-        activity_3 = lane1.add_element("Display Result", ActivityType.TASK)
+        login = lane1.add_element("Login", ActivityType.TASK)
+        search_records = lane1.add_element("Search Records", ActivityType.TASK)
+        result_found = lane1.add_element("Result Found?", GatewayType.EXCLUSIVE)
+        display_result = lane1.add_element("Display Result", ActivityType.TASK)
+        logout = lane1.add_element("Logout", ActivityType.TASK)
         end = lane1.add_element("End", ElementType.END)
 
         # start = lane1.start("Start", ActivityType.TASK)
@@ -23,8 +24,9 @@ with ProcessMap(800, 250) as my_process_map:
         # lane1.add_element(activity_1)
 
         ### connect method 1
-        start.connect(activity_1).connect(activity_2).connect(gateway_1).connect(end)
-        gateway_1.connect(activity_3).connect(end)
+        start.connect(login).connect(search_records).connect(result_found)
+        result_found.connect(display_result).connect(logout).connect(end)
+        result_found.connect(search_records)
 
         # lane1.start("Start", EventType.START).connect(
         #     lane1.activity("Activity 1", ActivityType.TASK)
