@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 
 # My exclusion
-*.png
+
 
 
