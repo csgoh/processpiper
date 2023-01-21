@@ -277,9 +277,51 @@ class Painter:
                         fill=(r, g, b, int(255 * line_transparency)),
                     )
 
+    def draw_right_angle_line(
+        self,
+        x1: int,
+        y1: int,
+        x2: int,
+        y2: int,
+        line_colour: str,
+        line_transparency: int,
+        line_width: int,
+        line_style: str = "solid",
+    ):
+        if x1 == x2 and y1 == y2:
+            points = [(x1, y1)]
+            right_angle_point = (x1, y1)
+
+        if x1 != x2 and y1 == y2:
+            points = [(x1, y1), (x2, y1)]
+            right_angle_point = (x1, y1)
+
+        if x1 == x2 and y1 != y2:
+            points = [(x1, y1), (x1, y2)]
+            right_angle_point = (x1, y1)
+
+        if x1 != x2 and y1 != y2:
+            points = [(x1, y1), (x1, y2), (x2, y2)]
+            right_angle_point = (x1, y2)
+
+        if x1 > x2:
+            elbow_height = 40
+            points = [
+                (x1, y1),
+                (x1, y1 - elbow_height),
+                (x2, y1 - elbow_height),
+                (x2, y2),
+            ]
+            right_angle_point = (x2, y1 - elbow_height)
+
+        self.__cr.line(points, fill=(0, 0, 0), width=1)
+        return right_angle_point
+
     def draw_arrow(self, x1, y1, x2, y2):
-        self.draw_line(x1, y1, x2, y2, "black", 1, 1, "solid")
-        self.draw_arrow_head(x1, y1, x2, y2)
+        right_angle_point = self.draw_right_angle_line(
+            x1, y1, x2, y2, "black", 1, 1, "solid"
+        )
+        self.draw_arrow_head(right_angle_point[0], right_angle_point[1], x2, y2)
 
     def draw_arrow_head(self, x1, y1, x2, y2):
         # self.set_colour("black")
