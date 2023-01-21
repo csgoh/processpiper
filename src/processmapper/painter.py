@@ -1,6 +1,7 @@
 import math
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 import textwrap
+from processmapper.colourtheme import ColourTheme
 
 
 class Painter:
@@ -8,6 +9,42 @@ class Painter:
     width: int
     height: int
     output_type: str
+
+    # Colour scheme
+    title_font: str
+    title_font_size: int
+    title_font_colour: str
+
+    subtitle_font: str
+    subtitle_font_size: int
+    subtitle_font_colour: str
+
+    swimlane_font: str
+    swimlane_font_size: int
+    swimlane_font_colour: str
+    swimlane_fill_colour: str
+
+    lane_font: str
+    lane_font_size: int
+    lane_font_colour: str
+    lane_fill_colour: str
+
+    element_font: str
+    element_font_size: int
+    element_font_colour: str
+    element_fill_colour: str
+
+    connector_font: str
+    connector_font_size: int
+    connector_font_colour: str
+    connector_line_width: int
+    connector_line_colour: str
+    connector_arrow_colour: str
+    connector_arrow_size: int
+
+    footer_font: str
+    footer_font_size: int
+    footer_font_colour: str
 
     def __init__(self, width: int = 500, height: int = 500) -> None:
         self.output_type = "PNG"
@@ -17,6 +54,57 @@ class Painter:
         self.height = height
         self.set_background_colour("white")
         # self.draw_grid()
+
+    def set_colour_palette(self, colour_palette: str) -> None:
+        """Set colour palette
+
+        Args:
+            colour_palette (str): Name of the colour palette. Eg. OrangePeel
+        """
+        self.colour_theme = ColourTheme(colour_palette)
+        (self.background_colour,) = self.colour_theme.get_colour_theme_settings(
+            "background"
+        )
+        (
+            self.title_font,
+            self.title_font_size,
+            self.title_font_colour,
+            self.subtitle_font,
+            self.subtitle_font_size,
+            self.subtitle_font_colour,
+        ) = self.colour_theme.get_colour_theme_settings("title")
+        (
+            self.swimlane_font,
+            self.swimlane_font_size,
+            self.swimlane_font_colour,
+            self.swimlane_fill_colour,
+        ) = self.colour_theme.get_colour_theme_settings("swimlane")
+        (
+            self.lane_font,
+            self.lane_font_size,
+            self.lane_font_colour,
+            self.lane_fill_colour,
+        ) = self.colour_theme.get_colour_theme_settings("lane")
+        (
+            self.element_font,
+            self.element_font_size,
+            self.element_font_colour,
+            self.element_fill_colour,
+        ) = self.colour_theme.get_colour_theme_settings("element")
+        (
+            self.connector_font,
+            self.connector_font_size,
+            self.connector_font_colour,
+            self.connector_line_width,
+            self.connector_line_colour,
+            self.connector_arrow_colour,
+            self.connector_arrow_size,
+        ) = self.colour_theme.get_colour_theme_settings("connector")
+        (
+            self.footer_font,
+            self.footer_font_size,
+            self.footer_font_colour,
+        ) = self.colour_theme.get_colour_theme_settings("footer")
 
     def draw_grid(self):
         # Set the dot size and spacing
@@ -31,7 +119,6 @@ class Painter:
                     if x % 50 == 0 or y % 50 == 0:
                         self.draw_dot(x, y, "blue")
                     if x % 100 == 0 or y % 100 == 0:
-                        # self.draw_circle(x, y, dot_size, "red")
                         self.draw_dot(x, y, "red")
 
     def set_background_colour(self, colour) -> None:
