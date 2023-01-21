@@ -13,7 +13,7 @@ from processmapper.lane import ElementType
 from processmapper.processmap import ProcessMap
 
 
-with ProcessMap(600, 150) as my_process_map:
+with ProcessMap(1150, 220) as my_process_map:
     with my_process_map.add_lane("User") as lane1:
         start = lane1.add_element("Start", ElementType.START)
         login = lane1.add_element("Login", ActivityType.TASK)
