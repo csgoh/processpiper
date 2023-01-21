@@ -14,7 +14,7 @@ from processmapper.processmap import ProcessMap
 
 
 with ProcessMap(1150, 220) as my_process_map:
-    with my_process_map.add_lane("User") as lane1:
+    with my_process_map.add_lane("Application \nUser") as lane1:
         start = lane1.add_element("Start", ElementType.START)
         login = lane1.add_element("Login", ActivityType.TASK)
         search_records = lane1.add_element("Search Records", ActivityType.TASK)
