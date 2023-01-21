@@ -59,10 +59,10 @@ class Lane:
 
     LANE_TEXT_WIDTH = 100
     LANE_TEXT_HEIGHT = 20
-    LANE_SHAPE_TOP_MARGIN = 30
-    LANE_SHAPE_BOTTOM_MARGIN = LANE_SHAPE_TOP_MARGIN
-    LANE_SHAPE_LEFT_MARGIN = LANE_SHAPE_TOP_MARGIN
-    LANE_SHAPE_RIGHT_MARGIN = LANE_SHAPE_TOP_MARGIN
+    LANE_SHAPE_TOP_MARGIN = 50
+    LANE_SHAPE_BOTTOM_MARGIN = 50
+    LANE_SHAPE_LEFT_MARGIN = 30
+    LANE_SHAPE_RIGHT_MARGIN = 30
 
     SPACE_BETWEEN_SHAPES = 40
 
@@ -145,7 +145,7 @@ class Lane:
         ### Set own shape position
 
         print(
-            f">>>Shape Begin: {shape.text}, {next_x}, {(next_y + self.LANE_SHAPE_TOP_MARGIN)}"
+            f">>>Shape Begin: [{shape.text}], {next_x}, {(next_y + self.LANE_SHAPE_TOP_MARGIN)}"
         )
 
         shape_x, shape_y, shape_w, shape_h = shape.set_draw_position(
@@ -158,7 +158,7 @@ class Lane:
         ### Set next elements' position
         for index, next_shape in enumerate(shape.connection_to):
             print(
-                f"index: {index}, next_shape: {next_shape.text}, next_shape_x: {next_x}"
+                f"{shape.text} = index: {index}, next_shape: {next_shape.text}, next_shape_x: {next_x}"
             )
 
             ### Check whether thhe position has been set, if yes, skipped.
@@ -190,13 +190,15 @@ class Lane:
                 next_shape_x, next_shape_y, next_shape, painter
             )
             shape_x, shape_y, shape_w, shape_h = (
-                next_shape_x,
-                next_shape_y,
-                next_shape_w,
-                next_shape_h,
+                max(shape_x, next_shape_x),
+                max(shape_y, next_shape_y),
+                max(shape_w, next_shape_w),
+                max(shape_h, next_shape_h),
             )
 
-        print(f">>>Shape End: {shape.text}, {shape_x}, {shape_y}, {shape_w}, {shape_h}")
+        print(
+            f"<<<Shape End: [{shape.text}], {shape_x}, {shape_y}, {shape_w}, {shape_h}"
+        )
         return shape_x, shape_y, shape_w, shape_h
 
     def get_outward_connection_count(self, shape: object) -> int:
