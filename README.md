@@ -8,6 +8,8 @@ This is a python library to generate business process diagram using code. The in
 
 It is still under development :construction:
 
+Any ideas or suggestions, please send it to me via [GitHub Discussions](https://github.com/csgoh/processmapper/discussions).
+
 You can see the sample code and output for design concept below.
 
 ```python
