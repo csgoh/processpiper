@@ -1,5 +1,5 @@
 [![license](https://img.shields.io/badge/license-mit-brightgreen.svg?style=plastic)](https://en.wikipedia.org/wiki/MIT_License)
-[![CodeFactor](https://www.codefactor.io/repository/github/csgoh/processmapper/badge)](https://www.codefactor.io/repository/github/csgoh/processmapper)
+[![CodeFactor](https://www.codefactor.io/repository/github/csgoh/processmapper/badge?style=plastic)](https://www.codefactor.io/repository/github/csgoh/processmapper)
 ![code size](https://img.shields.io/github/languages/code-size/csgoh/processmapper?style=plastic)
 
 # ProcessMapper
