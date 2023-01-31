@@ -22,6 +22,7 @@ class Gateway(Diamond):
 class Exclusive(Gateway):
     def draw(self, painter: Painter):
         super().draw(painter)
+        ### Overlay a cross on top of the diamond
         symbol = "X"
         super().draw_symbol(symbol, painter)
 
