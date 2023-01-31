@@ -114,7 +114,7 @@ class Lane:
             5,
             "solid",
         )
-        # self.painter.draw_grid()
+        self.painter.draw_grid()
         if self.shapes:
             for shape in self.shapes:
                 shape.draw(self.painter)
