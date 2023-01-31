@@ -13,8 +13,7 @@ Any ideas or suggestions, please send it to me via [GitHub Discussions](https://
 You can see the sample code and output for design concept below.
 
 ```python
-from processmapper.lane import EventType, ActivityType, GatewayType
-from processmapper.processmap import ProcessMap
+from processmapper import ProcessMap, EventType, ActivityType, GatewayType
 
 
 with ProcessMap(1150, 220) as my_process_map:
