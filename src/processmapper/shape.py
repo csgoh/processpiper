@@ -14,6 +14,8 @@ DIAMOND_HEIGHT = DIAMOND_WIDTH
 
 @dataclass
 class Shape:
+    """Base class for all shapes"""
+
     x: int = field(init=False, default=0)
     y: int = field(init=False, default=0)
     width: int = field(init=False, default=0)
@@ -31,6 +33,16 @@ class Shape:
         target: TShape,
         connection_type: str = "sequence",
     ) -> TShape:
+        """Connect two shapes
+
+        Args:
+            target (TShape): Target shape
+            connection_type (str, optional): Type of connection. Defaults to "sequence".
+
+        Returns:
+            TShape: Target shape
+
+        """
 
         self.connection_to.append(target)
         target.connection_from.append(self)
@@ -46,6 +58,15 @@ class Shape:
         return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
 
     def find_nearest_points(self, points_source, points_target):
+        """Find nearest connection points between two sets of shapes
+
+        Args:
+            points_source (dict): connection points of source shapes
+            points_target (dict): connection points of target shapes
+
+        Returns:
+            (tuple), (tuple): Nearest connection points between two sets of shapes
+        """
         shortest_distance: int = 9_999_999
         for source_name, source_points in points_source.items():
             for target_name, target_points in points_target.items():
@@ -69,62 +90,15 @@ class Shape:
             nearest_points["target_points"],
         )
 
-    def find_nearest_points_X(self, points_source, points_target):
-        smallest_x = 9999
-        smallest_y = 9999
-        index = 0
-        score = 9999
-        nearest_points = {}
-        source_points = []
-        target_points = []
-        for source_name, source_points in points_source.items():
-            for target_name, target_points in points_target.items():
-                source_x, source_y = source_points
-                target_x, target_y = target_points
-                if (abs(target_x - source_x)) < smallest_x or (
-                    abs(target_y - source_y)
-                ) <= smallest_y:
-                    smallest_x = abs(target_x - source_x)
-                    smallest_y = abs(target_y - source_y)
-
-                    if score > smallest_x + smallest_y:
-                        index = 0
-                        nearest_points = {}
-                        nearest_points[index] = {
-                            "source_name": source_name,
-                            "source_points": (source_x, source_y),
-                            "target_name": target_name,
-                            "target_points": (target_x, target_y),
-                            "score": score,
-                        }
-                        score = smallest_x + smallest_y
-                    elif score == smallest_x + smallest_y:
-                        index += 1
-
-                        nearest_points[index] = {
-                            "source_name": source_name,
-                            "source_points": (source_x, source_y),
-                            "target_name": target_name,
-                            "target_points": (target_x, target_y),
-                            "score": score,
-                        }
-        # find source_name contain "middle" and target_name contain "middle" in nearest_points
-        if len(nearest_points) <= 2:
-            return (
-                nearest_points[0]["source_points"],
-                nearest_points[0]["target_points"],
-            )
-        if len(nearest_points) >= 3:
-            for index, points in nearest_points.items():
-                source_name = points["source_name"]
-                target_name = points["target_name"]
-                if "middle" in source_name:
-                    source_points = points["source_points"]
-                if "middle" in target_name:
-                    target_points = points["target_points"]
-            return source_points, target_points
-
     def draw(self, painter: Painter):
+        """Draw shape
+
+        Args:
+            painter (Painter): Painter object
+
+        Returns:
+            None
+        """
 
         # draw connection
         source_points = self.points
@@ -158,12 +132,25 @@ class Shape:
 
 
 class Box(Shape):
+    """Box shape"""
+
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
+        """Set draw position of box
+
+        Args:
+            x (int): x position
+            y (int): y position
+            painter (Painter): Painter object
+
+        Returns:
+            tuple: x, y position
+        """
         self.x = x
         self.y = y
         self.width = BOX_WIDTH
         self.height = BOX_HEIGHT
         self.points = {
+            ### Uncomment the following if we need more connection points
             # "top_left": (self.x, self.y),
             # "top_right": (self.x + self.width, self.y),
             # "bottom_left": (self.x, self.y + self.height),
