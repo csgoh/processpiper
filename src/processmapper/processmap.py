@@ -10,6 +10,9 @@ class ProcessMap:
     width: int = field(init=True, default=1200)
     height: int = field(init=True, default=800)
     colour_theme: str = field(init=True, default="DEFAULT")
+    __painter: Painter = field(init=False)
+
+    lane_y_pos: int = field(init=False, default=0)
 
     def add_lane(self, lane_text: str) -> Lane:
         lane = Lane(lane_text)
@@ -19,12 +22,15 @@ class ProcessMap:
     def get_surface_size(self) -> tuple:
         x, y = 0, 0
         if self._lanes:
+            last_y_pos = 0
             for lane in self._lanes:
                 ### Calculate the x and y position of the lane and shapes in the lane
-                x, y, w, h = lane.set_draw_position(x, y, self.__painter)
+                x, y, w, h = lane.set_draw_position(x, last_y_pos, self.__painter)
                 self.width = max(self.width, x + w)
                 self.height = max(self.height, y + h)
+                last_y_pos = y + h + Lane.VSPACE_BETWEEN_LANES
 
+        # self.__painter.set_surface_size(self.width, self.height)
         return self.width, self.height
 
     def draw(self) -> None:
@@ -35,10 +41,20 @@ class ProcessMap:
         ### Determine the size of the process map
         self.width, self.height = self.get_surface_size()
 
+        print(f"Start drawing...")
         ### Draw the lanes and the shapes in the lanes
+
         if self._lanes:
             for lane in self._lanes:
                 lane.draw()
+
+        if self._lanes:
+            for lane in self._lanes:
+                lane.draw_shape()
+
+        # if self._lanes:
+        #     for lane in self._lanes:
+        #         lane.draw_connection()
 
     def __set_colour_palette(self, palette: str) -> None:
         """This method sets the colour palette"""
