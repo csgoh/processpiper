@@ -392,14 +392,24 @@ class Painter:
             right_angle_point = (x1, y2)
 
         if x1 > x2:
-            elbow_height = 40
-            points = [
-                (x1, y1),
-                (x1, y1 - elbow_height),
-                (x2, y1 - elbow_height),
-                (x2, y2),
-            ]
-            right_angle_point = (x2, y1 - elbow_height)
+            if abs(y1 - y2) == 10:
+                elbow_height = 40
+                points = [
+                    (x1, y1),
+                    (x1, y1 - elbow_height),
+                    (x2, y1 - elbow_height),
+                    (x2, y2),
+                ]
+                right_angle_point = (x2, y1 - elbow_height)
+            if abs(y1 - y2) >= 100:
+                elbow_height = 30
+                points = [
+                    (x1, y1),
+                    (x1, y1 + elbow_height),
+                    (x2, y1 + elbow_height),
+                    (x2, y2),
+                ]
+                right_angle_point = (x2, y1 - elbow_height)
 
         self.__cr.line(points, fill=(0, 0, 0), width=1)
         return right_angle_point
@@ -629,6 +639,22 @@ class Painter:
         text_y_pos = (height / 2) + (text_height / 2)
 
         return x + text_x_pos, y + text_y_pos
+
+    def set_surface_size(self, width: int, height: int) -> None:
+        """Set surface size
+
+        Args:
+            width (int): Surface width
+            height (int): Surface height
+        """
+        # height += self.bottom_margin
+        left, top, right, bottom = 0, 0, width, height
+        print(
+            f"resize surface > left: {left}, top: {top}, right: {right}, bottom: {bottom}"
+        )
+        # extend the surface to fit the text
+
+        # self.__surface = self.__surface.crop((left, top, right, bottom))
 
     def save_surface(self, filename: str) -> None:
         """Save surface to PNG file
