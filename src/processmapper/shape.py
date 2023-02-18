@@ -16,6 +16,8 @@ DIAMOND_HEIGHT = DIAMOND_WIDTH
 class Shape:
     """Base class for all shapes"""
 
+    text: str = field(init=True, default="")
+    lane_name: str = field(init=True, default="")
     x: int = field(init=False, default=0)
     y: int = field(init=False, default=0)
     width: int = field(init=False, default=0)
@@ -23,7 +25,6 @@ class Shape:
     points: dict = field(init=False, default_factory=dict)
     incoming_points: list = field(init=False, default_factory=list)
     outgoing_points: list = field(init=False, default_factory=list)
-    text: str = field(init=True, default="")
 
     connection_from: list = field(init=False, default_factory=list)
     connection_to: list = field(init=False, default_factory=list)
@@ -91,6 +92,17 @@ class Shape:
         )
 
     def draw(self, painter: Painter):
+        """Draw shape
+
+        Args:
+            painter (Painter): Painter object
+
+        Returns:
+            None
+        """
+        ...
+
+    def draw_connection(self, painter: Painter):
         """Draw shape
 
         Args:
