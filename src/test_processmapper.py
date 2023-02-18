@@ -27,12 +27,12 @@ def test_case2():
         with my_process_map.add_lane("Application \nUser") as lane1:
             start = lane1.add_element("Start", EventType.START)
             enter_keyword = lane1.add_element("Enter Keyword", ActivityType.TASK)
-            result_found = lane1.add_element("Result Found?", GatewayType.EXCLUSIVE)
             end = lane1.add_element("End", EventType.END)
 
         with my_process_map.add_lane("System") as lane2:
             login = lane2.add_element("Login", ActivityType.TASK)
             search_records = lane2.add_element("Search Records", ActivityType.TASK)
+            result_found = lane2.add_element("Result Found?", GatewayType.EXCLUSIVE)
             display_result = lane2.add_element("Display Result", ActivityType.TASK)
             logout = lane2.add_element("Logout", ActivityType.TASK)
 
