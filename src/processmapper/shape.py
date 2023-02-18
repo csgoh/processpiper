@@ -25,6 +25,8 @@ class Shape:
     points: dict = field(init=False, default_factory=dict)
     incoming_points: list = field(init=False, default_factory=list)
     outgoing_points: list = field(init=False, default_factory=list)
+    draw_position_set: bool = field(init=False, default=False)
+    traversed: bool = field(init=False, default=False)
 
     connection_from: list = field(init=False, default_factory=list)
     connection_to: list = field(init=False, default_factory=list)
