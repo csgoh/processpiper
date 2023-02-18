@@ -84,9 +84,6 @@ class Lane:
         pass
 
     def draw(self) -> None:
-        # if last_y_pos > 0:
-        #     self.y = last_y_pos + self.VSPACE_BETWEEN_LANES
-
         # print(f"draw lane {self.text}: {self.x}, {self.y}, {self.width}, {self.height}")
         ### Draw the lane outline
         self.painter.draw_box(
@@ -133,89 +130,104 @@ class Lane:
                 shape.draw_connection(self.painter)
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> None:
+        print("Set draw position...")
         self.painter = painter
         ### Determine the x and y position of the lane
-        print(f"[{self.text}]: x={x}, y={y}")
         self.x = x if x > 0 else self.SURFACE_LEFT_MARGIN
         self.y = y if y > 0 else self.SURFACE_TOP_MARGIN
+        print(f"[{self.text}]: x={self.x}, y={self.y}")
 
-        # print(f"***>lane {self.text} 2: x={self.x}, y={self.y}")
         if self.shapes:
             self.next_shape_x = (
                 self.x + self.LANE_TEXT_WIDTH + self.LANE_SHAPE_LEFT_MARGIN
             )
 
-            ### Set first shape position. The first one is always 'Start' Event
-            shape_x, shape_y, shape_w, shape_h = self.set_shape_draw_position(
-                self.next_shape_x, self.y, self.shapes[0], painter
-            )
-            # print(f"shape 0: {shape_x}, {shape_y}, {shape_w}, {shape_h}")
+            for shape in self.shapes:
+                shape_x, shape_y, shape_w, shape_h = self.set_shape_draw_position(
+                    self.next_shape_x, self.y, shape, painter
+                )
 
-            self.width = max(self.width, shape_x + shape_w)
-            self.height = max(
-                self.height, shape_y + shape_h - self.y + self.LANE_SHAPE_BOTTOM_MARGIN
-            )
+                self.width = max(self.width, shape_x + shape_w)
+                self.height = max(
+                    self.height,
+                    shape_y + shape_h - self.y + self.LANE_SHAPE_BOTTOM_MARGIN,
+                )
 
-        # print(f"<***lane {self.text}: w={self.width}, h={self.height}")
+            # ### Set first shape position.
+            # shape_x, shape_y, shape_w, shape_h = self.set_shape_draw_position(
+            #     self.next_shape_x, self.y, self.shapes[0], painter
+            # )
+
+            # self.width = max(self.width, shape_x + shape_w)
+            # self.height = max(
+            #     self.height, shape_y + shape_h - self.y + self.LANE_SHAPE_BOTTOM_MARGIN
+            # )
+
         return self.x, self.y, self.width, self.height
 
     def set_shape_draw_position(
-        self, next_x: int, next_y: int, shape: Shape, painter: Painter
+        self, x: int, y: int, shape: Shape, painter: Painter
     ) -> None:
         ### Set own shape position
 
-        print(
-            f"      >>>Shape Begin: [{shape.text}], {next_x}, {(next_y + self.LANE_SHAPE_TOP_MARGIN)}"
-        )
+        print(f"      <{shape.text}>: {x}, {(y + self.LANE_SHAPE_TOP_MARGIN)}")
 
-        shape_x, shape_y, shape_w, shape_h = shape.set_draw_position(
-            (next_x),
-            (next_y + self.LANE_SHAPE_TOP_MARGIN),
-            painter,
-        )
-        next_x = shape_x + shape_w + self.HSPACE_BETWEEN_SHAPES
+        if shape.lane_name == self.text:
+            shape_x, shape_y, shape_w, shape_h = shape.set_draw_position(
+                x,
+                (y + self.LANE_SHAPE_TOP_MARGIN),
+                painter,
+            )
+            next_x = shape_x + shape_w + self.HSPACE_BETWEEN_SHAPES
+            shape.draw_position_set = True
 
-        ### Set next elements' position
-        this_lane = self.text
-        for index, next_shape in enumerate(shape.connection_to):
+            shape.traversed = True
             print(
-                f"              {shape.text} = index: {index}, next_shape: {next_shape.text}, next_shape_x: {next_x}, next_shape_y: {next_y}"
+                f"       <<{shape.text}>>: {shape.draw_position_set}, {shape.traversed}"
             )
 
-            ### Check whether thhe position has been set, if yes, skipped.
-            ## or next_shape.lane_name != this_lane
-            if next_shape.x > 0:
-                print(f"                Skipped")
-                continue
-
-            if index == 0:
-                next_shape_y = next_y
-            else:
-                next_shape_y = (
-                    next_y
-                    + self.LANE_SHAPE_TOP_MARGIN
-                    + self.HSPACE_BETWEEN_SHAPES
-                    + shape_h
+            ### Set next elements' position
+            this_lane = self.text
+            for index, next_shape in enumerate(shape.connection_to):
+                print(
+                    f"          {shape.text}({index}): next: {next_shape.text}, {next_x}, {y}, {next_shape.draw_position_set}, {shape.traversed}"
                 )
 
-            self.next_shape_x = next_x
+                ### Check whether thhe position has been set, if yes, skipped.
+                ## or next_shape.lane_name != this_lane
+                if next_shape.traversed == True:
+                    print(f"            Skipped")
+                    continue
 
-            (
-                next_shape_x,
-                next_shape_y,
-                next_shape_w,
-                next_shape_h,
-            ) = self.set_shape_draw_position(
-                self.next_shape_x, next_shape_y, next_shape, painter
-            )
+                if index == 0:
+                    next_shape_y = y
+                else:
+                    next_shape_y = (
+                        y
+                        + self.LANE_SHAPE_TOP_MARGIN
+                        + self.HSPACE_BETWEEN_SHAPES
+                        + shape_h
+                    )
 
-            shape_x, shape_y, shape_w, shape_h = (
-                max(shape_x, next_shape_x),
-                max(shape_y, next_shape_y),
-                max(shape_w, next_shape_w),
-                max(shape_h, next_shape_h),
-            )
-            self.next_shape_x = next_shape_x
+                (
+                    next_shape_x,
+                    next_shape_y,
+                    next_shape_w,
+                    next_shape_h,
+                ) = self.set_shape_draw_position(
+                    self.next_shape_x, next_shape_y, next_shape, painter
+                )
+
+                shape_x, shape_y, shape_w, shape_h = (
+                    max(shape_x, next_shape_x),
+                    max(shape_y, next_shape_y),
+                    max(shape_w, next_shape_w),
+                    max(shape_h, next_shape_h),
+                )
+                self.next_shape_x = next_shape_x
+        else:
+            shape_x, shape_y, shape_w, shape_h = 0, 0, 0, 0
+            print(f"            Skipped")
 
         return shape_x, shape_y, shape_w, shape_h
 
