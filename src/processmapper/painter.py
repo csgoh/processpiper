@@ -392,24 +392,52 @@ class Painter:
             right_angle_point = (x1, y2)
 
         if x1 > x2:
-            if abs(y1 - y2) == 10:
-                elbow_height = 40
+            if y1 <= y2:
+                if abs(y1 - y2) == 10:
+                    elbow_height = 40
+                    points = [
+                        (x1, y1),
+                        (x1, y1 - elbow_height),
+                        (x2, y1 - elbow_height),
+                        (x2, y2),
+                    ]
+                    right_angle_point = (x2, y1 - elbow_height)
+                if abs(y1 - y2) >= 100:
+                    elbow_height = 40
+                    points = [
+                        (x1, y1),
+                        (x1, y1 + elbow_height),
+                        (x2, y1 + elbow_height),
+                        (x2, y2),
+                    ]
+                    right_angle_point = (x2, y1 - elbow_height)
+            elif y1 > y2:
+                elbow_height = (y1 - y2) / 2
                 points = [
                     (x1, y1),
                     (x1, y1 - elbow_height),
-                    (x2, y1 - elbow_height),
+                    (x2, y2 + elbow_height),
                     (x2, y2),
                 ]
-                right_angle_point = (x2, y1 - elbow_height)
-            if abs(y1 - y2) >= 100:
-                elbow_height = 30
+                for point in points:
+                    self.draw_circle(point[0], point[1], 2, "green")
+                right_angle_point = (x2, y2 + elbow_height)
+
+        # self.__cr.line(points, fill=(0, 0, 0), width=1)
+        # return right_angle_point
+
+        if x1 < x2:
+            if y1 > y2:
+                elbow_height = (x2 - x1) / 2
                 points = [
                     (x1, y1),
-                    (x1, y1 + elbow_height),
-                    (x2, y1 + elbow_height),
+                    (x1 + elbow_height, y1),
+                    (x2 - elbow_height, y2),
                     (x2, y2),
                 ]
-                right_angle_point = (x2, y1 - elbow_height)
+                for point in points:
+                    self.draw_circle(point[0], point[1], 2, "blue")
+                right_angle_point = (x2 - elbow_height, y2)
 
         self.__cr.line(points, fill=(0, 0, 0), width=1)
         return right_angle_point
