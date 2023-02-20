@@ -90,9 +90,14 @@ class Shape:
                         "target_points": target_points,
                         "distance": distance,
                     }
+
                     print(
                         f"  S:{source_name}, {source_points}, T:{target_name}, {target_points}, {distance}"
                     )
+
+        ### remove points from source and target shapes once they are used
+        del points_source[nearest_points["source_name"]]
+        del points_target[nearest_points["target_name"]]
 
         return (
             nearest_points["source_points"],
@@ -108,7 +113,8 @@ class Shape:
         Returns:
             None
         """
-        ...
+        for point in self.points.values():
+            painter.draw_circle(point[0], point[1], 2, "red")
 
     def draw_connection(self, painter: Painter):
         """Draw shape
@@ -176,22 +182,22 @@ class Box(Shape):
             # "top_right": (self.x + self.width, self.y),
             # "bottom_left": (self.x, self.y + self.height),
             # "bottom_right": (self.x + self.width, self.y + self.height),
-            # "middle_left": (self.x, self.y + self.height / 2),
-            # "middle_top": (self.x + self.width / 2, self.y),
-            # "middle_right": (self.x + self.width, self.y + self.height / 2),
-            # "middle_bottom": (self.x + self.width / 2, self.y + self.height),
-            "top_1": (self.x + self.width / 4, self.y),
-            "top_middle": (self.x + self.width / 2, self.y),
-            "top_3": (self.x + self.width / 4 * 3, self.y),
-            "bottom_1": (self.x + self.width / 4, self.y + self.height),
-            "bottom_middle": (self.x + self.width / 2, self.y + self.height),
-            "bottom_3": (self.x + self.width / 4 * 3, self.y + self.height),
-            "left_1": (self.x, self.y + self.height / 4),
-            "left_middle": (self.x, self.y + self.height / 2),
-            "left_3": (self.x, self.y + self.height / 4 * 3),
-            "right_1": (self.x + self.width, self.y + self.height / 4),
-            "right_middle": (self.x + self.width, self.y + self.height / 2),
-            "right_3": (self.x + self.width, self.y + self.height / 4 * 3),
+            "middle_left": (self.x, self.y + self.height / 2),
+            "middle_top": (self.x + self.width / 2, self.y),
+            "middle_right": (self.x + self.width, self.y + self.height / 2),
+            "middle_bottom": (self.x + self.width / 2, self.y + self.height),
+            # "top_1": (self.x + self.width / 4, self.y),
+            # "top_middle": (self.x + self.width / 2, self.y),
+            # "top_3": (self.x + self.width / 4 * 3, self.y),
+            # "bottom_1": (self.x + self.width / 4, self.y + self.height),
+            # "bottom_middle": (self.x + self.width / 2, self.y + self.height),
+            # "bottom_3": (self.x + self.width / 4 * 3, self.y + self.height),
+            # "left_1": (self.x, self.y + self.height / 4),
+            # "left_middle": (self.x, self.y + self.height / 2),
+            # "left_3": (self.x, self.y + self.height / 4 * 3),
+            # "right_1": (self.x + self.width, self.y + self.height / 4),
+            # "right_middle": (self.x + self.width, self.y + self.height / 2),
+            # "right_3": (self.x + self.width, self.y + self.height / 4 * 3),
         }
         # print(
         #     f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.width: {self.width}, self.height: {self.height}"
@@ -212,8 +218,7 @@ class Box(Shape):
             text_font_size=12,
             text_font_colour="black",
         )
-        for point in self.points.values():
-            painter.draw_circle(point[0], point[1], 2, "red")
+
         super().draw(painter)
 
 
@@ -262,8 +267,6 @@ class Circle(Shape):
         # print(f"draw ({self.text}), x: {self.x}, y: {self.y}, radius: {self.radius}")
         painter.draw_circle(self.x, self.y, self.radius, "darkgray")
         painter.draw_text(self.text_x, self.text_y, self.text, "arial.ttf", 10, "black")
-        for point in self.points.values():
-            painter.draw_circle(point[0], point[1], 2, "red")
         super().draw(painter)
 
 
@@ -305,6 +308,5 @@ class Diamond(Shape):
         painter.draw_text(
             self.text_x, self.text_y, self.text, "arial.ttf", 10, font_colour="black"
         )
-        for point in self.points.values():
-            painter.draw_circle(point[0], point[1], 2, "red")
+
         super().draw(painter)
