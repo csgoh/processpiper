@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
+from itertools import count
 from processmapper.shape import Shape
 from processmapper.event import Event, Start, End, Timer, Intermediate
 from processmapper.activity import Activity, Task, Subprocess
@@ -39,6 +40,7 @@ class ElementType(str, Enum):
 
 @dataclass
 class Lane:
+    id: int = field(init=False, default_factory=count().__next__)
     shapes: list = field(init=False, default_factory=list)
     x: int = field(init=False, default=0)
     y: int = field(init=False, default=0)
@@ -48,6 +50,9 @@ class Lane:
     painter: Painter = field(init=False)
 
     next_shape_x: int = field(init=False, default=0)
+    next_shape_y: int = field(init=False, default=0)
+
+    shape_row_count: int = field(init=False, default=0)
 
     text_x: int = field(init=False, default=0)
     text_y: int = field(init=False, default=0)
@@ -66,7 +71,9 @@ class Lane:
     LANE_SHAPE_LEFT_MARGIN = 30
     LANE_SHAPE_RIGHT_MARGIN = 30
 
-    HSPACE_BETWEEN_SHAPES = 40
+    HSPACE_BETWEEN_SHAPES = 50
+    VSPACE_BETWEEN_SHAPES = 40
+
     VSPACE_BETWEEN_LANES = 20
 
     def add_element(
@@ -74,6 +81,7 @@ class Lane:
     ) -> Shape:
         event_class = globals()[type]
         start = event_class(text, self.text)
+        start.lane_id = self.id
         self.shapes.append(start)
         return start
 
@@ -82,6 +90,36 @@ class Lane:
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         pass
+
+    def get_current_x_position(self) -> int:
+        if self.next_shape_x == 0:
+            self.next_shape_x = (
+                self.x + self.LANE_TEXT_WIDTH + self.LANE_SHAPE_LEFT_MARGIN
+            )
+
+        return self.next_shape_x
+
+    def get_next_x_position(self) -> int:
+        if self.next_shape_x == 0:
+            self.next_shape_x = (
+                self.x + self.LANE_TEXT_WIDTH + self.LANE_SHAPE_LEFT_MARGIN
+            )
+        else:
+            self.next_shape_x += 100 + self.HSPACE_BETWEEN_SHAPES
+        return self.next_shape_x
+
+    def get_current_y_position(self) -> int:
+        if self.next_shape_y == 0:
+            self.next_shape_y = self.y + self.LANE_SHAPE_TOP_MARGIN
+
+        return self.next_shape_y
+
+    def get_next_y_position(self) -> int:
+        if self.next_shape_y == 0:
+            self.next_shape_y = self.y + 60 + self.LANE_SHAPE_TOP_MARGIN
+        else:
+            self.next_shape_y += 60 + self.VSPACE_BETWEEN_SHAPES
+        return self.next_shape_y
 
     def draw(self) -> None:
         # print(f"draw lane {self.text}: {self.x}, {self.y}, {self.width}, {self.height}")
@@ -142,26 +180,30 @@ class Lane:
                 self.x + self.LANE_TEXT_WIDTH + self.LANE_SHAPE_LEFT_MARGIN
             )
 
-            for shape in self.shapes:
-                shape_x, shape_y, shape_w, shape_h = self.set_shape_draw_position(
-                    self.next_shape_x, self.y, shape, painter
-                )
+            ### Loop through all shapes within the lane (Method 1)
+            # for shape in self.shapes:
+            #     shape_x, shape_y, shape_w, shape_h = self.set_shape_draw_position(
+            #         self.next_shape_x, self.y, shape, painter
+            #     )
+            #     self.width = max(self.width, shape_x + shape_w)
+            #     self.height = max(
+            #         self.height,
+            #         shape_y + shape_h - self.y + self.LANE_SHAPE_BOTTOM_MARGIN,
+            #     )
+            #     self.next_shape_x = shape_x + shape_w + self.HSPACE_BETWEEN_SHAPES
 
-                self.width = max(self.width, shape_x + shape_w)
-                self.height = max(
-                    self.height,
-                    shape_y + shape_h - self.y + self.LANE_SHAPE_BOTTOM_MARGIN,
-                )
+            ### Start with the first shape (Method 2)
+            shape_x, shape_y, shape_w, shape_h = self.set_shape_draw_position(
+                self.next_shape_x, self.y, self.shapes[0], painter
+            )
 
-            # ### Set first shape position.
-            # shape_x, shape_y, shape_w, shape_h = self.set_shape_draw_position(
-            #     self.next_shape_x, self.y, self.shapes[0], painter
-            # )
+            self.width = max(self.width, shape_x + shape_w)
+            self.height = max(
+                self.height,
+                shape_y + shape_h - self.y + self.LANE_SHAPE_BOTTOM_MARGIN,
+            )
 
-            # self.width = max(self.width, shape_x + shape_w)
-            # self.height = max(
-            #     self.height, shape_y + shape_h - self.y + self.LANE_SHAPE_BOTTOM_MARGIN
-            # )
+            self.next_shape_x = shape_x + shape_w + self.HSPACE_BETWEEN_SHAPES
 
         return self.x, self.y, self.width, self.height
 
@@ -181,16 +223,16 @@ class Lane:
             next_x = shape_x + shape_w + self.HSPACE_BETWEEN_SHAPES
             shape.draw_position_set = True
 
-            shape.traversed = True
+            shape.x_pos_traversed = True
             print(
-                f"       <<{shape.text}>>: {shape.draw_position_set}, {shape.traversed}"
+                f"       <<{shape.text}>>: {shape.draw_position_set}, {shape.x_pos_traversed}"
             )
 
             ### Set next elements' position
             this_lane = self.text
             for index, next_shape in enumerate(shape.connection_to):
                 print(
-                    f"          {shape.text}({index}): next: {next_shape.text}, {next_x}, {y}, {next_shape.draw_position_set}, {shape.traversed}"
+                    f"          {shape.text}({index}): next: {next_shape.text}, {next_x}, {y}, {next_shape.draw_position_set}, {shape.x_pos_traversed}"
                 )
 
                 ### Check whether thhe position has been set, if yes, skipped.
