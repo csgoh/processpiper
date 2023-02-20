@@ -16,8 +16,9 @@ class ProcessMap:
     lane_y_pos: int = field(init=False, default=0)
     lane_max_width: int = field(init=False, default=0)
 
-    def add_lane(self, lane_text: str) -> Lane:
-        lane = Lane(lane_text)
+    ### TO DO: modify the method to support pool and lane
+    def add_lane(self, lane_text: str, pool_text: str = "") -> Lane:
+        lane = Lane(lane_text, pool_text)
         self._lanes.append(lane)
         return lane
 
