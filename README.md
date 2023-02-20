@@ -39,7 +39,6 @@ def test_case2():
 
         my_process_map.draw()
         my_process_map.save("my_process_map_test_case02.png")
-    # my_process_map.print()
 
 
 if __name__ == "__main__":
