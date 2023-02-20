@@ -39,14 +39,11 @@ def test_case2():
 
         start.connect(login).connect(enter_keyword).connect(search_records).connect(
             result_found
-        )
-        result_found.connect(display_result)
-        display_result.connect(logout).connect(end)
+        ).connect(display_result).connect(logout).connect(end)
         result_found.connect(refine_search).connect(search_records)
 
         my_process_map.draw()
         my_process_map.save("my_process_map_test_case02.png")
-    # my_process_map.print()
 
 
 if __name__ == "__main__":
