@@ -47,6 +47,7 @@ class Lane:
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
     text: str = field(init=True)
+    pool_text: str = field(init=True, default="")
     painter: Painter = field(init=False)
 
     next_shape_x: int = field(init=False, default=0)
@@ -74,7 +75,7 @@ class Lane:
     HSPACE_BETWEEN_SHAPES = 50
     VSPACE_BETWEEN_SHAPES = 40
 
-    VSPACE_BETWEEN_LANES = 20
+    VSPACE_BETWEEN_LANES = 5
 
     def add_element(
         self, text: str, type: EventType | ActivityType | GatewayType
