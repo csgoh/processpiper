@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 import math
+from itertools import count
 from processmapper.painter import Painter
 from typing import TypeVar
 
@@ -16,8 +17,9 @@ DIAMOND_HEIGHT = DIAMOND_WIDTH
 class Shape:
     """Base class for all shapes"""
 
+    id: int = field(init=False, default_factory=count().__next__)
     text: str = field(init=True, default="")
-    lane_name: str = field(init=True, default="")
+    lane_id: int = field(init=True, default=0)
     x: int = field(init=False, default=0)
     y: int = field(init=False, default=0)
     width: int = field(init=False, default=0)
@@ -26,7 +28,8 @@ class Shape:
     incoming_points: list = field(init=False, default_factory=list)
     outgoing_points: list = field(init=False, default_factory=list)
     draw_position_set: bool = field(init=False, default=False)
-    traversed: bool = field(init=False, default=False)
+    x_pos_traversed: bool = field(init=False, default=False)
+    y_pos_traversed: bool = field(init=False, default=False)
 
     connection_from: list = field(init=False, default_factory=list)
     connection_to: list = field(init=False, default_factory=list)
@@ -87,6 +90,9 @@ class Shape:
                         "target_points": target_points,
                         "distance": distance,
                     }
+                    print(
+                        f"  S:{source_name}, {source_points}, T:{target_name}, {target_points}, {distance}"
+                    )
 
         return (
             nearest_points["source_points"],
@@ -116,6 +122,7 @@ class Shape:
 
         # draw connection
         source_points = self.points
+        print(f"Points for shape: {self.text}")
         if self.connection_to:
             for connection in self.connection_to:
                 ### remove points from source_points is it exist in incoming_points
@@ -148,7 +155,7 @@ class Shape:
 class Box(Shape):
     """Box shape"""
 
-    def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
+    def set_draw_position(self, painter: Painter) -> tuple:
         """Set draw position of box
 
         Args:
@@ -159,8 +166,8 @@ class Box(Shape):
         Returns:
             tuple: x, y position
         """
-        self.x = x
-        self.y = y
+        # self.x = x
+        # self.y = y
         self.width = BOX_WIDTH
         self.height = BOX_HEIGHT
         self.points = {
@@ -169,10 +176,22 @@ class Box(Shape):
             # "top_right": (self.x + self.width, self.y),
             # "bottom_left": (self.x, self.y + self.height),
             # "bottom_right": (self.x + self.width, self.y + self.height),
-            "middle_left": (self.x, self.y + self.height / 2),
-            "middle_top": (self.x + self.width / 2, self.y),
-            "middle_right": (self.x + self.width, self.y + self.height / 2),
-            "middle_bottom": (self.x + self.width / 2, self.y + self.height),
+            # "middle_left": (self.x, self.y + self.height / 2),
+            # "middle_top": (self.x + self.width / 2, self.y),
+            # "middle_right": (self.x + self.width, self.y + self.height / 2),
+            # "middle_bottom": (self.x + self.width / 2, self.y + self.height),
+            "top_1": (self.x + self.width / 4, self.y),
+            "top_middle": (self.x + self.width / 2, self.y),
+            "top_3": (self.x + self.width / 4 * 3, self.y),
+            "bottom_1": (self.x + self.width / 4, self.y + self.height),
+            "bottom_middle": (self.x + self.width / 2, self.y + self.height),
+            "bottom_3": (self.x + self.width / 4 * 3, self.y + self.height),
+            "left_1": (self.x, self.y + self.height / 4),
+            "left_middle": (self.x, self.y + self.height / 2),
+            "left_3": (self.x, self.y + self.height / 4 * 3),
+            "right_1": (self.x + self.width, self.y + self.height / 4),
+            "right_middle": (self.x + self.width, self.y + self.height / 2),
+            "right_3": (self.x + self.width, self.y + self.height / 4 * 3),
         }
         # print(
         #     f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.width: {self.width}, self.height: {self.height}"
@@ -193,6 +212,8 @@ class Box(Shape):
             text_font_size=12,
             text_font_colour="black",
         )
+        for point in self.points.values():
+            painter.draw_circle(point[0], point[1], 2, "red")
         super().draw(painter)
 
 
@@ -202,11 +223,11 @@ class Circle(Shape):
     text_width: int = field(init=False)
     text_height: int = field(init=False)
 
-    def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
+    def set_draw_position(self, painter: Painter) -> tuple:
         # Circle x position starts from the circle centre, so add radius to x.
         # But we want to cater for cases when circle and box aligned vertically.
-        self.x = int(x + CIRCLE_RADIUS + (BOX_WIDTH / 2) - (CIRCLE_RADIUS))
-        self.y = int(y + (BOX_HEIGHT / 2))
+        self.x = int(self.x + CIRCLE_RADIUS + (BOX_WIDTH / 2) - (CIRCLE_RADIUS))
+        self.y = int(self.y + (BOX_HEIGHT / 2))
         self.radius = CIRCLE_RADIUS
         self.points = {
             "0": (
@@ -241,6 +262,8 @@ class Circle(Shape):
         # print(f"draw ({self.text}), x: {self.x}, y: {self.y}, radius: {self.radius}")
         painter.draw_circle(self.x, self.y, self.radius, "darkgray")
         painter.draw_text(self.text_x, self.text_y, self.text, "arial.ttf", 10, "black")
+        for point in self.points.values():
+            painter.draw_circle(point[0], point[1], 2, "red")
         super().draw(painter)
 
 
@@ -250,9 +273,9 @@ class Diamond(Shape):
     text_width: int = field(init=False)
     text_height: int = field(init=False)
 
-    def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
-        self.x = x + (BOX_WIDTH / 2) - (DIAMOND_WIDTH / 2)
-        self.y = y + (BOX_HEIGHT / 2) - (DIAMOND_HEIGHT / 2)
+    def set_draw_position(self, painter: Painter) -> tuple:
+        self.x = self.x + (BOX_WIDTH / 2) - (DIAMOND_WIDTH / 2)
+        self.y = self.y + (BOX_HEIGHT / 2) - (DIAMOND_HEIGHT / 2)
         self.width = DIAMOND_WIDTH
         self.height = DIAMOND_HEIGHT
         self.points = {
@@ -282,5 +305,6 @@ class Diamond(Shape):
         painter.draw_text(
             self.text_x, self.text_y, self.text, "arial.ttf", 10, font_colour="black"
         )
-
+        for point in self.points.values():
+            painter.draw_circle(point[0], point[1], 2, "red")
         super().draw(painter)
