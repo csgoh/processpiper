@@ -18,8 +18,9 @@ class Shape:
     """Base class for all shapes"""
 
     id: int = field(init=False, default_factory=count().__next__)
-    text: str = field(init=True, default="")
+    name: str = field(init=True, default="")
     lane_id: int = field(init=True, default=0)
+    pool_name: str = field(init=True, default="")
     x: int = field(init=False, default=0)
     y: int = field(init=False, default=0)
     width: int = field(init=False, default=0)
@@ -116,6 +117,30 @@ class Shape:
         for point in self.points.values():
             painter.draw_circle(point[0], point[1], 2, "red")
 
+    def is_same_lane(self, source: TShape, target: TShape):
+        """Check if source and target shapes are in the same lane
+
+        Args:
+            source (Shape): Source shape
+            target (Shape): Target shape
+
+        Returns:
+            bool: True if source and target shapes are in the same lane
+        """
+        return source.lane_id == target.lane_id
+
+    def is_same_pool(self, source: TShape, target: TShape):
+        """Check if source and target shapes are in the same pool
+
+        Args:
+            source (Shape): Source shape
+            target (Shape): Target shape
+
+        Returns:
+            bool: True if source and target shapes are in the same pool
+        """
+        return source.pool_name == target.pool_name
+
     def draw_connection(self, painter: Painter):
         """Draw shape
 
@@ -128,21 +153,31 @@ class Shape:
 
         # draw connection
         source_points = self.points
-        print(f"Points for shape: {self.text}")
+        print(f"Points for shape: {self.name}")
         if self.connection_to:
             for connection in self.connection_to:
-                ### remove points from source_points is it exist in incoming_points
-                for point_name, point in source_points.items():
-                    if point in self.incoming_points:
-                        del source_points[point_name]
-                        break
+                # ### remove points from source_points is it exist in incoming_points
+                # for point_name, point in source_points.items():
+                #     if point in self.incoming_points:
+                #         del source_points[point_name]
+                #         break
 
                 target_points = connection.points
-                ### remove points from target_points is it exist in outgoing_points
-                for point_name, point in target_points.items():
-                    if point in connection.outgoing_points:
-                        del target_points[point_name]
-                        break
+                # ### remove points from target_points is it exist in outgoing_points
+                # for point_name, point in target_points.items():
+                #     if point in connection.outgoing_points:
+                #         del target_points[point_name]
+                #         break
+
+                if self.is_same_lane(self, connection):
+                    ...
+                elif self.is_same_pool(self, connection):
+                    print(
+                        f"{self.name} and {connection.name}, Same pool: {self.pool_name}"
+                    )
+                    ...
+                else:  # different pool
+                    ...
 
                 point_from, point_to = self.find_nearest_points(
                     source_points, target_points
@@ -212,7 +247,7 @@ class Box(Shape):
             self.width,
             self.height,
             "darkgray",
-            self.text,
+            self.name,
             text_alignment="centre",
             text_font="arial.ttf",
             text_font_size=12,
@@ -253,7 +288,7 @@ class Circle(Shape):
             ),
         }
         self.text_width, self.text_height = painter.get_text_dimension(
-            self.text, "arial.ttf", 10
+            self.name, "arial.ttf", 10
         )
         self.text_x = self.x + (self.width / 2) - (self.text_width / 2)
         self.text_y = self.y + self.radius
@@ -266,7 +301,7 @@ class Circle(Shape):
     def draw(self, painter: Painter):
         # print(f"draw ({self.text}), x: {self.x}, y: {self.y}, radius: {self.radius}")
         painter.draw_circle(self.x, self.y, self.radius, "darkgray")
-        painter.draw_text(self.text_x, self.text_y, self.text, "arial.ttf", 10, "black")
+        painter.draw_text(self.text_x, self.text_y, self.name, "arial.ttf", 10, "black")
         super().draw(painter)
 
 
@@ -288,7 +323,7 @@ class Diamond(Shape):
             "middle_left": (self.x, self.y + self.height / 2),
         }
         self.text_width, self.text_height = painter.get_text_dimension(
-            self.text, "arial.ttf", 10
+            self.name, "arial.ttf", 10
         )
         self.text_x = self.x + (self.width / 2) - (self.text_width / 2)
         self.text_y = self.y + self.height
@@ -306,7 +341,7 @@ class Diamond(Shape):
             self.x, self.y, self.width, self.height, fill_colour="grey"
         )
         painter.draw_text(
-            self.text_x, self.text_y, self.text, "arial.ttf", 10, font_colour="black"
+            self.text_x, self.text_y, self.name, "arial.ttf", 10, font_colour="black"
         )
 
         super().draw(painter)

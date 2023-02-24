@@ -6,6 +6,7 @@ from processmapper.event import Event, Start, End, Timer, Intermediate
 from processmapper.activity import Activity, Task, Subprocess
 from processmapper.gateway import Gateway, Exclusive, Parallel, Inclusive
 from processmapper.painter import Painter
+import processmapper.constants as Configs
 
 
 class EventType:
@@ -46,7 +47,7 @@ class Lane:
     y: int = field(init=False, default=0)
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
-    text: str = field(init=True)
+    name: str = field(init=True)
     pool_text: str = field(init=True, default="")
     painter: Painter = field(init=False)
 
@@ -60,31 +61,15 @@ class Lane:
     text_width: int = field(init=False, default=0)
     text_height: int = field(init=False, default=0)
 
-    SURFACE_TOP_MARGIN = 20
-    SURFACE_BOTTOM_MARGIN = SURFACE_TOP_MARGIN
-    SURFACE_LEFT_MARGIN = SURFACE_TOP_MARGIN
-    SURFACE_RIGHT_MARGIN = SURFACE_TOP_MARGIN
-
-    LANE_TEXT_WIDTH = 100
-    LANE_TEXT_HEIGHT = 20
-    LANE_SHAPE_TOP_MARGIN = 50
-    LANE_SHAPE_BOTTOM_MARGIN = 50
-    LANE_SHAPE_LEFT_MARGIN = 30
-    LANE_SHAPE_RIGHT_MARGIN = 30
-
-    HSPACE_BETWEEN_SHAPES = 50
-    VSPACE_BETWEEN_SHAPES = 40
-
-    VSPACE_BETWEEN_LANES = 5
-
     def add_element(
-        self, text: str, type: EventType | ActivityType | GatewayType
+        self, name: str, type: EventType | ActivityType | GatewayType
     ) -> Shape:
         event_class = globals()[type]
-        start = event_class(text, self.text)
-        start.lane_id = self.id
-        self.shapes.append(start)
-        return start
+        element = event_class(name, self.name)
+        element.lane_id = self.id
+        element.pool_text = self.pool_text
+        self.shapes.append(element)
+        return element
 
     def __enter__(self):
         return self
@@ -95,7 +80,7 @@ class Lane:
     def get_current_x_position(self) -> int:
         if self.next_shape_x == 0:
             self.next_shape_x = (
-                self.x + self.LANE_TEXT_WIDTH + self.LANE_SHAPE_LEFT_MARGIN
+                self.x + Configs.LANE_TEXT_WIDTH + Configs.LANE_SHAPE_LEFT_MARGIN
             )
 
         return self.next_shape_x
@@ -103,23 +88,23 @@ class Lane:
     def get_next_x_position(self) -> int:
         if self.next_shape_x == 0:
             self.next_shape_x = (
-                self.x + self.LANE_TEXT_WIDTH + self.LANE_SHAPE_LEFT_MARGIN
+                self.x + Configs.LANE_TEXT_WIDTH + Configs.LANE_SHAPE_LEFT_MARGIN
             )
         else:
-            self.next_shape_x += 100 + self.HSPACE_BETWEEN_SHAPES
+            self.next_shape_x += 100 + Configs.HSPACE_BETWEEN_SHAPES
         return self.next_shape_x
 
     def get_current_y_position(self) -> int:
         if self.next_shape_y == 0:
-            self.next_shape_y = self.y + self.LANE_SHAPE_TOP_MARGIN
+            self.next_shape_y = self.y + Configs.LANE_SHAPE_TOP_MARGIN
 
         return self.next_shape_y
 
     def get_next_y_position(self) -> int:
         if self.next_shape_y == 0:
-            self.next_shape_y = self.y + 60 + self.LANE_SHAPE_TOP_MARGIN
+            self.next_shape_y = self.y + 60 + Configs.LANE_SHAPE_TOP_MARGIN
         else:
-            self.next_shape_y += 60 + self.VSPACE_BETWEEN_SHAPES
+            self.next_shape_y += 60 + Configs.VSPACE_BETWEEN_SHAPES
         return self.next_shape_y
 
     def draw(self) -> None:
@@ -133,13 +118,13 @@ class Lane:
             "#d9d9d9",
         )
         ### Draw the lane text box
-        self.painter.draw_box_with_text(
+        self.painter.draw_box_with_vertical_text(
             self.x,
             self.y,
-            self.LANE_TEXT_WIDTH,
+            Configs.LANE_TEXT_WIDTH,
             self.height,
             "#333333",
-            self.text,
+            self.name,
             text_alignment="left",
             text_font="arial",
             text_font_size=12,
@@ -147,9 +132,9 @@ class Lane:
         )
         ### Draw the lane text divider
         self.painter.draw_line(
-            self.x + self.LANE_TEXT_WIDTH,
+            self.x + Configs.LANE_TEXT_WIDTH,
             self.y,
-            self.x + self.LANE_TEXT_WIDTH,
+            self.x + Configs.LANE_TEXT_WIDTH,
             self.y + self.height,
             "white",
             0.5,
@@ -172,13 +157,13 @@ class Lane:
         print("Set draw position...")
         self.painter = painter
         ### Determine the x and y position of the lane
-        self.x = x if x > 0 else self.SURFACE_LEFT_MARGIN
-        self.y = y if y > 0 else self.SURFACE_TOP_MARGIN
-        print(f"[{self.text}]: x={self.x}, y={self.y}")
+        self.x = x if x > 0 else Configs.SURFACE_LEFT_MARGIN
+        self.y = y if y > 0 else Configs.SURFACE_TOP_MARGIN
+        print(f"[{self.name}]: x={self.x}, y={self.y}")
 
         if self.shapes:
             self.next_shape_x = (
-                self.x + self.LANE_TEXT_WIDTH + self.LANE_SHAPE_LEFT_MARGIN
+                self.x + Configs.LANE_TEXT_WIDTH + Configs.LANE_SHAPE_LEFT_MARGIN
             )
 
             ### Loop through all shapes within the lane (Method 1)
@@ -201,10 +186,10 @@ class Lane:
             self.width = max(self.width, shape_x + shape_w)
             self.height = max(
                 self.height,
-                shape_y + shape_h - self.y + self.LANE_SHAPE_BOTTOM_MARGIN,
+                shape_y + shape_h - self.y + Configs.LANE_SHAPE_BOTTOM_MARGIN,
             )
 
-            self.next_shape_x = shape_x + shape_w + self.HSPACE_BETWEEN_SHAPES
+            self.next_shape_x = shape_x + shape_w + Configs.HSPACE_BETWEEN_SHAPES
 
         return self.x, self.y, self.width, self.height
 
@@ -213,27 +198,27 @@ class Lane:
     ) -> None:
         ### Set own shape position
 
-        print(f"      <{shape.text}>: {x}, {(y + self.LANE_SHAPE_TOP_MARGIN)}")
+        print(f"      <{shape.name}>: {x}, {(y + Configs.LANE_SHAPE_TOP_MARGIN)}")
 
-        if shape.lane_name == self.text:
+        if shape.lane_name == self.name:
             shape_x, shape_y, shape_w, shape_h = shape.set_draw_position(
                 x,
-                (y + self.LANE_SHAPE_TOP_MARGIN),
+                (y + Configs.LANE_SHAPE_TOP_MARGIN),
                 painter,
             )
-            next_x = shape_x + shape_w + self.HSPACE_BETWEEN_SHAPES
+            next_x = shape_x + shape_w + Configs.HSPACE_BETWEEN_SHAPES
             shape.draw_position_set = True
 
             shape.x_pos_traversed = True
             print(
-                f"       <<{shape.text}>>: {shape.draw_position_set}, {shape.x_pos_traversed}"
+                f"       <<{shape.name}>>: {shape.draw_position_set}, {shape.x_pos_traversed}"
             )
 
             ### Set next elements' position
-            this_lane = self.text
+            this_lane = self.name
             for index, next_shape in enumerate(shape.connection_to):
                 print(
-                    f"          {shape.text}({index}): next: {next_shape.text}, {next_x}, {y}, {next_shape.draw_position_set}, {shape.x_pos_traversed}"
+                    f"          {shape.name}({index}): next: {next_shape.text}, {next_x}, {y}, {next_shape.draw_position_set}, {shape.x_pos_traversed}"
                 )
 
                 ### Check whether thhe position has been set, if yes, skipped.
@@ -247,8 +232,8 @@ class Lane:
                 else:
                     next_shape_y = (
                         y
-                        + self.LANE_SHAPE_TOP_MARGIN
-                        + self.HSPACE_BETWEEN_SHAPES
+                        + Configs.LANE_SHAPE_TOP_MARGIN
+                        + Configs.HSPACE_BETWEEN_SHAPES
                         + shape_h
                     )
 
