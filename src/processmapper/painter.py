@@ -271,6 +271,98 @@ class Painter:
 
             self.__cr.text((x, y), line, fill=text_font_colour, anchor="la", font=font)
 
+    def draw_box_with_vertical_text(
+        self,
+        box_x: int,
+        box_y: int,
+        box_width: int,
+        box_height: int,
+        box_fill_colour: str,
+        text: str,
+        text_alignment: str,
+        text_font: str,
+        text_font_size: int,
+        text_font_colour: str,
+        style: str = "rectangle",
+    ) -> None:
+        font = ImageFont.truetype(text_font, size=text_font_size)
+
+        multi_lines = []
+        wrap_lines = []
+
+        ### Make '\n' work
+        multi_lines = text.splitlines()
+
+        left, _, right, bottom = font.getbbox("a")
+        single_char_width = right - left
+
+        ### wrap text
+        for line in multi_lines:
+            wrap_lines.extend(textwrap.wrap(line, int(box_width / single_char_width)))
+
+        box_x1, box_y1, box_x2, box_y2 = (
+            box_x,
+            box_y,
+            box_x + box_width,
+            box_y + box_height,
+        )
+        match style:
+            case "rectangle":
+                self.draw_box(
+                    box_x1,
+                    box_y1,
+                    box_width,
+                    box_height,
+                    box_fill_colour=box_fill_colour,
+                )
+            case "rounded":
+                self.draw_rounded_box(
+                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                )
+            case "arrowhead":
+                self.draw_arrowhead_box(
+                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                )
+            case _:
+                raise ValueError("Invalid style")
+
+        pad = 4
+        line_count = len(wrap_lines)
+
+        for i, line in enumerate(wrap_lines):
+            font_width, font_height = self.get_text_dimension(
+                line, text_font, text_font_size
+            )
+
+            match text_alignment:
+                case "centre":
+                    x = box_x1 + (box_width - font_width) / 2
+                case "left":
+                    x = box_x1 + 15
+                case "right":
+                    x = box_x2 - font_width - 15
+                case _:
+                    x = box_x1 + (box_width - font_width) / 2
+
+            total_line_height = (font_height * line_count) + (pad * (line_count - 1))
+
+            single_line_height = font_height
+
+            y = (
+                box_y1
+                + ((box_height - total_line_height) / 2)
+                + ((single_line_height * i) + (pad * i))
+            )
+
+            # self.__cr.text((x, y), line, fill=text_font_colour, anchor="la", font=font)
+
+            ### Rotate text
+            rotated_img = Image.new("L", (font_width, font_height))
+            rotated_draw = ImageDraw.Draw(rotated_img)
+            rotated_draw.text((0, 0), text, font=font, fill=(255))
+            rotated_img = rotated_img.rotate(90, expand=1)
+            self.__surface.paste(rotated_img, (int(x), int(y)), rotated_img)
+
     def draw_diamond(
         self, x: int, y: int, width: int, height: int, fill_colour: str
     ) -> None:
