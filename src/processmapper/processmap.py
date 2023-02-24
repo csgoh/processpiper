@@ -2,12 +2,14 @@ from dataclasses import dataclass, field
 from processmapper.lane import Lane
 from processmapper.painter import Painter
 from processmapper.shape import Shape
+import processmapper.constants as Configs
 
 
 @dataclass
 class ProcessMap:
     _lanes: list = field(init=False, default_factory=list)
 
+    title: str = field(init=True, default="<Process Map Title>")
     width: int = field(init=True, default=1200)
     height: int = field(init=True, default=800)
     colour_theme: str = field(init=True, default="DEFAULT")
@@ -17,8 +19,8 @@ class ProcessMap:
     lane_max_width: int = field(init=False, default=0)
 
     ### TO DO: modify the method to support pool and lane
-    def add_lane(self, lane_text: str, pool_text: str = "") -> Lane:
-        lane = Lane(lane_text, pool_text)
+    def add_lane(self, lane_name: str, pool_name: str = "") -> Lane:
+        lane = Lane(lane_name, pool_name)
         self._lanes.append(lane)
         return lane
 
@@ -40,9 +42,9 @@ class ProcessMap:
         for lane in self._lanes:
             for shape in lane.shapes:
                 ### If the shape has no connection_from, it is the start shape
-                print(f"{shape.text} - {len(shape.connection_from)}")
+                print(f"{shape.name} - {len(shape.connection_from)}")
                 if len(shape.connection_from) == 0:
-                    print(f"Fount start shape: {shape.text}", end="")
+                    print(f"Fount start shape: {shape.name}", end="")
                     return shape
         print(f"Could not find start shape")
         return None
@@ -75,7 +77,7 @@ class ProcessMap:
                 # print(f", -Skipped-")
                 # print(f"")
                 continue
-            print(f"({index}) - <{next_shape.text}>", end="")
+            print(f"({index}) - <{next_shape.name}>", end="")
             lane.shape_row_count = max(lane.shape_row_count, index + 1)
             if index == 0:
                 preserved_x_pos = self.set_shape_x_position(
@@ -97,7 +99,7 @@ class ProcessMap:
             shape.y = lane.get_next_y_position()
 
         shape.set_draw_position(self.__painter)
-        print(f"<{shape.text}>, x={shape.x}, y={shape.y}")
+        print(f"<{shape.name}>, x={shape.x}, y={shape.y}")
 
         shape.y_pos_traversed = True
 
@@ -107,11 +109,13 @@ class ProcessMap:
                 # print(f", -Skipped-")
                 # print(f"")
                 continue
-            print(f"    <{shape.text}>, next_shape: {next_shape.text}, index: {index}")
+            print(f"    <{shape.name}>, next_shape: {next_shape.name}, index: {index}")
             # print(f"({index}) - <{next_shape.text}>", end="")
             self.set_shape_y_position(next_shape, index)
 
     def set_draw_position(self, painter: Painter) -> tuple:
+        ### Set process map title
+
         start_shape = self.find_start_shape()
         print(f"Setting x position...")
         self.set_shape_x_position(start_shape, 0, 0)
@@ -122,19 +126,19 @@ class ProcessMap:
         )
         for lane in self._lanes:
             lane.painter = painter
-            lane.x = x if x > 0 else lane.SURFACE_LEFT_MARGIN
-            lane.y = y if y > 0 else lane.SURFACE_TOP_MARGIN
+            lane.x = x if x > 0 else Configs.SURFACE_LEFT_MARGIN
+            lane.y = y if y > 0 else Configs.SURFACE_TOP_MARGIN
             lane.width = self.lane_max_width
             lane.height = (
                 (lane.shape_row_count * 60)
-                + ((lane.shape_row_count - 1) * lane.VSPACE_BETWEEN_SHAPES)
-                + lane.LANE_SHAPE_TOP_MARGIN
-                + lane.LANE_SHAPE_BOTTOM_MARGIN
+                + ((lane.shape_row_count - 1) * Configs.VSPACE_BETWEEN_SHAPES)
+                + Configs.LANE_SHAPE_TOP_MARGIN
+                + Configs.LANE_SHAPE_BOTTOM_MARGIN
             )
             # print(
             #     f"{lane.height} = ({lane.shape_row_count} * 60) + {lane.LANE_SHAPE_TOP_MARGIN} + {lane.LANE_SHAPE_BOTTOM_MARGIN}"
             # )
-            y = lane.y + lane.height + lane.VSPACE_BETWEEN_LANES
+            y = lane.y + lane.height + Configs.VSPACE_BETWEEN_LANES
             # print(f"{x} = {lane.y} + {lane.height} + {lane.VSPACE_BETWEEN_LANES}")
 
         print(f"Setting y position...")
@@ -143,10 +147,10 @@ class ProcessMap:
         x, y = 0, 0
         for lane in self._lanes:
             print(
-                f"[{lane.text}], row count: {lane.shape_row_count}, x={lane.x}, y={lane.y}, mw={self.lane_max_width}, w={self.width}, h={lane.height}"
+                f"[{lane.name}], row count: {lane.shape_row_count}, x={lane.x}, y={lane.y}, mw={self.lane_max_width}, w={self.width}, h={lane.height}"
             )
             for shape in lane.shapes:
-                print(f"    <{shape.text}>: x={shape.x}, y={shape.y}")
+                print(f"    <{shape.name}>: x={shape.x}, y={shape.y}")
 
     def draw(self) -> None:
         self.__painter = Painter(self.width, self.height)
