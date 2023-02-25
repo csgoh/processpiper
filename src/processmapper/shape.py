@@ -92,9 +92,9 @@ class Shape:
                         "distance": distance,
                     }
 
-                    print(
-                        f"  S:{source_name}, {source_points}, T:{target_name}, {target_points}, {distance}"
-                    )
+                    # print(
+                    #     f"  S:{source_name}, {source_points}, T:{target_name}, {target_points}, {distance}"
+                    # )
 
         ### remove points from source and target shapes once they are used
         del points_source[nearest_points["source_name"]]
@@ -153,7 +153,7 @@ class Shape:
 
         # draw connection
         source_points = self.points
-        print(f"Points for shape: {self.name}")
+        # print(f"Points for shape: {self.name}")
         if self.connection_to:
             for connection in self.connection_to:
                 # ### remove points from source_points is it exist in incoming_points
