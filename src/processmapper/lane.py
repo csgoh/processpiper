@@ -80,7 +80,11 @@ class Lane:
     def get_current_x_position(self) -> int:
         if self.next_shape_x == 0:
             self.next_shape_x = (
-                self.x + Configs.LANE_TEXT_WIDTH + Configs.LANE_SHAPE_LEFT_MARGIN
+                self.x
+                + Configs.POOL_TEXT_WIDTH
+                + Configs.HSPACE_BETWEEN_POOL_AND_LANE
+                + Configs.LANE_TEXT_WIDTH
+                + Configs.LANE_SHAPE_LEFT_MARGIN
             )
 
         return self.next_shape_x
@@ -88,7 +92,11 @@ class Lane:
     def get_next_x_position(self) -> int:
         if self.next_shape_x == 0:
             self.next_shape_x = (
-                self.x + Configs.LANE_TEXT_WIDTH + Configs.LANE_SHAPE_LEFT_MARGIN
+                self.x
+                + Configs.POOL_TEXT_WIDTH
+                + Configs.HSPACE_BETWEEN_POOL_AND_LANE
+                + Configs.LANE_TEXT_WIDTH
+                + Configs.LANE_SHAPE_LEFT_MARGIN
             )
         else:
             self.next_shape_x += 100 + Configs.HSPACE_BETWEEN_SHAPES
@@ -125,7 +133,7 @@ class Lane:
             self.height,
             "#333333",
             self.name,
-            text_alignment="left",
+            text_alignment="centre",
             text_font="arial",
             text_font_size=12,
             text_font_colour="white",
@@ -141,7 +149,7 @@ class Lane:
             5,
             "solid",
         )
-        self.painter.draw_grid()
+        ####self.painter.draw_grid()
 
     def draw_shape(self) -> None:
         if self.shapes:
@@ -157,13 +165,16 @@ class Lane:
         print("Set draw position...")
         self.painter = painter
         ### Determine the x and y position of the lane
-        self.x = x if x > 0 else Configs.SURFACE_LEFT_MARGIN
+        self.x = x if x > 0 else Configs.SURFACE_LEFT_MARGIN + Configs.POOL_TEXT_WIDTH
         self.y = y if y > 0 else Configs.SURFACE_TOP_MARGIN
         print(f"[{self.name}]: x={self.x}, y={self.y}")
 
         if self.shapes:
             self.next_shape_x = (
-                self.x + Configs.LANE_TEXT_WIDTH + Configs.LANE_SHAPE_LEFT_MARGIN
+                self.x
+                + Configs.POOL_TEXT_WIDTH
+                + Configs.LANE_TEXT_WIDTH
+                + Configs.LANE_SHAPE_LEFT_MARGIN
             )
 
             ### Loop through all shapes within the lane (Method 1)
