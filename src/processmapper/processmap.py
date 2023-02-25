@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from processmapper.lane import Lane
+from processmapper.pool import Pool
 from processmapper.painter import Painter
 from processmapper.shape import Shape
 import processmapper.constants as Configs
@@ -7,7 +8,8 @@ import processmapper.constants as Configs
 
 @dataclass
 class ProcessMap:
-    _lanes: list = field(init=False, default_factory=list)
+    # _lanes: list = field(init=False, default_factory=list)
+    _pools: list = field(init=False, default_factory=list)
 
     title: str = field(init=True, default="<Process Map Title>")
     width: int = field(init=True, default=1200)
@@ -18,41 +20,48 @@ class ProcessMap:
     lane_y_pos: int = field(init=False, default=0)
     lane_max_width: int = field(init=False, default=0)
 
+    def add_pool(self, pool_name: str) -> Pool:
+        pool = Pool(pool_name)
+        self._pools.append(pool)
+        return pool
+
     ### TO DO: modify the method to support pool and lane
-    def add_lane(self, lane_name: str, pool_name: str = "") -> Lane:
-        lane = Lane(lane_name, pool_name)
-        self._lanes.append(lane)
+    def add_lane(self, lane_name: str) -> Lane:
+        pool = self.add_pool("Default Pool")
+        lane = pool.add_lane(lane_name)
         return lane
 
-    def get_surface_size(self) -> tuple:
-        x, y = 0, 0
-        if self._lanes:
-            last_y_pos = 0
-            for lane in self._lanes:
-                ### Calculate the x and y position of the lane and shapes in the lane
-                x, y, w, h = lane.set_draw_position(x, last_y_pos, self.__painter)
-                self.width = max(self.width, x + w)
-                self.height = max(self.height, y + h)
-                last_y_pos = y + h + Lane.VSPACE_BETWEEN_LANES
+    # def get_surface_size(self) -> tuple:
+    #     x, y = 0, 0
+    #     if self._lanes:
+    #         last_y_pos = 0
+    #         for lane in self._lanes:
+    #             ### Calculate the x and y position of the lane and shapes in the lane
+    #             x, y, w, h = lane.set_draw_position(x, last_y_pos, self.__painter)
+    #             self.width = max(self.width, x + w)
+    #             self.height = max(self.height, y + h)
+    #             last_y_pos = y + h + Lane.VSPACE_BETWEEN_LANES
 
-        # self.__painter.set_surface_size(self.width, self.height)
-        return self.width, self.height
+    #     # self.__painter.set_surface_size(self.width, self.height)
+    #     return self.width, self.height
 
     def find_start_shape(self) -> Shape:
-        for lane in self._lanes:
-            for shape in lane.shapes:
-                ### If the shape has no connection_from, it is the start shape
-                print(f"{shape.name} - {len(shape.connection_from)}")
-                if len(shape.connection_from) == 0:
-                    print(f"Fount start shape: {shape.name}", end="")
-                    return shape
+        for pool in self._pools:
+            for lane in pool._lanes:
+                for shape in lane.shapes:
+                    ### If the shape has no connection_from, it is the start shape
+                    print(f"{shape.name} - {len(shape.connection_from)}")
+                    if len(shape.connection_from) == 0:
+                        print(f"Fount start shape: {shape.name}", end="")
+                        return shape
         print(f"Could not find start shape")
         return None
 
     def get_lane_by_id(self, id: int) -> Lane:
-        for lane in self._lanes:
-            if lane.id == id:
-                return lane
+        for pool in self._pools:
+            for lane in pool._lanes:
+                if lane.id == id:
+                    return lane
         return None
 
     def set_shape_x_position(self, shape: Shape, index: int = 0, x_pos: int = 0):
@@ -124,33 +133,46 @@ class ProcessMap:
             0,
             0,
         )
-        for lane in self._lanes:
-            lane.painter = painter
-            lane.x = x if x > 0 else Configs.SURFACE_LEFT_MARGIN
-            lane.y = y if y > 0 else Configs.SURFACE_TOP_MARGIN
-            lane.width = self.lane_max_width
-            lane.height = (
-                (lane.shape_row_count * 60)
-                + ((lane.shape_row_count - 1) * Configs.VSPACE_BETWEEN_SHAPES)
-                + Configs.LANE_SHAPE_TOP_MARGIN
-                + Configs.LANE_SHAPE_BOTTOM_MARGIN
-            )
-            # print(
-            #     f"{lane.height} = ({lane.shape_row_count} * 60) + {lane.LANE_SHAPE_TOP_MARGIN} + {lane.LANE_SHAPE_BOTTOM_MARGIN}"
-            # )
-            y = lane.y + lane.height + Configs.VSPACE_BETWEEN_LANES
-            # print(f"{x} = {lane.y} + {lane.height} + {lane.VSPACE_BETWEEN_LANES}")
+        for pool in self._pools:
+            for lane in pool._lanes:
+                lane.painter = painter
+                lane.x = (
+                    x
+                    if x > 0
+                    else Configs.SURFACE_LEFT_MARGIN
+                    + Configs.POOL_TEXT_WIDTH
+                    + Configs.HSPACE_BETWEEN_POOL_AND_LANE
+                )
+                lane.y = y if y > 0 else Configs.SURFACE_TOP_MARGIN
+                lane.width = self.lane_max_width
+                lane.height = (
+                    (lane.shape_row_count * 60)
+                    + ((lane.shape_row_count - 1) * Configs.VSPACE_BETWEEN_SHAPES)
+                    + Configs.LANE_SHAPE_TOP_MARGIN
+                    + Configs.LANE_SHAPE_BOTTOM_MARGIN
+                )
+                # print(
+                #     f"{lane.height} = ({lane.shape_row_count} * 60) + {lane.LANE_SHAPE_TOP_MARGIN} + {lane.LANE_SHAPE_BOTTOM_MARGIN}"
+                # )
+                y = lane.y + lane.height + Configs.VSPACE_BETWEEN_LANES
+                # print(f"{x} = {lane.y} + {lane.height} + {lane.VSPACE_BETWEEN_LANES}")
+
+            # find first lane in pool
+            first_lane_y = pool._lanes[0].y
+
+            pool.set_draw_position(Configs.SURFACE_LEFT_MARGIN, first_lane_y, painter)
 
         print(f"Setting y position...")
         self.set_shape_y_position(start_shape)
 
-        x, y = 0, 0
-        for lane in self._lanes:
-            print(
-                f"[{lane.name}], row count: {lane.shape_row_count}, x={lane.x}, y={lane.y}, mw={self.lane_max_width}, w={self.width}, h={lane.height}"
-            )
-            for shape in lane.shapes:
-                print(f"    <{shape.name}>: x={shape.x}, y={shape.y}")
+        for pool in self._pools:
+            print(f"({pool.name})")
+            for lane in pool._lanes:
+                print(
+                    f"      [{lane.name}], row count: {lane.shape_row_count}, x={lane.x}, y={lane.y}, mw={self.lane_max_width}, w={self.width}, h={lane.height}"
+                )
+                for shape in lane.shapes:
+                    print(f"            <{shape.name}>: x={shape.x}, y={shape.y}")
 
     def draw(self) -> None:
         self.__painter = Painter(self.width, self.height)
@@ -164,18 +186,21 @@ class ProcessMap:
         self.set_draw_position(self.__painter)
 
         print(f"Start drawing...")
-        if self._lanes:
-            ### Draw the lanes first
-            for lane in self._lanes:
-                lane.draw()
+        if self._pools:
+            for pool in self._pools:
+                pool.draw()
+                if pool._lanes:
+                    ### Draw the lanes first
+                    for lane in pool._lanes:
+                        lane.draw()
 
-            ### Then draw the shapes in the lanes
-            for lane in self._lanes:
-                lane.draw_shape()
+                    ### Then draw the shapes in the lanes
+                    for lane in pool._lanes:
+                        lane.draw_shape()
 
-            ### Finally draw the connections between the shapes
-            for lane in self._lanes:
-                lane.draw_connection()
+                    ### Finally draw the connections between the shapes
+                    for lane in pool._lanes:
+                        lane.draw_connection()
 
     def __set_colour_palette(self, palette: str) -> None:
         """This method sets the colour palette"""
