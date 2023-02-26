@@ -71,7 +71,60 @@ def test_case3():
         my_process_map.save("my_process_map_test_case03.png")
 
 
+def test_case4():
+    with ProcessMap("Test Process", 950, 700) as my_process_map:
+        with my_process_map.add_pool("System Search") as pool1:
+            with pool1.add_lane("End User") as lane1:
+                start = lane1.add_element("Start", EventType.START)
+                enter_keyword = lane1.add_element("Enter Keyword", ActivityType.TASK)
+                end = lane1.add_element("End", EventType.END)
+
+            with pool1.add_lane("System") as lane2:
+                login = lane2.add_element("Login", ActivityType.TASK)
+                search_records = lane2.add_element("Search Records", ActivityType.TASK)
+                result_found = lane2.add_element("Result Found?", GatewayType.EXCLUSIVE)
+                display_result = lane2.add_element("Display Result", ActivityType.TASK)
+                logout = lane2.add_element("Logout", ActivityType.TASK)
+
+        with my_process_map.add_lane("System 2") as lane3:
+            log_error = lane3.add_element("Log Error", ActivityType.TASK)
+
+        start.connect(login).connect(enter_keyword).connect(search_records).connect(
+            result_found
+        ).connect(display_result).connect(logout).connect(end)
+        result_found.connect(log_error).connect(display_result)
+
+        my_process_map.draw()
+        my_process_map.save("my_process_map_test_case04.png")
+
+
+def test_case5():
+    with ProcessMap("Test Process", 1100, 700) as my_process_map:
+        with my_process_map.add_lane("End User") as lane1:
+            start = lane1.add_element("Start", EventType.START)
+            enter_keyword = lane1.add_element("Enter Keyword", ActivityType.TASK)
+        with my_process_map.add_pool("System Search") as pool1:
+            with pool1.add_lane("Database System") as lane2:
+                login = lane2.add_element("Login", ActivityType.TASK)
+                search_records = lane2.add_element("Search Records", ActivityType.TASK)
+                result_found = lane2.add_element("Result Found?", GatewayType.EXCLUSIVE)
+                display_result = lane2.add_element("Display Result", ActivityType.TASK)
+                logout = lane2.add_element("Logout", ActivityType.TASK)
+                end = lane2.add_element("End", EventType.END)
+
+            with pool1.add_lane("Log System") as lane3:
+                log_error = lane3.add_element("Log Error", ActivityType.TASK)
+
+        start.connect(login).connect(enter_keyword).connect(search_records).connect(
+            result_found
+        ).connect(display_result).connect(logout).connect(end)
+        result_found.connect(log_error).connect(display_result)
+
+        my_process_map.draw()
+        my_process_map.save("my_process_map_test_case05.png")
+
+
 if __name__ == "__main__":
     # test_case1()
     # test_case2()
-    test_case3()
+    test_case5()
