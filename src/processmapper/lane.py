@@ -7,6 +7,7 @@ from processmapper.activity import Activity, Task, Subprocess
 from processmapper.gateway import Gateway, Exclusive, Parallel, Inclusive
 from processmapper.painter import Painter
 import processmapper.constants as Configs
+import processmapper.helper as Helper
 
 
 class EventType:
@@ -110,7 +111,8 @@ class Lane:
 
     def get_next_y_position(self) -> int:
         if self.next_shape_y == 0:
-            self.next_shape_y = self.y + 60 + Configs.LANE_SHAPE_TOP_MARGIN
+            # self.next_shape_y = self.y + 60 + Configs.LANE_SHAPE_TOP_MARGIN
+            self.next_shape_y = self.y + Configs.LANE_SHAPE_TOP_MARGIN
         else:
             self.next_shape_y += 60 + Configs.VSPACE_BETWEEN_SHAPES
         return self.next_shape_y
@@ -118,6 +120,10 @@ class Lane:
     def draw(self) -> None:
         # print(f"draw lane {self.text}: {self.x}, {self.y}, {self.width}, {self.height}")
         ### Draw the lane outline
+        Helper.printc(
+            f"draw lane {self.name}: {self.x}, {self.y}, {self.width}, {self.height}",
+            "33",
+        )
         self.painter.draw_box(
             self.x,
             self.y,
@@ -131,7 +137,7 @@ class Lane:
             self.y,
             Configs.LANE_TEXT_WIDTH,
             self.height,
-            "#333333",
+            "#474747",
             self.name,
             text_alignment="centre",
             text_font="arial",
