@@ -114,8 +114,8 @@ class Shape:
         Returns:
             None
         """
-        for point in self.points.values():
-            painter.draw_circle(point[0], point[1], 2, "red")
+        # for point in self.points.values():
+        #     painter.draw_circle(point[0], point[1], 2, "red")
 
     def is_same_lane(self, source: TShape, target: TShape):
         """Check if source and target shapes are in the same lane
@@ -172,9 +172,9 @@ class Shape:
                 if self.is_same_lane(self, connection):
                     ...
                 elif self.is_same_pool(self, connection):
-                    print(
-                        f"{self.name} and {connection.name}, Same pool: {self.pool_name}"
-                    )
+                    # print(
+                    #     f"{self.name} and {connection.name}, Same pool: {self.pool_name}"
+                    # )
                     ...
                 else:  # different pool
                     ...
