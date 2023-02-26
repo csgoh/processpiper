@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from processmapper.painter import Painter
 from processmapper.lane import Lane
 import processmapper.constants as Configs
+import processmapper.helper as Helper
 
 
 @dataclass
@@ -36,29 +37,34 @@ class Pool:
             Configs.POOL_TEXT_WIDTH,
             last_lane_y + last_lane_height - self.y,
         )
+        print(
+            f"({self.name}) x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
+        )
         return self.x, self.y, self.width, self.height
 
     def draw(self):
-        self.painter.draw_box(
-            self.x,
-            self.y,
-            self.width,
-            self.height,
-            "#d9d9d9",
-        )
-        ### Draw the lane text box
-        self.painter.draw_box_with_vertical_text(
-            self.x,
-            self.y,
-            Configs.POOL_TEXT_WIDTH,
-            self.height,
-            "#333333",
-            self.name,
-            text_alignment="centre",
-            text_font="arial",
-            text_font_size=12,
-            text_font_colour="white",
-        )
+        if self.name != "Default Pool":
+            Helper.printc(f"Drawing pool: {self.name}", "34")
+            self.painter.draw_box(
+                self.x,
+                self.y,
+                self.width,
+                self.height,
+                "#d9d9d9",
+            )
+            ### Draw the lane text box
+            self.painter.draw_box_with_vertical_text(
+                self.x,
+                self.y,
+                Configs.POOL_TEXT_WIDTH,
+                self.height,
+                "#1F1F1F",
+                self.name,
+                text_alignment="centre",
+                text_font="arial",
+                text_font_size=12,
+                text_font_colour="white",
+            )
 
     def add_lane(self, lane_name: str) -> Lane:
         lane = Lane(lane_name)
