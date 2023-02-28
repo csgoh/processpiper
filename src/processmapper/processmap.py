@@ -3,13 +3,14 @@ from processmapper.lane import Lane
 from processmapper.pool import Pool
 from processmapper.painter import Painter
 from processmapper.shape import Shape
+from processmapper.title import Title
 import processmapper.constants as Configs
 import processmapper.helper as Helper
 
 
 @dataclass
 class ProcessMap:
-    # _lanes: list = field(init=False, default_factory=list)
+    _title: Title = field(init=False)
     _pools: list = field(init=False, default_factory=list)
 
     title: str = field(init=True, default="<Process Map Title>")
@@ -20,6 +21,10 @@ class ProcessMap:
 
     lane_y_pos: int = field(init=False, default=0)
     lane_max_width: int = field(init=False, default=0)
+
+    def __post_init__(self):
+        self._title = Title(self.title)
+        self._title.name = self.title
 
     def add_pool(self, pool_name: str) -> Pool:
         pool = Pool(pool_name)
@@ -148,6 +153,9 @@ class ProcessMap:
 
     def set_draw_position(self, painter: Painter) -> tuple:
         ### Set process map title
+        self._title.set_draw_position(
+            Configs.SURFACE_LEFT_MARGIN, Configs.SURFACE_TOP_MARGIN, painter
+        )
 
         Helper.printc("***Setting x position...")
         start_shape = self.find_start_shape()
@@ -156,7 +164,7 @@ class ProcessMap:
 
         x, y = (
             0,
-            0,
+            self._title.y + self._title.height + Configs.VSPACE_BETWEEN_TITLE_AND_POOL,
         )
         for pool in self._pools:
             for lane in pool._lanes:
@@ -212,6 +220,7 @@ class ProcessMap:
         self.set_draw_position(self.__painter)
 
         Helper.printc(f"Start drawing...")
+        self._title.draw()
         if self._pools:
             for pool in self._pools:
                 ### Draw the pools first
