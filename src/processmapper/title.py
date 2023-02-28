@@ -2,12 +2,12 @@ from dataclasses import dataclass, field
 from processmapper.painter import Painter
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Title:
     name: str = field(init=True, default="<Process Map Title>")
-    font: str = field(init=True, default=None)
-    font_size: int = field(init=True, default=None)
-    font_colour: str = field(init=True, default=None)
+    font: str = field(init=True, default="arial.ttf")
+    font_size: int = field(init=True, default=28)
+    font_colour: str = field(init=True, default="black")
 
     x: int = field(init=False, default=0)
     y: int = field(init=False, default=0)
