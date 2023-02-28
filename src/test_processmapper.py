@@ -72,7 +72,7 @@ def test_case3():
 
 
 def test_case4():
-    with ProcessMap("Test Process", 950, 700) as my_process_map:
+    with ProcessMap("Sample Test Process", 950, 700) as my_process_map:
         with my_process_map.add_pool("System Search") as pool1:
             with pool1.add_lane("End User") as lane1:
                 start = lane1.add_element("Start", EventType.START)
@@ -99,7 +99,7 @@ def test_case4():
 
 
 def test_case5():
-    with ProcessMap("Test Process", 1100, 700) as my_process_map:
+    with ProcessMap("Sample Test Process", 1100, 700) as my_process_map:
         with my_process_map.add_lane("End User") as lane1:
             start = lane1.add_element("Start", EventType.START)
             enter_keyword = lane1.add_element("Enter Keyword", ActivityType.TASK)
