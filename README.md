@@ -21,7 +21,7 @@ You can see the sample code and output for design concept below.
 from processmapper import ProcessMap, EventType, ActivityType, GatewayType
 
 def test_case5():
-    with ProcessMap("Test Process", 1100, 700) as my_process_map:
+    with ProcessMap("Sample Test Process", 1100, 700) as my_process_map:
         with my_process_map.add_lane("End User") as lane1:
             start = lane1.add_element("Start", EventType.START)
             enter_keyword = lane1.add_element("Enter Keyword", ActivityType.TASK)
