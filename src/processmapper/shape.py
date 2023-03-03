@@ -105,6 +105,79 @@ class Shape:
             nearest_points["target_points"],
         )
 
+    def find_nearest_points_diff_pools(self, points_source, points_target):
+        ...
+
+    def get_top_bottom_points(self, points):
+        """Get top and bottom points from a set of points
+
+        Args:
+            points (dict): Set of points
+
+        Returns:
+            dict: Top and bottom points
+        """
+        target_points = {}
+        for name, point in points.items():
+            if name.startswith("top") or name.startswith("bottom"):
+                target_points[name] = point
+
+        return target_points
+
+    def get_left_right_points(self, points):
+        """Get left and right points from a set of points
+
+        Args:
+            points (dict): Set of points
+
+        Returns:
+            dict: Top and bottom points
+        """
+        target_points = {}
+        for name, point in points.items():
+            if name.startswith("left") or name.startswith("right"):
+                target_points[name] = point
+
+        return target_points
+
+    def find_nearest_points_same_pool_diff_lanes(self, points_source, points_target):
+        """Find nearest connection points between two sets of shapes
+        where source and target shapes are in the same pool but different lanes"""
+
+        shortest_distance: int = 9_999_999
+        source_connection_points = self.get_top_bottom_points(points_source)
+        target_connection_points = self.get_left_right_points(points_target)
+
+        for source_name, source_points in source_connection_points.items():
+            for target_name, target_points in target_connection_points.items():
+                distance = self.get_distance(source_points, target_points)
+                if (
+                    distance
+                    < shortest_distance
+                    # and source_points not in self.incoming_points
+                ):
+                    shortest_distance = distance
+                    nearest_points = {
+                        "source_name": source_name,
+                        "source_points": source_points,
+                        "target_name": target_name,
+                        "target_points": target_points,
+                        "distance": distance,
+                    }
+
+                    # print(
+                    #     f"  S:{source_name}, {source_points}, T:{target_name}, {target_points}, {distance}"
+                    # )
+
+        ### remove points from source and target shapes once they are used
+        del points_source[nearest_points["source_name"]]
+        del points_target[nearest_points["target_name"]]
+
+        return (
+            nearest_points["source_points"],
+            nearest_points["target_points"],
+        )
+
     def draw(self, painter: Painter):
         """Draw shape
 
@@ -142,14 +215,7 @@ class Shape:
         return source.pool_name == target.pool_name
 
     def draw_connection(self, painter: Painter):
-        """Draw shape
-
-        Args:
-            painter (Painter): Painter object
-
-        Returns:
-            None
-        """
+        """Draw connection between shapes"""
 
         # draw connection
         source_points = self.points
@@ -170,18 +236,25 @@ class Shape:
                 #         break
 
                 if self.is_same_lane(self, connection):
-                    ...
+                    point_from, point_to = self.find_nearest_points(
+                        source_points, target_points
+                    )
                 elif self.is_same_pool(self, connection):
+                    (
+                        point_from,
+                        point_to,
+                    ) = self.find_nearest_points_same_pool_diff_lanes(
+                        source_points, target_points
+                    )
                     # print(
                     #     f"{self.name} and {connection.name}, Same pool: {self.pool_name}"
                     # )
                     ...
                 else:  # different pool
-                    ...
+                    point_from, point_to = self.find_nearest_points(
+                        source_points, target_points
+                    )
 
-                point_from, point_to = self.find_nearest_points(
-                    source_points, target_points
-                )
                 self.outgoing_points.append(point_from)
                 connection.incoming_points.append(point_to)
                 painter.draw_arrow(
@@ -217,10 +290,10 @@ class Box(Shape):
             # "top_right": (self.x + self.width, self.y),
             # "bottom_left": (self.x, self.y + self.height),
             # "bottom_right": (self.x + self.width, self.y + self.height),
-            "middle_left": (self.x, self.y + self.height / 2),
-            "middle_top": (self.x + self.width / 2, self.y),
-            "middle_right": (self.x + self.width, self.y + self.height / 2),
-            "middle_bottom": (self.x + self.width / 2, self.y + self.height),
+            "left_middle": (self.x, self.y + self.height / 2),
+            "top_middle": (self.x + self.width / 2, self.y),
+            "right_middle": (self.x + self.width, self.y + self.height / 2),
+            "bottom_middle": (self.x + self.width / 2, self.y + self.height),
             # "top_1": (self.x + self.width / 4, self.y),
             # "top_middle": (self.x + self.width / 2, self.y),
             # "top_3": (self.x + self.width / 4 * 3, self.y),
@@ -270,19 +343,19 @@ class Circle(Shape):
         self.y = int(self.y + (BOX_HEIGHT / 2))
         self.radius = CIRCLE_RADIUS
         self.points = {
-            "0": (
+            "right": (
                 self.x + self.radius * math.cos(math.radians(0)),
                 self.y + self.radius * math.sin(math.radians(0)),
             ),
-            "90": (
+            "bottom": (
                 self.x + self.radius * math.cos(math.radians(90)),
                 self.y + self.radius * math.sin(math.radians(90)),
             ),
-            "180": (
+            "left": (
                 self.x + self.radius * math.cos(math.radians(180)),
                 self.y + self.radius * math.sin(math.radians(180)),
             ),
-            "270": (
+            "top": (
                 self.x + self.radius * math.cos(math.radians(270)),
                 self.y + self.radius * math.sin(math.radians(270)),
             ),
@@ -303,6 +376,7 @@ class Circle(Shape):
         painter.draw_circle(self.x, self.y, self.radius, "darkgray")
         painter.draw_text(self.text_x, self.text_y, self.name, "arial.ttf", 10, "black")
         super().draw(painter)
+        # painter.draw_circle(self.points["top"][0], self.points["top"][1], 4, "red")
 
 
 class Diamond(Shape):
@@ -317,10 +391,10 @@ class Diamond(Shape):
         self.width = DIAMOND_WIDTH
         self.height = DIAMOND_HEIGHT
         self.points = {
-            "middle_top": (self.x + self.width / 2, self.y),
-            "middle_right": (self.x + self.width, self.y + self.height / 2),
-            "middle_bottom": (self.x + self.width / 2, self.y + self.height),
-            "middle_left": (self.x, self.y + self.height / 2),
+            "top_middle": (self.x + self.width / 2, self.y),
+            "right_middle": (self.x + self.width, self.y + self.height / 2),
+            "bottom_middle": (self.x + self.width / 2, self.y + self.height),
+            "left_middle": (self.x, self.y + self.height / 2),
         }
         self.text_width, self.text_height = painter.get_text_dimension(
             self.name, "arial.ttf", 10
