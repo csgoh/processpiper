@@ -68,7 +68,7 @@ class Lane:
         event_class = globals()[type]
         element = event_class(name, self.name)
         element.lane_id = self.id
-        element.pool_text = self.pool_text
+        element.pool_name = self.pool_text
         self.shapes.append(element)
         return element
 
