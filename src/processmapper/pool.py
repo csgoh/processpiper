@@ -17,6 +17,7 @@ class Pool:
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
     painter: Painter = field(init=False)
+    next_shape_x: int = field(init=False, default=0)
 
     _lanes: list = field(init=False, default_factory=list)
 
@@ -25,6 +26,31 @@ class Pool:
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         ...
+
+    def get_current_x_position(self) -> int:
+        if self.next_shape_x == 0:
+            self.next_shape_x = (
+                self.x
+                + Configs.POOL_TEXT_WIDTH
+                + Configs.HSPACE_BETWEEN_POOL_AND_LANE
+                + Configs.LANE_TEXT_WIDTH
+                + Configs.LANE_SHAPE_LEFT_MARGIN
+            )
+
+        return self.next_shape_x
+
+    def get_next_x_position(self) -> int:
+        if self.next_shape_x == 0:
+            self.next_shape_x = (
+                self.x
+                + Configs.POOL_TEXT_WIDTH
+                + Configs.HSPACE_BETWEEN_POOL_AND_LANE
+                + Configs.LANE_TEXT_WIDTH
+                + Configs.LANE_SHAPE_LEFT_MARGIN
+            )
+        else:
+            self.next_shape_x += 100 + Configs.HSPACE_BETWEEN_SHAPES
+        return self.next_shape_x
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
         self.x = x
@@ -67,6 +93,6 @@ class Pool:
             )
 
     def add_lane(self, lane_name: str) -> Lane:
-        lane = Lane(lane_name)
+        lane = Lane(lane_name, self.name)
         self._lanes.append(lane)
         return lane
