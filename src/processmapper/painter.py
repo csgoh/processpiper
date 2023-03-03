@@ -108,7 +108,6 @@ class Painter:
 
     def draw_grid(self):
         # Set the dot size and spacing
-        dot_size = 1
         spacing = 10
 
         # Draw the grid of dots
