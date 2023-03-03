@@ -124,7 +124,39 @@ def test_case5():
         my_process_map.save("my_process_map_test_case05.png")
 
 
+def test_case6():
+    with ProcessMap("Placement Test (Same Lane)", 1100, 700) as my_process_map:
+        with my_process_map.add_lane("End User") as lane1:
+            start = lane1.add_element("Start", EventType.START)
+            task1 = lane1.add_element("Task 1", ActivityType.TASK)
+            task2 = lane1.add_element("Task 2", ActivityType.TASK)
+            task3 = lane1.add_element("Task 3", ActivityType.TASK)
+            end = lane1.add_element("End", EventType.END)
+
+            start.connect(task1).connect(task2).connect(task3).connect(end)
+
+        my_process_map.draw()
+        my_process_map.save("my_process_map_test_case06.png")
+
+
+def test_case7():
+    with ProcessMap(
+        "Placement Test (Same Pool, Diff Lanes)", 1100, 500
+    ) as my_process_map:
+        with my_process_map.add_pool("Pool 1") as pool1:
+            with pool1.add_lane("Lane 1") as lane1:
+                start = lane1.add_element("Start", EventType.START)
+                task1 = lane1.add_element("Task 1", ActivityType.TASK)
+                task3 = lane1.add_element("Task 3", ActivityType.TASK)
+                end = lane1.add_element("End", EventType.END)
+            with pool1.add_lane("Lane 2") as lane2:
+                task2 = lane2.add_element("Task 2", ActivityType.TASK)
+
+                start.connect(task1).connect(task2).connect(task3).connect(end)
+
+        my_process_map.draw()
+        my_process_map.save("my_process_map_test_case07.png")
+
+
 if __name__ == "__main__":
-    # test_case1()
-    # test_case2()
-    test_case5()
+    test_case7()
