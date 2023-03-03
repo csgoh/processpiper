@@ -21,7 +21,7 @@ You can see the sample code and output for design concept below.
 from processmapper import ProcessMap, EventType, ActivityType, GatewayType
 
 def test_case5():
-    with ProcessMap("Test Process", 1100, 700) as my_process_map:
+    with ProcessMap("Sample Test Process", 1100, 700) as my_process_map:
         with my_process_map.add_lane("End User") as lane1:
             start = lane1.add_element("Start", EventType.START)
             enter_keyword = lane1.add_element("Enter Keyword", ActivityType.TASK)
@@ -55,3 +55,20 @@ if __name__ == "__main__":
 Thank you for checking out my project. I hope you find it useful and enjoyable.
 
 <a href="https://www.buymeacoffee.com/csgoh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+## Implementation Checklist
+These are a list of items that need to be implemented or fixed before the initial release.
+
+- [x] Implement Start, End and Timer Event elements
+- [x] Implement Task Activity elements
+- [x] Implement Inclusive, Exclusive and Parallel Gateway elements
+- [x] Implement pool and lane
+- [x] Implement diagram title
+- [ ] Implement diagram footer
+- [ ] Automatically change surface size based on the element layout
+- [ ] Fix the connection alignment issue
+- [ ] Implement placement (left to right) of for elements in the same lane
+- [ ] Implement placement (left to right) of elements in the same pool but different lane
+- [ ] Implement placement (top to bottom) of elements in the different pool
+- [ ] Support colour themes
+- [ ] Implement Intermediate Event and Subprocess Activity Elements
