@@ -72,6 +72,12 @@ class ProcessMap:
                     return lane
         return None
 
+    def get_pool_by_name(self, name: str) -> Pool:
+        for pool in self._pools:
+            if pool.name == name:
+                return pool
+        return None
+
     ### Check how many rows of shapes are in the lane
     def check_lane_shape_row_count(self, shape: Shape) -> int:
         row_count = 0
@@ -85,44 +91,63 @@ class ProcessMap:
 
         return row_count
 
-    def set_shape_x_position(self, shape: Shape, index: int = 0, x_pos: int = 0):
-        lane = self.get_lane_by_id(shape.lane_id)
+    def set_shape_x_position(
+        self,
+        previous_shape: Shape,
+        current_shape: Shape,
+        index: int = 0,
+        x_pos: int = 0,
+    ):
+        current_lane = self.get_lane_by_id(current_shape.lane_id)
         if index == 0:
-            shape.x = lane.get_next_x_position()
+            current_pool = self.get_pool_by_name(current_shape.pool_name)
+            if previous_shape is not None:
+                if previous_shape.pool_name == current_shape.pool_name:
+                    print(f"pool name: {current_shape.pool_name}")
+                    if previous_shape.lane_id == current_shape.lane_id:
+                        current_shape.x = current_pool.get_next_x_position()
+                        print(f"          same pool same lane")
+                    else:
+                        current_shape.x = current_pool.get_next_x_position()
+                        print(f"          same pool diff lane")
+                else:
+                    previous_pool = self.get_pool_by_name(previous_shape.pool_name)
+                    current_shape.x = previous_pool.get_current_x_position()
+                    print(f"          diff pool")
+            else:
+                current_shape.x = current_pool.get_next_x_position()
+                print(f"          previous = none")
         else:
             ### If previous shape is connecting to multiple shapes,
             ### the x position of the shape is the same as the previous shape
-            # shape.x = lane.get_current_x_position()
-            shape.x = x_pos
-        lane.width = max(lane.width, shape.x + 100)
-        print(f"          x={shape.x}, y={shape.y}, w={shape.width}, [{lane.name}]")
-
-        self.lane_max_width = max(self.lane_max_width, lane.width)
-        shape.x_pos_traversed = True
-
-        lane.shape_row_count = max(
-            lane.shape_row_count, self.check_lane_shape_row_count(shape)
+            current_shape.x = x_pos
+        current_lane.width = max(current_lane.width, current_shape.x + 100)
+        print(
+            f"          x={current_shape.x}, y={current_shape.y}, w={current_shape.width}, [{current_lane.name}]"
         )
-        # print(
-        #     f"            >>[{lane.name}], id={lane.id}, row_count={lane.shape_row_count}"
-        # )
+
+        self.lane_max_width = max(self.lane_max_width, current_lane.width)
+        current_shape.x_pos_traversed = True
+
+        current_lane.shape_row_count = max(
+            current_lane.shape_row_count, self.check_lane_shape_row_count(current_shape)
+        )
 
         preserved_x_pos = 0
-        for index, next_shape in enumerate(shape.connection_to):
+        for index, next_shape in enumerate(current_shape.connection_to):
             if next_shape.x_pos_traversed is True:
-                # print(f", -Skipped-")
-                # print(f"")
                 continue
-            # lane.shape_row_count = max(lane.shape_row_count, index + 1)
             print(f"    |{index}| - <{next_shape.name}>")
             if index == 0:
                 preserved_x_pos = self.set_shape_x_position(
-                    next_shape, index, preserved_x_pos
+                    current_shape, next_shape, index, preserved_x_pos
                 )
             else:
-                self.set_shape_x_position(next_shape, index, preserved_x_pos)
+                self.set_shape_x_position(
+                    current_shape, next_shape, index, preserved_x_pos
+                )
 
-        return shape.x
+        return current_shape.x
 
     def set_shape_y_position(self, shape: Shape, index: int = 0):
         lane = self.get_lane_by_id(shape.lane_id)
@@ -144,11 +169,8 @@ class ProcessMap:
         # for shape in lane.shapes:
         for index, next_shape in enumerate(shape.connection_to):
             if next_shape.y_pos_traversed is True:
-                # print(f", -Skipped-")
-                # print(f"")
                 continue
             print(f"    <{shape.name}>, next_shape: {next_shape.name}, index: {index}")
-            # print(f"({index}) - <{next_shape.text}>", end="")
             self.set_shape_y_position(next_shape, index)
 
     def set_draw_position(self, painter: Painter) -> tuple:
@@ -160,7 +182,7 @@ class ProcessMap:
         Helper.printc("***Setting x position...")
         start_shape = self.find_start_shape()
 
-        self.set_shape_x_position(start_shape, 0, 0)
+        self.set_shape_x_position(None, start_shape, 0, 0)
 
         x, y = (
             0,
