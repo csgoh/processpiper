@@ -16,10 +16,12 @@ class ProcessMap:
     _pools: list = field(init=False, default_factory=list)
 
     title: str = field(init=True, default="<Process Map Title>")
-    width: int = field(init=True, default=1200)
-    height: int = field(init=True, default=800)
+    width: int = field(init=True, default=3200)
+    height: int = field(init=True, default=3200)
+    auto_size: bool = field(init=True, default=True)
     colour_theme: str = field(init=True, default="DEFAULT")
     __painter: Painter = field(init=False)
+    next_shape_x: int = field(init=False, default=0)
 
     lane_y_pos: int = field(init=False, default=0)
     lane_max_width: int = field(init=False, default=0)
@@ -42,19 +44,30 @@ class ProcessMap:
     def set_footer(self, footer_name: str):
         self._footer = Footer(footer_name)
 
-    # def get_surface_size(self) -> tuple:
-    #     x, y = 0, 0
-    #     if self._lanes:
-    #         last_y_pos = 0
-    #         for lane in self._lanes:
-    #             ### Calculate the x and y position of the lane and shapes in the lane
-    #             x, y, w, h = lane.set_draw_position(x, last_y_pos, self.__painter)
-    #             self.width = max(self.width, x + w)
-    #             self.height = max(self.height, y + h)
-    #             last_y_pos = y + h + Lane.VSPACE_BETWEEN_LANES
+    def get_current_x_position(self) -> int:
+        if self.next_shape_x == 0:
+            self.next_shape_x = (
+                Configs.SURFACE_LEFT_MARGIN
+                + Configs.POOL_TEXT_WIDTH
+                + Configs.HSPACE_BETWEEN_POOL_AND_LANE
+                + Configs.LANE_TEXT_WIDTH
+                + Configs.LANE_SHAPE_LEFT_MARGIN
+            )
 
-    #     # self.__painter.set_surface_size(self.width, self.height)
-    #     return self.width, self.height
+        return self.next_shape_x
+
+    def get_next_x_position(self) -> int:
+        if self.next_shape_x == 0:
+            self.next_shape_x = (
+                Configs.SURFACE_LEFT_MARGIN
+                + Configs.POOL_TEXT_WIDTH
+                + Configs.HSPACE_BETWEEN_POOL_AND_LANE
+                + Configs.LANE_TEXT_WIDTH
+                + Configs.LANE_SHAPE_LEFT_MARGIN
+            )
+        else:
+            self.next_shape_x += 100 + Configs.HSPACE_BETWEEN_SHAPES
+        return self.next_shape_x
 
     def find_start_shape(self) -> Shape:
         for pool in self._pools:
@@ -110,17 +123,22 @@ class ProcessMap:
                 if previous_shape.pool_name == current_shape.pool_name:
                     print(f"pool name: {current_shape.pool_name}")
                     if previous_shape.lane_id == current_shape.lane_id:
-                        current_shape.x = current_pool.get_next_x_position()
+                        # current_shape.x = current_pool.get_next_x_position()
+                        current_shape.x = self.get_next_x_position()
                         print(f"          same pool same lane")
                     else:
-                        current_shape.x = current_pool.get_next_x_position()
+                        # current_shape.x = current_pool.get_next_x_position()
+                        current_shape.x = self.get_next_x_position()
                         print(f"          same pool diff lane")
                 else:
                     previous_pool = self.get_pool_by_name(previous_shape.pool_name)
-                    current_shape.x = previous_pool.get_current_x_position()
+                    # current_shape.x = previous_pool.get_current_x_position()
+                    # current_shape.x = current_pool.get_next_x_position()
+                    current_shape.x = self.get_next_x_position()
                     print(f"          diff pool")
             else:
-                current_shape.x = current_pool.get_next_x_position()
+                # current_shape.x = current_pool.get_next_x_position()
+                current_shape.x = self.get_next_x_position()
                 print(f"          previous = none")
         else:
             ### If previous shape is connecting to multiple shapes,
@@ -243,6 +261,19 @@ class ProcessMap:
                 for shape in lane.shapes:
                     print(f"            <{shape.name}>: x={shape.x}, y={shape.y}")
 
+        print(f"Defined Surface size: {self.width}, {self.height}")
+        self.width = (
+            Configs.SURFACE_LEFT_MARGIN
+            + Configs.POOL_TEXT_WIDTH
+            + self.lane_max_width
+            + Configs.SURFACE_LEFT_MARGIN
+        )
+
+        self.height = (
+            self._footer.y + self._footer.height + Configs.SURFACE_BOTTOM_MARGIN
+        )
+        print(f"Actual Surface size: {self.width}, {self.height}")
+
     def draw(self) -> None:
         self.__painter = Painter(self.width, self.height)
 
@@ -277,6 +308,10 @@ class ProcessMap:
 
         if self._footer != None:
             self._footer.draw()
+
+        if self.auto_size == True:
+            print(f"Auto sizing..")
+            self.__painter.set_surface_size(self.width, self.height)
 
     def __set_colour_palette(self, palette: str) -> None:
         """This method sets the colour palette"""
