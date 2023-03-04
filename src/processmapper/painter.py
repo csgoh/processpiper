@@ -587,6 +587,8 @@ class Painter:
         if x1 != x2 and y1 != y2:
             points = [(x1, y1), (x1, y2), (x2, y2)]
             right_angle_point = (x1, y2)
+            # for point in points:
+            #     self.draw_circle(point[0], point[1], 4, "yellow")
 
         if x1 > x2:
             if y1 <= y2:
@@ -623,18 +625,19 @@ class Painter:
         # self.__cr.line(points, fill=(0, 0, 0), width=1)
         # return right_angle_point
 
-        if x1 < x2:
-            if y1 > y2:
-                elbow_height = (x2 - x1) / 2
-                points = [
-                    (x1, y1),
-                    (x1 + elbow_height, y1),
-                    (x2 - elbow_height, y2),
-                    (x2, y2),
-                ]
-                for point in points:
-                    self.draw_circle(point[0], point[1], 2, "blue")
-                right_angle_point = (x2 - elbow_height, y2)
+        # if x1 < x2:
+        #     if y1 > y2:
+        #         ### current shape is connecting to next shape which is located at the top lane
+        #         elbow_height = (x2 - x1) / 2
+        #         points = [
+        #             (x1, y1),
+        #             (x1 + elbow_height, y1),
+        #             (x2 - elbow_height, y2),
+        #             (x2, y2),
+        #         ]
+        #         for point in points:
+        #             self.draw_circle(point[0], point[1], 2, "blue")
+        #         right_angle_point = (x2 - elbow_height, y2)
 
         self.__cr.line(points, fill=(0, 0, 0), width=1)
         return right_angle_point
