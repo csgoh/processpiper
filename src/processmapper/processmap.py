@@ -4,6 +4,7 @@ from processmapper.pool import Pool
 from processmapper.painter import Painter
 from processmapper.shape import Shape
 from processmapper.title import Title
+from processmapper.footer import Footer
 import processmapper.constants as Configs
 import processmapper.helper as Helper
 
@@ -11,6 +12,7 @@ import processmapper.helper as Helper
 @dataclass
 class ProcessMap:
     _title: Title = field(init=False)
+    _footer: Footer = field(init=False, default=None)
     _pools: list = field(init=False, default_factory=list)
 
     title: str = field(init=True, default="<Process Map Title>")
@@ -36,6 +38,9 @@ class ProcessMap:
         pool = self.add_pool("Default Pool")
         lane = pool.add_lane(lane_name)
         return lane
+
+    def set_footer(self, footer_name: str):
+        self._footer = Footer(footer_name)
 
     # def get_surface_size(self) -> tuple:
     #     x, y = 0, 0
@@ -221,6 +226,14 @@ class ProcessMap:
         Helper.printc(f"***Setting y position...")
         self.set_shape_y_position(start_shape)
 
+        ### Set process map footer
+        if self._footer != None:
+            self._footer.set_draw_position(
+                Configs.SURFACE_LEFT_MARGIN,
+                y + Configs.VSPACE_BETWEEN_POOL_AND_FOOTER,
+                painter,
+            )
+
         for pool in self._pools:
             print(f"({pool.name})")
             for lane in pool._lanes:
@@ -261,6 +274,9 @@ class ProcessMap:
                     ### Finally draw the connections between the shapes
                     for lane in pool._lanes:
                         lane.draw_connection()
+
+        if self._footer != None:
+            self._footer.draw()
 
     def __set_colour_palette(self, palette: str) -> None:
         """This method sets the colour palette"""
