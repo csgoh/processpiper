@@ -67,10 +67,10 @@ These are a list of items that need to be implemented or fixed before the initia
 - [X] Implement pool and lane
 - [X] Implement diagram title
 - [X] Implement diagram footer
+- [X] Implement placement (left to right) of for elements in the same lane
+- [X] Implement placement (left to right) of elements in the same pool but different lane
 - [ ] Automatically change surface size based on the element layout
 - [ ] Fix the connection alignment issue
-- [ ] Implement placement (left to right) of for elements in the same lane
-- [ ] Implement placement (left to right) of elements in the same pool but different lane
 - [ ] Implement placement (top to bottom) of elements in the different pool
 - [ ] Support colour themes
 - [ ] Implement Intermediate Event and Subprocess Activity Elements
