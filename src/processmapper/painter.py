@@ -585,6 +585,7 @@ class Painter:
             right_angle_point = (x1, y1)
 
         if x1 != x2 and y1 != y2:
+            print(x1, y1, x2, y2)
             points = [(x1, y1), (x1, y2), (x2, y2)]
             right_angle_point = (x1, y2)
             # for point in points:
@@ -600,6 +601,8 @@ class Painter:
                         (x2, y1 - elbow_height),
                         (x2, y2),
                     ]
+                    # for point in points:
+                    #     self.draw_circle(point[0], point[1], 2, "magenta")
                     right_angle_point = (x2, y1 - elbow_height)
                 if abs(y1 - y2) >= 100:
                     elbow_height = 40
@@ -609,18 +612,21 @@ class Painter:
                         (x2, y1 + elbow_height),
                         (x2, y2),
                     ]
+                    # for point in points:
+                    #     self.draw_circle(point[0], point[1], 2, "orange")
                     right_angle_point = (x2, y1 - elbow_height)
             elif y1 > y2:
-                elbow_height = (y1 - y2) / 2
-                points = [
-                    (x1, y1),
-                    (x1, y1 - elbow_height),
-                    (x2, y2 + elbow_height),
-                    (x2, y2),
-                ]
-                for point in points:
-                    self.draw_circle(point[0], point[1], 2, "green")
-                right_angle_point = (x2, y2 + elbow_height)
+                if len(points) == 0:
+                    elbow_height = (y1 - y2) / 2
+                    points = [
+                        (x1, y1),
+                        (x1, y1 - elbow_height),
+                        (x2, y2 + elbow_height),
+                        (x2, y2),
+                    ]
+                    # for point in points:
+                    #     self.draw_circle(point[0], point[1], 2, "green")
+                    right_angle_point = (x2, y2 + elbow_height)
 
         # self.__cr.line(points, fill=(0, 0, 0), width=1)
         # return right_angle_point
@@ -692,102 +698,6 @@ class Painter:
             (x + width, y + height / 2),  # middle right
             (x + width / 2, y + height),  # middle bottom
         ]
-
-    # def draw_dot(self, x, y, radius=5):
-
-    #     # self.__cr.arc(x, y, radius, 0, 2 * 3.14)
-
-    #     # draw a dot using pillow library
-    #     self.__cr.arc((x, y), start=0, end=360, fill="black", width=2)
-
-    #     self.__cr.fill()
-
-    # def draw_box_with_text(
-    #     self,
-    #     box_x: int,
-    #     box_y: int,
-    #     box_width: int,
-    #     box_height: int,
-    #     box_fill_colour: int,
-    #     text: str,
-    #     text_alignment: str = "center",
-    #     text_font: str = "arial.ttf",
-    #     text_font_size: int = 12,
-    #     text_font_colour: str = "black",
-    #     style: str = "rectangle",
-    # ) -> None:
-
-    #     font = ImageFont.truetype(text_font, size=12)
-
-    #     multi_lines = []
-    #     wrap_lines = []
-
-    #     ### Make '\n' work
-    #     multi_lines = text.splitlines()
-
-    #     left, _, right, bottom = font.getbbox("a")
-    #     single_char_width = right - left
-
-    #     ### wrap text
-    #     for line in multi_lines:
-    #         wrap_lines.extend(textwrap.wrap(line, int(box_width / single_char_width)))
-
-    #     box_x1, box_y1, box_x2, box_y2 = (
-    #         box_x,
-    #         box_y,
-    #         box_x + box_width,
-    #         box_y + box_height,
-    #     )
-
-    #     # box = Box(box_x, box_y, box_width, box_height, box_fill_colour)
-    #     match style:
-    #         case "rectangle":
-    #             self.draw_box(
-    #                 box_x1,
-    #                 box_y1,
-    #                 box_width,
-    #                 box_height,
-    #                 box_fill_colour=box_fill_colour,
-    #             )
-    #         case "rounded":
-    #             self.draw_rounded_box(
-    #                 box_x1, box_y1, box_width, box_height, box_fill_colour
-    #             )
-    #         case "arrowhead":
-    #             self.draw_arrowhead_box(
-    #                 box_x1, box_y1, box_width, box_height, box_fill_colour
-    #             )
-    #         case _:
-    #             raise ValueError("Invalid style")
-
-    #     pad = 4
-    #     line_count = len(wrap_lines)
-
-    #     for i, line in enumerate(wrap_lines):
-    #         font_width, font_height = self.get_text_dimension(
-    #             line, text_font, text_font_size
-    #         )
-
-    #         match text_alignment:
-    #             case "centre":
-    #                 x = box_x1 + (box_width - font_width) / 2
-    #             case "left":
-    #                 x = box_x1 + 15
-    #             case "right":
-    #                 x = box_x2 - font_width - 15
-    #             case _:
-    #                 x = box_x1 + (box_width - font_width) / 2
-
-    #         total_line_height = (font_height * line_count) + (pad * (line_count - 1))
-
-    #         single_line_height = font_height
-
-    #         y = (
-    #             + ((box_height - total_line_height) / 2)
-    #             + ((single_line_height * i) + (pad * i))
-    #         )
-
-    #         self.__cr.text((x, y), line, fill=text_font_colour, anchor="la", font=font)
 
     def draw_text(
         self, x: int, y: int, text: str, font: str, font_size: int, font_colour: str
@@ -882,7 +792,7 @@ class Painter:
         )
         # extend the surface to fit the text
 
-        # self.__surface = self.__surface.crop((left, top, right, bottom))
+        self.__surface = self.__surface.crop((left, top, right, bottom))
 
     def save_surface(self, filename: str) -> None:
         """Save surface to PNG file
