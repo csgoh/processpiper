@@ -74,6 +74,7 @@ These are a list of items that need to be implemented or fixed before the initia
 - [X] Automatically change surface size based on the element layout
 - [X] Fix the connection alignment issue
 - [X] Implement placement (top to bottom) of elements in the different pool
+- [ ] Add label to connector
 - [ ] Support colour themes
 - [ ] Implement Intermediate Event and Subprocess Activity Elements
 - [ ] Connection that crosses pool boundary will be drawn as a dotted line
