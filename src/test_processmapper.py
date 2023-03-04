@@ -125,7 +125,7 @@ def test_case5():
 
 
 def test_case6():
-    with ProcessMap("Placement Test (Same Lane)", 1100, 700) as my_process_map:
+    with ProcessMap("Placement Test (Same Lane)", 1100, 300) as my_process_map:
         with my_process_map.add_lane("End User") as lane1:
             start = lane1.add_element("Start", EventType.START)
             task1 = lane1.add_element("Task 1", ActivityType.TASK)
@@ -142,7 +142,7 @@ def test_case6():
 
 def test_case7():
     with ProcessMap(
-        "Placement Test (Same Pool, Diff Lanes)", 1300, 700
+        "Placement Test (Same Pool, Diff Lanes)", 1300, 650
     ) as my_process_map:
         with my_process_map.add_pool("Pool 1") as pool1:
             with pool1.add_lane("Lane 1") as lane1:
