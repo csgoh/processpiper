@@ -67,8 +67,8 @@ These are a list of items that need to be implemented or fixed before the initia
 - [X] Implement pool and lane
 - [X] Implement diagram title
 - [X] Implement diagram footer
-- [X] Implement placement (left to right) of for elements in the same lane
-- [X] Implement placement (left to right) of elements in the same pool but different lane
+- [X] Implement placement (left to right) of for elements in the same lane ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case06.png)
+- [X] Implement placement (left to right) of elements in the same pool but different lane ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case07.png)
 - [ ] Automatically change surface size based on the element layout
 - [ ] Fix the connection alignment issue
 - [ ] Implement placement (top to bottom) of elements in the different pool
