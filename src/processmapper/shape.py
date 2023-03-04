@@ -145,8 +145,11 @@ class Shape:
         where source and target shapes are in the same pool but different lanes"""
 
         shortest_distance: int = 9_999_999
+        nearest_points = {}
         source_connection_points = self.get_top_bottom_points(points_source)
         target_connection_points = self.get_left_right_points(points_target)
+        if len(target_connection_points) == 0:
+            target_connection_points = self.get_top_bottom_points(points_target)
 
         for source_name, source_points in source_connection_points.items():
             for target_name, target_points in target_connection_points.items():
@@ -236,10 +239,16 @@ class Shape:
                 #         break
 
                 if self.is_same_lane(self, connection):
+                    print(
+                        f"Same lane: Connection between {self.name} and {connection.name}"
+                    )
                     point_from, point_to = self.find_nearest_points(
                         source_points, target_points
                     )
                 elif self.is_same_pool(self, connection):
+                    print(
+                        f"Same Pool: Connection between {self.name} and {connection.name}"
+                    )
                     (
                         point_from,
                         point_to,
@@ -251,7 +260,16 @@ class Shape:
                     # )
                     ...
                 else:  # different pool
-                    point_from, point_to = self.find_nearest_points(
+                    print(
+                        f"Diff Pool: Connection between {self.name} and {connection.name}"
+                    )
+                    # point_from, point_to = self.find_nearest_points(
+                    #     source_points, target_points
+                    # )
+                    (
+                        point_from,
+                        point_to,
+                    ) = self.find_nearest_points_same_pool_diff_lanes(
                         source_points, target_points
                     )
 
