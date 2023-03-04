@@ -9,6 +9,7 @@ This is a python library to generate business process diagram using code. The in
 It is still under development :construction:
 
 Initial release would only cover the following basic business process elements. Other element types will be introduced in subsequence releases.
+
 * Event: Start, End, Timer, Intermediate
 * Activity: Task, Subprocess
 * Gateway: Inclusive, Exclusive, Parallel
@@ -57,14 +58,15 @@ Thank you for checking out my project. I hope you find it useful and enjoyable.
 <a href="https://www.buymeacoffee.com/csgoh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 ## Implementation Checklist
+
 These are a list of items that need to be implemented or fixed before the initial release.
 
-- [x] Implement Start, End and Timer Event elements
-- [x] Implement Task Activity elements
-- [x] Implement Inclusive, Exclusive and Parallel Gateway elements
-- [x] Implement pool and lane
-- [x] Implement diagram title
-- [ ] Implement diagram footer
+- [X] Implement Start, End and Timer Event elements
+- [X] Implement Task Activity elements
+- [X] Implement Inclusive, Exclusive and Parallel Gateway elements
+- [X] Implement pool and lane
+- [X] Implement diagram title
+- [X] Implement diagram footer
 - [ ] Automatically change surface size based on the element layout
 - [ ] Fix the connection alignment issue
 - [ ] Implement placement (left to right) of for elements in the same lane
