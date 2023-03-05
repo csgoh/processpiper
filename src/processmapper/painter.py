@@ -369,105 +369,6 @@ class Painter:
             # print(f"    rotated {rotated_img.size}, {x}, {y}")
             self.__surface.paste(rotated_img, (int(x), int(y)), rotated_img)
 
-    def draw_box_with_vertical_textX(
-        self,
-        box_x: int,
-        box_y: int,
-        box_width: int,
-        box_height: int,
-        box_fill_colour: str,
-        text: str,
-        text_alignment: str,
-        text_font: str,
-        text_font_size: int,
-        text_font_colour: str,
-        style: str = "rectangle",
-    ) -> None:
-        font = ImageFont.truetype(text_font, size=text_font_size)
-
-        # print(f"box {box_x} {box_y} {box_width} {box_height}")
-
-        multi_lines = []
-        wrap_lines = []
-
-        ### Make '\n' work
-        multi_lines = text.splitlines()
-
-        left, _, right, bottom = font.getbbox("a")
-        single_char_width = right - left
-
-        ### wrap text
-        for line in multi_lines:
-            wrap_lines.extend(textwrap.wrap(line, int(box_width / single_char_width)))
-
-        box_x1, box_y1, box_x2, box_y2 = (
-            box_x,
-            box_y,
-            box_x + box_width,
-            box_y + box_height,
-        )
-        match style:
-            case "rectangle":
-                self.draw_box(
-                    box_x1,
-                    box_y1,
-                    box_width,
-                    box_height,
-                    box_fill_colour=box_fill_colour,
-                )
-            case "rounded":
-                self.draw_rounded_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
-                )
-            case "arrowhead":
-                self.draw_arrowhead_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
-                )
-            case _:
-                raise ValueError("Invalid style")
-
-        pad = 5
-        line_count = len(wrap_lines)
-
-        for i, line in enumerate(wrap_lines):
-            font_width, font_height = self.get_text_dimension(
-                line, text_font, text_font_size
-            )
-            # print(f"   line {i} '{line}' {font_width} {font_height}")
-
-            total_line_height = (font_height * line_count) + (pad * (line_count - 1))
-            match text_alignment:
-                case "centre":
-                    x = (
-                        box_x1
-                        + ((box_width - total_line_height) / 2)
-                        + ((font_height * i) + (pad * i))
-                    )
-                case "left":
-                    x = box_x1 + 15
-                case "right":
-                    x = box_x2 - font_width - 15
-                case _:
-                    x = box_x1 + (box_width - font_width) / 2
-
-            # print(
-            #     f"    x {x} = {box_x1} + (({box_width} - {font_width}) / 2) + (({font_height} * {i}) + ({pad} * {i}))"
-            # )
-
-            # single_line_height = font_height
-
-            y = box_y1 + ((box_height - font_width) / 2)
-
-            # self.__cr.text((x, y), line, fill=text_font_colour, anchor="la", font=font)
-
-            ### Rotate text
-            rotated_img = Image.new("L", (font_width, font_height))
-            rotated_draw = ImageDraw.Draw(rotated_img)
-            rotated_draw.text((0, 0), line, font=font, fill=(255))
-            rotated_img = rotated_img.rotate(90, expand=1)
-            # print(f"    rotated {rotated_img.size}, {x}, {y}")
-            self.__surface.paste(rotated_img, (int(x), int(y)), rotated_img)
-
     def draw_diamond(
         self, x: int, y: int, width: int, height: int, fill_colour: str
     ) -> None:
@@ -648,10 +549,27 @@ class Painter:
         self.__cr.line(points, fill=(0, 0, 0), width=1)
         return right_angle_point
 
-    def draw_arrow(self, x1, y1, x2, y2):
+    def draw_arrow(self, x1: int, y1: int, x2: int, y2: int, label: str = ""):
         right_angle_point = self.draw_right_angle_line(
             x1, y1, x2, y2, "black", 1, 1, "solid"
         )
+        label_x_pos, label_y_pos = right_angle_point
+        # label_w, label_h = self.get_text_dimension(label, "arial.ttf", 12)
+        label_w, label_h = self.get_multitext_dimension(label, "arial.ttf", 12)
+        if label_x_pos == x1 and label_y_pos == y1:
+            ### There is no right angle point
+            # print(f"Calc :: {(((x2 - x1) - label_w) / 2)}")
+            label_x_pos = max(x1 + 5, x1 + (((x2 - x1) - label_w) / 2))
+            label_y_pos = y1 - label_h - 3
+        else:
+            label_x_pos += 5
+            # label_y_pos -= 15
+            label_y_pos = label_y_pos - label_h - 3
+
+        print(
+            f"drawing [{label}] at {label_x_pos}, {label_y_pos}, {label_w}, {label_h}"
+        )
+        self.draw_text(label_x_pos, label_y_pos, label, "arial.ttf", 12, "black")
         self.draw_arrow_head(right_angle_point[0], right_angle_point[1], x2, y2)
 
     def draw_arrow_head(self, x1, y1, x2, y2):
@@ -738,6 +656,49 @@ class Painter:
         font_height = bottom
 
         return font_width, font_height
+
+    def get_multitext_dimension(
+        self, text: str, text_font: str, text_font_size: int
+    ) -> tuple:
+        """Get text dimension
+
+        Args:
+            text (str): Text that is used to calculate dimension
+            font (str): Font name
+            font_size (int): Font size
+
+        Returns:
+            (text_width (int), text_height (int)): Text dimension (width, height)
+        """
+        # Use Pillow's ImageFont module to get the dimensions of the text.
+        image_font = ImageFont.truetype(text_font, text_font_size)
+
+        multi_lines = []
+        wrap_lines = []
+
+        ### Make '\n' work
+        multi_lines = text.splitlines()
+
+        left, _, right, bottom = image_font.getbbox("a")
+        single_char_width = right - left
+
+        ### wrap text
+        for line in multi_lines:
+            wrap_lines.extend(textwrap.wrap(line, 70))
+
+        pad = 4
+        line_count = len(wrap_lines)
+
+        max_width = 0
+        max_height = 0
+        for i, line in enumerate(wrap_lines):
+            font_width, font_height = self.get_text_dimension(
+                line, text_font, text_font_size
+            )
+            max_width = max(max_width, font_width)
+            max_height += font_height + pad
+
+        return max_width, max_height
 
     def get_display_text_position(
         self,
