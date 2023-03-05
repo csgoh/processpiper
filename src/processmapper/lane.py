@@ -233,7 +233,7 @@ class Lane:
 
             ### Set next elements' position
             this_lane = self.name
-            for index, next_shape in enumerate(shape.connection_to):
+            for index, next_shape in enumerate(shape.connection_to.target):
                 print(
                     f"          {shape.name}({index}): next: {next_shape.text}, {next_x}, {y}, {next_shape.draw_position_set}, {shape.x_pos_traversed}"
                 )
