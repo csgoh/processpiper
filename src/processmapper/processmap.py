@@ -103,7 +103,8 @@ class ProcessMap:
         if len(shape.connection_to) <= 1:
             return 1
         else:
-            for target_shape in shape.connection_to:
+            for connection in shape.connection_to:
+                target_shape = connection.target
                 if shape.lane_id == target_shape.lane_id:
                     row_count += 1
 
@@ -157,7 +158,8 @@ class ProcessMap:
         )
 
         preserved_x_pos = 0
-        for index, next_shape in enumerate(current_shape.connection_to):
+        for index, next_connection in enumerate(current_shape.connection_to):
+            next_shape = next_connection.target
             if next_shape.x_pos_traversed is True:
                 continue
             print(f"    |{index}| - <{next_shape.name}>")
@@ -190,7 +192,8 @@ class ProcessMap:
         shape.y_pos_traversed = True
 
         # for shape in lane.shapes:
-        for index, next_shape in enumerate(shape.connection_to):
+        for index, connection in enumerate(shape.connection_to):
+            next_shape = connection.target
             if next_shape.y_pos_traversed is True:
                 continue
             print(f"    <{shape.name}>, next_shape: {next_shape.name}, index: {index}")
@@ -332,6 +335,6 @@ class ProcessMap:
             for shape in lane.shapes:
                 print(f'    ("{shape.text}", type: {shape.__class__.__name__})')
                 for connection in shape.connection_to:
-                    print(f"        ->: {connection.text}")
+                    print(f"        ->: {connection.target.text}")
                 for connection in shape.connection_from:
                     print(f"        <-: {connection.text}")
