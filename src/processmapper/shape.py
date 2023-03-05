@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 import math
 from itertools import count
 from processmapper.painter import Painter
+from processmapper.connection import Connection
 from typing import TypeVar
 
 TShape = TypeVar("TShape", bound="Shape")
@@ -38,6 +39,7 @@ class Shape:
     def connect(
         self: TShape,
         target: TShape,
+        label: str = "",
         connection_type: str = "sequence",
     ) -> TShape:
         """Connect two shapes
@@ -51,7 +53,9 @@ class Shape:
 
         """
 
-        self.connection_to.append(target)
+        # self.connection_to.append(target)
+        connection = Connection(target, label, connection_type)
+        self.connection_to.append(connection)
         target.connection_from.append(self)
         return target
 
@@ -225,29 +229,19 @@ class Shape:
         # print(f"Points for shape: {self.name}")
         if self.connection_to:
             for connection in self.connection_to:
-                # ### remove points from source_points is it exist in incoming_points
-                # for point_name, point in source_points.items():
-                #     if point in self.incoming_points:
-                #         del source_points[point_name]
-                #         break
 
-                target_points = connection.points
-                # ### remove points from target_points is it exist in outgoing_points
-                # for point_name, point in target_points.items():
-                #     if point in connection.outgoing_points:
-                #         del target_points[point_name]
-                #         break
+                target_points = connection.target.points
 
-                if self.is_same_lane(self, connection):
+                if self.is_same_lane(self, connection.target):
                     print(
-                        f"Same lane: Connection between {self.name} and {connection.name}"
+                        f"Same lane: Connection between {self.name} and {connection.target.name}"
                     )
                     point_from, point_to = self.find_nearest_points(
                         source_points, target_points
                     )
-                elif self.is_same_pool(self, connection):
+                elif self.is_same_pool(self, connection.target):
                     print(
-                        f"Same Pool: Connection between {self.name} and {connection.name}"
+                        f"Same Pool: Connection between {self.name} and {connection.target.name}"
                     )
                     (
                         point_from,
@@ -261,7 +255,7 @@ class Shape:
                     ...
                 else:  # different pool
                     print(
-                        f"Diff Pool: Connection between {self.name} and {connection.name}"
+                        f"Diff Pool: Connection between {self.name} and {connection.target.name}"
                     )
                     # point_from, point_to = self.find_nearest_points(
                     #     source_points, target_points
@@ -274,9 +268,13 @@ class Shape:
                     )
 
                 self.outgoing_points.append(point_from)
-                connection.incoming_points.append(point_to)
+                connection.target.incoming_points.append(point_to)
                 painter.draw_arrow(
-                    point_from[0], point_from[1], point_to[0], point_to[1]
+                    point_from[0],
+                    point_from[1],
+                    point_to[0],
+                    point_to[1],
+                    connection.label,
                 )
 
         # painter.draw_line(
