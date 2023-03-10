@@ -120,10 +120,10 @@ class Lane:
     def draw(self) -> None:
         # print(f"draw lane {self.text}: {self.x}, {self.y}, {self.width}, {self.height}")
         ### Draw the lane outline
-        Helper.printc(
-            f"draw lane {self.name}: {self.x}, {self.y}, {self.width}, {self.height}",
-            "33",
-        )
+        # Helper.printc(
+        #     f"draw lane {self.name}: {self.x}, {self.y}, {self.width}, {self.height}",
+        #     "33",
+        # )
         self.painter.draw_box(
             self.x,
             self.y,
@@ -168,12 +168,12 @@ class Lane:
                 shape.draw_connection(self.painter)
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> None:
-        print("Set draw position...")
+        # print("Set draw position...")
         self.painter = painter
         ### Determine the x and y position of the lane
         self.x = x if x > 0 else Configs.SURFACE_LEFT_MARGIN + Configs.POOL_TEXT_WIDTH
         self.y = y if y > 0 else Configs.SURFACE_TOP_MARGIN
-        print(f"[{self.name}]: x={self.x}, y={self.y}")
+        # print(f"[{self.name}]: x={self.x}, y={self.y}")
 
         if self.shapes:
             self.next_shape_x = (
@@ -215,7 +215,7 @@ class Lane:
     ) -> None:
         ### Set own shape position
 
-        print(f"      <{shape.name}>: {x}, {(y + Configs.LANE_SHAPE_TOP_MARGIN)}")
+        # print(f"      <{shape.name}>: {x}, {(y + Configs.LANE_SHAPE_TOP_MARGIN)}")
 
         if shape.lane_name == self.name:
             shape_x, shape_y, shape_w, shape_h = shape.set_draw_position(
@@ -227,21 +227,21 @@ class Lane:
             shape.draw_position_set = True
 
             shape.x_pos_traversed = True
-            print(
-                f"       <<{shape.name}>>: {shape.draw_position_set}, {shape.x_pos_traversed}"
-            )
+            # print(
+            #     f"       <<{shape.name}>>: {shape.draw_position_set}, {shape.x_pos_traversed}"
+            # )
 
             ### Set next elements' position
             this_lane = self.name
             for index, next_shape in enumerate(shape.connection_to.target):
-                print(
-                    f"          {shape.name}({index}): next: {next_shape.text}, {next_x}, {y}, {next_shape.draw_position_set}, {shape.x_pos_traversed}"
-                )
+                # print(
+                #     f"          {shape.name}({index}): next: {next_shape.text}, {next_x}, {y}, {next_shape.draw_position_set}, {shape.x_pos_traversed}"
+                # )
 
                 ### Check whether thhe position has been set, if yes, skipped.
                 ## or next_shape.lane_name != this_lane
                 if next_shape.traversed == True:
-                    print(f"            Skipped")
+                    # print(f"            Skipped")
                     continue
 
                 if index == 0:
@@ -272,12 +272,12 @@ class Lane:
                 self.next_shape_x = next_shape_x
         else:
             shape_x, shape_y, shape_w, shape_h = 0, 0, 0, 0
-            print(f"            Skipped")
+            # print(f"            Skipped")
 
         return shape_x, shape_y, shape_w, shape_h
 
     def get_outward_connection_count(self, shape: object) -> int:
         count = 0
         count += len(shape.connection_to)
-        print(f"{shape.text}, get_reference_link_count: {count}")
+        # print(f"{shape.text}, get_reference_link_count: {count}")
         return count
