@@ -78,6 +78,7 @@ These are a list of items that need to be implemented or fixed before the initia
 - [X] Implement placement (top to bottom) of elements in the different pool
 - [X] Add label to connector
 - [ ] Support colour themes
-- [ ] Implement Intermediate Event and Subprocess Activity Elements
+- [X] Implement Intermediate Event Element
+- [ ] Implement Subprocess Activity Element
 - [ ] Connection that crosses pool boundary will be drawn as a dotted line
 - [ ] Clean up code
