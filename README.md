@@ -80,5 +80,5 @@ These are a list of items that need to be implemented or fixed before the initia
 - [ ] Support colour themes
 - [X] Implement Intermediate Event Element
 - [X] Implement Subprocess Activity Element
-- [ ] Connection that crosses pool boundary will be drawn as a dotted line
+- [X] Connection that crosses pool boundary will be drawn as a dotted line
 - [ ] Clean up code
