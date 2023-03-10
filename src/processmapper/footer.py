@@ -22,16 +22,16 @@ class Footer:
         self.width, self.height = painter.get_text_dimension(
             self.name, self.font, self.font_size
         )
-        print(
-            f"Footer: x={self.x}, y={self.y}, width={self.width}, height={self.height}"
-        )
+        # print(
+        #     f"Footer: x={self.x}, y={self.y}, width={self.width}, height={self.height}"
+        # )
         return self.x, self.y, self.width, self.height
 
     def draw(self, painter: Painter = None):
         if painter is None:
             painter = self.painter
 
-        print(f"Drawing footer at {self.x}, {self.y}")
+        # print(f"Drawing footer at {self.x}, {self.y}")
         painter.draw_text(
             self.x, self.y, self.name, self.font, self.font_size, self.font_colour
         )
