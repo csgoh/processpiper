@@ -228,6 +228,7 @@ class Shape:
         source_points = self.points
         # print(f"Points for shape: {self.name}")
         if self.connection_to:
+            cross_pool_connection = False
             for connection in self.connection_to:
 
                 target_points = connection.target.points
@@ -266,6 +267,7 @@ class Shape:
                     ) = self.find_nearest_points_same_pool_diff_lanes(
                         source_points, target_points
                     )
+                    cross_pool_connection = True
 
                 self.outgoing_points.append(point_from)
                 connection.target.incoming_points.append(point_to)
@@ -275,6 +277,7 @@ class Shape:
                     point_to[0],
                     point_to[1],
                     connection.label,
+                    cross_pool_connection,
                 )
 
         # painter.draw_line(
