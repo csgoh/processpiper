@@ -486,7 +486,7 @@ class Painter:
             right_angle_point = (x1, y1)
 
         if x1 != x2 and y1 != y2:
-            print(x1, y1, x2, y2)
+            # print(x1, y1, x2, y2)
             points = [(x1, y1), (x1, y2), (x2, y2)]
             right_angle_point = (x1, y2)
             # for point in points:
@@ -566,9 +566,9 @@ class Painter:
             # label_y_pos -= 15
             label_y_pos = label_y_pos - label_h - 3
 
-        print(
-            f"drawing [{label}] at {label_x_pos}, {label_y_pos}, {label_w}, {label_h}"
-        )
+        # print(
+        #     f"drawing [{label}] at {label_x_pos}, {label_y_pos}, {label_w}, {label_h}"
+        # )
         self.draw_text(label_x_pos, label_y_pos, label, "arial.ttf", 12, "black")
         self.draw_arrow_head(right_angle_point[0], right_angle_point[1], x2, y2)
 
@@ -748,9 +748,9 @@ class Painter:
         """
         # height += self.bottom_margin
         left, top, right, bottom = 0, 0, width, height
-        print(
-            f"resize surface > left: {left}, top: {top}, right: {right}, bottom: {bottom}"
-        )
+        # print(
+        #     f"resize surface > left: {left}, top: {top}, right: {right}, bottom: {bottom}"
+        # )
         # extend the surface to fit the text
 
         self.__surface = self.__surface.crop((left, top, right, bottom))
