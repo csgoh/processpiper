@@ -77,8 +77,8 @@ These are a list of items that need to be implemented or fixed before the initia
 - [X] Fix the connection alignment issue
 - [X] Implement placement (top to bottom) of elements in the different pool
 - [X] Add label to connector
-- [ ] Support colour themes
 - [X] Implement Intermediate Event Element
 - [X] Implement Subprocess Activity Element ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case09.png)
 - [X] Connection that crosses pool boundary will be drawn as a dotted line
+- [ ] Support colour themes
 - [ ] Clean up code
