@@ -462,15 +462,74 @@ class Painter:
                         fill=(r, g, b, int(255 * line_transparency)),
                     )
 
+    def draw_vertical_dotted_line(self, x1: int, y1: int, x2: int, y2: int):
+        gap_size = 10
+        y1 = int(y1)
+        y2 = int(y2)
+        if y1 > y2:
+            for i in range(y2, y1, gap_size):
+                if i - 5 < y2:
+                    new_y = y2
+                else:
+                    new_y = i - 5
+                self.__cr.line((x1, i, x2, new_y), fill="black", width=1)
+        else:
+            for i in range(y1, y2, gap_size):
+                if i + 5 > y2:
+                    new_y = y2
+                else:
+                    new_y = i + 5
+                self.__cr.line((x1, i, x2, new_y), fill="black", width=1)
+
+    def draw_horizontal_dotted_line(self, x1: int, y1: int, x2: int, y2: int):
+        gap_size = 10
+        x1 = int(x1)
+        x2 = int(x2)
+        for i in range(x1, x2, gap_size):
+            self.__cr.line((i, y1, i + 5, y2), fill="black", width=1)
+
+    def draw_right_angle_dot_line(self, x1: int, y1: int, x2: int, y2: int):
+        if x1 < x2:
+            if y1 < y2:
+                right_angle_point = (x2, y1)
+            else:
+                right_angle_point = (x1, y2)
+        else:
+            if y1 < y2:
+                right_angle_point = (x1, y2)
+            else:
+                right_angle_point = (x2, y1)
+
+        print(
+            f"x1={x1}, y1={y1}, x2={x2}, y2={y2}, right_angle_point={right_angle_point}"
+        )
+
+        self.draw_horizontal_dotted_line(
+            x1, y1, right_angle_point[0], right_angle_point[1]
+        )
+        self.draw_vertical_dotted_line(
+            right_angle_point[0], right_angle_point[1], x2, y2
+        )
+
+    def draw_dotted_line(self, points: tuple):
+        for i in range(len(points) - 1):
+            x1, y1 = points[i]
+            x2, y2 = points[i + 1]
+            print(f"Points {points}")
+            if x1 == x2:
+                self.draw_vertical_dotted_line(x1, y1, x2, y2)
+            elif y1 == y2:
+                self.draw_horizontal_dotted_line(x1, y1, x2, y2)
+
     def draw_right_angle_line(
         self,
         x1: int,
         y1: int,
         x2: int,
         y2: int,
-        line_colour: str,
-        line_transparency: int,
-        line_width: int,
+        cross_pool_connection: bool,
+        line_transparency: int = 1,
+        line_width: int = 1,
         line_style: str = "solid",
     ):
         if x1 == x2 and y1 == y2:
@@ -545,25 +604,33 @@ class Painter:
         #         for point in points:
         #             self.draw_circle(point[0], point[1], 2, "blue")
         #         right_angle_point = (x2 - elbow_height, y2)
-
-        self.__cr.line(points, fill=(0, 0, 0), width=1)
+        if cross_pool_connection:
+            self.draw_dotted_line(points)
+        else:
+            self.__cr.line(points, fill=(0, 0, 0), width=1)
         return right_angle_point
 
-    def draw_arrow(self, x1: int, y1: int, x2: int, y2: int, label: str = ""):
+    def draw_arrow(
+        self,
+        x1: int,
+        y1: int,
+        x2: int,
+        y2: int,
+        label: str = "",
+        cross_pool_connection: bool = False,
+    ):
         right_angle_point = self.draw_right_angle_line(
-            x1, y1, x2, y2, "black", 1, 1, "solid"
+            x1, y1, x2, y2, cross_pool_connection
         )
         label_x_pos, label_y_pos = right_angle_point
-        # label_w, label_h = self.get_text_dimension(label, "arial.ttf", 12)
+
         label_w, label_h = self.get_multitext_dimension(label, "arial.ttf", 12)
         if label_x_pos == x1 and label_y_pos == y1:
             ### There is no right angle point
-            # print(f"Calc :: {(((x2 - x1) - label_w) / 2)}")
             label_x_pos = max(x1 + 5, x1 + (((x2 - x1) - label_w) / 2))
             label_y_pos = y1 - label_h - 3
         else:
             label_x_pos += 5
-            # label_y_pos -= 15
             label_y_pos = label_y_pos - label_h - 3
 
         # print(
