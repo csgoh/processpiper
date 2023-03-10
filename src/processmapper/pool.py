@@ -63,9 +63,9 @@ class Pool:
             Configs.POOL_TEXT_WIDTH,
             last_lane_y + last_lane_height - self.y,
         )
-        print(
-            f"({self.name}) x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
-        )
+        # print(
+        #     f"({self.name}) x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
+        # )
         return self.x, self.y, self.width, self.height
 
     def draw(self):
