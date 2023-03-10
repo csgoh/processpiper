@@ -211,8 +211,8 @@ def test_case9():
 
 
 if __name__ == "__main__":
-    # test_case5()
+    test_case5()
     # test_case6()
     # test_case7()
-    # test_case8()
+    test_case8()
     test_case9()
