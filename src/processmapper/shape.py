@@ -233,16 +233,16 @@ class Shape:
                 target_points = connection.target.points
 
                 if self.is_same_lane(self, connection.target):
-                    print(
-                        f"Same lane: Connection between {self.name} and {connection.target.name}"
-                    )
+                    # print(
+                    #     f"Same lane: Connection between {self.name} and {connection.target.name}"
+                    # )
                     point_from, point_to = self.find_nearest_points(
                         source_points, target_points
                     )
                 elif self.is_same_pool(self, connection.target):
-                    print(
-                        f"Same Pool: Connection between {self.name} and {connection.target.name}"
-                    )
+                    # print(
+                    #     f"Same Pool: Connection between {self.name} and {connection.target.name}"
+                    # )
                     (
                         point_from,
                         point_to,
@@ -254,9 +254,9 @@ class Shape:
                     # )
                     ...
                 else:  # different pool
-                    print(
-                        f"Diff Pool: Connection between {self.name} and {connection.target.name}"
-                    )
+                    # print(
+                    #     f"Diff Pool: Connection between {self.name} and {connection.target.name}"
+                    # )
                     # point_from, point_to = self.find_nearest_points(
                     #     source_points, target_points
                     # )
