@@ -82,3 +82,4 @@ These are a list of items that need to be implemented or fixed before the initia
 - [X] Connection that crosses pool boundary will be drawn as a dotted line
 - [ ] Support colour themes
 - [ ] Clean up code
+- [ ] More testing!
