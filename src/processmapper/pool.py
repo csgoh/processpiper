@@ -8,15 +8,18 @@ import processmapper.helper as Helper
 @dataclass
 class Pool:
     name: str = field(init=True)
-    # font: str = field(init=True, default=None)
-    # font_size: int = field(init=True, default=None)
-    # font_colour: str = field(init=True, default=None)
+    font: str = field(init=True, default=None)
+    font_size: int = field(init=True, default=None)
+    font_colour: str = field(init=True, default=None)
+    fill_colour: str = field(init=True, default=None)
+    text_alignment: str = field(init=True, default=None)
+    painter: Painter = field(init=True, default=None)
 
     x: int = field(init=False, default=0)
     y: int = field(init=False, default=0)
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
-    painter: Painter = field(init=False)
+
     next_shape_x: int = field(init=False, default=0)
 
     _lanes: list = field(init=False, default_factory=list)
@@ -71,28 +74,65 @@ class Pool:
     def draw(self):
         if self.name != "Default Pool":
             Helper.printc(f"Drawing pool: {self.name}", "34")
-            self.painter.draw_box(
-                self.x,
-                self.y,
-                self.width,
-                self.height,
-                "#d9d9d9",
+            # self.painter.draw_box(
+            #     self.x,
+            #     self.y,
+            #     self.width,
+            #     self.height,
+            #     self.fill_colour,
+            # )
+            print(
+                f"Drawing pool: {self.name}, {self.font}, {self.font_size}, {self.font_colour}, {self.fill_colour}, {self.text_alignment}"
             )
-            ### Draw the lane text box
+            ### Draw the pool text box
             self.painter.draw_box_with_vertical_text(
                 self.x,
                 self.y,
                 Configs.POOL_TEXT_WIDTH,
                 self.height,
-                "#1F1F1F",
+                # "#1F1F1F",
+                self.fill_colour,
                 self.name,
-                text_alignment="centre",
-                text_font="arial",
-                text_font_size=12,
-                text_font_colour="white",
+                text_alignment=self.text_alignment,
+                text_font=self.font,
+                text_font_size=self.font_size,
+                text_font_colour=self.font_colour,
             )
 
-    def add_lane(self, lane_name: str) -> Lane:
-        lane = Lane(lane_name, self.name)
+    def add_lane(
+        self,
+        lane_name: str,
+        font: str = "",
+        font_size: int = 0,
+        font_colour: str = "",
+        fill_colour: str = "",
+        text_alignment: str = "",
+        background_fill_colour: str = "",
+    ) -> Lane:
+
+        if font == "":
+            font = self.painter.lane_font
+        if font_size == 0:
+            font_size = self.painter.lane_font_size
+        if font_colour == "":
+            font_colour = self.painter.lane_font_colour
+        if fill_colour == "":
+            fill_colour = self.painter.lane_fill_colour
+        if text_alignment == "":
+            text_alignment = self.painter.lane_text_alignment
+        if background_fill_colour == "":
+            background_fill_colour = self.painter.lane_background_fill_colour
+
+        lane = Lane(
+            lane_name,
+            self.name,
+            font,
+            font_size,
+            font_colour,
+            fill_colour,
+            text_alignment,
+            background_fill_colour,
+            self.painter,
+        )
         self._lanes.append(lane)
         return lane

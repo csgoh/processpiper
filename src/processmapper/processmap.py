@@ -20,29 +20,103 @@ class ProcessMap:
     height: int = field(init=True, default=3200)
     auto_size: bool = field(init=True, default=True)
     colour_theme: str = field(init=True, default="DEFAULT")
-    __painter: Painter = field(init=False)
+    # __painter: Painter = field(init=False)
     next_shape_x: int = field(init=False, default=0)
 
     lane_y_pos: int = field(init=False, default=0)
     lane_max_width: int = field(init=False, default=0)
 
     def __post_init__(self):
-        self._title = Title(self.title)
-        self._title.name = self.title
+        self.__painter = Painter(self.width, self.height)
+        self.__set_colour_theme(self.colour_theme)
+        self._title = Title(
+            self.title,
+            self.__painter.title_font,
+            self.__painter.title_font_size,
+            self.__painter.title_font_colour,
+        )
 
-    def add_pool(self, pool_name: str) -> Pool:
-        pool = Pool(pool_name)
+    def add_pool(
+        self,
+        pool_name: str,
+        font: str = "",
+        font_size: int = 0,
+        font_colour: str = "",
+        fill_colour: str = "",
+        text_alignment: str = "centre",
+    ) -> Pool:
+        if font == "":
+            font = self.__painter.pool_font
+        if font_size == 0:
+            font_size = self.__painter.pool_font_size
+        if font_colour == "":
+            font_colour = self.__painter.pool_font_colour
+        if fill_colour == "":
+            fill_colour = self.__painter.pool_fill_colour
+
+        pool = Pool(
+            pool_name,
+            font,
+            font_size,
+            font_colour,
+            fill_colour,
+            text_alignment,
+            self.__painter,
+        )
         self._pools.append(pool)
         return pool
 
     ### TO DO: modify the method to support pool and lane
-    def add_lane(self, lane_name: str) -> Lane:
+    def add_lane(
+        self,
+        lane_name: str,
+        font: str = "",
+        font_size: int = 0,
+        font_colour: str = "",
+        fill_colour: str = "",
+        text_alignment: str = "centre",
+        background_fill_colour: str = "",
+    ) -> Lane:
+        if font == "":
+            font = self.__painter.lane_font
+        if font_size == 0:
+            font_size = self.__painter.lane_font_size
+        if font_colour == "":
+            font_colour = self.__painter.lane_font_colour
+        if fill_colour == "":
+            fill_colour = self.__painter.lane_fill_colour
+        if text_alignment == "":
+            text_alignment = self.__painter.lane_text_alignment
+        if background_fill_colour == "":
+            background_fill_colour = self.__painter.lane_background_fill_colour
+
         pool = self.add_pool("Default Pool")
-        lane = pool.add_lane(lane_name)
+        lane = pool.add_lane(
+            lane_name,
+            font,
+            font_size,
+            font_colour,
+            fill_colour,
+            text_alignment,
+            background_fill_colour,
+        )
         return lane
 
-    def set_footer(self, footer_name: str):
-        self._footer = Footer(footer_name)
+    def set_footer(
+        self,
+        footer_name: str,
+        font: str = "",
+        font_size: int = 0,
+        font_colour: str = "",
+    ):
+        if font == "":
+            font = self.__painter.footer_font
+        if font_size == 0:
+            font_size = self.__painter.footer_font_size
+        if font_colour == "":
+            font_colour = self.__painter.footer_font_colour
+
+        self._footer = Footer(footer_name, font, font_size, font_colour)
 
     def get_current_x_position(self) -> int:
         if self.next_shape_x == 0:
@@ -124,21 +198,16 @@ class ProcessMap:
                 if previous_shape.pool_name == current_shape.pool_name:
                     # print(f"pool name: {current_shape.pool_name}")
                     if previous_shape.lane_id == current_shape.lane_id:
-                        # current_shape.x = current_pool.get_next_x_position()
                         current_shape.x = self.get_next_x_position()
                         # print(f"          same pool same lane")
                     else:
-                        # current_shape.x = current_pool.get_next_x_position()
                         current_shape.x = self.get_next_x_position()
                         # print(f"          same pool diff lane")
                 else:
                     previous_pool = self.get_pool_by_name(previous_shape.pool_name)
-                    # current_shape.x = previous_pool.get_current_x_position()
-                    # current_shape.x = current_pool.get_next_x_position()
                     current_shape.x = self.get_next_x_position()
                     # print(f"          diff pool")
             else:
-                # current_shape.x = current_pool.get_next_x_position()
                 current_shape.x = self.get_next_x_position()
                 # print(f"          previous = none")
         else:
@@ -183,8 +252,6 @@ class ProcessMap:
         else:
             ### Otherwise, the y position of the shape is the next y position
             shape.y = lane.get_next_y_position()
-            # if shape.lane_id == 2:
-            #     print(f"shape.y: {shape.y}")
 
         shape.set_draw_position(self.__painter)
         # print(f"<{shape.name}>, lane_id={shape.lane_id}, x={shape.x}, y={shape.y}")
@@ -255,16 +322,6 @@ class ProcessMap:
                 painter,
             )
 
-        # for pool in self._pools:
-        # print(f"({pool.name})")
-        # for lane in pool._lanes:
-        # print(
-        #     f"      [{lane.name}], row count: {lane.shape_row_count}, x={lane.x}, y={lane.y}, mw={self.lane_max_width}, w={self.width}, h={lane.height}"
-        # )
-        # for shape in lane.shapes:
-        #     print(f"            <{shape.name}>: x={shape.x}, y={shape.y}")
-
-        # print(f"Defined Surface size: {self.width}, {self.height}")
         self.width = (
             Configs.SURFACE_LEFT_MARGIN
             + Configs.POOL_TEXT_WIDTH
@@ -275,15 +332,9 @@ class ProcessMap:
         self.height = (
             self._footer.y + self._footer.height + Configs.SURFACE_BOTTOM_MARGIN
         )
-        # print(f"Actual Surface size: {self.width}, {self.height}")
 
     def draw(self) -> None:
-        self.__painter = Painter(self.width, self.height)
-
-        self.__set_colour_palette(self.colour_theme)
-
-        ### Determine the size of the process map
-        # self.width, self.height = self.get_surface_size()
+        # self.__painter = Painter(self.width, self.height)
 
         # Helper.printc(f"Set draw position...")
         self.set_draw_position(self.__painter)
@@ -316,9 +367,9 @@ class ProcessMap:
             # print(f"Auto sizing..")
             self.__painter.set_surface_size(self.width, self.height)
 
-    def __set_colour_palette(self, palette: str) -> None:
+    def __set_colour_theme(self, palette: str) -> None:
         """This method sets the colour palette"""
-        # self.__painter.set_colour_palette(palette)
+        self.__painter.set_colour_theme(palette)
 
     def save(self, filename: str) -> None:
         self.__painter.save_surface(filename)
