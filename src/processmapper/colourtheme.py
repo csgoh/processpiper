@@ -33,45 +33,46 @@ from dataclasses import dataclass, field
 
 DEFAULT_FONT = "arial.ttf"
 DEFAULT_TITLE_FONT_SIZE = 26
-DEFAULT_SUBTITLE_FONT_SIZE = 18
-DEFAULT_SWIMLANE_FONT_SIZE = 12
-DEFAULT_LANE_FONT_SIZE = 12
-DEFAULT_ELEMENT_FONT_SIZE = 12
-DEFAULT_CONNECTOR_FONT_SIZE = 12
-DEFAULT_FOOTER_FONT_SIZE = 12
+DEFAULT_POOL_FONT_SIZE = 18
+DEFAULT_LANE_FONT_SIZE = 18
+DEFAULT_ELEMENT_FONT_SIZE = 14
+DEFAULT_CONNECTOR_FONT_SIZE = 14
+DEFAULT_CONNECTOR_ARROW_SIZE = 15
+DEFAULT_FOOTER_FONT_SIZE = 18
 
 
 default_colour_settings = {
     "theme": "DEFAULT",
     "settings": {
         "background": {
-            "background_fill_colour": "#FFFFFF",
+            "background_fill_colour": "white",
         },
         "title": {
             "title_font": DEFAULT_FONT,
             "title_font_size": DEFAULT_TITLE_FONT_SIZE,
-            "title_font_colour": "#000000",
-            "subtitle_font": DEFAULT_FONT,
-            "subtitle_font_size": DEFAULT_SUBTITLE_FONT_SIZE,
-            "subtitle_font_colour": "#000000",
+            "title_font_colour": "black",
         },
-        "swimlane": {
-            "swimlane_font": DEFAULT_FONT,
-            "swimlane_font_size": DEFAULT_SWIMLANE_FONT_SIZE,
-            "swimlane_font_colour": "#000000",
-            "swimlane_fill_colour": "#D9D9D9",
+        "pool": {
+            "pool_font": DEFAULT_FONT,
+            "pool_font_size": DEFAULT_POOL_FONT_SIZE,
+            "pool_font_colour": "white",
+            "pool_fill_colour": "#1F1F1F",
+            "pool_text_alignment": "centre",
         },
         "lane": {
             "lane_font": DEFAULT_FONT,
             "lane_font_size": DEFAULT_LANE_FONT_SIZE,
-            "lane_font_colour": "#000000",
-            "lane_fill_colour": "#D9D9D9",
+            "lane_font_colour": "white",
+            "lane_fill_colour": "#474747",
+            "lane_text_alignment": "centre",
+            "lane_background_fill_colour": "#D9D9D9",
         },
         "element": {
             "element_font": DEFAULT_FONT,
             "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
-            "element_font_colour": "#000000",
-            "element_fill_colour": "#D9D9D9",
+            "element_font_colour": "black",
+            "element_fill_colour": "darkgrey",
+            "element_text_alignment": "centre",
         },
         "connector": {
             "connector_font": DEFAULT_FONT,
@@ -80,7 +81,7 @@ default_colour_settings = {
             "connector_line_width": 1,
             "connector_line_colour": "#000000",
             "connector_arrow_colour": "#000000",
-            "connector_arrow_size": 10,
+            "connector_arrow_size": DEFAULT_CONNECTOR_ARROW_SIZE,
         },
         "footer": {
             "footer_font": DEFAULT_FONT,
@@ -92,7 +93,55 @@ default_colour_settings = {
 
 # greywoof_colour_settings = {}
 
-# bluemountain_colour_settings = {}
+bluemountain_colour_settings = {
+    "theme": "BLUEMOUNTAIN",
+    "settings": {
+        "background": {
+            "background_fill_colour": "white",
+        },
+        "title": {
+            "title_font": DEFAULT_FONT,
+            "title_font_size": DEFAULT_TITLE_FONT_SIZE,
+            "title_font_colour": "#0B5394",
+        },
+        "pool": {
+            "pool_font": DEFAULT_FONT,
+            "pool_font_size": DEFAULT_POOL_FONT_SIZE,
+            "pool_font_colour": "white",
+            "pool_fill_colour": "#0B5394",
+            "pool_text_alignment": "centre",
+        },
+        "lane": {
+            "lane_font": DEFAULT_FONT,
+            "lane_font_size": DEFAULT_LANE_FONT_SIZE,
+            "lane_font_colour": "white",
+            "lane_fill_colour": "#0B5394",
+            "lane_text_alignment": "centre",
+            "lane_background_fill_colour": "#D9D9D9",
+        },
+        "element": {
+            "element_font": DEFAULT_FONT,
+            "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
+            "element_font_colour": "black",
+            "element_fill_colour": "#9FC5E8",
+            "element_text_alignment": "centre",
+        },
+        "connector": {
+            "connector_font": DEFAULT_FONT,
+            "connector_font_size": DEFAULT_CONNECTOR_FONT_SIZE,
+            "connector_font_colour": "#000000",
+            "connector_line_width": 1,
+            "connector_line_colour": "#000000",
+            "connector_arrow_colour": "#000000",
+            "connector_arrow_size": DEFAULT_CONNECTOR_ARROW_SIZE,
+        },
+        "footer": {
+            "footer_font": DEFAULT_FONT,
+            "footer_font_size": DEFAULT_FOOTER_FONT_SIZE,
+            "footer_font_colour": "#000000",
+        },
+    },
+}
 
 # orangepeel_colour_settings = {}
 
@@ -101,7 +150,7 @@ default_colour_settings = {
 ColourThemesSettings = [
     default_colour_settings,
     # greywoof_colour_settings,
-    # bluemountain_colour_settings,
+    bluemountain_colour_settings,
     # orangepeel_colour_settings,
     # greenturtle_colour_settings,
     ### Add more themes here
@@ -126,26 +175,7 @@ class ColourTheme:
         self._colour_theme_name = colour_theme_name
 
     def get_colour_theme_settings(self, processmap_component: str) -> tuple:
-        """Get the colour theme settings for the specified roadmap component.
-
-        Args:
-            roadmap_component (str): Roadmap component to get the colour theme settings for.
-                                        Components are: "background", "title", "timeline", "marker", "group", "task", "milestone", "footer"
-
-        Returns:
-            background_colour (str): If roadmap_component is "background"
-
-            title_font (str): If roadmap_component is "title"
-            title_font_size (int): If roadmap_component is "title"
-            title_font_colour (str): If roadmap_component is "title"
-            subtitle_font (str): If roadmap_component is "title"
-            subtitle_font_size (int): If roadmap_component is "title"
-            subtitle_font_colour (str): If roadmap_component is "title"
-
-
-
-            footer_font_colour (str): If roadmap_component is "footer"
-        """
+        """Get the colour theme settings for the specified roadmap component."""
 
         colour_settings = None
 
