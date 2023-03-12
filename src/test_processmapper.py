@@ -99,7 +99,9 @@ def test_case4():
 
 
 def test_case5():
-    with ProcessMap("Sample Test Process") as my_process_map:
+    with ProcessMap(
+        "Sample Test Process", colour_theme="BLUEMOUNTAIN"
+    ) as my_process_map:
         with my_process_map.add_lane("End User") as lane1:
             start = lane1.add_element("Start", EventType.START)
             enter_keyword = lane1.add_element("Enter Keyword", ActivityType.TASK)
@@ -214,5 +216,5 @@ if __name__ == "__main__":
     test_case5()
     # test_case6()
     # test_case7()
-    test_case8()
-    test_case9()
+    # test_case8()
+    # test_case9()
