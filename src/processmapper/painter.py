@@ -15,24 +15,24 @@ class Painter:
     title_font_size: int
     title_font_colour: str
 
-    subtitle_font: str
-    subtitle_font_size: int
-    subtitle_font_colour: str
-
-    swimlane_font: str
-    swimlane_font_size: int
-    swimlane_font_colour: str
-    swimlane_fill_colour: str
+    pool_font: str
+    pool_font_size: int
+    pool_font_colour: str
+    pool_fill_colour: str
+    pool_text_alignment: str
 
     lane_font: str
     lane_font_size: int
     lane_font_colour: str
     lane_fill_colour: str
+    lane_text_alignment: str
+    lane_background_fill_colour: str
 
     element_font: str
     element_font_size: int
     element_font_colour: str
     element_fill_colour: str
+    element_text_alignment: str
 
     connector_font: str
     connector_font_size: int
@@ -55,13 +55,13 @@ class Painter:
         self.set_background_colour("white")
         # self.draw_grid()
 
-    def set_colour_palette(self, colour_palette: str) -> None:
+    def set_colour_theme(self, colour_theme: str) -> None:
         """Set colour palette
 
         Args:
             colour_palette (str): Name of the colour palette. Eg. OrangePeel
         """
-        self.colour_theme = ColourTheme(colour_palette)
+        self.colour_theme = ColourTheme(colour_theme)
         (self.background_colour,) = self.colour_theme.get_colour_theme_settings(
             "background"
         )
@@ -69,27 +69,28 @@ class Painter:
             self.title_font,
             self.title_font_size,
             self.title_font_colour,
-            self.subtitle_font,
-            self.subtitle_font_size,
-            self.subtitle_font_colour,
         ) = self.colour_theme.get_colour_theme_settings("title")
         (
-            self.swimlane_font,
-            self.swimlane_font_size,
-            self.swimlane_font_colour,
-            self.swimlane_fill_colour,
-        ) = self.colour_theme.get_colour_theme_settings("swimlane")
+            self.pool_font,
+            self.pool_font_size,
+            self.pool_font_colour,
+            self.pool_fill_colour,
+            self.pool_text_alignment,
+        ) = self.colour_theme.get_colour_theme_settings("pool")
         (
             self.lane_font,
             self.lane_font_size,
             self.lane_font_colour,
             self.lane_fill_colour,
+            self.lane_text_alignment,
+            self.lane_background_fill_colour,
         ) = self.colour_theme.get_colour_theme_settings("lane")
         (
             self.element_font,
             self.element_font_size,
             self.element_font_colour,
             self.element_fill_colour,
+            self.element_text_alignment,
         ) = self.colour_theme.get_colour_theme_settings("element")
         (
             self.connector_font,
@@ -362,9 +363,10 @@ class Painter:
             # self.__cr.text((x, y), line, fill=text_font_colour, anchor="la", font=font)
 
             ### Rotate text
-            rotated_img = Image.new("L", (font_width, font_height))
+            rotated_img = Image.new("RGBA", (font_width, font_height))
             rotated_draw = ImageDraw.Draw(rotated_img)
-            rotated_draw.text((0, 0), line, font=font, fill=(255))
+            print(f"text_font_colour = {text_font_colour}")
+            rotated_draw.text((0, 0), line, font=font, fill=(text_font_colour))
             rotated_img = rotated_img.rotate(90, expand=1)
             # print(f"    rotated {rotated_img.size}, {x}, {y}")
             self.__surface.paste(rotated_img, (int(x), int(y)), rotated_img)
@@ -462,7 +464,15 @@ class Painter:
                         fill=(r, g, b, int(255 * line_transparency)),
                     )
 
-    def draw_vertical_dotted_line(self, x1: int, y1: int, x2: int, y2: int):
+    def draw_vertical_dashed_line(
+        self,
+        x1: int,
+        y1: int,
+        x2: int,
+        y2: int,
+        connector_line_width,
+        connector_line_colour,
+    ):
         gap_size = 10
         y1 = int(y1)
         y2 = int(y2)
@@ -472,16 +482,32 @@ class Painter:
                     new_y = y2
                 else:
                     new_y = i - 5
-                self.__cr.line((x1, i, x2, new_y), fill="black", width=1)
+                self.__cr.line(
+                    (x1, i, x2, new_y),
+                    fill=connector_line_colour,
+                    width=connector_line_width,
+                )
         else:
             for i in range(y1, y2, gap_size):
                 if i + 5 > y2:
                     new_y = y2
                 else:
                     new_y = i + 5
-                self.__cr.line((x1, i, x2, new_y), fill="black", width=1)
+                self.__cr.line(
+                    (x1, i, x2, new_y),
+                    fill=connector_line_colour,
+                    width=connector_line_width,
+                )
 
-    def draw_horizontal_dotted_line(self, x1: int, y1: int, x2: int, y2: int):
+    def draw_horizontal_dashed_line(
+        self,
+        x1: int,
+        y1: int,
+        x2: int,
+        y2: int,
+        connector_line_width,
+        connector_line_colour,
+    ):
         gap_size = 10
         x1 = int(x1)
         x2 = int(x2)
@@ -504,22 +530,31 @@ class Painter:
             f"x1={x1}, y1={y1}, x2={x2}, y2={y2}, right_angle_point={right_angle_point}"
         )
 
-        self.draw_horizontal_dotted_line(
+        self.draw_horizontal_dashed_line(
             x1, y1, right_angle_point[0], right_angle_point[1]
         )
-        self.draw_vertical_dotted_line(
+        self.draw_vertical_dashed_line(
             right_angle_point[0], right_angle_point[1], x2, y2
         )
 
-    def draw_dotted_line(self, points: tuple):
+    def draw_dashed_line(
+        self,
+        points: tuple,
+        connector_line_width: int = 0,
+        connector_line_colour: str = "",
+    ):
         for i in range(len(points) - 1):
             x1, y1 = points[i]
             x2, y2 = points[i + 1]
             print(f"Points {points}")
             if x1 == x2:
-                self.draw_vertical_dotted_line(x1, y1, x2, y2)
+                self.draw_vertical_dashed_line(
+                    x1, y1, x2, y2, connector_line_width, connector_line_colour
+                )
             elif y1 == y2:
-                self.draw_horizontal_dotted_line(x1, y1, x2, y2)
+                self.draw_horizontal_dashed_line(
+                    x1, y1, x2, y2, connector_line_width, connector_line_colour
+                )
 
     def draw_right_angle_line(
         self,
@@ -527,10 +562,9 @@ class Painter:
         y1: int,
         x2: int,
         y2: int,
-        cross_pool_connection: bool,
-        line_transparency: int = 1,
-        line_width: int = 1,
-        line_style: str = "solid",
+        connection_style: str,
+        connector_line_width: int = 0,
+        connector_line_colour: str = "",
     ):
         if x1 == x2 and y1 == y2:
             points = [(x1, y1)]
@@ -588,26 +622,12 @@ class Painter:
                     #     self.draw_circle(point[0], point[1], 2, "green")
                     right_angle_point = (x2, y2 + elbow_height)
 
-        # self.__cr.line(points, fill=(0, 0, 0), width=1)
-        # return right_angle_point
-
-        # if x1 < x2:
-        #     if y1 > y2:
-        #         ### current shape is connecting to next shape which is located at the top lane
-        #         elbow_height = (x2 - x1) / 2
-        #         points = [
-        #             (x1, y1),
-        #             (x1 + elbow_height, y1),
-        #             (x2 - elbow_height, y2),
-        #             (x2, y2),
-        #         ]
-        #         for point in points:
-        #             self.draw_circle(point[0], point[1], 2, "blue")
-        #         right_angle_point = (x2 - elbow_height, y2)
-        if cross_pool_connection:
-            self.draw_dotted_line(points)
+        if connection_style == "dashed":
+            self.draw_dashed_line(points, connector_line_width, connector_line_colour)
         else:
-            self.__cr.line(points, fill=(0, 0, 0), width=1)
+            self.__cr.line(
+                points, fill=(connector_line_colour), width=connector_line_width
+            )
         return right_angle_point
 
     def draw_arrow(
@@ -617,10 +637,23 @@ class Painter:
         x2: int,
         y2: int,
         label: str = "",
-        cross_pool_connection: bool = False,
+        connection_style: str = "solid",
+        connector_font: str = "",
+        connector_font_size: int = 0,
+        connector_font_color: str = "",
+        connector_line_width: int = 0,
+        connector_line_colour: str = "",
+        connector_arrow_colour: str = "",
+        connector_arrow_size: int = 0,
     ):
         right_angle_point = self.draw_right_angle_line(
-            x1, y1, x2, y2, cross_pool_connection
+            x1,
+            y1,
+            x2,
+            y2,
+            connection_style,
+            connector_line_width,
+            connector_line_colour,
         )
         label_x_pos, label_y_pos = right_angle_point
 
@@ -636,10 +669,32 @@ class Painter:
         # print(
         #     f"drawing [{label}] at {label_x_pos}, {label_y_pos}, {label_w}, {label_h}"
         # )
-        self.draw_text(label_x_pos, label_y_pos, label, "arial.ttf", 12, "black")
-        self.draw_arrow_head(right_angle_point[0], right_angle_point[1], x2, y2)
+        self.draw_text(
+            label_x_pos,
+            label_y_pos,
+            label,
+            connector_font,
+            connector_font_size,
+            connector_font_color,
+        )
+        self.draw_arrow_head(
+            right_angle_point[0],
+            right_angle_point[1],
+            x2,
+            y2,
+            connector_arrow_colour,
+            connector_arrow_size,
+        )
 
-    def draw_arrow_head(self, x1, y1, x2, y2):
+    def draw_arrow_head(
+        self,
+        x1: int,
+        y1: int,
+        x2: int,
+        y2: int,
+        connector_arrow_colour: str,
+        connector_arrow_size: int,
+    ):
         # self.set_colour("black")
 
         dx = x2 - x1
@@ -659,8 +714,8 @@ class Painter:
         # points forming arrowhead
         # with length L and half-width H
         # arrowend = end
-        length = 10
-        height = 5
+        length = connector_arrow_size
+        height = connector_arrow_size - 5
         left_x = x2 - length * normalised_dx + height * perpendicular_vector_x
         left_y = y2 - length * normalised_dy + height * perpendicular_vector_y
 
@@ -668,7 +723,7 @@ class Painter:
         right_y = y2 - length * normalised_dy - height * perpendicular_vector_y
 
         shape = [(x2, y2), (left_x, left_y), (right_x, right_y), (x2, y2)]
-        self.__cr.polygon(shape, fill="black")
+        self.__cr.polygon(shape, fill=connector_arrow_colour)
 
     def get_box_connection_points(self, x, y, width, height):
         ### get the connection points for the corners of the box
