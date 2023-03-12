@@ -22,6 +22,12 @@ class Shape:
     name: str = field(init=True, default="")
     lane_id: int = field(init=True, default=0)
     pool_name: str = field(init=True, default="")
+    font: str = field(init=False, default=None)
+    font_size: int = field(init=False, default=None)
+    font_colour: str = field(init=False, default=None)
+    fill_colour: str = field(init=False, default=None)
+    text_alignment: str = field(init=False, default=None)
+
     x: int = field(init=False, default=0)
     y: int = field(init=False, default=0)
     width: int = field(init=False, default=0)
@@ -228,7 +234,7 @@ class Shape:
         source_points = self.points
         # print(f"Points for shape: {self.name}")
         if self.connection_to:
-            cross_pool_connection = False
+            connection_style = "solid"
             for connection in self.connection_to:
 
                 target_points = connection.target.points
@@ -267,7 +273,7 @@ class Shape:
                     ) = self.find_nearest_points_same_pool_diff_lanes(
                         source_points, target_points
                     )
-                    cross_pool_connection = True
+                    connection_style = "dashed"
 
                 self.outgoing_points.append(point_from)
                 connection.target.incoming_points.append(point_to)
@@ -277,7 +283,14 @@ class Shape:
                     point_to[0],
                     point_to[1],
                     connection.label,
-                    cross_pool_connection,
+                    connection_style,
+                    painter.connector_font,
+                    painter.connector_font_size,
+                    painter.connector_font_colour,
+                    painter.connector_line_width,
+                    painter.connector_line_colour,
+                    painter.connector_arrow_colour,
+                    painter.connector_arrow_size,
                 )
 
         # painter.draw_line(
@@ -338,12 +351,12 @@ class Box(Shape):
             self.y,
             self.width,
             self.height,
-            "darkgray",
+            self.fill_colour,
             self.name,
-            text_alignment="centre",
-            text_font="arial.ttf",
-            text_font_size=12,
-            text_font_colour="black",
+            text_alignment=self.text_alignment,
+            text_font=self.font,
+            text_font_size=self.font_size,
+            text_font_colour=self.font_colour,
         )
 
         super().draw(painter)
@@ -380,7 +393,7 @@ class Circle(Shape):
             ),
         }
         self.text_width, self.text_height = painter.get_text_dimension(
-            self.name, "arial.ttf", 10
+            self.name, self.font, self.font_size
         )
         self.text_x = self.x + (self.width / 2) - (self.text_width / 2)
         self.text_y = self.y + self.radius
@@ -392,8 +405,15 @@ class Circle(Shape):
 
     def draw(self, painter: Painter):
         # print(f"draw ({self.text}), x: {self.x}, y: {self.y}, radius: {self.radius}")
-        painter.draw_circle(self.x, self.y, self.radius, "darkgray")
-        painter.draw_text(self.text_x, self.text_y, self.name, "arial.ttf", 10, "black")
+        painter.draw_circle(self.x, self.y, self.radius, self.fill_colour)
+        painter.draw_text(
+            self.text_x,
+            self.text_y,
+            self.name,
+            self.font,
+            self.font_size,
+            self.font_colour,
+        )
         super().draw(painter)
         # painter.draw_circle(self.points["top"][0], self.points["top"][1], 4, "red")
 
@@ -416,7 +436,7 @@ class Diamond(Shape):
             "left_middle": (self.x, self.y + self.height / 2),
         }
         self.text_width, self.text_height = painter.get_text_dimension(
-            self.name, "arial.ttf", 10
+            self.name, self.font, self.font_size
         )
         self.text_x = self.x + (self.width / 2) - (self.text_width / 2)
         self.text_y = self.y + self.height
@@ -431,10 +451,15 @@ class Diamond(Shape):
         #     f"draw <{self.text}>, x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
         # )
         painter.draw_diamond(
-            self.x, self.y, self.width, self.height, fill_colour="grey"
+            self.x, self.y, self.width, self.height, fill_colour=self.fill_colour
         )
         painter.draw_text(
-            self.text_x, self.text_y, self.name, "arial.ttf", 10, font_colour="black"
+            self.text_x,
+            self.text_y,
+            self.name,
+            self.font,
+            self.font_size,
+            font_colour=self.font_colour,
         )
 
         super().draw(painter)
