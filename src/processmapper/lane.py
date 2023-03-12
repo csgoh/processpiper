@@ -42,33 +42,60 @@ class ElementType(str, Enum):
 
 @dataclass
 class Lane:
+    name: str = field(init=True)
+    pool_text: str = field(init=True, default="")
+    font: str = field(init=True, default=None)
+    font_size: int = field(init=True, default=None)
+    font_colour: str = field(init=True, default=None)
+    fill_colour: str = field(init=True, default=None)
+    text_alignment: str = field(init=True, default=None)
+    background_fill_colour: str = field(init=True, default=None)
+    painter: Painter = field(init=True, default=None)
+
     id: int = field(init=False, default_factory=count().__next__)
     shapes: list = field(init=False, default_factory=list)
     x: int = field(init=False, default=0)
     y: int = field(init=False, default=0)
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
-    name: str = field(init=True)
-    pool_text: str = field(init=True, default="")
-    painter: Painter = field(init=False)
-
     next_shape_x: int = field(init=False, default=0)
     next_shape_y: int = field(init=False, default=0)
-
     shape_row_count: int = field(init=False, default=0)
-
     text_x: int = field(init=False, default=0)
     text_y: int = field(init=False, default=0)
     text_width: int = field(init=False, default=0)
     text_height: int = field(init=False, default=0)
 
     def add_element(
-        self, name: str, type: EventType | ActivityType | GatewayType
+        self,
+        name: str,
+        type: EventType | ActivityType | GatewayType,
+        font: str = "",
+        font_size: int = 0,
+        font_colour: str = "",
+        fill_colour: str = "",
+        text_alignment: str = "",
     ) -> Shape:
+        if font == "":
+            font = self.painter.element_font
+        if font_size == 0:
+            font_size = self.painter.element_font_size
+        if font_colour == "":
+            font_colour = self.painter.element_font_colour
+        if fill_colour == "":
+            fill_colour = self.painter.element_fill_colour
+        if text_alignment == "":
+            text_alignment = self.painter.element_text_alignment
+
         event_class = globals()[type]
         element = event_class(name, self.name)
         element.lane_id = self.id
         element.pool_name = self.pool_text
+        element.font = font
+        element.font_size = font_size
+        element.font_colour = font_colour
+        element.fill_colour = fill_colour
+        element.text_alignment = text_alignment
         self.shapes.append(element)
         return element
 
@@ -129,7 +156,8 @@ class Lane:
             self.y,
             self.width,
             self.height,
-            "#d9d9d9",
+            # "#d9d9d9",
+            self.background_fill_colour,
         )
         ### Draw the lane text box
         self.painter.draw_box_with_vertical_text(
@@ -137,12 +165,12 @@ class Lane:
             self.y,
             Configs.LANE_TEXT_WIDTH,
             self.height,
-            "#474747",
+            self.fill_colour,
             self.name,
-            text_alignment="centre",
-            text_font="arial",
-            text_font_size=12,
-            text_font_colour="white",
+            text_alignment=self.text_alignment,
+            text_font=self.font,
+            text_font_size=self.font_size,
+            text_font_colour=self.font_colour,
         )
         ### Draw the lane text divider
         self.painter.draw_line(
