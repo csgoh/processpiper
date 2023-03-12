@@ -15,7 +15,7 @@ class End(Event):
     def draw(self, painter: Painter):
         super().draw(painter)
         painter.draw_circle(self.x, self.y, self.radius, "black")
-        painter.draw_circle(self.x, self.y, self.radius - 3, "grey")
+        painter.draw_circle(self.x, self.y, self.radius - 3, self.fill_colour)
 
 
 class Timer(Event):
