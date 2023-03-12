@@ -24,9 +24,10 @@ class Title:
         )
         return self.x, self.y, self.width, self.height
 
-    def draw(self, painter: Painter = None):
-        if painter is None:
-            painter = self.painter
-        painter.draw_text(
+    def draw(self):
+        print(
+            f"{self.name} x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}, font: {self.font}, font_size: {self.font_size}, font_colour: {self.font_colour}"
+        )
+        self.painter.draw_text(
             self.x, self.y, self.name, self.font, self.font_size, self.font_colour
         )

@@ -5,9 +5,9 @@ from processmapper.painter import Painter
 @dataclass
 class Footer:
     name: str = field(init=True)
-    font: str = field(init=True, default="arial.ttf")
-    font_size: int = field(init=True, default=18)
-    font_colour: str = field(init=True, default="black")
+    font: str = field(init=True, default=None)
+    font_size: int = field(init=True, default=None)
+    font_colour: str = field(init=True, default=None)
 
     x: int = field(init=False, default=0)
     y: int = field(init=False, default=0)
