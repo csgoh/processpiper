@@ -365,7 +365,6 @@ class Painter:
             ### Rotate text
             rotated_img = Image.new("RGBA", (font_width, font_height))
             rotated_draw = ImageDraw.Draw(rotated_img)
-            print(f"text_font_colour = {text_font_colour}")
             rotated_draw.text((0, 0), line, font=font, fill=(text_font_colour))
             rotated_img = rotated_img.rotate(90, expand=1)
             # print(f"    rotated {rotated_img.size}, {x}, {y}")
@@ -526,10 +525,6 @@ class Painter:
             else:
                 right_angle_point = (x2, y1)
 
-        print(
-            f"x1={x1}, y1={y1}, x2={x2}, y2={y2}, right_angle_point={right_angle_point}"
-        )
-
         self.draw_horizontal_dashed_line(
             x1, y1, right_angle_point[0], right_angle_point[1]
         )
@@ -546,7 +541,6 @@ class Painter:
         for i in range(len(points) - 1):
             x1, y1 = points[i]
             x2, y2 = points[i + 1]
-            print(f"Points {points}")
             if x1 == x2:
                 self.draw_vertical_dashed_line(
                     x1, y1, x2, y2, connector_line_width, connector_line_colour
