@@ -73,7 +73,7 @@ class Pool:
 
     def draw(self):
         if self.name != "Default Pool":
-            Helper.printc(f"Drawing pool: {self.name}", "34")
+            # Helper.printc(f"Drawing pool: {self.name}", "34")
             # self.painter.draw_box(
             #     self.x,
             #     self.y,
@@ -81,9 +81,6 @@ class Pool:
             #     self.height,
             #     self.fill_colour,
             # )
-            print(
-                f"Drawing pool: {self.name}, {self.font}, {self.font_size}, {self.font_colour}, {self.fill_colour}, {self.text_alignment}"
-            )
             ### Draw the pool text box
             self.painter.draw_box_with_vertical_text(
                 self.x,
