@@ -148,7 +148,7 @@ class ProcessMap:
             for lane in pool._lanes:
                 for shape in lane.shapes:
                     ### If the shape has no connection_from, it is the start shape
-                    # print(f"{shape.name} - {len(shape.connection_from)}")
+                    print(f"{shape.name} - {len(shape.connection_from)}")
                     if len(shape.connection_from) == 0:
                         # print(
                         #     f"Found start shape: <{shape.name}>, lane_id: {shape.lane_id}"
@@ -199,25 +199,25 @@ class ProcessMap:
                     # print(f"pool name: {current_shape.pool_name}")
                     if previous_shape.lane_id == current_shape.lane_id:
                         current_shape.x = self.get_next_x_position()
-                        # print(f"          same pool same lane")
+                        print(f"          same pool same lane")
                     else:
                         current_shape.x = self.get_next_x_position()
-                        # print(f"          same pool diff lane")
+                        print(f"          same pool diff lane")
                 else:
                     previous_pool = self.get_pool_by_name(previous_shape.pool_name)
                     current_shape.x = self.get_next_x_position()
-                    # print(f"          diff pool")
+                    print(f"          diff pool")
             else:
                 current_shape.x = self.get_next_x_position()
-                # print(f"          previous = none")
+                print(f"          previous = none")
         else:
             ### If previous shape is connecting to multiple shapes,
             ### the x position of the shape is the same as the previous shape
             current_shape.x = x_pos
         current_lane.width = max(current_lane.width, current_shape.x + 100)
-        # print(
-        #     f"          x={current_shape.x}, y={current_shape.y}, w={current_shape.width}, [{current_lane.name}]"
-        # )
+        print(
+            f"          x={current_shape.x}, y={current_shape.y}, w={current_shape.width}, [{current_lane.name}]"
+        )
 
         self.lane_max_width = max(self.lane_max_width, current_lane.width)
         current_shape.x_pos_traversed = True
@@ -231,7 +231,7 @@ class ProcessMap:
             next_shape = next_connection.target
             if next_shape.x_pos_traversed is True:
                 continue
-            # print(f"    |{index}| - <{next_shape.name}>")
+            print(f"    |{index}| - <{next_shape.name}>")
             if index == 0:
                 preserved_x_pos = self.set_shape_x_position(
                     current_shape, next_shape, index, preserved_x_pos
@@ -272,7 +272,7 @@ class ProcessMap:
             Configs.SURFACE_LEFT_MARGIN, Configs.SURFACE_TOP_MARGIN, painter
         )
 
-        # Helper.printc("***Setting x position...")
+        Helper.printc("***Setting x position...")
         start_shape = self.find_start_shape()
 
         self.set_shape_x_position(None, start_shape, 0, 0)
@@ -311,7 +311,7 @@ class ProcessMap:
 
             pool.set_draw_position(Configs.SURFACE_LEFT_MARGIN, first_lane_y, painter)
 
-        # Helper.printc(f"***Setting y position...")
+        Helper.printc(f"***Setting y position...")
         self.set_shape_y_position(start_shape)
 
         ### Set process map footer
