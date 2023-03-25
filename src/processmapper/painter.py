@@ -554,34 +554,80 @@ class Painter:
         self,
         x1: int,
         y1: int,
+        face1: str,
         x2: int,
         y2: int,
+        face2: str,
         connection_style: str,
         connector_line_width: int = 0,
         connector_line_colour: str = "",
     ):
+        print(
+            f"x1: {x1}, y1: {y1}, face1: {face1}, x2: {x2}, y2: {y2}, face2: {face2}, connection_style: {connection_style}, connector_line_width: {connector_line_width}, connector_line_colour: {connector_line_colour}"
+        )
         if x1 == x2 and y1 == y2:
+            print(
+                f"   A: right_angle_line: x1 == x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}"
+            )
             points = [(x1, y1)]
             right_angle_point = (x1, y1)
 
         if x1 != x2 and y1 == y2:
+            print(
+                f"   B: right_angle_line: x1 != x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}"
+            )
             points = [(x1, y1), (x2, y1)]
             right_angle_point = (x1, y1)
 
         if x1 == x2 and y1 != y2:
+            print(
+                f"   C: right_angle_line: x1 == x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+            )
             points = [(x1, y1), (x1, y2)]
             right_angle_point = (x1, y1)
 
         if x1 != x2 and y1 != y2:
-            # print(x1, y1, x2, y2)
-            points = [(x1, y1), (x1, y2), (x2, y2)]
-            right_angle_point = (x1, y2)
+            # check if face1 string contained the word "right"
+            if face1.find("bottom") != -1:
+                print(
+                    f"   D-bottom: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+                )
+                # if so, then the line should be drawn from the bottom side of the box
+                points = [(x1, y1), (x1, y2), (x2, y2)]
+                right_angle_point = (x1, y2)
+            elif face1.find("right") != -1:
+                print(
+                    f"   D-right: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+                )
+                if face2.find("left") != -1:
+                    # points = [(x1, y1), (x1, y2), (x2, y2)]
+                    elbow_height = 40
+                    points = [
+                        (x1, y1),
+                        (x1 + elbow_height, y1),
+                        (x1 + elbow_height, y2),
+                        (x2, y2),
+                    ]
+                    right_angle_point = (x1 + elbow_height, y2)
+                else:
+                    points = [(x1, y1), (x2, y1), (x2, y2)]
+                    right_angle_point = (x2, y1)
+            else:
+                print(
+                    f"   D-else: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+                )
+                # if so, then the line should be drawn from the bottom side of the box
+                points = [(x1, y1), (x1, y2), (x2, y2)]
+                right_angle_point = (x1, y2)
             # for point in points:
             #     self.draw_circle(point[0], point[1], 4, "yellow")
 
         if x1 > x2:
             if y1 <= y2:
                 if abs(y1 - y2) == 10:
+                    print(
+                        f"   E: right_angle_line: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}"
+                    )
                     elbow_height = 40
                     points = [
                         (x1, y1),
@@ -593,6 +639,9 @@ class Painter:
                     #     self.draw_circle(point[0], point[1], 2, "magenta")
                     right_angle_point = (x2, y1 - elbow_height)
                 if abs(y1 - y2) >= 100:
+                    print(
+                        f"   F: right_angle_line: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}"
+                    )
                     elbow_height = 40
                     points = [
                         (x1, y1),
@@ -605,6 +654,9 @@ class Painter:
                     right_angle_point = (x2, y1 - elbow_height)
             elif y1 > y2:
                 if len(points) == 0:
+                    print(
+                        f"   G: right_angle_line: x1 > x2 and y1 > y2: {x1}, {y1}, {x2}, {y2}"
+                    )
                     elbow_height = (y1 - y2) / 2
                     points = [
                         (x1, y1),
@@ -624,12 +676,14 @@ class Painter:
             )
         return right_angle_point
 
-    def draw_arrow(
+    def draw_line_and_arrow(
         self,
         x1: int,
         y1: int,
+        face1: str,
         x2: int,
         y2: int,
+        face2: str,
         label: str = "",
         connection_style: str = "solid",
         connector_font: str = "",
@@ -643,8 +697,10 @@ class Painter:
         right_angle_point = self.draw_right_angle_line(
             x1,
             y1,
+            face1,
             x2,
             y2,
+            face2,
             connection_style,
             connector_line_width,
             connector_line_colour,

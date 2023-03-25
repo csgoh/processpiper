@@ -321,16 +321,21 @@ class ProcessMap:
                 y + Configs.VSPACE_BETWEEN_POOL_AND_FOOTER,
                 painter,
             )
+            self.height = (
+                self._footer.y + self._footer.height + Configs.SURFACE_BOTTOM_MARGIN
+            )
+        else:
+            self.height = (
+                y
+                + Configs.VSPACE_BETWEEN_POOL_AND_FOOTER
+                + Configs.SURFACE_BOTTOM_MARGIN
+            )
 
         self.width = (
             Configs.SURFACE_LEFT_MARGIN
             + Configs.POOL_TEXT_WIDTH
             + self.lane_max_width
             + Configs.SURFACE_LEFT_MARGIN
-        )
-
-        self.height = (
-            self._footer.y + self._footer.height + Configs.SURFACE_BOTTOM_MARGIN
         )
 
     def draw(self) -> None:
