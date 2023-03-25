@@ -232,11 +232,11 @@ def test_case10():
                 check_extra_insurance = lane2.add_element(
                     "Check if extra insurance is needed", ActivityType.TASK
                 )
-                branching3 = lane2.add_element("b3", GatewayType.INCLUSIVE)
+                branching3 = lane2.add_element("", GatewayType.INCLUSIVE)
                 fill_in_post = lane2.add_element(
                     "Fill in a Post label", ActivityType.TASK
                 )
-                branching4 = lane2.add_element("b4", GatewayType.INCLUSIVE)
+                branching4 = lane2.add_element("", GatewayType.INCLUSIVE)
 
                 request_quote = lane2.add_element(
                     "Request quotes from carriers", ActivityType.TASK
@@ -244,11 +244,11 @@ def test_case10():
                 assign_carrier = lane2.add_element(
                     "Assign carrier & prepare paper work", ActivityType.TASK
                 )
-                branching5 = lane2.add_element("b5", GatewayType.EXCLUSIVE)
+                branching5 = lane2.add_element("", GatewayType.EXCLUSIVE)
 
             with pool1.add_lane("Warehouse Worker") as lane3:
                 package_goods = lane3.add_element("Package goods", ActivityType.TASK)
-                branching6 = lane3.add_element("b6", GatewayType.PARALLEL)
+                branching6 = lane3.add_element("", GatewayType.PARALLEL)
                 add_paperwork = lane3.add_element(
                     "Add paperwork to move package to pick area", ActivityType.TASK
                 )
@@ -317,4 +317,4 @@ if __name__ == "__main__":
     # test_case8()
     # test_case9()
     test_case10()
-    test_case12()
+    # test_case12()
