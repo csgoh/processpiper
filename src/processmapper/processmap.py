@@ -7,6 +7,7 @@ from processmapper.title import Title
 from processmapper.footer import Footer
 import processmapper.constants as Configs
 import processmapper.helper as Helper
+import time
 
 
 @dataclass
@@ -27,6 +28,7 @@ class ProcessMap:
     lane_max_width: int = field(init=False, default=0)
 
     def __post_init__(self):
+        self.start_time = time.time()
         self.__painter = Painter(self.width, self.height)
         self.__set_colour_theme(self.colour_theme)
         self._title = Title(
@@ -436,6 +438,9 @@ class ProcessMap:
 
     def save(self, filename: str) -> None:
         self.__painter.save_surface(filename)
+
+        elapsed_time = (time.time() - self.start_time) * 1000
+        print(f"Took [{elapsed_time:.2f}ms] to generate '{filename}' diagram")
 
     def __enter__(self):
         return self
