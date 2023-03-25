@@ -171,10 +171,11 @@ class ProcessMap:
         return None
 
     ### Check how many rows of shapes are in the lane
-    def check_lane_shape_row_count(self, shape: Shape) -> int:
+    def check_lane_shape_row_count_old(self, shape: Shape) -> int:
         row_count = 0
         lane = self.get_lane_by_id(shape.lane_id)
         if len(shape.connection_to) <= 1:
+            print(f">lane: {lane.name} - {(shape.name)}, row_count: 1")
             return 1
         else:
             for connection in shape.connection_to:
@@ -182,6 +183,51 @@ class ProcessMap:
                 if shape.lane_id == target_shape.lane_id:
                     row_count += 1
 
+        print(f"->lane: {lane.name} - {(shape.name)}, row_count: {row_count}")
+        return row_count
+
+    ### Check how many rows of shapes are in the lane
+    def check_lane_shape_row_count(self, shape: Shape) -> int:
+        row_count = 0
+        lane = self.get_lane_by_id(shape.lane_id)
+        shape_y_pos = []
+        for lane_shape in lane.shapes:
+            print(f"lane_shape: {lane_shape.name}, {lane_shape.y}, shape.y: {shape.y}")
+            if lane_shape.y not in shape_y_pos:
+                shape_y_pos.append(lane_shape.y)
+
+        Helper.printc(
+            f"      =>lane: {lane.name} - {(shape.name)}, row_count: {len(shape_y_pos)}",
+            "31",
+        )
+        return len(shape_y_pos)
+
+    def check_lane_row_count(self, lane: Lane) -> int:
+        row_count = 0
+
+        for item, lane_shape in enumerate(lane.shapes):
+            if item == 0:
+                row_count = 1
+            if len(lane_shape.connection_to) > 1:
+                connection_count = 1
+                for connection in lane_shape.connection_to:
+                    target_shape = connection.target
+                    if lane_shape.lane_id == target_shape.lane_id:
+                        connection_count += 1
+                row_count = max(row_count, connection_count)
+
+            if len(lane_shape.connection_from) > 1:
+                connection_count = 1
+                for connection in lane_shape.connection_from:
+                    source_shape = connection
+                    if lane_shape.lane_id == source_shape.lane_id:
+                        connection_count += 1
+                row_count = max(row_count, connection_count)
+
+        Helper.printc(
+            f"      =>lane: {lane.name} - row_count: {row_count}",
+            "31",
+        )
         return row_count
 
     def set_shape_x_position(
@@ -192,6 +238,9 @@ class ProcessMap:
         x_pos: int = 0,
     ):
         current_lane = self.get_lane_by_id(current_shape.lane_id)
+        Helper.printc(
+            f"set_shape_x_position: {current_lane.name}, {current_shape.name}", "34"
+        )
         if index == 0:
             current_pool = self.get_pool_by_name(current_shape.pool_name)
             if previous_shape is not None:
@@ -222,9 +271,9 @@ class ProcessMap:
         self.lane_max_width = max(self.lane_max_width, current_lane.width)
         current_shape.x_pos_traversed = True
 
-        current_lane.shape_row_count = max(
-            current_lane.shape_row_count, self.check_lane_shape_row_count(current_shape)
-        )
+        # current_lane.shape_row_count = max(
+        #     current_lane.shape_row_count, self.check_lane_shape_row_count(current_shape)
+        # )
 
         preserved_x_pos = 0
         for index, next_connection in enumerate(current_shape.connection_to):
@@ -272,10 +321,17 @@ class ProcessMap:
             Configs.SURFACE_LEFT_MARGIN, Configs.SURFACE_TOP_MARGIN, painter
         )
 
-        Helper.printc("***Setting x position...")
+        Helper.printc("*** Setting elements' x position...")
         start_shape = self.find_start_shape()
 
         self.set_shape_x_position(None, start_shape, 0, 0)
+
+        Helper.printc(f"*** Setting elements' y position...")
+        # self.set_shape_y_position(start_shape)
+
+        # for pool in self._pools:
+        #     for lane in pool._lanes:
+        #         lane.shape_row_count = self.check_lane_row_count(lane)
 
         x, y = (
             0,
@@ -293,15 +349,18 @@ class ProcessMap:
                 )
                 lane.y = y if y > 0 else Configs.SURFACE_TOP_MARGIN
                 lane.width = self.lane_max_width
+
+                lane.shape_row_count = self.check_lane_row_count(lane)
+
                 lane.height = (
                     (lane.shape_row_count * 60)
                     + ((lane.shape_row_count - 1) * Configs.VSPACE_BETWEEN_SHAPES)
                     + Configs.LANE_SHAPE_TOP_MARGIN
                     + Configs.LANE_SHAPE_BOTTOM_MARGIN
                 )
-                # print(
-                #     f"lane.height: {lane.height} = ({lane.shape_row_count} * 60) + ({lane.shape_row_count} - 1) * {Configs.VSPACE_BETWEEN_SHAPES} + {Configs.LANE_SHAPE_TOP_MARGIN} + {Configs.LANE_SHAPE_BOTTOM_MARGIN}"
-                # )
+                print(
+                    f"{lane.name}, height: {lane.height} = ({lane.shape_row_count} * 60) + ({lane.shape_row_count} - 1) * {Configs.VSPACE_BETWEEN_SHAPES} + {Configs.LANE_SHAPE_TOP_MARGIN} + {Configs.LANE_SHAPE_BOTTOM_MARGIN}"
+                )
                 y = lane.y + lane.height + Configs.VSPACE_BETWEEN_LANES
                 # print(f"{x} = {lane.y} + {lane.height} + {lane.VSPACE_BETWEEN_LANES}")
 
@@ -311,7 +370,6 @@ class ProcessMap:
 
             pool.set_draw_position(Configs.SURFACE_LEFT_MARGIN, first_lane_y, painter)
 
-        Helper.printc(f"***Setting y position...")
         self.set_shape_y_position(start_shape)
 
         ### Set process map footer

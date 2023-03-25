@@ -90,9 +90,9 @@ class Shape:
             for target_name, target_points in points_target.items():
                 distance = self.get_distance(source_points, target_points)
 
-                print(
-                    f"  S:{source_name}, {source_points}, T:{target_name}, {target_points}, {distance}"
-                )
+                # print(
+                #     f"  S:{source_name}, {source_points}, T:{target_name}, {target_points}, {distance}"
+                # )
                 if (
                     distance
                     < shortest_distance
@@ -111,7 +111,7 @@ class Shape:
         del points_source[nearest_points["source_name"]]
         del points_target[nearest_points["target_name"]]
 
-        print(f"  Nearest points: {nearest_points}")
+        print(f"        Nearest : {nearest_points}")
         return (
             nearest_points["source_points"],
             nearest_points["source_name"],
@@ -238,7 +238,7 @@ class Shape:
 
         # draw connection
         source_points = self.points
-        Helper.printc(f"Draw connection for shape: {self.name}")
+        Helper.printc(f"Draw connection for shape: [{self.name}]")
         if self.connection_to:
             connection_style = "solid"
             for connection in self.connection_to:
@@ -247,7 +247,7 @@ class Shape:
 
                 if self.is_same_lane(self, connection.target):
                     print(
-                        f"Same lane: Connection between {self.name} and {connection.target.name}"
+                        f"Same lane: Connection between [{self.name}] and [{connection.target.name}]"
                     )
                     (
                         point_from,
@@ -257,7 +257,7 @@ class Shape:
                     ) = self.find_nearest_points(source_points, target_points)
                 elif self.is_same_pool(self, connection.target):
                     print(
-                        f"Same Pool: Connection between {self.name} and {connection.target.name}"
+                        f"Same Pool: Connection between [{self.name}] and [{connection.target.name}]"
                     )
                     (
                         point_from,
@@ -267,13 +267,13 @@ class Shape:
                     ) = self.find_nearest_points_same_pool_diff_lanes(
                         source_points, target_points
                     )
-                    print(
-                        f"{self.name} and {connection.target.name}, Same pool: {self.pool_name}"
-                    )
+                    # print(
+                    #     f"  {self.name} and {connection.target.name}, Same pool: {self.pool_name}"
+                    # )
                     ...
                 else:  # different pool
                     print(
-                        f"Diff Pool: Connection between {self.name} and {connection.target.name}"
+                        f"Diff Pool: Connection between [{self.name}] and [{connection.target.name}]"
                     )
                     (
                         point_from,

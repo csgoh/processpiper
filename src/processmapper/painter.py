@@ -563,7 +563,7 @@ class Painter:
         connector_line_colour: str = "",
     ):
         print(
-            f"x1: {x1}, y1: {y1}, face1: {face1}, x2: {x2}, y2: {y2}, face2: {face2}, connection_style: {connection_style}, connector_line_width: {connector_line_width}, connector_line_colour: {connector_line_colour}"
+            f"      x1: {x1}, y1: {y1}, face1: {face1}, x2: {x2}, y2: {y2}, face2: {face2}"
         )
         if x1 == x2 and y1 == y2:
             print(
