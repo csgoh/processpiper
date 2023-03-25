@@ -232,11 +232,11 @@ def test_case10():
                 check_extra_insurance = lane2.add_element(
                     "Check if extra insurance is needed", ActivityType.TASK
                 )
-                branching3 = lane2.add_element("", GatewayType.INCLUSIVE)
+                branching3 = lane2.add_element("b3", GatewayType.INCLUSIVE)
                 fill_in_post = lane2.add_element(
                     "Fill in a Post label", ActivityType.TASK
                 )
-                branching4 = lane2.add_element("", GatewayType.INCLUSIVE)
+                branching4 = lane2.add_element("b4", GatewayType.INCLUSIVE)
 
                 request_quote = lane2.add_element(
                     "Request quotes from carriers", ActivityType.TASK
@@ -244,11 +244,11 @@ def test_case10():
                 assign_carrier = lane2.add_element(
                     "Assign carrier & prepare paper work", ActivityType.TASK
                 )
-                branching5 = lane2.add_element("", GatewayType.EXCLUSIVE)
+                branching5 = lane2.add_element("b5", GatewayType.EXCLUSIVE)
 
             with pool1.add_lane("Warehouse Worker") as lane3:
                 package_goods = lane3.add_element("Package goods", ActivityType.TASK)
-                branching6 = lane3.add_element("", GatewayType.PARALLEL)
+                branching6 = lane3.add_element("b6", GatewayType.PARALLEL)
                 add_paperwork = lane3.add_element(
                     "Add paperwork to move package to pick area", ActivityType.TASK
                 )
@@ -275,6 +275,41 @@ def test_case10():
             my_process_map.save("my_process_map_test_case10.png")
 
 
+def test_case11():
+    # 1: Test gateway branching to two tasks in two lanes
+    # 2: Test two tasks merging into one gateway
+    with ProcessMap("Test Case 11") as my_process_map:
+        with my_process_map.add_lane("Lane 1") as lane1:
+            branch1 = lane1.add_element("fan out", GatewayType.PARALLEL)
+            task1 = lane1.add_element("Task 1", ActivityType.TASK)
+            task2 = lane1.add_element("Task 2", ActivityType.TASK)
+            branch2 = lane1.add_element("fan in", GatewayType.PARALLEL)
+
+            branch1.connect(task1).connect(branch2)
+            branch1.connect(task2).connect(branch2)
+
+            my_process_map.draw()
+            my_process_map.save("my_process_map_test_case11.png")
+
+
+def test_case12():
+    with ProcessMap("Test Case 11") as my_process_map:
+        with my_process_map.add_pool("Hardware Retailer") as pool1:
+            with pool1.add_lane("Lane 1") as lane1:
+                task1 = lane1.add_element("Task 1", ActivityType.TASK)
+
+            with pool1.add_lane("Lane 2") as lane2:
+                branch1 = lane2.add_element("fan out", GatewayType.PARALLEL)
+                task2 = lane2.add_element("Task 2", ActivityType.TASK)
+                branch2 = lane2.add_element("fan in", GatewayType.PARALLEL)
+
+                branch1.connect(task1).connect(branch2)
+                branch1.connect(task2).connect(branch2)
+
+                my_process_map.draw()
+                my_process_map.save("my_process_map_test_case12.png")
+
+
 if __name__ == "__main__":
     # test_case5()
     # test_case6()
@@ -282,3 +317,4 @@ if __name__ == "__main__":
     # test_case8()
     # test_case9()
     test_case10()
+    test_case12()
