@@ -1,6 +1,6 @@
 import math
-from processmapper.shape import Circle
-from processmapper.painter import Painter
+from processpiper.shape import Circle
+from processpiper.painter import Painter
 
 
 class Event(Circle):

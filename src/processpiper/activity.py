@@ -1,5 +1,5 @@
-from processmapper.shape import Box
-from processmapper.painter import Painter
+from processpiper.shape import Box
+from processpiper.painter import Painter
 
 
 class Activity(Box):

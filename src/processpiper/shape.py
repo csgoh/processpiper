@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 import math
 from itertools import count
-from processmapper.painter import Painter
-from processmapper.connection import Connection
+from processpiper.painter import Painter
+from processpiper.connection import Connection
 from typing import TypeVar
-import processmapper.helper as Helper
+import processpiper.helper as Helper
 
 TShape = TypeVar("TShape", bound="Shape")
 

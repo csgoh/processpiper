@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from processmapper.painter import Painter
+from processpiper.painter import Painter
 
 
 @dataclass
