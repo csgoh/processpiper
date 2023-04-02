@@ -90,5 +90,6 @@ These are a list of items that need to be implemented or fixed before the initia
 ![Process Map](https://github.com/csgoh/processmapper/blob/main/ORANGEPEEL-my_process_map_test_case10.png)
 ![Process Map](https://github.com/csgoh/processmapper/blob/main/GREYWOOF-my_process_map_test_case10.png)
 - [X] Connection that crosses pool boundary should begin with a white circle/dot and end with a white arrow.
+- [X] Renamed from ProcessMap to ProcessPiper
 - [ ] Clean up code
 - [ ] More testing!
