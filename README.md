@@ -83,6 +83,10 @@ These are a list of items that need to be implemented or fixed before the initia
 - [X] Connection that crosses pool boundary will be drawn as a dotted line
 - [X] Fix the connection alignment issue ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case10.png)
 - [X] Support colour themes
+![Process Map](https://github.com/csgoh/processmapper/blob/main/BLUEMOUNTAIN-my_process_map_test_case10.png)
+![Process Map](https://github.com/csgoh/processmapper/blob/main/GREENTURTLE-my_process_map_test_case10.png)
+![Process Map](https://github.com/csgoh/processmapper/blob/main/ORANGEPEEL-my_process_map_test_case10.png)
+![Process Map](https://github.com/csgoh/processmapper/blob/main/GREYWOOF-my_process_map_test_case10.png)
 - [ ] Connection that crosses pool boundary should begin with a white circle/dot and end with a white arrow.
 - [ ] Clean up code
 - [ ] More testing!
