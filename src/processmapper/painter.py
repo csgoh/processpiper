@@ -397,7 +397,18 @@ class Painter:
     def draw_circle(self, x: int, y: int, radius: float, colour: str) -> None:
         r, g, b = ImageColor.getrgb(colour)
         self.__cr.ellipse(
-            (x - radius, y - radius, x + radius, y + radius), fill=(r, g, b)
+            (x - radius, y - radius, x + radius, y + radius),
+            fill=(r, g, b),
+            outline=(r, g, b),
+        )
+
+    def draw_white_circle(self, x: int, y: int, radius: float, colour: str) -> None:
+        r, g, b = ImageColor.getrgb(colour)
+        self.__cr.ellipse(
+            (x - radius, y - radius, x + radius, y + radius),
+            fill="white",
+            outline=(r, g, b),
+            width=2,
         )
 
     def draw_dot(self, x: int, y: int, colour: str) -> None:
@@ -705,6 +716,7 @@ class Painter:
             connector_line_width,
             connector_line_colour,
         )
+
         label_x_pos, label_y_pos = right_angle_point
 
         label_w, label_h = self.get_multitext_dimension(label, "arial.ttf", 12)
@@ -727,14 +739,36 @@ class Painter:
             connector_font_size,
             connector_font_color,
         )
-        self.draw_arrow_head(
-            right_angle_point[0],
-            right_angle_point[1],
-            x2,
-            y2,
-            connector_arrow_colour,
-            connector_arrow_size,
-        )
+        # self.draw_arrow_head(
+        #     right_angle_point[0],
+        #     right_angle_point[1],
+        #     x2,
+        #     y2,
+        #     connector_arrow_colour,
+        #     connector_arrow_size,
+        # )
+        if connection_style == "dashed":
+            ### Draw round circle at the beginning of the line
+            self.draw_white_circle(x1, y1, 6, connector_arrow_colour)
+            # self.draw_circle(x1, y1, 4, "white")
+            # ### Draw white arrow head at the end of the line
+            self.draw_white_arrow_head(
+                right_angle_point[0],
+                right_angle_point[1],
+                x2,
+                y2,
+                connector_arrow_colour,
+                connector_arrow_size,
+            )
+        else:
+            self.draw_arrow_head(
+                right_angle_point[0],
+                right_angle_point[1],
+                x2,
+                y2,
+                connector_arrow_colour,
+                connector_arrow_size,
+            )
 
     def draw_arrow_head(
         self,
@@ -774,6 +808,45 @@ class Painter:
 
         shape = [(x2, y2), (left_x, left_y), (right_x, right_y), (x2, y2)]
         self.__cr.polygon(shape, fill=connector_arrow_colour)
+
+    def draw_white_arrow_head(
+        self,
+        x1: int,
+        y1: int,
+        x2: int,
+        y2: int,
+        connector_arrow_colour: str,
+        connector_arrow_size: int,
+    ):
+        # self.set_colour("black")
+
+        dx = x2 - x1
+        dy = y2 - y1
+
+        # vector length
+        vector_length = math.sqrt(dx * dx + dy * dy)
+
+        # normalized direction vector components
+        normalised_dx = dx / vector_length
+        normalised_dy = dy / vector_length
+
+        # perpendicular vector
+        perpendicular_vector_x = -normalised_dy
+        perpendicular_vector_y = normalised_dx
+
+        # points forming arrowhead
+        # with length L and half-width H
+        # arrowend = end
+        length = connector_arrow_size
+        height = connector_arrow_size - 5
+        left_x = x2 - length * normalised_dx + height * perpendicular_vector_x
+        left_y = y2 - length * normalised_dy + height * perpendicular_vector_y
+
+        right_x = x2 - length * normalised_dx - height * perpendicular_vector_x
+        right_y = y2 - length * normalised_dy - height * perpendicular_vector_y
+
+        shape = [(x2, y2), (left_x, left_y), (right_x, right_y), (x2, y2)]
+        self.__cr.polygon(shape, fill="white", outline="black", width=2)
 
     def get_box_connection_points(self, x, y, width, height):
         ### get the connection points for the corners of the box
