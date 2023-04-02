@@ -87,6 +87,6 @@ These are a list of items that need to be implemented or fixed before the initia
 ![Process Map](https://github.com/csgoh/processmapper/blob/main/GREENTURTLE-my_process_map_test_case10.png)
 ![Process Map](https://github.com/csgoh/processmapper/blob/main/ORANGEPEEL-my_process_map_test_case10.png)
 ![Process Map](https://github.com/csgoh/processmapper/blob/main/GREYWOOF-my_process_map_test_case10.png)
-- [ ] Connection that crosses pool boundary should begin with a white circle/dot and end with a white arrow.
+- [X] Connection that crosses pool boundary should begin with a white circle/dot and end with a white arrow.
 - [ ] Clean up code
 - [ ] More testing!
