@@ -91,7 +91,55 @@ default_colour_settings = {
     },
 }
 
-# greywoof_colour_settings = {}
+greywoof_colour_settings = {
+    "theme": "GREYWOOF",
+    "settings": {
+        "background": {
+            "background_fill_colour": "white",
+        },
+        "title": {
+            "title_font": DEFAULT_FONT,
+            "title_font_size": DEFAULT_TITLE_FONT_SIZE,
+            "title_font_colour": "#666666",
+        },
+        "pool": {
+            "pool_font": DEFAULT_FONT,
+            "pool_font_size": DEFAULT_POOL_FONT_SIZE,
+            "pool_font_colour": "white",
+            "pool_fill_colour": "#666666",
+            "pool_text_alignment": "centre",
+        },
+        "lane": {
+            "lane_font": DEFAULT_FONT,
+            "lane_font_size": DEFAULT_LANE_FONT_SIZE,
+            "lane_font_colour": "white",
+            "lane_fill_colour": "#666666",
+            "lane_text_alignment": "centre",
+            "lane_background_fill_colour": "#D9D9D9",
+        },
+        "element": {
+            "element_font": DEFAULT_FONT,
+            "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
+            "element_font_colour": "black",
+            "element_fill_colour": "#A9A9A9",
+            "element_text_alignment": "centre",
+        },
+        "connector": {
+            "connector_font": DEFAULT_FONT,
+            "connector_font_size": DEFAULT_CONNECTOR_FONT_SIZE,
+            "connector_font_colour": "#000000",
+            "connector_line_width": 1,
+            "connector_line_colour": "#000000",
+            "connector_arrow_colour": "#000000",
+            "connector_arrow_size": DEFAULT_CONNECTOR_ARROW_SIZE,
+        },
+        "footer": {
+            "footer_font": DEFAULT_FONT,
+            "footer_font_size": DEFAULT_FOOTER_FONT_SIZE,
+            "footer_font_colour": "#666666",
+        },
+    },
+}
 
 bluemountain_colour_settings = {
     "theme": "BLUEMOUNTAIN",
@@ -138,21 +186,117 @@ bluemountain_colour_settings = {
         "footer": {
             "footer_font": DEFAULT_FONT,
             "footer_font_size": DEFAULT_FOOTER_FONT_SIZE,
-            "footer_font_colour": "#000000",
+            "footer_font_colour": "#0B5394",
         },
     },
 }
 
-# orangepeel_colour_settings = {}
+orangepeel_colour_settings = {
+    "theme": "ORANGEPEEL",
+    "settings": {
+        "background": {
+            "background_fill_colour": "white",
+        },
+        "title": {
+            "title_font": DEFAULT_FONT,
+            "title_font_size": DEFAULT_TITLE_FONT_SIZE,
+            "title_font_colour": "#B45F06",
+        },
+        "pool": {
+            "pool_font": DEFAULT_FONT,
+            "pool_font_size": DEFAULT_POOL_FONT_SIZE,
+            "pool_font_colour": "white",
+            "pool_fill_colour": "#B45F06",
+            "pool_text_alignment": "centre",
+        },
+        "lane": {
+            "lane_font": DEFAULT_FONT,
+            "lane_font_size": DEFAULT_LANE_FONT_SIZE,
+            "lane_font_colour": "white",
+            "lane_fill_colour": "#B45F06",
+            "lane_text_alignment": "centre",
+            "lane_background_fill_colour": "#D9D9D9",
+        },
+        "element": {
+            "element_font": DEFAULT_FONT,
+            "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
+            "element_font_colour": "black",
+            "element_fill_colour": "#F6B26B",
+            "element_text_alignment": "centre",
+        },
+        "connector": {
+            "connector_font": DEFAULT_FONT,
+            "connector_font_size": DEFAULT_CONNECTOR_FONT_SIZE,
+            "connector_font_colour": "#000000",
+            "connector_line_width": 1,
+            "connector_line_colour": "#000000",
+            "connector_arrow_colour": "#000000",
+            "connector_arrow_size": DEFAULT_CONNECTOR_ARROW_SIZE,
+        },
+        "footer": {
+            "footer_font": DEFAULT_FONT,
+            "footer_font_size": DEFAULT_FOOTER_FONT_SIZE,
+            "footer_font_colour": "#B45F06",
+        },
+    },
+}
 
-# greenturtle_colour_settings = {}
+greenturtle_colour_settings = {
+    "theme": "GREENTURTLE",
+    "settings": {
+        "background": {
+            "background_fill_colour": "white",
+        },
+        "title": {
+            "title_font": DEFAULT_FONT,
+            "title_font_size": DEFAULT_TITLE_FONT_SIZE,
+            "title_font_colour": "#38761D",
+        },
+        "pool": {
+            "pool_font": DEFAULT_FONT,
+            "pool_font_size": DEFAULT_POOL_FONT_SIZE,
+            "pool_font_colour": "white",
+            "pool_fill_colour": "#38761D",
+            "pool_text_alignment": "centre",
+        },
+        "lane": {
+            "lane_font": DEFAULT_FONT,
+            "lane_font_size": DEFAULT_LANE_FONT_SIZE,
+            "lane_font_colour": "white",
+            "lane_fill_colour": "#38761D",
+            "lane_text_alignment": "centre",
+            "lane_background_fill_colour": "#D9D9D9",
+        },
+        "element": {
+            "element_font": DEFAULT_FONT,
+            "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
+            "element_font_colour": "black",
+            "element_fill_colour": "#93C47D",
+            "element_text_alignment": "centre",
+        },
+        "connector": {
+            "connector_font": DEFAULT_FONT,
+            "connector_font_size": DEFAULT_CONNECTOR_FONT_SIZE,
+            "connector_font_colour": "#000000",
+            "connector_line_width": 1,
+            "connector_line_colour": "#000000",
+            "connector_arrow_colour": "#000000",
+            "connector_arrow_size": DEFAULT_CONNECTOR_ARROW_SIZE,
+        },
+        "footer": {
+            "footer_font": DEFAULT_FONT,
+            "footer_font_size": DEFAULT_FOOTER_FONT_SIZE,
+            "footer_font_colour": "#38761D",
+        },
+    },
+}
 
 ColourThemesSettings = [
     default_colour_settings,
-    # greywoof_colour_settings,
+    greywoof_colour_settings,
     bluemountain_colour_settings,
-    # orangepeel_colour_settings,
-    # greenturtle_colour_settings,
+    orangepeel_colour_settings,
+    greenturtle_colour_settings,
     ### Add more themes here
 ]
 
