@@ -2,21 +2,13 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/csgoh/processpiper/badge?style=plastic)](https://www.codefactor.io/repository/github/csgoh/processpiper)
 ![code size](https://img.shields.io/github/languages/code-size/csgoh/processmapper?style=plastic)
 
-# ProcessPiper 
+# ProcessPiper (Business Process Diagram as Code)
+A python library to generate business process diagram using code. 
 
-This is a python library to generate business process diagram using code. The intention is adhere to BPMN notation.
-
-It is still under development :construction: Beta version v0.1 will be release soon.
-
-Initial release would only cover the following basic business process elements. Other element types will be introduced in subsequence releases.
-
-* Event: Start, End, Timer, Intermediate
-* Activity: Task, Subprocess
-* Gateway: Inclusive, Exclusive, Parallel
-
-Any ideas or suggestions, please send it to me via [GitHub Discussions](https://github.com/csgoh/processmapper/discussions).
-
-Initially, ProcessPiper was named "ProcessMapper"; however, it was rebranded as ProcessPiper to prevent infringement of a trademarked name.
+## Why ProcessPiper?
+1. Generate professional business process diagrams with Python code, eliminating the need for manual drawing and complex tools.
+2. Improve teamwork by utilising source code repositories for change monitoring, collaboration, and diagram history.
+3. Enhance precision by generating diagrams with code, sharing/exporting them in PNG format, and integrating them with Python tools.
 
 You can see the sample code and output for design concept below.
 
@@ -61,7 +53,21 @@ if __name__ == "__main__":
 
 ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case05.png)
 
-Thank you for checking out my project. I hope you find it useful and enjoyable.
+
+## Development Status
+
+It is still under development :construction: Beta version v0.1 will be release soon.
+
+Initial release would only cover the following basic business process elements. Other element types will be introduced in subsequence releases.
+
+* Event: Start, End, Timer, Intermediate
+* Activity: Task, Subprocess
+* Gateway: Inclusive, Exclusive, Parallel
+
+Any ideas or suggestions, please send it to me via [GitHub Discussions](https://github.com/csgoh/processmapper/discussions).
+
+
+Thank you for checking out my project. If you have found ProcessPiper useful and would like to show your appreciation, consider buying me a coffee or flat white :coffee: and keep me going. To buy me a coffee, simply follow this link: 
 
 <a href="https://www.buymeacoffee.com/csgoh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
