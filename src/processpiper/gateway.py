@@ -1,5 +1,5 @@
-from processpiper.shape import Diamond
-from processpiper.painter import Painter
+from src.processpiper.shape import Diamond
+from src.processpiper.painter import Painter
 
 SYMBOL_SIZE = 23
 

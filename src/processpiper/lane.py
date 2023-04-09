@@ -1,13 +1,13 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from itertools import count
-from processpiper.shape import Shape
-from processpiper.event import Event, Start, End, Timer, Intermediate
-from processpiper.activity import Activity, Task, Subprocess
-from processpiper.gateway import Gateway, Exclusive, Parallel, Inclusive
-from processpiper.painter import Painter
-import processpiper.constants as Configs
-import processpiper.helper as Helper
+from src.processpiper.shape import Shape
+from src.processpiper.event import Event, Start, End, Timer, Intermediate
+from src.processpiper.activity import Activity, Task, Subprocess
+from src.processpiper.gateway import Gateway, Exclusive, Parallel, Inclusive
+from src.processpiper.painter import Painter
+import src.processpiper.constants as Configs
+import src.processpiper.helper as Helper
 
 
 class EventType:

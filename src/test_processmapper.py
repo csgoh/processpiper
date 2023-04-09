@@ -275,6 +275,33 @@ def test_case10(colour_theme: str = "BLUEMOUNTAIN"):
             my_process_map.save(colour_theme + "-my_process_map_test_case10.png")
 
 
+# def test_natural_language():
+#     @startuml
+#     title Shipment Process of a Hardware Retailer
+
+#     |Hardware Retailer|
+#     start
+#     :Logistics Manager receives goods to be shipped;
+#     :Logistics Manager decides on mode of delivery;
+#     if (Extra insurance needed?) then (yes)
+#         :Logistics Manager takes insurance;
+#     endif
+#     :Logistics Manager fills in Post label;
+#     :Logistics Manager requests quotes from carriers;
+#     :Logistics Manager assigns a carrier;
+#     :Logistics Manager prepares necessary paperwork;
+#     |Clerk|
+#     fork
+#     :Package goods;
+#     |Warehouse Worker|
+#     fork again
+#     :Add necessary paperwork;
+#     end fork
+#     :Goods available for pick-up;
+#     stop
+#     @enduml
+
+
 def test_case11():
     # 1: Test gateway branching to two tasks in two lanes
     # 2: Test two tasks merging into one gateway

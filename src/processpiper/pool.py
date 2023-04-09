@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
-from processpiper.painter import Painter
-from processpiper.lane import Lane
-import processpiper.constants as Configs
-import processpiper.helper as Helper
+from src.processpiper.painter import Painter
+from src.processpiper.lane import Lane
+import src.processpiper.constants as Configs
+import src.processpiper.helper as Helper
 
 
 @dataclass

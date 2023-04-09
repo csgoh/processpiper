@@ -1,7 +1,7 @@
 import math
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 import textwrap
-from processpiper.colourtheme import ColourTheme
+from src.processpiper.colourtheme import ColourTheme
 
 
 class Painter:

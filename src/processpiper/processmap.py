@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from processpiper.lane import Lane
-from processpiper.pool import Pool
-from processpiper.painter import Painter
-from processpiper.shape import Shape
-from processpiper.title import Title
-from processpiper.footer import Footer
-import processpiper.constants as Configs
-import processpiper.helper as Helper
+from src.processpiper.lane import Lane
+from src.processpiper.pool import Pool
+from src.processpiper.painter import Painter
+from src.processpiper.shape import Shape
+from src.processpiper.title import Title
+from src.processpiper.footer import Footer
+import src.processpiper.constants as Configs
+import src.processpiper.helper as Helper
 import time
 
 

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from processpiper import shape
+from src.processpiper import shape
 
 
 @dataclass
