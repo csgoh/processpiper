@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "processpiper"
+dynamic = ["version"]
+authors = [{ name = "CS Goh" }]
+description = "Processpiper. An open source python library to generate business process diagram using code."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = ['Pillow>=9.4.0']
+
+[project.urls]
+"Homepage" = "https://github.com/csgoh/processpiper"
+"Bug Tracker" = "https://github.com/csgoh/processpiper/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"] # list of folders that contain the packages (["."] by default)
+exclude = [
+    "demo",
+    "test_cases",
+] # exclude packages matching these glob patterns (empty by default)
+
+[tool.setuptools.dynamic]
+version = { attr = "processpiper.version.__version__" }
+readme = { file = ["README.md"] }
