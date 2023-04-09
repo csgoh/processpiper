@@ -1,12 +1,34 @@
+# MIT License
+
+# Copyright (c) 2022 CS Goh
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 from dataclasses import dataclass, field
-from src.processpiper.lane import Lane
-from src.processpiper.pool import Pool
-from src.processpiper.painter import Painter
-from src.processpiper.shape import Shape
-from src.processpiper.title import Title
-from src.processpiper.footer import Footer
-import src.processpiper.constants as Configs
-import src.processpiper.helper as Helper
+from .lane import Lane
+from .pool import Pool
+from .painter import Painter
+from .shape import Shape
+from .title import Title
+from .footer import Footer
+from .constants import Configs
+from .helper import printc as printc
+
 import time
 
 
@@ -172,37 +194,37 @@ class ProcessMap:
                 return pool
         return None
 
-    ### Check how many rows of shapes are in the lane
-    def check_lane_shape_row_count_old(self, shape: Shape) -> int:
-        row_count = 0
-        lane = self.get_lane_by_id(shape.lane_id)
-        if len(shape.connection_to) <= 1:
-            print(f">lane: {lane.name} - {(shape.name)}, row_count: 1")
-            return 1
-        else:
-            for connection in shape.connection_to:
-                target_shape = connection.target
-                if shape.lane_id == target_shape.lane_id:
-                    row_count += 1
+    # ### Check how many rows of shapes are in the lane
+    # def check_lane_shape_row_count_old(self, shape: Shape) -> int:
+    #     row_count = 0
+    #     lane = self.get_lane_by_id(shape.lane_id)
+    #     if len(shape.connection_to) <= 1:
+    #         print(f">lane: {lane.name} - {(shape.name)}, row_count: 1")
+    #         return 1
+    #     else:
+    #         for connection in shape.connection_to:
+    #             target_shape = connection.target
+    #             if shape.lane_id == target_shape.lane_id:
+    #                 row_count += 1
 
-        print(f"->lane: {lane.name} - {(shape.name)}, row_count: {row_count}")
-        return row_count
+    #     print(f"->lane: {lane.name} - {(shape.name)}, row_count: {row_count}")
+    #     return row_count
 
-    ### Check how many rows of shapes are in the lane
-    def check_lane_shape_row_count(self, shape: Shape) -> int:
-        row_count = 0
-        lane = self.get_lane_by_id(shape.lane_id)
-        shape_y_pos = []
-        for lane_shape in lane.shapes:
-            print(f"lane_shape: {lane_shape.name}, {lane_shape.y}, shape.y: {shape.y}")
-            if lane_shape.y not in shape_y_pos:
-                shape_y_pos.append(lane_shape.y)
+    # ### Check how many rows of shapes are in the lane
+    # def check_lane_shape_row_count(self, shape: Shape) -> int:
+    #     row_count = 0
+    #     lane = self.get_lane_by_id(shape.lane_id)
+    #     shape_y_pos = []
+    #     for lane_shape in lane.shapes:
+    #         print(f"lane_shape: {lane_shape.name}, {lane_shape.y}, shape.y: {shape.y}")
+    #         if lane_shape.y not in shape_y_pos:
+    #             shape_y_pos.append(lane_shape.y)
 
-        Helper.printc(
-            f"      =>lane: {lane.name} - {(shape.name)}, row_count: {len(shape_y_pos)}",
-            "31",
-        )
-        return len(shape_y_pos)
+    #     Helper.printc(
+    #         f"      =>lane: {lane.name} - {(shape.name)}, row_count: {len(shape_y_pos)}",
+    #         "31",
+    #     )
+    #     return len(shape_y_pos)
 
     def check_lane_row_count(self, lane: Lane) -> int:
         row_count = 0
@@ -226,7 +248,7 @@ class ProcessMap:
                         connection_count += 1
                 row_count = max(row_count, connection_count)
 
-        Helper.printc(
+        printc(
             f"      =>lane: {lane.name} - row_count: {row_count}",
             "31",
         )
@@ -240,9 +262,7 @@ class ProcessMap:
         x_pos: int = 0,
     ):
         current_lane = self.get_lane_by_id(current_shape.lane_id)
-        Helper.printc(
-            f"set_shape_x_position: {current_lane.name}, {current_shape.name}", "34"
-        )
+        printc(f"set_shape_x_position: {current_lane.name}, {current_shape.name}", "34")
         if index == 0:
             current_pool = self.get_pool_by_name(current_shape.pool_name)
             if previous_shape is not None:
@@ -323,12 +343,12 @@ class ProcessMap:
             Configs.SURFACE_LEFT_MARGIN, Configs.SURFACE_TOP_MARGIN, painter
         )
 
-        Helper.printc("*** Setting elements' x position...")
+        printc("*** Setting elements' x position...")
         start_shape = self.find_start_shape()
 
         self.set_shape_x_position(None, start_shape, 0, 0)
 
-        Helper.printc(f"*** Setting elements' y position...")
+        printc(f"*** Setting elements' y position...")
         # self.set_shape_y_position(start_shape)
 
         # for pool in self._pools:

@@ -21,17 +21,8 @@
 # SOFTWARE.
 from dataclasses import dataclass, field
 
-### Font :
-# "Microsoft YaHei UI"
-# "DengXian"
-# "Segoe UI"
-# "Tahoma"
-# "Microsoft Jhenghei"
-# simhei.ttf
-# "ARIALUNI.TTF"
-# "arial.ttf"
 
-DEFAULT_FONT = "arial.ttf"
+DEFAULT_FONT = "Arial"
 DEFAULT_TITLE_FONT_SIZE = 26
 DEFAULT_POOL_FONT_SIZE = 18
 DEFAULT_LANE_FONT_SIZE = 18
@@ -303,7 +294,7 @@ ColourThemesSettings = [
 
 @dataclass
 class ColourTheme:
-    """Colour theme for the Roadmapper."""
+    """Colour theme for the ProcessPiper."""
 
     def __init__(self, colour_theme_name: str) -> None:
         """Initialise the colour theme."""

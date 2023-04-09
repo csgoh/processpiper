@@ -1,10 +1,32 @@
+# MIT License
+
+# Copyright (c) 2022 CS Goh
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 from dataclasses import dataclass, field
 import math
 from itertools import count
-from src.processpiper.painter import Painter
-from src.processpiper.connection import Connection
+from .painter import Painter
+
+# from .connection import Connection
 from typing import TypeVar
-import src.processpiper.helper as Helper
+from .helper import printc as printc
 
 TShape = TypeVar("TShape", bound="Shape")
 
@@ -13,6 +35,16 @@ BOX_HEIGHT = 60
 CIRCLE_RADIUS = 20
 DIAMOND_WIDTH = 40
 DIAMOND_HEIGHT = DIAMOND_WIDTH
+
+
+@dataclass
+class Connection:
+    """Connection class for connecting shapes together."""
+
+    source: TShape = field(init=True)
+    target: TShape = field(init=True)
+    label: str = field(init=True)
+    connection_type: str = field(init=True)
 
 
 @dataclass
@@ -52,7 +84,9 @@ class Shape:
         """Connect two shapes
 
         Args:
+            source (TShape): Source shape
             target (TShape): Target shape
+            label (str, optional): Label for the connection. Defaults to "".
             connection_type (str, optional): Type of connection. Defaults to "sequence".
 
         Returns:
@@ -60,8 +94,7 @@ class Shape:
 
         """
 
-        # self.connection_to.append(target)
-        connection = Connection(target, label, connection_type)
+        connection = Connection(self, target, label, connection_type)
         self.connection_to.append(connection)
         target.connection_from.append(self)
         return target
@@ -90,14 +123,7 @@ class Shape:
             for target_name, target_points in points_target.items():
                 distance = self.get_distance(source_points, target_points)
 
-                # print(
-                #     f"  S:{source_name}, {source_points}, T:{target_name}, {target_points}, {distance}"
-                # )
-                if (
-                    distance
-                    < shortest_distance
-                    # and source_points not in self.incoming_points
-                ):
+                if distance < shortest_distance:
                     shortest_distance = distance
                     nearest_points = {
                         "source_name": source_name,
@@ -236,9 +262,8 @@ class Shape:
     def draw_connection(self, painter: Painter):
         """Draw connection between shapes"""
 
-        # draw connection
         source_points = self.points
-        Helper.printc(f"Draw connection for shape: [{self.name}]")
+        printc(f"Draw connection for shape: [{self.name}]")
         if self.connection_to:
             connection_style = "solid"
             for connection in self.connection_to:
@@ -267,11 +292,8 @@ class Shape:
                     ) = self.find_nearest_points_same_pool_diff_lanes(
                         source_points, target_points
                     )
-                    # print(
-                    #     f"  {self.name} and {connection.target.name}, Same pool: {self.pool_name}"
-                    # )
                     ...
-                else:  # different pool
+                else:  ### different pool
                     print(
                         f"Diff Pool: Connection between [{self.name}] and [{connection.target.name}]"
                     )
@@ -304,10 +326,6 @@ class Shape:
                     painter.connector_arrow_colour,
                     painter.connector_arrow_size,
                 )
-
-        # painter.draw_line(
-        #     self.x, self.y, self.x + self.width, self.y, "black", 0.5, 1, "solid"
-        # )
 
 
 class Box(Shape):
@@ -351,13 +369,10 @@ class Box(Shape):
             # "right_middle": (self.x + self.width, self.y + self.height / 2),
             # "right_3": (self.x + self.width, self.y + self.height / 4 * 3),
         }
-        # print(
-        #     f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.width: {self.width}, self.height: {self.height}"
-        # )
         return self.x, self.y, self.width, self.height
 
     def draw(self, painter: Painter):
-        # print(f"draw [{self.text}], {self.x}, {self.y}, {self.width}, {self.height}")
+        """Draw box"""
         painter.draw_box_with_text(
             self.x,
             self.y,
@@ -375,14 +390,17 @@ class Box(Shape):
 
 
 class Circle(Shape):
+    """Circle shape"""
+
     text_x: int = field(init=False)
     text_y: int = field(init=False)
     text_width: int = field(init=False)
     text_height: int = field(init=False)
 
     def set_draw_position(self, painter: Painter) -> tuple:
-        # Circle x position starts from the circle centre, so add radius to x.
-        # But we want to cater for cases when circle and box aligned vertically.
+        """Set draw position of circle"""
+        ### Circle x position starts from the circle centre, so add radius to x.
+        ### But we want to cater for cases when circle and box aligned vertically.
         self.x = int(self.x + CIRCLE_RADIUS + (BOX_WIDTH / 2) - (CIRCLE_RADIUS))
         self.y = int(self.y + (BOX_HEIGHT / 2))
         self.radius = CIRCLE_RADIUS
@@ -410,13 +428,10 @@ class Circle(Shape):
         self.text_x = self.x + (self.width / 2) - (self.text_width / 2)
         self.text_y = self.y + self.radius
 
-        # print(
-        #     f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.radius: {self.radius}"
-        # )
         return self.x, self.y, self.radius, self.radius
 
     def draw(self, painter: Painter):
-        # print(f"draw ({self.text}), x: {self.x}, y: {self.y}, radius: {self.radius}")
+        """Draw circle"""
         painter.draw_circle(self.x, self.y, self.radius, self.fill_colour)
         painter.draw_text(
             self.text_x,
@@ -431,12 +446,15 @@ class Circle(Shape):
 
 
 class Diamond(Shape):
+    """Diamond shape"""
+
     text_x: int = field(init=False)
     text_y: int = field(init=False)
     text_width: int = field(init=False)
     text_height: int = field(init=False)
 
     def set_draw_position(self, painter: Painter) -> tuple:
+        """Set draw position of diamond"""
         self.x = self.x + (BOX_WIDTH / 2) - (DIAMOND_WIDTH / 2)
         self.y = self.y + (BOX_HEIGHT / 2) - (DIAMOND_HEIGHT / 2)
         self.width = DIAMOND_WIDTH
@@ -453,12 +471,10 @@ class Diamond(Shape):
         self.text_x = self.x + (self.width / 2) - (self.text_width / 2)
         self.text_y = self.y + self.height
 
-        # print(
-        #     f"({self.__class__.__name__}) self.x: {self.x}, self.y: {self.y}, self.width: {self.width}, self.height: {self.height}"
-        # )
         return self.x, self.y, self.width, self.height
 
     def draw(self, painter: Painter):
+        """Draw diamond"""
         # print(
         #     f"draw <{self.text}>, x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
         # )

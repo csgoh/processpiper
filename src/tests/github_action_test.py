@@ -1,8 +1,6 @@
 import os.path
 import time
-import calendar
 
-import pytest
 
 from src.processpiper import ProcessMap, EventType, ActivityType, GatewayType
 

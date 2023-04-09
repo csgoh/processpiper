@@ -1,16 +1,39 @@
+# MIT License
+
+# Copyright (c) 2022 CS Goh
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 from dataclasses import dataclass, field
 from enum import Enum
 from itertools import count
-from src.processpiper.shape import Shape
-from src.processpiper.event import Event, Start, End, Timer, Intermediate
-from src.processpiper.activity import Activity, Task, Subprocess
-from src.processpiper.gateway import Gateway, Exclusive, Parallel, Inclusive
-from src.processpiper.painter import Painter
-import src.processpiper.constants as Configs
-import src.processpiper.helper as Helper
+from .shape import Shape
+from .painter import Painter
+from .event import Event, Start, End, Timer, Intermediate
+from .activity import Activity, Task, Subprocess
+from .gateway import Gateway, Exclusive, Parallel, Inclusive
+from .constants import Configs
+from .helper import printc as printc
 
 
 class EventType:
+    """Event types"""
+
     START = "Start"
     END = "End"
     TIMER = "Timer"
@@ -18,17 +41,23 @@ class EventType:
 
 
 class ActivityType:
+    """Activity types"""
+
     TASK = "Task"
     SUBPROCESS = "Subprocess"
 
 
 class GatewayType:
+    """Gateway types"""
+
     EXCLUSIVE = "Exclusive"
     PARALLEL = "Parallel"
     INCLUSIVE = "Inclusive"
 
 
 class ElementType(str, Enum):
+    """Element types"""
+
     START = "Start"
     END = "End"
     TIMER = "Timer"
@@ -42,6 +71,8 @@ class ElementType(str, Enum):
 
 @dataclass
 class Lane:
+    """A lane is a container for elements in a process diagram."""
+
     name: str = field(init=True)
     pool_text: str = field(init=True, default="")
     font: str = field(init=True, default=None)
@@ -76,6 +107,7 @@ class Lane:
         fill_colour: str = "",
         text_alignment: str = "",
     ) -> Shape:
+        """Add an element to the lane"""
         if font == "":
             font = self.painter.element_font
         if font_size == 0:
@@ -105,38 +137,15 @@ class Lane:
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         pass
 
-    def get_current_x_position(self) -> int:
-        if self.next_shape_x == 0:
-            self.next_shape_x = (
-                self.x
-                + Configs.POOL_TEXT_WIDTH
-                + Configs.HSPACE_BETWEEN_POOL_AND_LANE
-                + Configs.LANE_TEXT_WIDTH
-                + Configs.LANE_SHAPE_LEFT_MARGIN
-            )
-
-        return self.next_shape_x
-
-    def get_next_x_position(self) -> int:
-        if self.next_shape_x == 0:
-            self.next_shape_x = (
-                self.x
-                + Configs.POOL_TEXT_WIDTH
-                + Configs.HSPACE_BETWEEN_POOL_AND_LANE
-                + Configs.LANE_TEXT_WIDTH
-                + Configs.LANE_SHAPE_LEFT_MARGIN
-            )
-        else:
-            self.next_shape_x += 100 + Configs.HSPACE_BETWEEN_SHAPES
-        return self.next_shape_x
-
     def get_current_y_position(self) -> int:
+        """Get the current y position of the lane"""
         if self.next_shape_y == 0:
             self.next_shape_y = self.y + Configs.LANE_SHAPE_TOP_MARGIN
 
         return self.next_shape_y
 
     def get_next_y_position(self) -> int:
+        """Get the next y position of the lane"""
         if self.next_shape_y == 0:
             # self.next_shape_y = self.y + 60 + Configs.LANE_SHAPE_TOP_MARGIN
             self.next_shape_y = self.y + Configs.LANE_SHAPE_TOP_MARGIN
@@ -145,12 +154,9 @@ class Lane:
         return self.next_shape_y
 
     def draw(self) -> None:
-        # print(f"draw lane {self.text}: {self.x}, {self.y}, {self.width}, {self.height}")
+        """Draw the lane"""
+
         ### Draw the lane outline
-        # Helper.printc(
-        #     f"draw lane {self.name}: {self.x}, {self.y}, {self.width}, {self.height}",
-        #     "33",
-        # )
         self.painter.draw_box(
             self.x,
             self.y,
@@ -186,22 +192,24 @@ class Lane:
         ####self.painter.draw_grid()
 
     def draw_shape(self) -> None:
+        """Draw the shapes in the lane"""
         if self.shapes:
             for shape in self.shapes:
                 shape.draw(self.painter)
 
     def draw_connection(self) -> None:
+        """Draw the connections in the lane"""
         if self.shapes:
             for shape in self.shapes:
                 shape.draw_connection(self.painter)
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> None:
-        # print("Set draw position...")
+        """Set the draw position of the lane"""
+
         self.painter = painter
         ### Determine the x and y position of the lane
         self.x = x if x > 0 else Configs.SURFACE_LEFT_MARGIN + Configs.POOL_TEXT_WIDTH
         self.y = y if y > 0 else Configs.SURFACE_TOP_MARGIN
-        # print(f"[{self.name}]: x={self.x}, y={self.y}")
 
         if self.shapes:
             self.next_shape_x = (
@@ -211,19 +219,6 @@ class Lane:
                 + Configs.LANE_SHAPE_LEFT_MARGIN
             )
 
-            ### Loop through all shapes within the lane (Method 1)
-            # for shape in self.shapes:
-            #     shape_x, shape_y, shape_w, shape_h = self.set_shape_draw_position(
-            #         self.next_shape_x, self.y, shape, painter
-            #     )
-            #     self.width = max(self.width, shape_x + shape_w)
-            #     self.height = max(
-            #         self.height,
-            #         shape_y + shape_h - self.y + self.LANE_SHAPE_BOTTOM_MARGIN,
-            #     )
-            #     self.next_shape_x = shape_x + shape_w + self.HSPACE_BETWEEN_SHAPES
-
-            ### Start with the first shape (Method 2)
             shape_x, shape_y, shape_w, shape_h = self.set_shape_draw_position(
                 self.next_shape_x, self.y, self.shapes[0], painter
             )
@@ -241,10 +236,8 @@ class Lane:
     def set_shape_draw_position(
         self, x: int, y: int, shape: Shape, painter: Painter
     ) -> None:
+        """Set the draw position of the shapes in the lane"""
         ### Set own shape position
-
-        # print(f"      <{shape.name}>: {x}, {(y + Configs.LANE_SHAPE_TOP_MARGIN)}")
-
         if shape.lane_name == self.name:
             shape_x, shape_y, shape_w, shape_h = shape.set_draw_position(
                 x,
@@ -255,21 +248,14 @@ class Lane:
             shape.draw_position_set = True
 
             shape.x_pos_traversed = True
-            # print(
-            #     f"       <<{shape.name}>>: {shape.draw_position_set}, {shape.x_pos_traversed}"
-            # )
 
             ### Set next elements' position
             this_lane = self.name
             for index, next_shape in enumerate(shape.connection_to.target):
-                # print(
-                #     f"          {shape.name}({index}): next: {next_shape.text}, {next_x}, {y}, {next_shape.draw_position_set}, {shape.x_pos_traversed}"
-                # )
 
                 ### Check whether thhe position has been set, if yes, skipped.
                 ## or next_shape.lane_name != this_lane
                 if next_shape.traversed == True:
-                    # print(f"            Skipped")
                     continue
 
                 if index == 0:
@@ -300,12 +286,5 @@ class Lane:
                 self.next_shape_x = next_shape_x
         else:
             shape_x, shape_y, shape_w, shape_h = 0, 0, 0, 0
-            # print(f"            Skipped")
 
         return shape_x, shape_y, shape_w, shape_h
-
-    def get_outward_connection_count(self, shape: object) -> int:
-        count = 0
-        count += len(shape.connection_to)
-        # print(f"{shape.text}, get_reference_link_count: {count}")
-        return count

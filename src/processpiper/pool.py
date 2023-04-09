@@ -1,12 +1,36 @@
+# MIT License
+
+# Copyright (c) 2022 CS Goh
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 from dataclasses import dataclass, field
-from src.processpiper.painter import Painter
-from src.processpiper.lane import Lane
-import src.processpiper.constants as Configs
-import src.processpiper.helper as Helper
+from .painter import Painter
+from .lane import Lane
+from .constants import Configs
+from .helper import printc as printc
 
 
 @dataclass
 class Pool:
+    """A pool is a collection of lanes."""
+
     name: str = field(init=True)
     font: str = field(init=True, default=None)
     font_size: int = field(init=True, default=None)
@@ -30,32 +54,8 @@ class Pool:
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         ...
 
-    def get_current_x_position(self) -> int:
-        if self.next_shape_x == 0:
-            self.next_shape_x = (
-                self.x
-                + Configs.POOL_TEXT_WIDTH
-                + Configs.HSPACE_BETWEEN_POOL_AND_LANE
-                + Configs.LANE_TEXT_WIDTH
-                + Configs.LANE_SHAPE_LEFT_MARGIN
-            )
-
-        return self.next_shape_x
-
-    def get_next_x_position(self) -> int:
-        if self.next_shape_x == 0:
-            self.next_shape_x = (
-                self.x
-                + Configs.POOL_TEXT_WIDTH
-                + Configs.HSPACE_BETWEEN_POOL_AND_LANE
-                + Configs.LANE_TEXT_WIDTH
-                + Configs.LANE_SHAPE_LEFT_MARGIN
-            )
-        else:
-            self.next_shape_x += 100 + Configs.HSPACE_BETWEEN_SHAPES
-        return self.next_shape_x
-
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
+        """Set the position of the pool and return the position of the next shape to be drawn"""
         self.x = x
         self.y = y
         self.painter = painter
@@ -66,28 +66,17 @@ class Pool:
             Configs.POOL_TEXT_WIDTH,
             last_lane_y + last_lane_height - self.y,
         )
-        # print(
-        #     f"({self.name}) x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
-        # )
         return self.x, self.y, self.width, self.height
 
     def draw(self):
+        """Draw the pool and the lanes in the pool"""
         if self.name != "Default Pool":
-            # Helper.printc(f"Drawing pool: {self.name}", "34")
-            # self.painter.draw_box(
-            #     self.x,
-            #     self.y,
-            #     self.width,
-            #     self.height,
-            #     self.fill_colour,
-            # )
             ### Draw the pool text box
             self.painter.draw_box_with_vertical_text(
                 self.x,
                 self.y,
                 Configs.POOL_TEXT_WIDTH,
                 self.height,
-                # "#1F1F1F",
                 self.fill_colour,
                 self.name,
                 text_alignment=self.text_alignment,
@@ -106,6 +95,20 @@ class Pool:
         text_alignment: str = "",
         background_fill_colour: str = "",
     ) -> Lane:
+        """Add a lane to the pool
+
+        Args:
+            lane_name (str): name of the lane
+            font (str, optional): lane text font. Defaults to "".
+            font_size (int, optional): lane text font size. Defaults to 0.
+            font_colour (str, optional): lane text font colour. Defaults to "".
+            fill_colour (str, optional): lane fill colour. Defaults to "".
+            text_alignment (str, optional): _lane text alignement. Defaults to "".
+            background_fill_colour (str, optional): land background fill colour. Defaults to "".
+
+        Returns:
+            Lane: Lane object
+        """
 
         if font == "":
             font = self.painter.lane_font
