@@ -71,31 +71,30 @@ Thank you for checking out my project. If you have found ProcessPiper useful and
 
 <a href="https://www.buymeacoffee.com/csgoh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-## Implementation Checklist
+## Implementation Checklist and Progress
 
 These are a list of items that need to be implemented or fixed before the initial release.
-
-- [X] Implement Start, End and Timer Event elements
-- [X] Implement Task Activity elements
-- [X] Implement Inclusive, Exclusive and Parallel Gateway elements
-- [X] Implement pool and lane
-- [X] Implement diagram title
-- [X] Implement diagram footer
-- [X] Implement placement (left to right) of for elements in the same lane ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case06.png)
-- [X] Implement placement (top down, left to right) of elements in the same pool but different lane ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case07.png)
-- [X] Automatically change surface size based on the element layout
-- [X] Implement placement (top to bottom) of elements in the different pool
-- [X] Add label to connector
-- [X] Implement Intermediate Event Element
-- [X] Implement Subprocess Activity Element ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case09.png)
-- [X] Connection that crosses pool boundary will be drawn as a dotted line
-- [X] Fix the connection alignment issue
-- [X] Support colour themes
+<br>:white_check_mark: Implement Start, End and Timer Event elements
+<br>:white_check_mark: Implement Task Activity elements
+<br>:white_check_mark: Implement Inclusive, Exclusive and Parallel Gateway elements
+<br>:white_check_mark: Implement pool and lane
+<br>:white_check_mark: Implement diagram title
+<br>:white_check_mark: Implement diagram footer
+<br>:white_check_mark: Implement placement (left to right) of for elements in the same lane ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case06.png)
+<br>:white_check_mark: Implement placement (top down, left to right) of elements in the same pool but different lane ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case07.png)
+<br>:white_check_mark: Automatically change surface size based on the element layout
+<br>:white_check_mark: Implement placement (top to bottom) of elements in the different pool
+<br>:white_check_mark: Add label to connector
+<br>:white_check_mark: Implement Intermediate Event Element
+<br>:white_check_mark: Implement Subprocess Activity Element ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case09.png)
+<br>:white_check_mark: Connection that crosses pool boundary will be drawn as a dotted line
+<br>:white_check_mark: Fix the connection alignment issue
+<br>:white_check_mark: Support colour themes
 ![Process Map](https://github.com/csgoh/processmapper/blob/main/BLUEMOUNTAIN-my_process_map_test_case10.png)
 ![Process Map](https://github.com/csgoh/processmapper/blob/main/GREENTURTLE-my_process_map_test_case10.png)
 ![Process Map](https://github.com/csgoh/processmapper/blob/main/ORANGEPEEL-my_process_map_test_case10.png)
 ![Process Map](https://github.com/csgoh/processmapper/blob/main/GREYWOOF-my_process_map_test_case10.png)
-- [X] Connection that crosses pool boundary should begin with a white circle/dot and end with a white arrow.
-- [X] Renamed from ProcessMap to ProcessPiper
-- [ ] Clean up code
-- [ ] More testing!
+<br>:white_check_mark: Connection that crosses pool boundary should begin with a white circle/dot and end with a white arrow.
+<br>:white_check_mark: Renamed from ProcessMap to ProcessPiper
+<br>:white_square_button: Clean up code
+<br>:white_square_button: More testing!
