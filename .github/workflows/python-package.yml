@@ -19,11 +19,12 @@ jobs:
         python-version: ["3.10", "3.11"]
 
     steps:
+
     - name: Install required packages
-        run: |
-          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-          sudo apt install --yes ttf-mscorefonts-installer
-          sudo fc-cache -f
+      run: |
+        echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+        sudo apt install --yes ttf-mscorefonts-installer
+        sudo fc-cache -f
     
     - uses: actions/checkout@v3
     
