@@ -716,23 +716,34 @@ class Painter:
                         (x2, y1 - elbow_height),
                         (x2, y2),
                     ]
-                    # for point in points:
-                    #     self.draw_circle(point[0], point[1], 2, "magenta")
                     right_angle_point = (x2, y1 - elbow_height)
                 if abs(y1 - y2) >= 100:
-                    Helper.printc(
-                        f"   F: right_angle_line: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}"
-                    )
-                    elbow_height = 40
-                    points = [
-                        (x1, y1),
-                        (x1, y1 + elbow_height),
-                        (x2, y1 + elbow_height),
-                        (x2, y2),
-                    ]
-                    # for point in points:
-                    #     self.draw_circle(point[0], point[1], 2, "orange")
-                    right_angle_point = (x2, y1 - elbow_height)
+                    if (
+                        face_source.find("bottom") != -1
+                        and face_target.find("right") != -1
+                    ):
+                        Helper.printc(
+                            f"   F1: right_angle_line: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}"
+                        )
+                        elbow_height = 40
+                        points = [
+                            (x1, y1),
+                            (x1, y2),
+                            (x2, y2),
+                        ]
+                        right_angle_point = (x1, y2)
+                    else:
+                        Helper.printc(
+                            f"   F2: right_angle_line: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}"
+                        )
+                        elbow_height = 40
+                        points = [
+                            (x1, y1),
+                            (x1, y1 + elbow_height),
+                            (x2, y1 + elbow_height),
+                            (x2, y2),
+                        ]
+                        right_angle_point = (x2, y1 - elbow_height)
             elif y1 > y2:
                 if len(points) == 0:
                     Helper.printc(
