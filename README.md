@@ -96,5 +96,5 @@ These are a list of items that need to be implemented or fixed before the initia
 ![Process Map](https://github.com/csgoh/processmapper/blob/main/GREYWOOF-my_process_map_test_case10.png)
 <br>:white_check_mark: Connection that crosses pool boundary should begin with a white circle/dot and end with a white arrow.
 <br>:white_check_mark: Renamed from ProcessMap to ProcessPiper
-<br>:white_square_button: Clean up code
+<br>:white_check_mark: Clean up code
 <br>:white_square_button: More testing!
