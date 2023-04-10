@@ -148,8 +148,6 @@ class Lane:
 
     def get_next_y_position(self) -> int:
         """Get the next y position of the lane"""
-        if self.shape_row_count == 0:
-            self.shape_row_count = 1
 
         if self.next_shape_y == 0:
             # self.next_shape_y = self.y + 60 + Configs.LANE_SHAPE_TOP_MARGIN
@@ -158,7 +156,10 @@ class Lane:
             self.next_shape_y += 60 + Configs.VSPACE_BETWEEN_SHAPES
 
         ### For every method call, increment the shape row count
-        self.shape_row_count += 1
+        if self.shape_row_count == 0:
+            self.shape_row_count = 1
+        else:
+            self.shape_row_count += 1
         return self.next_shape_y
 
     def draw(self) -> None:
