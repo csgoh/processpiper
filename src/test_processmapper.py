@@ -12,8 +12,8 @@ def prep_for_test(filename: str):
     output_file = os.path.join(path, filename)
 
     ### remove the file if it exists
-    # if os.path.exists(output_file):
-    #     os.remove(output_file)
+    if os.path.exists(output_file):
+        os.remove(output_file)
 
     return output_file
 
@@ -379,18 +379,19 @@ def test_case12():
 
 
 if __name__ == "__main__":
-    # test_case1()
+    test_case1()
     test_case2()
-    # test_case3()
-    # test_case4()
-    # test_case5()
-    # test_case6()
-    # test_case7()
-    # test_case8()
-    # test_case9()
-    # test_case10(colour_theme="DEFAULT")
-    # test_case10(colour_theme="BLUEMOUNTAIN")
-    # test_case10(colour_theme="ORANGEPEEL")
-    # test_case10(colour_theme="GREENTURTLE")
-    # test_case10(colour_theme="GREYWOOF")
-    # test_case12()
+    test_case3()
+    test_case4()
+    test_case5()
+    test_case6()
+    test_case7()
+    test_case8()
+    test_case9()
+    test_case10(colour_theme="DEFAULT")
+    test_case10(colour_theme="BLUEMOUNTAIN")
+    test_case10(colour_theme="ORANGEPEEL")
+    test_case10(colour_theme="GREENTURTLE")
+    test_case10(colour_theme="GREYWOOF")
+    test_case11()
+    test_case12()
