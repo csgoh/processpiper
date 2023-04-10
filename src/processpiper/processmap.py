@@ -55,7 +55,7 @@ class ProcessMap:
         """Initialise the Process Map Class"""
         logging.basicConfig(
             # filename="processpiper.log",
-            level=logging.INFO,
+            level=logging.DEBUG,
             format="%(asctime)s [%(levelname)s] : %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
@@ -325,16 +325,28 @@ class ProcessMap:
     def set_shape_y_position(self, shape: Shape, index: int = 0):
         """Set the y position for the shape"""
         lane = self.get_lane_by_id(shape.lane_id)
-        Helper.printc(f">>>>set_shape_y_position: {lane.name}, {shape.name}", "34")
+        Helper.printc(
+            f">>>>set_shape_y_position: {lane.name}, {shape.name}, {index}", "34"
+        )
         if index == 0:
             ### If previous shape is connecting to one shape,
             ### the y position of the shape is the same as the previous shape
+            Helper.printc(
+                f"    get_current_y_position()-Before: {lane.shape_row_count}", "32"
+            )
             shape.y = lane.get_current_y_position()
-            Helper.printc(f"    get_current_y_position(): {lane.shape_row_count}", "32")
+            Helper.printc(
+                f"    get_current_y_position()-After: {lane.shape_row_count}", "32"
+            )
         else:
             ### Otherwise, the y position of the shape is the next y position
+            Helper.printc(
+                f"    get_next_y_position()-Before: {lane.shape_row_count}", "32"
+            )
             shape.y = lane.get_next_y_position()
-            Helper.printc(f"    get_next_y_position(): {lane.shape_row_count}", "32")
+            Helper.printc(
+                f"    get_next_y_position()-After: {lane.shape_row_count}", "32"
+            )
 
         shape.set_draw_position(self.__painter)
         # Helper.printc(f"<{shape.name}>, lane_id={shape.lane_id}, x={shape.x}, y={shape.y}")
@@ -346,7 +358,7 @@ class ProcessMap:
             next_shape = connection.target
             if next_shape.y_pos_traversed is True:
                 continue
-            # Helper.printc(f"    <{shape.name}>, next_shape: {next_shape.name}, index: {index}")
+
             self.set_shape_y_position(next_shape, index)
 
     def set_draw_position(self, painter: Painter) -> tuple:
@@ -439,6 +451,7 @@ class ProcessMap:
         for pool in self._pools:
             for lane in pool._lanes:
                 lane.next_shape_y = 0
+                lane.shape_row_count = 0
                 for shape in lane.shapes:
                     shape.y_pos_traversed = False
 
