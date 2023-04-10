@@ -257,7 +257,7 @@ class Shape:
         """Draw connection between shapes"""
 
         source_points = self.points
-        Helper.printc(f"Draw connection for shape: [{self.name}]")
+        Helper.printc(f"Draw connection for shape: [{self.name}]", 36)
         if self.connection_to:
             connection_style = "solid"
             for connection in self.connection_to:
