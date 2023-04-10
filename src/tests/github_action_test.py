@@ -1,3 +1,4 @@
+import inspect
 import os.path
 import time
 
@@ -5,14 +6,23 @@ import time
 from src.processpiper import ProcessMap, EventType, ActivityType, GatewayType
 
 
-def test_case5():
-    if not os.path.exists("images"):
-        os.mkdir("images")
+def prep_for_test(filename: str):
+    path = os.path.join("images", "test")
 
-    if not os.path.exists("images/test"):
-        os.mkdir("images/test")
+    if not os.path.exists(path):
+        os.mkdir(path)
 
-    output_file = "images/test/my_process_map_test_case05.png"
+    output_file = os.path.join(path, filename)
+
+    ### remove the file if it exists
+    if os.path.exists(output_file):
+        os.remove(output_file)
+
+    return output_file
+
+
+def test_auto_case1():
+    output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
 
     with ProcessMap(
         "Sample Test Process", colour_theme="BLUEMOUNTAIN"
