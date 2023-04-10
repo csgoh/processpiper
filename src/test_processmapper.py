@@ -3,7 +3,7 @@ from processpiper import ProcessMap, EventType, ActivityType, GatewayType
 
 def test_case1():
     with ProcessMap("Sample Process Map") as my_process_map:
-        with my_process_map.add_lane("Application \nUser") as lane1:
+        with my_process_map.add_lane("Application User") as lane1:
             start = lane1.add_element("Start", EventType.START)
             login = lane1.add_element("Login", ActivityType.TASK)
             search_records = lane1.add_element("Search Records", ActivityType.TASK)
@@ -20,30 +20,6 @@ def test_case1():
         my_process_map.draw()
         my_process_map.save("my_process_map_test_case01.png")
     # my_process_map.print()
-
-
-def test_case2():
-    with ProcessMap("Sample Process Map") as my_process_map:
-        with my_process_map.add_lane("Application \nUser") as lane1:
-            start = lane1.add_element("Start", EventType.START)
-            enter_keyword = lane1.add_element("Enter Keyword", ActivityType.TASK)
-            end = lane1.add_element("End", EventType.END)
-
-        with my_process_map.add_lane("System") as lane2:
-            login = lane2.add_element("Login", ActivityType.TASK)
-            search_records = lane2.add_element("Search Records", ActivityType.TASK)
-            result_found = lane2.add_element("Result Found?", GatewayType.EXCLUSIVE)
-            display_result = lane2.add_element("Display Result", ActivityType.TASK)
-            refine_search = lane2.add_element("Refine Search", ActivityType.TASK)
-            logout = lane2.add_element("Logout", ActivityType.TASK)
-
-        start.connect(login).connect(enter_keyword).connect(search_records).connect(
-            result_found
-        ).connect(display_result).connect(logout).connect(end)
-        result_found.connect(refine_search).connect(search_records)
-
-        my_process_map.draw()
-        my_process_map.save("my_process_map_test_case02.png")
 
 
 def test_case3():
@@ -275,33 +251,6 @@ def test_case10(colour_theme: str = "BLUEMOUNTAIN"):
             my_process_map.save(colour_theme + "-my_process_map_test_case10.png")
 
 
-# def test_natural_language():
-#     @startuml
-#     title Shipment Process of a Hardware Retailer
-
-#     |Hardware Retailer|
-#     start
-#     :Logistics Manager receives goods to be shipped;
-#     :Logistics Manager decides on mode of delivery;
-#     if (Extra insurance needed?) then (yes)
-#         :Logistics Manager takes insurance;
-#     endif
-#     :Logistics Manager fills in Post label;
-#     :Logistics Manager requests quotes from carriers;
-#     :Logistics Manager assigns a carrier;
-#     :Logistics Manager prepares necessary paperwork;
-#     |Clerk|
-#     fork
-#     :Package goods;
-#     |Warehouse Worker|
-#     fork again
-#     :Add necessary paperwork;
-#     end fork
-#     :Goods available for pick-up;
-#     stop
-#     @enduml
-
-
 def test_case11():
     # 1: Test gateway branching to two tasks in two lanes
     # 2: Test two tasks merging into one gateway
@@ -339,7 +288,6 @@ def test_case12():
 
 if __name__ == "__main__":
     test_case1()
-    test_case2()
     test_case3()
     test_case4()
     test_case5()

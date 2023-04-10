@@ -23,11 +23,13 @@ from dataclasses import dataclass, field
 import math
 from itertools import count
 from .painter import Painter
+from .helper import Helper
 
 # from .connection import Connection
 from typing import TypeVar
-from .helper import printc as printc
+from .helper import Helper
 
+### This is to allow the connect method to return the same type of shape
 TShape = TypeVar("TShape", bound="Shape")
 
 BOX_WIDTH = 100
@@ -137,7 +139,7 @@ class Shape:
         del points_source[nearest_points["source_name"]]
         del points_target[nearest_points["target_name"]]
 
-        print(f"        Nearest : {nearest_points}")
+        Helper.printc(f"        Nearest : {nearest_points}")
         return (
             nearest_points["source_points"],
             nearest_points["source_name"],
@@ -194,11 +196,7 @@ class Shape:
         for source_name, source_points in source_connection_points.items():
             for target_name, target_points in target_connection_points.items():
                 distance = self.get_distance(source_points, target_points)
-                if (
-                    distance
-                    < shortest_distance
-                    # and source_points not in self.incoming_points
-                ):
+                if distance < shortest_distance:
                     shortest_distance = distance
                     nearest_points = {
                         "source_name": source_name,
@@ -207,10 +205,6 @@ class Shape:
                         "target_points": target_points,
                         "distance": distance,
                     }
-
-                    # print(
-                    #     f"  S:{source_name}, {source_points}, T:{target_name}, {target_points}, {distance}"
-                    # )
 
         ### remove points from source and target shapes once they are used
         del points_source[nearest_points["source_name"]]
@@ -263,7 +257,7 @@ class Shape:
         """Draw connection between shapes"""
 
         source_points = self.points
-        printc(f"Draw connection for shape: [{self.name}]")
+        Helper.printc(f"Draw connection for shape: [{self.name}]")
         if self.connection_to:
             connection_style = "solid"
             for connection in self.connection_to:
@@ -271,7 +265,7 @@ class Shape:
                 target_points = connection.target.points
 
                 if self.is_same_lane(self, connection.target):
-                    print(
+                    Helper.printc(
                         f"Same lane: Connection between [{self.name}] and [{connection.target.name}]"
                     )
                     (
@@ -281,7 +275,7 @@ class Shape:
                         point_face_to,
                     ) = self.find_nearest_points(source_points, target_points)
                 elif self.is_same_pool(self, connection.target):
-                    print(
+                    Helper.printc(
                         f"Same Pool: Connection between [{self.name}] and [{connection.target.name}]"
                     )
                     (
@@ -294,7 +288,7 @@ class Shape:
                     )
                     ...
                 else:  ### different pool
-                    print(
+                    Helper.printc(
                         f"Diff Pool: Connection between [{self.name}] and [{connection.target.name}]"
                     )
                     (
@@ -475,7 +469,7 @@ class Diamond(Shape):
 
     def draw(self, painter: Painter):
         """Draw diamond"""
-        # print(
+        # Helper.printc(
         #     f"draw <{self.text}>, x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
         # )
         painter.draw_diamond(

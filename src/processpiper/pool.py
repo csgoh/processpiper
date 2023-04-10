@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 from .painter import Painter
 from .lane import Lane
 from .constants import Configs
-from .helper import printc as printc
+from .helper import Helper
 
 
 @dataclass

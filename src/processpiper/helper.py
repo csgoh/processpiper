@@ -19,6 +19,25 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-def printc(text, color="32"):
-    """Print text in color"""
-    print(f"\033[1;{color}m{text}\033[0m")
+import logging
+
+
+class Helper:
+    @staticmethod
+    def printc(message: str, color: str = "30"):
+        """Print text in color"""
+
+        root_logger = logging.getLogger()
+
+        if root_logger.getEffectiveLevel() == logging.DEBUG:
+            print(f"\033[1;{color}m{message}\033[0m")
+
+    @staticmethod
+    def debug_log(message: str):
+        """Log debug message"""
+        logging.debug(message)
+
+    @staticmethod
+    def info_log(message: str):
+        """Log info message"""
+        logging.info(message)

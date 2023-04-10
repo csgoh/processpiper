@@ -28,7 +28,7 @@ from .event import Event, Start, End, Timer, Intermediate
 from .activity import Activity, Task, Subprocess
 from .gateway import Gateway, Exclusive, Parallel, Inclusive
 from .constants import Configs
-from .helper import printc as printc
+from .helper import Helper
 
 
 class EventType:
@@ -139,6 +139,8 @@ class Lane:
 
     def get_current_y_position(self) -> int:
         """Get the current y position of the lane"""
+        if self.shape_row_count == 0:
+            self.shape_row_count = 1
         if self.next_shape_y == 0:
             self.next_shape_y = self.y + Configs.LANE_SHAPE_TOP_MARGIN
 
@@ -146,11 +148,17 @@ class Lane:
 
     def get_next_y_position(self) -> int:
         """Get the next y position of the lane"""
+        if self.shape_row_count == 0:
+            self.shape_row_count = 1
+
         if self.next_shape_y == 0:
             # self.next_shape_y = self.y + 60 + Configs.LANE_SHAPE_TOP_MARGIN
             self.next_shape_y = self.y + Configs.LANE_SHAPE_TOP_MARGIN
         else:
             self.next_shape_y += 60 + Configs.VSPACE_BETWEEN_SHAPES
+
+        ### For every method call, increment the shape row count
+        self.shape_row_count += 1
         return self.next_shape_y
 
     def draw(self) -> None:
@@ -162,7 +170,6 @@ class Lane:
             self.y,
             self.width,
             self.height,
-            # "#d9d9d9",
             self.background_fill_colour,
         )
         ### Draw the lane text box
@@ -189,6 +196,7 @@ class Lane:
             5,
             "solid",
         )
+        ### Uncomment the following line to see the grid. Useful for debugging
         ####self.painter.draw_grid()
 
     def draw_shape(self) -> None:
@@ -207,7 +215,9 @@ class Lane:
         """Set the draw position of the lane"""
 
         self.painter = painter
+
         ### Determine the x and y position of the lane
+        ### If x and y are not specified, add the default margin
         self.x = x if x > 0 else Configs.SURFACE_LEFT_MARGIN + Configs.POOL_TEXT_WIDTH
         self.y = y if y > 0 else Configs.SURFACE_TOP_MARGIN
 
@@ -245,7 +255,9 @@ class Lane:
                 painter,
             )
             next_x = shape_x + shape_w + Configs.HSPACE_BETWEEN_SHAPES
-            shape.draw_position_set = True
+
+            #### Mark for removal
+            # shape.draw_position_set = True
 
             shape.x_pos_traversed = True
 
@@ -253,8 +265,8 @@ class Lane:
             this_lane = self.name
             for index, next_shape in enumerate(shape.connection_to.target):
 
-                ### Check whether thhe position has been set, if yes, skipped.
-                ## or next_shape.lane_name != this_lane
+                ### Check whether the position has been set, if yes, skipped.
+                ### This is needed to avoid infinite recursion
                 if next_shape.traversed == True:
                     continue
 
@@ -268,6 +280,7 @@ class Lane:
                         + shape_h
                     )
 
+                ### Perform recursive call to set the position of the next element
                 (
                     next_shape_x,
                     next_shape_y,

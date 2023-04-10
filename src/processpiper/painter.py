@@ -25,6 +25,7 @@ import sys
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 import textwrap
 from .colourtheme import ColourTheme
+from .helper import Helper
 
 
 class Painter:
@@ -34,7 +35,8 @@ class Painter:
     height: int
     output_type: str
 
-    # Colour scheme
+    ### Colour scheme attributes - Start
+    background_fill_colour: str
     title_font: str
     title_font_size: int
     title_font_colour: str
@@ -69,6 +71,7 @@ class Painter:
     footer_font: str
     footer_font_size: int
     footer_font_colour: str
+    ### Colour scheme attributes - End
 
     def __init__(self, width: int = 500, height: int = 500) -> None:
         """Initialise the painter"""
@@ -77,8 +80,6 @@ class Painter:
         self.__cr = ImageDraw.Draw(self.__surface)
         self.width = width
         self.height = height
-        self.set_background_colour("white")
-        # self.draw_grid()
 
     def set_colour_theme(self, colour_theme: str) -> None:
         """Set colour palette
@@ -432,23 +433,21 @@ class Painter:
         ### Use Pillow's ImageDraw module to draw a polygon with the given points and fill color.
         self.__cr.polygon(points, fill=fill_colour)
 
-    def draw_circle(self, x: int, y: int, radius: float, colour: str) -> None:
+    def draw_circle(
+        self, x: int, y: int, radius: float, outline_colour: str, fill_colour: str = ""
+    ) -> None:
         """Draw a circle"""
-        r, g, b = ImageColor.getrgb(colour)
+        if fill_colour == "":
+            ### If no fill colour is specified, use the outline colour as the fill colour.
+            outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
+            fill_red, fill_green, fill_blue = outline_red, outline_green, outline_blue
+        else:
+            outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
+            fill_red, fill_green, fill_blue = ImageColor.getrgb(fill_colour)
         self.__cr.ellipse(
             (x - radius, y - radius, x + radius, y + radius),
-            fill=(r, g, b),
-            outline=(r, g, b),
-        )
-
-    def draw_white_circle(self, x: int, y: int, radius: float, colour: str) -> None:
-        """Draw a white circle with a coloured border"""
-        r, g, b = ImageColor.getrgb(colour)
-        self.__cr.ellipse(
-            (x - radius, y - radius, x + radius, y + radius),
-            fill="white",
-            outline=(r, g, b),
-            width=2,
+            fill=(fill_red, fill_green, fill_blue),
+            outline=(outline_red, outline_green, outline_blue),
         )
 
     def draw_dot(self, x: int, y: int, colour: str) -> None:
@@ -609,34 +608,34 @@ class Painter:
         self,
         x1: int,
         y1: int,
-        face1: str,
+        face_source: str,
         x2: int,
         y2: int,
-        face2: str,
+        face_target: str,
         connection_style: str,
         connector_line_width: int = 0,
         connector_line_colour: str = "",
     ):
         """Draw a right angle line between two points"""
-        print(
-            f"      x1: {x1}, y1: {y1}, face1: {face1}, x2: {x2}, y2: {y2}, face2: {face2}"
+        Helper.printc(
+            f"      x1: {x1}, y1: {y1}, face1: {face_source}, x2: {x2}, y2: {y2}, face2: {face_target}"
         )
         if x1 == x2 and y1 == y2:
-            print(
+            Helper.printc(
                 f"   A: right_angle_line: x1 == x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}"
             )
             points = [(x1, y1)]
             right_angle_point = (x1, y1)
 
         if x1 != x2 and y1 == y2:
-            print(
+            Helper.printc(
                 f"   B: right_angle_line: x1 != x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}"
             )
             points = [(x1, y1), (x2, y1)]
             right_angle_point = (x1, y1)
 
         if x1 == x2 and y1 != y2:
-            print(
+            Helper.printc(
                 f"   C: right_angle_line: x1 == x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
             )
             points = [(x1, y1), (x1, y2)]
@@ -644,18 +643,18 @@ class Painter:
 
         if x1 != x2 and y1 != y2:
             # check if face1 string contained the word "right"
-            if face1.find("bottom") != -1:
-                print(
+            if face_source.find("bottom") != -1:
+                Helper.printc(
                     f"   D-bottom: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
                 )
                 # if so, then the line should be drawn from the bottom side of the box
                 points = [(x1, y1), (x1, y2), (x2, y2)]
                 right_angle_point = (x1, y2)
-            elif face1.find("right") != -1:
-                print(
+            elif face_source.find("right") != -1:
+                Helper.printc(
                     f"   D-right: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
                 )
-                if face2.find("left") != -1:
+                if face_target.find("left") != -1:
                     # points = [(x1, y1), (x1, y2), (x2, y2)]
                     elbow_height = 40
                     points = [
@@ -668,8 +667,34 @@ class Painter:
                 else:
                     points = [(x1, y1), (x2, y1), (x2, y2)]
                     right_angle_point = (x2, y1)
+            elif face_source.find("top") != -1 and face_target.find("top") != -1:
+                Helper.printc(
+                    f"   D-top: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+                )
+                # draw 1 right angle line
+                elbow_height = 40
+                points = [
+                    (x1, y1),
+                    (x1, y1 - elbow_height),
+                    (x2, y1 - elbow_height),
+                    (x2, y2),
+                ]
+                right_angle_point = (x2, y2 - elbow_height)
+            elif face_source.find("top") != -1 and face_target.find("bottom") != -1:
+                Helper.printc(
+                    f"   D-top/bottom: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+                )
+                # draw 1 right angle line
+                elbow_height = 20
+                points = [
+                    (x1, y1),
+                    (x1, y1 - elbow_height),
+                    (x2, y1 - elbow_height),
+                    (x2, y2),
+                ]
+                right_angle_point = (x2, y1 - elbow_height)
             else:
-                print(
+                Helper.printc(
                     f"   D-else: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
                 )
                 # if so, then the line should be drawn from the bottom side of the box
@@ -681,7 +706,7 @@ class Painter:
         if x1 > x2:
             if y1 <= y2:
                 if abs(y1 - y2) == 10:
-                    print(
+                    Helper.printc(
                         f"   E: right_angle_line: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}"
                     )
                     elbow_height = 40
@@ -695,7 +720,7 @@ class Painter:
                     #     self.draw_circle(point[0], point[1], 2, "magenta")
                     right_angle_point = (x2, y1 - elbow_height)
                 if abs(y1 - y2) >= 100:
-                    print(
+                    Helper.printc(
                         f"   F: right_angle_line: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}"
                     )
                     elbow_height = 40
@@ -710,7 +735,7 @@ class Painter:
                     right_angle_point = (x2, y1 - elbow_height)
             elif y1 > y2:
                 if len(points) == 0:
-                    print(
+                    Helper.printc(
                         f"   G: right_angle_line: x1 > x2 and y1 > y2: {x1}, {y1}, {x2}, {y2}"
                     )
                     elbow_height = (y1 - y2) / 2
@@ -785,16 +810,17 @@ class Painter:
 
         if connection_style == "dashed":
             ### Draw round circle at the beginning of the line
-            self.draw_white_circle(x1, y1, 6, connector_arrow_colour)
+            self.draw_circle(x1, y1, 6, connector_arrow_colour, "white")
 
             ### Draw white arrow head at the end of the line
-            self.draw_white_arrow_head(
+            self.draw_arrow_head(
                 right_angle_point[0],
                 right_angle_point[1],
                 x2,
                 y2,
                 connector_arrow_colour,
                 connector_arrow_size,
+                "white",
             )
         else:
             self.draw_arrow_head(
@@ -812,8 +838,9 @@ class Painter:
         y1: int,
         x2: int,
         y2: int,
-        connector_arrow_colour: str,
+        connector_arrow_outline_colour: str,
         connector_arrow_size: int,
+        connector_arrow_fill_colour: str = "",
     ):
         """Draw an arrow head at the end of a line"""
 
@@ -842,46 +869,14 @@ class Painter:
         right_y = y2 - length * normalised_dy - height * perpendicular_vector_y
 
         shape = [(x2, y2), (left_x, left_y), (right_x, right_y), (x2, y2)]
-        self.__cr.polygon(shape, fill=connector_arrow_colour)
-
-    def draw_white_arrow_head(
-        self,
-        x1: int,
-        y1: int,
-        x2: int,
-        y2: int,
-        connector_arrow_colour: str,
-        connector_arrow_size: int,
-    ):
-        """Draw a white arrow head at the end of a line"""
-
-        dx = x2 - x1
-        dy = y2 - y1
-
-        # vector length
-        vector_length = math.sqrt(dx * dx + dy * dy)
-
-        # normalized direction vector components
-        normalised_dx = dx / vector_length
-        normalised_dy = dy / vector_length
-
-        # perpendicular vector
-        perpendicular_vector_x = -normalised_dy
-        perpendicular_vector_y = normalised_dx
-
-        ### points forming arrowhead
-        ### with length L and half-width H
-        ### arrowend = end
-        length = connector_arrow_size
-        height = connector_arrow_size - 5
-        left_x = x2 - length * normalised_dx + height * perpendicular_vector_x
-        left_y = y2 - length * normalised_dy + height * perpendicular_vector_y
-
-        right_x = x2 - length * normalised_dx - height * perpendicular_vector_x
-        right_y = y2 - length * normalised_dy - height * perpendicular_vector_y
-
-        shape = [(x2, y2), (left_x, left_y), (right_x, right_y), (x2, y2)]
-        self.__cr.polygon(shape, fill="white", outline="black", width=2)
+        if connector_arrow_fill_colour == "":
+            outline_colour = connector_arrow_outline_colour
+            fill_colour = outline_colour
+        else:
+            outline_colour = connector_arrow_outline_colour
+            fill_colour = connector_arrow_fill_colour
+        # self.__cr.polygon(shape, fill=connector_arrow_colour)
+        self.__cr.polygon(shape, fill=fill_colour, outline=outline_colour, width=2)
 
     def draw_text(
         self, x: int, y: int, text: str, font: str, font_size: int, font_colour: str
