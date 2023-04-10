@@ -51,7 +51,7 @@ if __name__ == "__main__":
     test_case5()
 ```
 
-![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case05.png)
+![Process Map](https://github.com/csgoh/processpiper/blob/main/images/test/test_auto_case1.png)
 
 
 ## Development Status
@@ -80,20 +80,20 @@ These are a list of items that need to be implemented or fixed before the initia
 <br>:white_check_mark: Implement pool and lane
 <br>:white_check_mark: Implement diagram title
 <br>:white_check_mark: Implement diagram footer
-<br>:white_check_mark: Implement placement (left to right) of for elements in the same lane ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case06.png)
-<br>:white_check_mark: Implement placement (top down, left to right) of elements in the same pool but different lane ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case07.png)
+<br>:white_check_mark: Implement placement (left to right) of for elements in the same lane ![Process Map](https://github.com/csgoh/processpiper/blob/main/images/test/test_case6.png)
+<br>:white_check_mark: Implement placement (top down, left to right) of elements in the same pool but different lane ![Process Map](https://github.com/csgoh/processpiper/blob/main/images/test/test_case7.png)
 <br>:white_check_mark: Automatically change surface size based on the element layout
 <br>:white_check_mark: Implement placement (top to bottom) of elements in the different pool
 <br>:white_check_mark: Add label to connector
 <br>:white_check_mark: Implement Intermediate Event Element
-<br>:white_check_mark: Implement Subprocess Activity Element ![Process Map](https://github.com/csgoh/processmapper/blob/main/my_process_map_test_case09.png)
+<br>:white_check_mark: Implement Subprocess Activity Element ![Process Map](https://github.com/csgoh/processpiper/blob/main/images/test/test_case9.png)
 <br>:white_check_mark: Connection that crosses pool boundary will be drawn as a dotted line
 <br>:white_check_mark: Fix the connection alignment issue
 <br>:white_check_mark: Support colour themes
-![Process Map](https://github.com/csgoh/processmapper/blob/main/BLUEMOUNTAIN-my_process_map_test_case10.png)
-![Process Map](https://github.com/csgoh/processmapper/blob/main/GREENTURTLE-my_process_map_test_case10.png)
-![Process Map](https://github.com/csgoh/processmapper/blob/main/ORANGEPEEL-my_process_map_test_case10.png)
-![Process Map](https://github.com/csgoh/processmapper/blob/main/GREYWOOF-my_process_map_test_case10.png)
+![Process Map](https://github.com/csgoh/processpiper/blob/main/images/test/test_case10-BLUEMOUNTAIN.png)
+![Process Map](https://github.com/csgoh/processpiper/blob/main/images/test/test_case10-GREENTURTLE.png)
+![Process Map](https://github.com/csgoh/processpiper/blob/main/images/test/test_case10-ORANGEPEEL.png)
+![Process Map](https://github.com/csgoh/processpiper/blob/main/images/test/test_case10-GREYWOOF.png)
 <br>:white_check_mark: Connection that crosses pool boundary should begin with a white circle/dot and end with a white arrow.
 <br>:white_check_mark: Renamed from ProcessMap to ProcessPiper
 <br>:white_check_mark: Clean up code
