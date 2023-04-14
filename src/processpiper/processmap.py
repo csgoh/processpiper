@@ -33,6 +33,10 @@ import time
 import logging
 
 
+class UnconnectedElementException(Exception):
+    pass
+
+
 @dataclass
 class ProcessMap:
     """Process Map Class"""
@@ -55,7 +59,7 @@ class ProcessMap:
         """Initialise the Process Map Class"""
         logging.basicConfig(
             # filename="processpiper.log",
-            level=logging.DEBUG,
+            level=logging.INFO,
             format="%(asctime)s [%(levelname)s] : %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
@@ -207,58 +211,6 @@ class ProcessMap:
                 return pool
         return None
 
-    #### Mark for deletion
-    # def check_lane_row_count(self, lane: Lane) -> int:
-    #     row_count = 0
-
-    #     for item, lane_shape in enumerate(lane.shapes):
-    #         if item == 0:
-    #             row_count = 1
-    #         if len(lane_shape.connection_to) > 1:
-    #             connection_count = 1
-    #             for connection in lane_shape.connection_to:
-    #                 target_shape = connection.target
-    #                 if lane_shape.lane_id == target_shape.lane_id:
-    #                     Helper.printc(
-    #                         f"(1) {lane_shape.name}->lane_shape.y: {lane_shape.y+lane_shape.height}, {target_shape.name}->target_shape.y + h: {target_shape.y}",
-    #                         "35",
-    #                     )
-    #                     Helper.printc(
-    #                         f"(1) Before connection_count: {row_count},{connection_count}"
-    #                     )
-    #                     if target_shape.y > lane_shape.y + lane_shape.height:
-    #                         connection_count += 1
-    #                     Helper.printc(
-    #                         f"(1) After connection_count: {row_count},{connection_count}"
-    #                     )
-    #             row_count = max(row_count, connection_count)
-
-    #         if len(lane_shape.connection_from) > 1:
-    #             connection_count = 1
-    #             for connection in lane_shape.connection_from:
-    #                 source_shape = connection
-    #                 if lane_shape.lane_id == source_shape.lane_id:
-    #                     # check is source_shape y position is within target_shape y + height position
-    #                     Helper.printc(
-    #                         f"(2) {source_shape.name}->source_shape.y: {source_shape.y}, {lane_shape.name}->lane_shape.y + h: {lane_shape.y+lane_shape.height}",
-    #                         "35",
-    #                     )
-    #                     Helper.printc(
-    #                         f"Before connection_count: {row_count},{connection_count}"
-    #                     )
-    #                     if source_shape.y > lane_shape.y + lane_shape.height:
-    #                         connection_count += 1
-    #                     Helper.printc(
-    #                         f"After connection_count: {row_count},{connection_count}"
-    #                     )
-    #             row_count = max(row_count, connection_count)
-
-    #     Helper.printc(
-    #         f"      =>lane: {lane.name} - row_count: {row_count}",
-    #         "31",
-    #     )
-    #     return row_count
-
     def set_shape_x_position(
         self,
         previous_shape: Shape,
@@ -275,7 +227,6 @@ class ProcessMap:
             current_pool = self.get_pool_by_name(current_shape.pool_name)
             if previous_shape is not None:
                 if previous_shape.pool_name == current_shape.pool_name:
-                    # Helper.printc(f"pool name: {current_shape.pool_name}")
                     if previous_shape.lane_id == current_shape.lane_id:
                         current_shape.x = self.get_next_x_position()
                         Helper.printc(f"          same pool same lane")
@@ -300,10 +251,6 @@ class ProcessMap:
 
         self.lane_max_width = max(self.lane_max_width, current_lane.width)
         current_shape.x_pos_traversed = True
-
-        # current_lane.shape_row_count = max(
-        #     current_lane.shape_row_count, self.check_lane_shape_row_count(current_shape)
-        # )
 
         preserved_x_pos = 0
         for index, next_connection in enumerate(current_shape.connection_to):
@@ -349,7 +296,6 @@ class ProcessMap:
             )
 
         shape.set_draw_position(self.__painter)
-        # Helper.printc(f"<{shape.name}>, lane_id={shape.lane_id}, x={shape.x}, y={shape.y}")
 
         shape.y_pos_traversed = True
 
@@ -408,7 +354,6 @@ class ProcessMap:
                     f"{lane.name}, height: {lane.height} = ({lane.shape_row_count} * 60) + ({lane.shape_row_count} - 1) * {Configs.VSPACE_BETWEEN_SHAPES} + {Configs.LANE_SHAPE_TOP_MARGIN} + {Configs.LANE_SHAPE_BOTTOM_MARGIN}"
                 )
                 y = lane.y + lane.height + Configs.VSPACE_BETWEEN_LANES
-                # Helper.printc(f"{x} = {lane.y} + {lane.height} + {lane.VSPACE_BETWEEN_LANES}")
 
             y += Configs.VSPACE_BETWEEN_POOLS
 
@@ -455,8 +400,27 @@ class ProcessMap:
                 for shape in lane.shapes:
                     shape.y_pos_traversed = False
 
+    def get_orphan_elements(self) -> list:
+        orphan_elements = []
+        for pool in self._pools:
+            for lane in pool._lanes:
+                for shape in lane.shapes:
+                    if (
+                        len(shape.connection_to) == 0
+                        and len(shape.connection_from) == 0
+                    ):
+                        orphan_elements.append(shape.name)
+
+        return orphan_elements
+
     def draw(self) -> None:
         """Draw the process map"""
+        orphan_elements = self.get_orphan_elements()
+        if len(orphan_elements) > 0:
+            raise UnconnectedElementException(
+                f"The following element(s) are defined but not connected to other element(s): \n{orphan_elements}"
+            )
+
         self.set_draw_position(self.__painter)
 
         self._title.draw()
