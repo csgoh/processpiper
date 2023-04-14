@@ -23,11 +23,11 @@ jobs:
 
     - name: Install required packages
       run: |
-        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+        if ($env:matrix_os -eq "ubuntu-latest") {
+          echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
           sudo apt install --yes ttf-mscorefonts-installer
           sudo fc-cache -f
-        fi
+        }
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
