@@ -97,4 +97,6 @@ These are a list of items that need to be implemented or fixed before the initia
 <br>:white_check_mark: Connection that crosses pool boundary should begin with a white circle/dot and end with a white arrow.
 <br>:white_check_mark: Renamed from ProcessMap to ProcessPiper
 <br>:white_check_mark: Clean up code
+<br>:white_check_mark: Validate all elements are connected
+<br>:white_square_button: Text to visual BPMN diagram
 <br>:white_square_button: More testing!
