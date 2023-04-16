@@ -104,9 +104,9 @@ class Timer(Event):
         """Draw timer event"""
         super().draw(painter)
         painter.draw_circle(self.x, self.y, self.radius, "black")
-        painter.draw_circle(self.x, self.y, self.radius - 2, "grey")
+        painter.draw_circle(self.x, self.y, self.radius - 2, self.fill_colour)
         painter.draw_circle(self.x, self.y, self.radius - 4, "black")
-        painter.draw_circle(self.x, self.y, self.radius - 6, "grey")
+        painter.draw_circle(self.x, self.y, self.radius - 6, self.fill_colour)
         ### draw clock
         self.draw_clock(painter)
         pos = 15
@@ -125,6 +125,6 @@ class Intermediate(Event):
         """Draw intermediate event"""
         super().draw(painter)
         painter.draw_circle(self.x, self.y, self.radius, "black")
-        painter.draw_circle(self.x, self.y, self.radius - 3, "grey")
+        painter.draw_circle(self.x, self.y, self.radius - 3, self.fill_colour)
         painter.draw_circle(self.x, self.y, self.radius - 6, "black")
-        painter.draw_circle(self.x, self.y, self.radius - 9, "grey")
+        painter.draw_circle(self.x, self.y, self.radius - 9, self.fill_colour)
