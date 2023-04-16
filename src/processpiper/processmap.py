@@ -41,15 +41,16 @@ class UnconnectedElementException(Exception):
 class ProcessMap:
     """Process Map Class"""
 
-    _title: Title = field(init=False)
-    _footer: Footer = field(init=False, default=None)
-    _pools: list = field(init=False, default_factory=list)
-
     title: str = field(init=True, default="<Process Map Title>")
     width: int = field(init=True, default=3200)
     height: int = field(init=True, default=3200)
     auto_size: bool = field(init=True, default=True)
     colour_theme: str = field(init=True, default="DEFAULT")
+
+    _title: Title = field(init=False)
+    _footer: Footer = field(init=False, default=None)
+    _pools: list = field(init=False, default_factory=list)
+
     next_shape_x: int = field(init=False, default=0)
 
     lane_y_pos: int = field(init=False, default=0)
