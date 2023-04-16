@@ -1,15 +1,12 @@
+
+
 def parse_and_generate_code(input_str, png_output_file):
     """Parse input string and generate code to create a diagram"""
 
     lines = input_str.strip().split("\n")
-    if "title" in lines[0]:
-        process_map_title = lines.pop(0).split(":")[1].strip()
-    else:
-        raise ValueError("The first line must contain the word 'title'.")
+    process_map_title = parse_title(lines)
 
-    colour_theme = None
-    if "colourtheme" in lines[0]:
-        colour_theme = lines.pop(0).split(":")[1].strip()
+    colour_theme = parse_colour_theme(lines)
 
     code_lines = [
         "from processpiper import ProcessMap, EventType, ActivityType, GatewayType",
@@ -20,57 +17,18 @@ def parse_and_generate_code(input_str, png_output_file):
 
     indent = ""
     pool_id = 1
-    lane_id = 1
+    lane_id = 0
     pool_found = False
     while lines:
         line = lines.pop(0).strip()
         if line.startswith("pool:"):
-            pool_name = line.split(":")[1].strip()
-            indent = " " * 4
-            code_lines.append(
-                f'{indent}with my_process_map.add_pool("{pool_name}") as pool{pool_id}:'
-            )
-            pool_id += 1
-            pool_found = True
+            pool_found, pool_id = parse_pool(code_lines, pool_id, line)
 
         elif line.startswith("lane:"):
-            lane_name = line.split(":")[1].strip()
-            if pool_found:
-                indent = " " * 8
-                code_lines.append(
-                    f'{indent}with pool{pool_id - 1}.add_lane("{lane_name}") as lane{lane_id}:'
-                )
-            else:
-                indent = " " * 4
-                code_lines.append(
-                    f'{indent}with my_process_map.add_lane("{lane_name}") as lane{lane_id}:'
-                )
-            lane_id += 1
+            indent, lane_id = parse_lane(code_lines, pool_id, lane_id, pool_found, line)
+            parse_element(lines, code_lines, indent, lane_id)
 
-            indent += " " * 4
-            while (
-                lines
-                and not lines[0].strip().startswith("lane:")
-                and not lines[0].strip().startswith("pool:")
-                and not lines[0].strip().startswith("footer:")
-                and not lines[0].strip() == ""
-            ):
-
-                lane_element = lines.pop(0).strip()
-                element_type, element_name, element_var = parse_lane_element(
-                    lane_element
-                )
-                code_lines.append(
-                    f'{indent}{element_var} = lane1.add_element("{element_name}", {element_type})'
-                )
-
-    connections_list = [
-        line.split("->") for line in input_str.strip().split("\n") if "->" in line
-    ]
-
-    for connections in connections_list:
-        for i in range(len(connections) - 1):
-            code_lines.append(f"        {connections[i]}.connect({connections[i + 1]})")
+    parse_connection(input_str, code_lines)
 
     footer = input_str.strip().split("\n")[-1].split("footer:")
     indent = " " * 4
@@ -81,6 +39,72 @@ def parse_and_generate_code(input_str, png_output_file):
     code_lines.append(f'{indent}my_process_map.save("{png_output_file}")')
 
     return "\n".join(code_lines)
+
+def parse_element(lines, code_lines, indent, lane_id):
+    while (
+                lines
+                and not lines[0].strip().startswith("lane:")
+                and not lines[0].strip().startswith("pool:")
+                and not lines[0].strip().startswith("footer:")
+                and not lines[0].strip() == ""
+            ):
+        lane_element = lines.pop(0).strip()
+        element_type, element_name, element_var = parse_lane_element(
+                    lane_element
+                )
+        code_lines.append(
+                    f'{indent}{element_var} = lane{lane_id}.add_element("{element_name}", {element_type})'
+                )
+
+def parse_lane(code_lines, pool_id, lane_id, pool_found, line):
+    lane_name = line.split(":")[1].strip()
+    lane_id += 1
+    if pool_found:
+        indent = " " * 8
+        code_lines.append(
+                    f'{indent}with pool{pool_id - 1}.add_lane("{lane_name}") as lane{lane_id}:'
+                )
+    else:
+        indent = " " * 4
+        code_lines.append(
+                    f'{indent}with my_process_map.add_lane("{lane_name}") as lane{lane_id}:'
+                )
+    
+
+    indent += " " * 4
+    return indent, lane_id
+
+def parse_pool(code_lines, pool_id, line):
+    pool_name = line.split(":")[1].strip()
+    indent = " " * 4
+    code_lines.append(
+                f'{indent}with my_process_map.add_pool("{pool_name}") as pool{pool_id}:'
+            )
+    pool_id += 1
+    pool_found = True
+    return pool_found, pool_id
+
+def parse_connection(input_str, code_lines):
+    connections_list = [
+        line.split("->") for line in input_str.strip().split("\n") if "->" in line
+    ]
+
+    for connections in connections_list:
+        for i in range(len(connections) - 1):
+            code_lines.append(f"        {connections[i]}.connect({connections[i + 1]})")
+
+def parse_colour_theme(lines):
+    colour_theme = None
+    if "colourtheme" in lines[0]:
+        colour_theme = lines.pop(0).split(":")[1].strip()
+    return colour_theme
+
+def parse_title(lines):
+    if "title" in lines[0]:
+        process_map_title = lines.pop(0).split(":")[1].strip()
+    else:
+        raise ValueError("The first line must contain the word 'title'.")
+    return process_map_title
 
 
 def parse_lane_element(element_str):
