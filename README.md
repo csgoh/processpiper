@@ -1,6 +1,11 @@
+![release](https://img.shields.io/pypi/v/processpiper)
+![Wheel](https://img.shields.io/pypi/wheel/processpiper?style=plastic)
 [![license](https://img.shields.io/badge/license-mit-brightgreen.svg?style=plastic)](https://en.wikipedia.org/wiki/MIT_License)
 [![CodeFactor](https://www.codefactor.io/repository/github/csgoh/processpiper/badge?style=plastic)](https://www.codefactor.io/repository/github/csgoh/processpiper)
 ![code size](https://img.shields.io/github/languages/code-size/csgoh/processmapper?style=plastic)
+![python version](https://img.shields.io/pypi/pyversions/processpiper?style=plastic)
+![stars](https://img.shields.io/github/stars/csgoh/processpiper?style=plastic)
+![Twitter Follow](https://img.shields.io/twitter/follow/CSGohNZ?style=social)
 
 # ProcessPiper (Business Process Diagram as Code)
 A python library to generate business process diagram using code. 
@@ -41,6 +46,11 @@ pip install processpiper
   
 ### Library Dependencies
 * Pillow 9.4.0
+
+### Supported Platforms
+* Windows
+* Ubuntu
+* MacOS
 
 ## Documentation
 Please refer to [Processpiper Wiki](https://github.com/csgoh/processpiper/wiki) for more information on how to use this RaC library.
