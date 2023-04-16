@@ -1,4 +1,4 @@
-
+import re
 
 def parse_and_generate_code(input_str, png_output_file):
     """Parse input string and generate code to create a diagram"""
@@ -89,9 +89,27 @@ def parse_connection(input_str, code_lines):
         line.split("->") for line in input_str.strip().split("\n") if "->" in line
     ]
 
-    for connections in connections_list:
-        for i in range(len(connections) - 1):
-            code_lines.append(f"        {connections[i]}.connect({connections[i + 1]})")
+    for connection in connections_list:
+        
+        print (f"connection {connection}")
+        
+        for i in range(len(connection) - 1):
+            print (f"   [{connection[i]}]")
+            element_name, label = get_element_name_and_label(connection[i])
+            target_element_name, target_label = get_element_name_and_label(connection[i + 1])
+            if label:
+                print (f"       {element_name}, label {label}")
+                code_lines.append(f'        {element_name}.connect({target_element_name}, "{label}")')
+            else:
+                code_lines.append(f"        {element_name}.connect({target_element_name})")
+
+def get_element_name_and_label(connection: str):
+    pattern = r'(\w+)-\|(.*?)\|'
+    result = re.search(pattern, connection)
+    if result:
+        return result.group(1), result.group(2)
+    else:
+        return connection, None
 
 def parse_colour_theme(lines):
     colour_theme = None
