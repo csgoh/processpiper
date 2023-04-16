@@ -563,8 +563,30 @@ class Painter:
         gap_size = 10
         x1 = int(x1)
         x2 = int(x2)
-        for i in range(x1, x2, gap_size):
-            self.__cr.line((i, y1, i + 5, y2), fill="black", width=1)
+        print(f"horizontal dashed line: {x1}, {y1}, {x2}, {y2}")
+        if x1 > x2:
+            x1 += 10
+            for i in range(x2, x1, gap_size):
+                # print(f">> {i}, {y1}, {x2}, {y2}")
+                if i - 5 < x2:
+                    new_x = x2
+                else:
+                    new_x = i - 5
+                # print(f"x1 > x2    {i}, {y1}, {new_x}, {y2}")
+                self.__cr.line((i, y1, new_x, y2), fill="black", width=1)
+        else:
+
+            for i in range(x1, x2, gap_size):
+                if i + 5 > x2:
+                    new_x = x2
+                else:
+                    new_x = i + 5
+                # print(f"x2 < x1    {i}, {y1}, {new_x}, {y2}")
+                self.__cr.line((i, y1, new_x, y2), fill="black", width=1)
+
+        # for i in range(x1, x2, gap_size):
+        #     print(f"    {i}, {y1}, {i + 5}, {y2}")
+        #     self.__cr.line((i, y1, i + 5, y2), fill="black", width=1)
 
     def draw_right_angle_dot_line(self, x1: int, y1: int, x2: int, y2: int):
         if x1 < x2:
@@ -699,6 +721,7 @@ class Painter:
                 )
                 # if so, then the line should be drawn from the bottom side of the box
                 points = [(x1, y1), (x1, y2), (x2, y2)]
+                print(f"points {points}")
                 right_angle_point = (x1, y2)
             # for point in points:
             #     self.draw_circle(point[0], point[1], 4, "yellow")
@@ -787,6 +810,7 @@ class Painter:
         connector_arrow_size: int = 0,
     ):
         """Draw a line and arrow between two boxes"""
+
         right_angle_point = self.draw_right_angle_line(
             x1,
             y1,
@@ -824,6 +848,7 @@ class Painter:
             self.draw_circle(x1, y1, 6, connector_arrow_colour, "white")
 
             ### Draw white arrow head at the end of the line
+
             self.draw_arrow_head(
                 right_angle_point[0],
                 right_angle_point[1],
