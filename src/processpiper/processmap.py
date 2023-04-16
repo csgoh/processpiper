@@ -197,11 +197,11 @@ class ProcessMap:
                         return shape
         return None
 
-    def get_lane_by_id(self, id: int) -> Lane:
+    def get_lane_by_id(self, lane_id: int) -> Lane:
         """Get a lane by its id"""
         for pool in self._pools:
             for lane in pool._lanes:
-                if lane.id == id:
+                if lane.id == lane_id:
                     return lane
         return None
 
