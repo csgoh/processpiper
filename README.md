@@ -45,6 +45,7 @@ pip install processpiper
 ## Documentation
 Please refer to [Processpiper Wiki](https://github.com/csgoh/processpiper/wiki) for more information on how to use this RaC library.
 
+## Examples
 ### (Method 1) Generate diagram using plain text
 This is a sample code to generate a business process diagram using plain text. 
 ```python
