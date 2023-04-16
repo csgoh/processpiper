@@ -2,6 +2,7 @@ from processpiper.text2diagram import render
 
 input_syntax = """
 title: Sample Test Process
+colourtheme: GREENTURTLE
     lane: End User
         (start) as start
         [Enter Keyword] as enter_keyword
