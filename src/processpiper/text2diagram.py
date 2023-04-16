@@ -18,17 +18,36 @@ def parse_and_generate_code(input_str, png_output_file):
         else f'with ProcessMap("{process_map_title}", colour_theme="{colour_theme}") as my_process_map:',
     ]
 
+    indent = ""
+    pool_id = 1
+    lane_id = 1
+    pool_found = False
     while lines:
         line = lines.pop(0).strip()
         if line.startswith("pool:"):
             pool_name = line.split(":")[1].strip()
+            indent = " " * 4
             code_lines.append(
-                f'    with my_process_map.add_pool("{pool_name}") as pool1:'
+                f'{indent}with my_process_map.add_pool("{pool_name}") as pool{pool_id}:'
             )
+            pool_id += 1
+            pool_found = True
+
         elif line.startswith("lane:"):
             lane_name = line.split(":")[1].strip()
-            code_lines.append(f'        with pool1.add_lane("{lane_name}") as lane1:')
+            if pool_found:
+                indent = " " * 8
+                code_lines.append(
+                    f'{indent}with pool{pool_id - 1}.add_lane("{lane_name}") as lane{lane_id}:'
+                )
+            else:
+                indent = " " * 4
+                code_lines.append(
+                    f'{indent}with my_process_map.add_lane("{lane_name}") as lane{lane_id}:'
+                )
+            lane_id += 1
 
+            indent += " " * 4
             while (
                 lines
                 and not lines[0].strip().startswith("lane:")
@@ -36,12 +55,13 @@ def parse_and_generate_code(input_str, png_output_file):
                 and not lines[0].strip().startswith("footer:")
                 and not lines[0].strip() == ""
             ):
+
                 lane_element = lines.pop(0).strip()
                 element_type, element_name, element_var = parse_lane_element(
                     lane_element
                 )
                 code_lines.append(
-                    f'            {element_var} = lane1.add_element("{element_name}", {element_type})'
+                    f'{indent}{element_var} = lane1.add_element("{element_name}", {element_type})'
                 )
 
     connections_list = [
@@ -53,11 +73,12 @@ def parse_and_generate_code(input_str, png_output_file):
             code_lines.append(f"        {connections[i]}.connect({connections[i + 1]})")
 
     footer = input_str.strip().split("\n")[-1].split("footer:")
+    indent = " " * 4
     if len(footer) > 1:
-        code_lines.append(f'        my_process_map.set_footer("{footer[1]}")')
+        code_lines.append(f'{indent}my_process_map.set_footer("{footer[1]}")')
 
-    code_lines.append("        my_process_map.draw()")
-    code_lines.append(f'        my_process_map.save("{png_output_file}")')
+    code_lines.append(f"{indent}my_process_map.draw()")
+    code_lines.append(f'{indent}my_process_map.save("{png_output_file}")')
 
     return "\n".join(code_lines)
 
