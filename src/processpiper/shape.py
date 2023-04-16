@@ -25,9 +25,9 @@ from itertools import count
 from .painter import Painter
 from .helper import Helper
 
-# from .connection import Connection
+
 from typing import TypeVar
-from .helper import Helper
+
 
 ### This is to allow the connect method to return the same type of shape
 TShape = TypeVar("TShape", bound="Shape")

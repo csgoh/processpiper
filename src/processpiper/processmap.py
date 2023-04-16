@@ -225,7 +225,7 @@ class ProcessMap:
             f"set_shape_x_position: {current_lane.name}, {current_shape.name}", "34"
         )
         if index == 0:
-            current_pool = self.get_pool_by_name(current_shape.pool_name)
+            
             if previous_shape is not None:
                 if previous_shape.pool_name == current_shape.pool_name:
                     if previous_shape.lane_id == current_shape.lane_id:
@@ -235,7 +235,6 @@ class ProcessMap:
                         current_shape.x = self.get_next_x_position()
                         Helper.printc(f"          same pool diff lane")
                 else:
-                    previous_pool = self.get_pool_by_name(previous_shape.pool_name)
                     current_shape.x = self.get_next_x_position()
                     Helper.printc(f"          diff pool")
             else:
