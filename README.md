@@ -5,21 +5,11 @@
 # ProcessPiper (Business Process Diagram as Code)
 A python library to generate business process diagram using code. 
 
+## Why ProcessPiper?
+1. Generate professional business process diagrams with Python code, eliminating the need for manual drawing and complex tools.
+2. Improve teamwork by utilising source code repositories for change monitoring, collaboration, and diagram history.
+3. Enhance precision by generating diagrams with code, sharing/exporting them in PNG format, and integrating them with Python tools.
 
-
-
-
-## Installation
-### Install from PyPI
-```bash
-pip install processpiper
-```
-
-### Python version requirements:
-* Python 3.10, 3.11
-  
-### Library Dependencies
-* Pillow 9.4.0
 
 # Features
 * Generate business process diagrams with Python code
@@ -40,7 +30,22 @@ pip install processpiper
   * GREENTURTLE
 * Save diagram as PNG file
 
-### Generate diagram using plain text
+## Installation
+### Install from PyPI
+```bash
+pip install processpiper
+```
+
+### Python version requirements:
+* Python 3.10, 3.11
+  
+### Library Dependencies
+* Pillow 9.4.0
+
+## Documentation
+Please refer to [Processpiper Wiki](https://github.com/csgoh/processpiper/wiki) for more information on how to use this RaC library.
+
+### (Method 1) Generate diagram using plain text
 This is a sample code to generate a business process diagram using plain text. 
 ```python
 from processpiper.text2diagram import render
@@ -71,7 +76,7 @@ render(input_syntax, "my_process_map.png")
 
 ```
 
-### Generate diagram using Python code
+### (Method 2) Generate diagram using Python code
 This is a sample code to generate a business process diagram using Python code. The code is self-explanatory. The diagram is generated using the default colour theme.
 
 ```python
@@ -127,9 +132,6 @@ Thank you for checking out my project. If you have found ProcessPiper useful and
 
 <a href="https://www.buymeacoffee.com/csgoh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-## Why ProcessPiper?
-1. Generate professional business process diagrams with Python code, eliminating the need for manual drawing and complex tools.
-2. Improve teamwork by utilising source code repositories for change monitoring, collaboration, and diagram history.
-3. Enhance precision by generating diagrams with code, sharing/exporting them in PNG format, and integrating them with Python tools.
+
 
 
