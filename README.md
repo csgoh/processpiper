@@ -1,4 +1,4 @@
-![release](https://img.shields.io/pypi/v/processpiper)
+![release](https://img.shields.io/pypi/v/processpiper?style=plastic)
 ![Wheel](https://img.shields.io/pypi/wheel/processpiper?style=plastic)
 ![Platforms](https://img.shields.io/badge/Platform%3A-win%20%7C%20ubuntu%20%7C%20osx-brightgreen)
 [![license](https://img.shields.io/badge/license-mit-brightgreen.svg?style=plastic)](https://en.wikipedia.org/wiki/MIT_License)
