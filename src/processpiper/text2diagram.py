@@ -104,7 +104,8 @@ def parse_connection(input_str, code_lines):
                 code_lines.append(f"        {element_name}.connect({target_element_name})")
 
 def get_element_name_and_label(connection: str):
-    pattern = r'(\w+)-\|(.*?)\|'
+    #pattern = r'(\w+)-\|(.*?)\|'
+    pattern = r'(\w+)-\"(.*?)\"'
     result = re.search(pattern, connection)
     if result:
         return result.group(1), result.group(2)
