@@ -1,6 +1,5 @@
 import inspect
 import os.path
-import time
 
 
 from src.processpiper import ProcessMap, EventType, ActivityType, GatewayType

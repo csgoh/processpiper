@@ -28,7 +28,7 @@ from .event import Event, Start, End, Timer, Intermediate
 from .activity import Activity, Task, Subprocess
 from .gateway import Gateway, Exclusive, Parallel, Inclusive
 from .constants import Configs
-from .helper import Helper
+#from .helper import Helper
 
 
 class EventType:
@@ -255,15 +255,13 @@ class Lane:
                 (y + Configs.LANE_SHAPE_TOP_MARGIN),
                 painter,
             )
-            next_x = shape_x + shape_w + Configs.HSPACE_BETWEEN_SHAPES
-
+            
             #### Mark for removal
             # shape.draw_position_set = True
 
             shape.x_pos_traversed = True
 
             ### Set next elements' position
-            this_lane = self.name
             for index, next_shape in enumerate(shape.connection_to.target):
 
                 ### Check whether the position has been set, if yes, skipped.
