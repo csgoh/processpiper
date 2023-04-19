@@ -141,10 +141,5 @@ First version 0.1.0 is released. This release would only cover the following bas
 Any ideas or suggestions, please send it to me via [GitHub Discussions](https://github.com/csgoh/processmapper/discussions).
 
 
-Thank you for checking out my project. If you have found ProcessPiper useful and would like to show your appreciation, consider buying me a coffee or flat white :coffee: and keep me going. To buy me a coffee, simply follow this link: 
-
-<a href="https://www.buymeacoffee.com/csgoh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-
-
 
 
