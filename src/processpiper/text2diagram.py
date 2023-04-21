@@ -1,3 +1,4 @@
+import datetime
 import re
 from processpiper.helper import Helper
 from PIL import Image
@@ -10,6 +11,11 @@ def parse_and_generate_code(input_str, png_output_file):
 
     lines = input_str.strip().split("\n")
     process_map_title = parse_title(lines)
+
+    if len(lines) == 0:
+        raise ValueError(
+            "No business process definition found. Please add pool(s), lane(s) and element(s)."
+        )
 
     colour_theme = parse_colour_theme(lines)
 
@@ -217,13 +223,30 @@ def show_code_with_line_number(code: str):
     """
     print("Generated code: ")
     for i, line in enumerate(code.split("\n")):
-        print(f"{i+1:3}: {line}")
+        print(f"{i+1:3} {line}")
 
 
-def render(text: str, png_output_file: str = "diagram.png"):
+def validate_generated_code(code: str):
+    if "add_lane" not in code:
+        raise ValueError("There is no lane defined. Please add lanes to process map.")
+
+    ### If a multiline code does not contain add_element, raise error
+    if "add_element" not in code:
+        raise ValueError("There is no element defined. Please add elements to lane.")
+
+
+def render(text: str, png_output_file: str = ""):
     """Render text to diagram"""
+    if png_output_file.strip() == "":
+        # add datetime to the file name
+        png_output_file = (
+            f"piper_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+        )
+
     generated_code = parse_and_generate_code(text, png_output_file)
-    show_code_with_line_number(generated_code)
+    validate_generated_code(generated_code)
+    # show_code_with_line_number(generated_code)
+    # print(generated_code)
     exec(generated_code)
     generated_image = Image.open(png_output_file)
 
