@@ -103,7 +103,6 @@ def test_case2():
 
 def test_case3():
     output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
-    print(f"output_file: {output_file}")
     with ProcessMap("Test Process") as my_process_map:
         with my_process_map.add_pool("System Search") as pool1:
             with pool1.add_lane("End User") as lane1:
@@ -379,19 +378,19 @@ def test_case12():
 
 
 if __name__ == "__main__":
-    # test_case1()
-    # test_case2()
+    test_case1()
+    test_case2()
     test_case3()
-    # test_case4()
-    # test_case5()
-    # test_case6()
-    # test_case7()
-    # test_case8()
-    # test_case9()
-    # test_case10(colour_theme="DEFAULT")
-    # test_case10(colour_theme="BLUEMOUNTAIN")
-    # test_case10(colour_theme="ORANGEPEEL")
-    # test_case10(colour_theme="GREENTURTLE")
-    # test_case10(colour_theme="GREYWOOF")
-    # test_case11()
-    # test_case12()
+    test_case4()
+    test_case5()
+    test_case6()
+    test_case7()
+    test_case8()
+    test_case9()
+    test_case10(colour_theme="DEFAULT")
+    test_case10(colour_theme="BLUEMOUNTAIN")
+    test_case10(colour_theme="ORANGEPEEL")
+    test_case10(colour_theme="GREENTURTLE")
+    test_case10(colour_theme="GREYWOOF")
+    test_case11()
+    test_case12()
