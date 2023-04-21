@@ -1,7 +1,12 @@
 import re
+from processpiper.helper import Helper
+from PIL import Image
+
 
 def parse_and_generate_code(input_str, png_output_file):
-    """Parse input string and generate code to create a diagram"""
+    """
+    Parse input string and generate code to create a diagram
+    """
 
     lines = input_str.strip().split("\n")
     process_map_title = parse_title(lines)
@@ -40,85 +45,115 @@ def parse_and_generate_code(input_str, png_output_file):
 
     return "\n".join(code_lines)
 
+
 def parse_element(lines, code_lines, indent, lane_id):
+    """
+    This function parses an element from a list of lines and adds it to a code block with the
+    appropriate indentation.
+    """
     while (
-                lines
-                and not lines[0].strip().startswith("lane:")
-                and not lines[0].strip().startswith("pool:")
-                and not lines[0].strip().startswith("footer:")
-                and not lines[0].strip() == ""
-            ):
+        lines
+        and not lines[0].strip().startswith("lane:")
+        and not lines[0].strip().startswith("pool:")
+        and not lines[0].strip().startswith("footer:")
+        and lines[0].strip() != ""
+    ):
         lane_element = lines.pop(0).strip()
-        element_type, element_name, element_var = parse_lane_element(
-                    lane_element
-                )
+        # check if lane_element contained '->' characters
+        if lane_element.find("->") > 0:
+            # push lane_element back to lines
+            lines.insert(0, lane_element)
+            break
+        element_type, element_name, element_var = parse_lane_element(lane_element)
         code_lines.append(
-                    f'{indent}{element_var} = lane{lane_id}.add_element("{element_name}", {element_type})'
-                )
+            f'{indent}{element_var} = lane{lane_id}.add_element("{element_name}", {element_type})'
+        )
+
 
 def parse_lane(code_lines, pool_id, lane_id, pool_found, line):
+    """
+    The function parses a lane from a code line and adds it to a process map.
+    """
     lane_name = line.split(":")[1].strip()
     lane_id += 1
     if pool_found:
         indent = " " * 8
         code_lines.append(
-                    f'{indent}with pool{pool_id - 1}.add_lane("{lane_name}") as lane{lane_id}:'
-                )
+            f'{indent}with pool{pool_id - 1}.add_lane("{lane_name}") as lane{lane_id}:'
+        )
     else:
         indent = " " * 4
         code_lines.append(
-                    f'{indent}with my_process_map.add_lane("{lane_name}") as lane{lane_id}:'
-                )
-    
+            f'{indent}with my_process_map.add_lane("{lane_name}") as lane{lane_id}:'
+        )
 
     indent += " " * 4
     return indent, lane_id
 
+
 def parse_pool(code_lines, pool_id, line):
+    """
+    This function parses a line of code to extract a pool name and adds it to a list of code lines with
+    a specific format.
+    """
     pool_name = line.split(":")[1].strip()
     indent = " " * 4
     code_lines.append(
-                f'{indent}with my_process_map.add_pool("{pool_name}") as pool{pool_id}:'
-            )
+        f'{indent}with my_process_map.add_pool("{pool_name}") as pool{pool_id}:'
+    )
     pool_id += 1
     pool_found = True
     return pool_found, pool_id
 
+
 def parse_connection(input_str, code_lines):
+    """
+    The function parses a string input containing connection information and generates code lines to
+    establish those connections in Python.
+    """
     connections_list = [
         line.split("->") for line in input_str.strip().split("\n") if "->" in line
     ]
 
     for connection in connections_list:
-        
-        print (f"connection {connection}")
-        
         for i in range(len(connection) - 1):
-            print (f"   [{connection[i]}]")
-            element_name, label = get_element_name_and_label(connection[i])
-            target_element_name, target_label = get_element_name_and_label(connection[i + 1])
+            element_name, label = get_element_name_and_label(connection[i].strip())
+            target_element_name, target_label = get_element_name_and_label(
+                connection[i + 1].strip()
+            )
             if label:
-                print (f"       {element_name}, label {label}")
-                code_lines.append(f'        {element_name}.connect({target_element_name}, "{label}")')
+                code_lines.append(
+                    f'        {element_name}.connect({target_element_name}, "{label}")'
+                )
             else:
-                code_lines.append(f"        {element_name}.connect({target_element_name})")
+                code_lines.append(
+                    f"        {element_name}.connect({target_element_name})"
+                )
+
 
 def get_element_name_and_label(connection: str):
-    #pattern = r'(\w+)-\|(.*?)\|'
-    pattern = r'(\w+)-\"(.*?)\"'
-    result = re.search(pattern, connection)
-    if result:
-        return result.group(1), result.group(2)
+    """
+    The function extracts the element name and label from a given connection string using regular
+    expressions.
+    """
+    pattern = r"(\w+)-\"(.*?)\""
+    if result := re.search(pattern, connection):
+        return result[1], result[2]
     else:
         return connection, None
 
+
 def parse_colour_theme(lines):
-    colour_theme = None
-    if "colourtheme" in lines[0]:
-        colour_theme = lines.pop(0).split(":")[1].strip()
-    return colour_theme
+    """
+    The function extracts the color theme from a list of lines if it exists.
+    """
+    return lines.pop(0).split(":")[1].strip() if "colourtheme" in lines[0] else None
+
 
 def parse_title(lines):
+    """
+    The function extracts the title from a list of lines if the first line contains the word "title".
+    """
     if "title" in lines[0]:
         process_map_title = lines.pop(0).split(":")[1].strip()
     else:
@@ -127,6 +162,10 @@ def parse_title(lines):
 
 
 def parse_lane_element(element_str):
+    """
+    The function parses a string representing a BPMN element and returns its type, name, and variable
+    name.
+    """
     """Detect element type"""
     ### EventType
     if element_str.startswith("(start)"):
@@ -172,8 +211,20 @@ def parse_lane_element(element_str):
     return element_type, element_name, element_var
 
 
+def show_code_with_line_number(code: str):
+    """
+    The function takes a string of code and prints it with line numbers.
+    """
+    print("Generated code: ")
+    for i, line in enumerate(code.split("\n")):
+        print(f"{i+1:3}: {line}")
+
+
 def render(text: str, png_output_file: str = "diagram.png"):
     """Render text to diagram"""
     generated_code = parse_and_generate_code(text, png_output_file)
-    print(generated_code)
+    show_code_with_line_number(generated_code)
     exec(generated_code)
+    generated_image = Image.open(png_output_file)
+
+    return generated_code, generated_image
