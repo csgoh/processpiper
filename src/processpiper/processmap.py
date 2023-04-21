@@ -28,12 +28,16 @@ from .title import Title
 from .footer import Footer
 from .constants import Configs
 from .helper import Helper
-
+from PIL import Image
 import time
 import logging
 
 
 class UnconnectedElementException(Exception):
+    pass
+
+
+class EmptyProcessMapException(Exception):
     pass
 
 
@@ -172,7 +176,7 @@ class ProcessMap:
 
         return self.next_shape_x
 
-    def get_next_x_position(self) -> int:
+    def get_next_x_position(self, previous_shape_width: str) -> int:
         """Get the next x position for the next shape to be added"""
         if self.next_shape_x == 0:
             self.next_shape_x = (
@@ -182,8 +186,10 @@ class ProcessMap:
                 + Configs.LANE_TEXT_WIDTH
                 + Configs.LANE_SHAPE_LEFT_MARGIN
             )
+            Helper.printc(f"            [0]get_next_x_position: {self.next_shape_x}")
         else:
-            self.next_shape_x += 100 + Configs.HSPACE_BETWEEN_SHAPES
+            self.next_shape_x += previous_shape_width + Configs.VSPACE_BETWEEN_SHAPES
+            Helper.printc(f"            [1]get_next_x_position: {self.next_shape_x}")
         return self.next_shape_x
 
     def find_start_shape(self) -> Shape:
@@ -225,20 +231,20 @@ class ProcessMap:
             f"set_shape_x_position: {current_lane.name}, {current_shape.name}", "34"
         )
         if index == 0:
-            
+
             if previous_shape is not None:
                 if previous_shape.pool_name == current_shape.pool_name:
                     if previous_shape.lane_id == current_shape.lane_id:
-                        current_shape.x = self.get_next_x_position()
+                        current_shape.x = self.get_next_x_position(previous_shape.width)
                         Helper.printc(f"          same pool same lane")
                     else:
-                        current_shape.x = self.get_next_x_position()
+                        current_shape.x = self.get_next_x_position(previous_shape.width)
                         Helper.printc(f"          same pool diff lane")
                 else:
-                    current_shape.x = self.get_next_x_position()
+                    current_shape.x = self.get_next_x_position(previous_shape.width)
                     Helper.printc(f"          diff pool")
             else:
-                current_shape.x = self.get_next_x_position()
+                current_shape.x = self.get_next_x_position(0)
                 Helper.printc(f"          previous = none")
         else:
             ### If previous shape is connecting to multiple shapes,
@@ -415,6 +421,26 @@ class ProcessMap:
 
     def draw(self) -> None:
         """Draw the process map"""
+
+        ### Ensure title is defined
+        if (len(self.title) == 0) and (self._title == None):
+            raise ValueError("The process map must contain a title")
+
+        ### Ensure at least a pool is defined
+        if len(self._pools) == 0:
+            raise EmptyProcessMapException(
+                "The process map must contain at least one pool or lane"
+            )
+
+        ### Ensure at least one shape is defined
+        for pool in self._pools:
+            if len(pool._lanes) > 0:
+                if len(pool._lanes[0].shapes) == 0:
+                    raise EmptyProcessMapException(
+                        "The process map must contain at least one shape"
+                    )
+
+        ### Ensure connections are defined
         orphan_elements = self.get_orphan_elements()
         if len(orphan_elements) > 0:
             raise UnconnectedElementException(
@@ -460,6 +486,10 @@ class ProcessMap:
 
         elapsed_time = (time.time() - self.start_time) * 1000
         Helper.info_log(f"Took [{elapsed_time:.2f}ms] to generate '{filename}' diagram")
+
+    # def get_image(self) -> Image:
+    #     """This method returns the process map image"""
+    #     return self.__painter.get_image()
 
     def __enter__(self):
         """This method is called when the 'with' statement is used"""
