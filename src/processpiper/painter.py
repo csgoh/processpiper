@@ -563,7 +563,7 @@ class Painter:
         gap_size = 10
         x1 = int(x1)
         x2 = int(x2)
-        print(f"horizontal dashed line: {x1}, {y1}, {x2}, {y2}")
+
         if x1 > x2:
             x1 += 10
             for i in range(x2, x1, gap_size):
@@ -575,7 +575,6 @@ class Painter:
                 # print(f"x1 > x2    {i}, {y1}, {new_x}, {y2}")
                 self.__cr.line((i, y1, new_x, y2), fill="black", width=1)
         else:
-
             for i in range(x1, x2, gap_size):
                 if i + 5 > x2:
                     new_x = x2
@@ -721,7 +720,6 @@ class Painter:
                 )
                 # if so, then the line should be drawn from the bottom side of the box
                 points = [(x1, y1), (x1, y2), (x2, y2)]
-                print(f"points {points}")
                 right_angle_point = (x1, y2)
             # for point in points:
             #     self.draw_circle(point[0], point[1], 4, "yellow")
