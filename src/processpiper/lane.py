@@ -28,7 +28,9 @@ from .event import Event, Start, End, Timer, Intermediate
 from .activity import Activity, Task, Subprocess
 from .gateway import Gateway, Exclusive, Parallel, Inclusive
 from .constants import Configs
-#from .helper import Helper
+from .helper import Helper
+
+# from .helper import Helper
 
 
 class EventType:
@@ -198,12 +200,15 @@ class Lane:
             "solid",
         )
         ### Uncomment the following line to see the grid. Useful for debugging
-        ####self.painter.draw_grid()
+        ###self.painter.draw_grid()
 
     def draw_shape(self) -> None:
         """Draw the shapes in the lane"""
         if self.shapes:
             for shape in self.shapes:
+                Helper.printc(
+                    f"Drawing shape: {shape.name}, x={shape.x}, y={shape.y}, w={shape.width}, h={shape.height}"
+                )
                 shape.draw(self.painter)
 
     def draw_connection(self) -> None:
@@ -255,7 +260,7 @@ class Lane:
                 (y + Configs.LANE_SHAPE_TOP_MARGIN),
                 painter,
             )
-            
+
             #### Mark for removal
             # shape.draw_position_set = True
 
