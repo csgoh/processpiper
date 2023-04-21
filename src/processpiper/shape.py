@@ -322,8 +322,13 @@ class Shape:
                 )
 
 
+@dataclass
 class Box(Shape):
     """Box shape"""
+
+    def __post_init__(self):
+        self.width = BOX_WIDTH
+        self.height = BOX_HEIGHT
 
     def set_draw_position(self, painter: Painter) -> tuple:
         """Set draw position of box
@@ -338,8 +343,8 @@ class Box(Shape):
         """
         # self.x = x
         # self.y = y
-        self.width = BOX_WIDTH
-        self.height = BOX_HEIGHT
+        # self.width = BOX_WIDTH
+        # self.height = BOX_HEIGHT
         self.points = {
             ### Uncomment the following if we need more connection points
             # "top_left": (self.x, self.y),
@@ -383,6 +388,7 @@ class Box(Shape):
         super().draw(painter)
 
 
+@dataclass
 class Circle(Shape):
     """Circle shape"""
 
@@ -391,11 +397,17 @@ class Circle(Shape):
     text_width: int = field(init=False)
     text_height: int = field(init=False)
 
+    def __post_init__(self):
+        self.radius = CIRCLE_RADIUS
+
     def set_draw_position(self, painter: Painter) -> tuple:
         """Set draw position of circle"""
         ### Circle x position starts from the circle centre, so add radius to x.
         ### But we want to cater for cases when circle and box aligned vertically.
-        self.x = int(self.x + CIRCLE_RADIUS + (BOX_WIDTH / 2) - (CIRCLE_RADIUS))
+        # self.x = int(self.x + CIRCLE_RADIUS + (BOX_WIDTH / 2) - (CIRCLE_RADIUS))
+        # self.x = int(self.x + CIRCLE_RADIUS)
+        # self.x = int(self.x + (BOX_WIDTH / 2) - (CIRCLE_RADIUS))
+        # self.x = int(self.x - (CIRCLE_RADIUS))
         self.y = int(self.y + (BOX_HEIGHT / 2))
         self.radius = CIRCLE_RADIUS
         self.points = {
@@ -436,9 +448,11 @@ class Circle(Shape):
             self.font_colour,
         )
         super().draw(painter)
-        # painter.draw_circle(self.points["top"][0], self.points["top"][1], 4, "red")
+        # painter.draw_circle(self.points["left"][0], self.points["left"][1], 2, "red")
+        # painter.draw_circle(self.points["right"][0], self.points["right"][1], 2, "red")
 
 
+@dataclass
 class Diamond(Shape):
     """Diamond shape"""
 
@@ -447,12 +461,19 @@ class Diamond(Shape):
     text_width: int = field(init=False)
     text_height: int = field(init=False)
 
-    def set_draw_position(self, painter: Painter) -> tuple:
-        """Set draw position of diamond"""
-        self.x = self.x + (BOX_WIDTH / 2) - (DIAMOND_WIDTH / 2)
-        self.y = self.y + (BOX_HEIGHT / 2) - (DIAMOND_HEIGHT / 2)
+    def __post_init__(self):
         self.width = DIAMOND_WIDTH
         self.height = DIAMOND_HEIGHT
+
+    def set_draw_position(self, painter: Painter) -> tuple:
+        """Set draw position of diamond"""
+
+        # self.x = self.x + (BOX_WIDTH / 2) - (DIAMOND_WIDTH / 2)
+        # self.x = self.x - (DIAMOND_WIDTH / 2)
+        self.y = self.y + (BOX_HEIGHT / 2) - (DIAMOND_HEIGHT / 2)
+
+        # self.width = DIAMOND_WIDTH
+        # self.height = DIAMOND_HEIGHT
         self.points = {
             "top_middle": (self.x + self.width / 2, self.y),
             "right_middle": (self.x + self.width, self.y + self.height / 2),
