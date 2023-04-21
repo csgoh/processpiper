@@ -132,7 +132,7 @@ The generated diagram is as follows:
 
 
 ## Development Status
-First version 0.1.0 is released. This release would only cover the following basic business process elements. Other element types will be introduced in subsequence releases.
+Initial first release would only cover the following basic business process elements. Other element types will be introduced in subsequence releases.
 
 * Event: Start, End, Timer, Intermediate
 * Activity: Task, Subprocess
