@@ -7,6 +7,7 @@
 ![code size](https://img.shields.io/github/languages/code-size/csgoh/processmapper?style=plastic)
 ![python version](https://img.shields.io/pypi/pyversions/processpiper?style=plastic)
 ![stars](https://img.shields.io/github/stars/csgoh/processpiper?style=plastic)
+![CI](https://github.com/csgoh/processpiper/actions/workflows/python-package.yml/badge.svg)
 [![Twitter Follow](https://img.shields.io/twitter/follow/CSGohNZ?style=social)](https://twitter.com/CSGohNZ)
 
 # ProcessPiper (Business Process Diagram as Code)
