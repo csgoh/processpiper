@@ -1,5 +1,6 @@
 import datetime
 import re
+import os
 from processpiper.helper import Helper
 from PIL import Image
 
@@ -9,7 +10,13 @@ def parse_and_generate_code(input_str, png_output_file):
     Parse input string and generate code to create a diagram
     """
 
-    lines = input_str.strip().split("\n")
+    # lines = input_str.strip().split("\n")
+    lines = [
+        line.strip()
+        for line in input_str.strip().split("\n")
+        if not line.startswith("#") and line.strip()
+    ]
+
     process_map_title = parse_title(lines)
 
     if len(lines) == 0:
@@ -237,7 +244,9 @@ def validate_generated_code(code: str):
 
 def render(text: str, png_output_file: str = ""):
     """Render text to diagram"""
+    output_file_provided = True
     if png_output_file.strip() == "":
+        output_file_provided = False
         # add datetime to the file name
         png_output_file = (
             f"piper_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
@@ -249,5 +258,9 @@ def render(text: str, png_output_file: str = ""):
     # print(generated_code)
     exec(generated_code)
     generated_image = Image.open(png_output_file)
+    generated_image.load()
+    # Clean up the generated image file
+    if output_file_provided == False:
+        os.remove(png_output_file)
 
     return generated_code, generated_image
