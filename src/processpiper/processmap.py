@@ -31,6 +31,7 @@ from .helper import Helper
 from PIL import Image
 import time
 import logging
+import PIL
 
 
 class UnconnectedElementException(Exception):
@@ -487,9 +488,10 @@ class ProcessMap:
         elapsed_time = (time.time() - self.start_time) * 1000
         Helper.info_log(f"Took [{elapsed_time:.2f}ms] to generate '{filename}' diagram")
 
-    # def get_image(self) -> Image:
-    #     """This method returns the process map image"""
-    #     return self.__painter.get_image()
+    def getImage(self) -> PIL.Image:
+        """This method returns the process map image"""
+        image = self.__painter.__surface
+        return image
 
     def __enter__(self):
         """This method is called when the 'with' statement is used"""
