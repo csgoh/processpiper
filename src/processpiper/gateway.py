@@ -30,7 +30,7 @@ class Gateway(Diamond):
 
     def draw_symbol(self, symbol: str, painter: Painter):
         """Draw a symbol in the middle of the gateway"""
-        symbol_w, symbol_h = painter.get_text_dimension(symbol, "Arial", SYMBOL_SIZE)
+        symbol_w, symbol_h = painter.get_text_dimension(symbol, painter.element_font, SYMBOL_SIZE)
         painter.draw_text(
             self.x + (self.width / 2) - (symbol_w / 2),
             self.y + (self.height / 2) - (symbol_h / 2),

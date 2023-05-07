@@ -823,7 +823,7 @@ class Painter:
 
         label_x_pos, label_y_pos = right_angle_point
 
-        label_w, label_h = self.get_multitext_dimension(label, "Arial", 12)
+        label_w, label_h = self.get_multitext_dimension(label, connector_font, 12)
         if label_x_pos == x1 and label_y_pos == y1:
             ### There is no right angle point
             label_x_pos = max(x1 + 5, x1 + (((x2 - x1) - label_w) / 2))
