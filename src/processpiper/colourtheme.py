@@ -22,7 +22,7 @@
 from dataclasses import dataclass
 
 
-DEFAULT_FONT = "Arial"
+DEFAULT_FONT = "Verdana"
 DEFAULT_TITLE_FONT_SIZE = 26
 DEFAULT_POOL_FONT_SIZE = 18
 DEFAULT_LANE_FONT_SIZE = 18
