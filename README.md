@@ -49,7 +49,7 @@ pip install processpiper
 ## Frontend Application
 Two frontend applications have been developed to showcase ProcessPiper capability.
 * [Piperoni](https://github.com/csgoh/Piperoni) - A desktop application
-* Piperita (Coming Soon!) - A Streamlit web application
+* [Piperita](https://piperita.streamlit.app/) - A Streamlit web application
 
 <br>
 
