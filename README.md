@@ -43,14 +43,16 @@ A python library to generate business process diagram using code.
 ```bash
 pip install processpiper
 ```
-
 <br>
 
 ## Frontend Application
 Two frontend applications have been developed to showcase ProcessPiper capability.
 * [Piperoni](https://github.com/csgoh/Piperoni) - A desktop application
 * [Piperita](https://piperita.streamlit.app/) - A Streamlit web application
+<<<<<<< HEAD
 
+=======
+>>>>>>> 280ab33d26688baecabffe7afb7be498892989aa
 <br>
 
 ### Python version requirements:
