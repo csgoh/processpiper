@@ -142,13 +142,22 @@ class Painter:
                 "/", "System", "Library", "Fonts", "Supplemental", f"{font_name}.ttf"
             )
         elif sys.platform.startswith("linux"):  # Linux
+            # return os.path.join(
+            #     "/",
+            #     "usr",
+            #     "share",
+            #     "fonts",
+            #     "truetype",
+            #     "msttcorefonts",
+            #     f"{font_name}.ttf",
+            # )
             return os.path.join(
                 "/",
                 "usr",
                 "share",
                 "fonts",
                 "truetype",
-                "msttcorefonts",
+                "dejavu",  # Use the DejaVu font directory instead of msttcorefonts
                 f"{font_name}.ttf",
             )
         else:
