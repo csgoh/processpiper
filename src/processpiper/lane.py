@@ -24,9 +24,9 @@ from enum import Enum
 from itertools import count
 from .shape import Shape
 from .painter import Painter
-from .event import Event, Start, End, Timer, Intermediate
-from .activity import Activity, Task, Subprocess
-from .gateway import Gateway, Exclusive, Parallel, Inclusive
+from .event import *
+from .activity import *
+from .gateway import *
 from .constants import Configs
 from .helper import Helper
 
@@ -40,6 +40,7 @@ class EventType:
     END = "End"
     TIMER = "Timer"
     INTERMEDIATE = "Intermediate"
+    MESSAGE = "Message"
 
 
 class ActivityType:
@@ -55,6 +56,7 @@ class GatewayType:
     EXCLUSIVE = "Exclusive"
     PARALLEL = "Parallel"
     INCLUSIVE = "Inclusive"
+    EVENT = "EventGateway"
 
 
 class ElementType(str, Enum):
@@ -64,11 +66,13 @@ class ElementType(str, Enum):
     END = "End"
     TIMER = "Timer"
     INTERMEDIATE = "Intermediate"
+    MESSAGE = "Message"
     TASK = "Task"
     SUBPROCESS = "Subprocess"
     EXCLUSIVE = "Exclusive"
     PARALLEL = "Parallel"
     INCLUSIVE = "Inclusive"
+    EVENT = "Event"
 
 
 @dataclass
@@ -268,7 +272,6 @@ class Lane:
 
             ### Set next elements' position
             for index, next_shape in enumerate(shape.connection_to.target):
-
                 ### Check whether the position has been set, if yes, skipped.
                 ### This is needed to avoid infinite recursion
                 if next_shape.traversed == True:
