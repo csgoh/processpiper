@@ -128,3 +128,121 @@ class Intermediate(Event):
         painter.draw_circle(self.x, self.y, self.radius - 3, self.fill_colour)
         painter.draw_circle(self.x, self.y, self.radius - 6, "black")
         painter.draw_circle(self.x, self.y, self.radius - 9, self.fill_colour)
+
+
+class Message(Event):
+    """Message event class for representing message event in a process."""
+
+    def draw(self, painter: Painter):
+        """Draw message event"""
+        super().draw(painter)
+
+        ### draw an email icon inside the self.radius
+        # painter.draw_box(self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 1.5, "black")
+        # painter.draw_line(
+        #     self.x - self.radius,
+        #     self.y - self.radius * 0.5,
+        #     self.x + self.radius,
+        #     self.y - self.radius * 0.5,
+        #     "black",
+        #     1,
+        #     1,
+        #     "solid",
+        # )
+        # painter.draw_line(
+        #     self.x - self.radius,
+        #     self.y + self.radius * 0.5,
+        #     self.x + self.radius,
+        #     self.y + self.radius * 0.5,
+        #     "black",
+        #     1,
+        #     1,
+        #     "solid",
+        # )
+        # painter.draw_line(
+        #     self.x - self.radius * 0.5,
+        #     self.y - self.radius * 0.5,
+        #     self.x - self.radius * 0.5,
+        #     self.y + self.radius * 0.5,
+        #     "black",
+        #     1,
+        #     1,
+        #     "solid",
+        # )
+        # painter.draw_line(
+        #     self.x + self.radius * 0.5,
+        #     self.y - self.radius * 0.5,
+        #     self.x + self.radius * 0.5,
+        #     self.y + self.radius * 0.5,
+        #     "black",
+        #     1,
+        #     1,
+        #     "solid",
+        # )
+
+        envelope_width = self.radius * 1.2
+        envelope_height = self.radius * 0.9
+        circle_center = (self.x, self.y)
+        envelope_top_left = (
+            circle_center[0] - envelope_width // 2,
+            circle_center[1] - envelope_height // 2,
+        )
+        envelope_bottom_right = (
+            circle_center[0] + envelope_width // 2,
+            circle_center[1] + envelope_height // 2,
+        )
+
+        painter.draw_box_with_outline(
+            envelope_top_left[0],
+            envelope_top_left[1],
+            envelope_width,
+            envelope_height,
+            box_outline_colour="black",
+            box_outline_transparency=1,
+            box_outline_width=2,
+            box_fill_colour=painter.element_fill_colour,
+        )
+
+        painter.draw_line(
+            ### +1 to x1, y1 is to offset the distortion caused by outline thickness
+            envelope_top_left[0] + 1,
+            envelope_top_left[1] + 1,
+            circle_center[0],
+            circle_center[1],
+            "black",
+            1,
+            2,
+            "solid",
+        )
+        painter.draw_line(
+            ### adding -2 and +2 to x2, y2 is to offset the distortion caused by outline thickness
+            envelope_top_left[0] + envelope_width - 2,
+            envelope_top_left[1] + 2,
+            circle_center[0],
+            circle_center[1],
+            "black",
+            1,
+            2,
+            "solid",
+        )
+
+
+class Signal(Event):
+    def draw(self, painter: Painter):
+        """Draw message event"""
+        super().draw(painter)
+        raise NotImplementedError("Signal event is not implemented yet.")
+
+
+class Conditional(Event):
+    def draw(self, painter: Painter):
+        """Draw message event"""
+        super().draw(painter)
+        raise NotImplementedError("Conditional event is not implemented yet.")
+
+
+class Link(Event):
+    def draw(self, painter: Painter):
+        """Draw message event"""
+        super().draw(painter)
+        raise NotImplementedError("Link event is not implemented yet.")
