@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import math
 from .shape import Diamond
 from .painter import Painter
 
@@ -30,7 +31,9 @@ class Gateway(Diamond):
 
     def draw_symbol(self, symbol: str, painter: Painter):
         """Draw a symbol in the middle of the gateway"""
-        symbol_w, symbol_h = painter.get_text_dimension(symbol, painter.element_font, SYMBOL_SIZE)
+        symbol_w, symbol_h = painter.get_text_dimension(
+            symbol, painter.element_font, SYMBOL_SIZE
+        )
         painter.draw_text(
             self.x + (self.width / 2) - (symbol_w / 2),
             self.y + (self.height / 2) - (symbol_h / 2),
@@ -70,3 +73,43 @@ class Inclusive(Gateway):
         super().draw(painter)
         symbol = "O"
         super().draw_symbol(symbol, painter)
+
+
+class EventGateway(Gateway):
+    """An event gateway is a diamond shape with a pentagon in the middle"""
+
+    def draw(self, painter: Painter):
+        """Draw the gateway and the symbol in the middle of the gateway"""
+        super().draw(painter)
+        # symbol = "O"
+        # super().draw_symbol(symbol, painter)
+
+        # Define the pentagon's properties
+        num_sides = 5
+        side_length = 7
+        center_x, center_y = self.x + self.width // 2, self.y + self.height // 2
+        angle = 2 * math.pi / num_sides
+        starting_angle = -math.pi / 2
+
+        # Calculate the coordinates of the pentagon's vertices
+        vertices = []
+        for i in range(num_sides):
+            x = center_x + side_length * math.cos(i * angle + starting_angle)
+            y = center_y + side_length * math.sin(i * angle + starting_angle)
+            vertices.append((x, y))
+
+        # Draw two circles
+        radius = 13
+        painter.draw_circle(center_x, center_y, radius, "black")
+        painter.draw_circle(center_x, center_y, radius - 1, self.fill_colour)
+        painter.draw_circle(center_x, center_y, radius - 3, "black")
+        painter.draw_circle(center_x, center_y, radius - 4, self.fill_colour)
+
+        # Draw the pentagon
+        print(f"vertices: {vertices}")
+        painter.draw_polygon(
+            vertices,
+            fill_colour=painter.element_fill_colour,
+            outline_colour="black",
+            outline_width=2,
+        )
