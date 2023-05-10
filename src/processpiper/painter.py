@@ -142,22 +142,22 @@ class Painter:
                 "/", "System", "Library", "Fonts", "Supplemental", f"{font_name}.ttf"
             )
         elif sys.platform.startswith("linux"):  # Linux
-            font_dir = f"/usr/share/fonts/truetype/msttcorefonts"  
+            font_dir = f"/usr/share/fonts/truetype/msttcorefonts"
 
             if os.path.exists(os.path.join(font_dir, f"{font_name}.ttf")):
                 return os.path.join(font_dir, f"{font_name}.ttf")
             else:
                 ### This is cater for cases where msttcorefonts is not installed
-                linux_font_name = "DejaVuSans" # Default font for Linux
+                linux_font_name = "DejaVuSans"  # Default font for Linux
                 return os.path.join(
-                "/",
-                "usr",
-                "share",
-                "fonts",
-                "truetype",
-                "dejavu",  # Use the DejaVu font directory instead of msttcorefonts
-                f"{linux_font_name}.ttf",
-            )
+                    "/",
+                    "usr",
+                    "share",
+                    "fonts",
+                    "truetype",
+                    "dejavu",  # Use the DejaVu font directory instead of msttcorefonts
+                    f"{linux_font_name}.ttf",
+                )
         else:
             raise Exception("Unsupported operating system")
 
@@ -194,6 +194,34 @@ class Painter:
         """
         shape = [(x, y), (x + width, y + height)]
         self.__cr.rectangle(shape, fill=box_fill_colour)
+
+    def draw_box_with_outline(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        box_outline_colour: str,
+        box_outline_transparency: int,
+        box_outline_width: int,
+        box_fill_colour: str,
+    ) -> None:
+        """Draw a rectagle
+
+        Args:
+            x (int): X coordinate
+            y (int): Y coordinate
+            width (int): Rectangle width
+            height (int): Rectangle height
+            box_fill_colour (str: HTML colour name or hex code. Eg. #FFFFFF or LightGreen)
+        """
+        shape = [(x, y), (x + width, y + height)]
+        self.__cr.rectangle(
+            shape,
+            fill=box_fill_colour,
+            outline=box_outline_colour,
+            width=box_outline_width,
+        )
 
     def draw_rounded_box(
         self, x: int, y: int, width: int, height: int, box_fill_colour: str
@@ -416,6 +444,17 @@ class Painter:
             rotated_img = rotated_img.rotate(90, expand=1)
             self.__surface.paste(rotated_img, (int(x), int(y)), rotated_img)
 
+    def draw_polygon(
+        self,
+        points: list,
+        outline_colour: str = "",
+        outline_width: int = 1,
+        fill_colour: str = "",
+    ):
+        self.__cr.polygon(
+            points, fill=fill_colour, outline=outline_colour, width=outline_width
+        )
+
     def draw_diamond(
         self, x: int, y: int, width: int, height: int, fill_colour: str
     ) -> None:
@@ -441,7 +480,13 @@ class Painter:
         self.__cr.polygon(points, fill=fill_colour)
 
     def draw_circle(
-        self, x: int, y: int, radius: float, outline_colour: str, fill_colour: str = ""
+        self,
+        x: int,
+        y: int,
+        radius: float,
+        outline_colour: str,
+        outline_width: int = 1,
+        fill_colour: str = "",
     ) -> None:
         """Draw a circle"""
         if fill_colour == "":
@@ -455,6 +500,7 @@ class Painter:
             (x - radius, y - radius, x + radius, y + radius),
             fill=(fill_red, fill_green, fill_blue),
             outline=(outline_red, outline_green, outline_blue),
+            width=outline_width,
         )
 
     def draw_dot(self, x: int, y: int, colour: str) -> None:
