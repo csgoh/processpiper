@@ -12,8 +12,8 @@ def prep_for_test(filename: str):
     output_file = os.path.join(path, filename)
 
     ### remove the file if it exists
-    if os.path.exists(output_file):
-        os.remove(output_file)
+    # if os.path.exists(output_file):
+    #     os.remove(output_file)
 
     return output_file
 
@@ -377,20 +377,37 @@ def test_case12():
                 my_process_map.save(output_file)
 
 
+def test_case13():
+    output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
+    with ProcessMap("Test Case 13") as my_process_map:
+        with my_process_map.add_pool("Hardware Retailer") as pool1:
+            with pool1.add_lane("Lane 1") as lane1:
+                mesg = lane1.add_element("Email Received", EventType.MESSAGE)
+                poly = lane1.add_element("Polygon", GatewayType.EVENT)
+                task = lane1.add_element("Task 1", ActivityType.TASK)
+                end = lane1.add_element("Email Sent", EventType.END)
+
+        mesg.connect(poly).connect(task).connect(end)
+
+        my_process_map.draw()
+        my_process_map.save(output_file)
+
+
 if __name__ == "__main__":
-    test_case1()
-    test_case2()
-    test_case3()
-    test_case4()
-    test_case5()
-    test_case6()
-    test_case7()
-    test_case8()
-    test_case9()
-    test_case10(colour_theme="DEFAULT")
-    test_case10(colour_theme="BLUEMOUNTAIN")
-    test_case10(colour_theme="ORANGEPEEL")
-    test_case10(colour_theme="GREENTURTLE")
-    test_case10(colour_theme="GREYWOOF")
-    test_case11()
-    test_case12()
+    # test_case1()
+    # test_case2()
+    # test_case3()
+    # test_case4()
+    # test_case5()
+    # test_case6()
+    # test_case7()
+    # test_case8()
+    # test_case9()
+    # test_case10(colour_theme="DEFAULT")
+    # test_case10(colour_theme="BLUEMOUNTAIN")
+    # test_case10(colour_theme="ORANGEPEEL")
+    # test_case10(colour_theme="GREENTURTLE")
+    # test_case10(colour_theme="GREYWOOF")
+    # test_case11()
+    # test_case12()
+    test_case13()
