@@ -125,9 +125,9 @@ class Intermediate(Event):
         """Draw intermediate event"""
         super().draw(painter)
         painter.draw_circle(self.x, self.y, self.radius, "black")
-        painter.draw_circle(self.x, self.y, self.radius - 3, self.fill_colour)
-        painter.draw_circle(self.x, self.y, self.radius - 6, "black")
-        painter.draw_circle(self.x, self.y, self.radius - 9, self.fill_colour)
+        painter.draw_circle(self.x, self.y, self.radius - 2, self.fill_colour)
+        painter.draw_circle(self.x, self.y, self.radius - 4, "black")
+        painter.draw_circle(self.x, self.y, self.radius - 6, self.fill_colour)
 
 
 class Message(Event):
@@ -136,49 +136,6 @@ class Message(Event):
     def draw(self, painter: Painter):
         """Draw message event"""
         super().draw(painter)
-
-        ### draw an email icon inside the self.radius
-        # painter.draw_box(self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 1.5, "black")
-        # painter.draw_line(
-        #     self.x - self.radius,
-        #     self.y - self.radius * 0.5,
-        #     self.x + self.radius,
-        #     self.y - self.radius * 0.5,
-        #     "black",
-        #     1,
-        #     1,
-        #     "solid",
-        # )
-        # painter.draw_line(
-        #     self.x - self.radius,
-        #     self.y + self.radius * 0.5,
-        #     self.x + self.radius,
-        #     self.y + self.radius * 0.5,
-        #     "black",
-        #     1,
-        #     1,
-        #     "solid",
-        # )
-        # painter.draw_line(
-        #     self.x - self.radius * 0.5,
-        #     self.y - self.radius * 0.5,
-        #     self.x - self.radius * 0.5,
-        #     self.y + self.radius * 0.5,
-        #     "black",
-        #     1,
-        #     1,
-        #     "solid",
-        # )
-        # painter.draw_line(
-        #     self.x + self.radius * 0.5,
-        #     self.y - self.radius * 0.5,
-        #     self.x + self.radius * 0.5,
-        #     self.y + self.radius * 0.5,
-        #     "black",
-        #     1,
-        #     1,
-        #     "solid",
-        # )
 
         envelope_width = self.radius * 1.2
         envelope_height = self.radius * 0.9
@@ -231,18 +188,113 @@ class Signal(Event):
     def draw(self, painter: Painter):
         """Draw message event"""
         super().draw(painter)
-        raise NotImplementedError("Signal event is not implemented yet.")
+        # Draw a triangle
+        triangle_radius = self.radius * 0.6
+        vertices = [
+            (self.x, self.y - triangle_radius),
+            (
+                self.x - triangle_radius * math.sin(math.pi / 3),
+                self.y + triangle_radius * math.cos(math.pi / 3),
+            ),
+            (
+                self.x + triangle_radius * math.sin(math.pi / 3),
+                self.y + triangle_radius * math.cos(math.pi / 3),
+            ),
+        ]
+        print(f"vertices {vertices}")
+        painter.draw_polygon(
+            vertices,
+            outline_colour="black",
+            fill_colour=painter.element_fill_colour,
+            outline_width=2,
+        )
 
 
 class Conditional(Event):
     def draw(self, painter: Painter):
         """Draw message event"""
         super().draw(painter)
-        raise NotImplementedError("Conditional event is not implemented yet.")
+
+        # painter.draw_circle(self.x, self.y, self.radius, "black")
+        # painter.draw_circle(self.x, self.y, self.radius - 3, self.fill_colour)
+
+        rectangle_radius = self.radius
+        rectangle_width = rectangle_radius * math.sqrt(0.8)
+        rectangle_height = rectangle_radius * 0.9
+        rectangle_vertices = [
+            (self.x - rectangle_width / 2, self.y - rectangle_height / 2),
+            (self.x + rectangle_width / 2, self.y + rectangle_height / 2),
+        ]
+        painter.draw_polygon(
+            rectangle_vertices,
+            outline_colour="red",
+            fill_colour=painter.element_fill_colour,
+            outline_width=2,
+        )
+        painter.draw_box_with_outline(
+            self.x - rectangle_width / 2,
+            self.y - rectangle_height / 2,
+            rectangle_width,
+            rectangle_height,
+            box_fill_colour=painter.element_fill_colour,
+            box_outline_colour="black",
+            box_outline_transparency=1,
+            box_outline_width=1,
+        )
+
+        num_lines = 5
+        line_spacing = rectangle_height / (num_lines + 1)
+
+        ### Draw the horizontal lines inside the rectangle
+        for i in range(num_lines):
+            line_y = self.y - rectangle_height / 2 + line_spacing * (i + 1)
+            painter.draw_line(
+                self.x - rectangle_width / 2 + 2,
+                line_y,
+                self.x + rectangle_width / 2 - 2,
+                line_y,
+                line_colour="black",
+                line_width=1,
+                line_style="solid",
+                line_transparency=1,
+            )
 
 
 class Link(Event):
     def draw(self, painter: Painter):
         """Draw message event"""
         super().draw(painter)
-        raise NotImplementedError("Link event is not implemented yet.")
+
+        painter.draw_circle(self.x, self.y, self.radius, "black")
+        painter.draw_circle(self.x, self.y, self.radius - 2, self.fill_colour)
+        painter.draw_circle(self.x, self.y, self.radius - 4, "black")
+        painter.draw_circle(self.x, self.y, self.radius - 6, self.fill_colour)
+
+        arrow_radius = self.radius
+        arrow_width = arrow_radius * 0.4
+        arrow_height = arrow_radius * 0.6
+        arrow_neck_width = 4
+
+        # (self.x - arrow_width / 2, self.y - arrow_height / 2),  # Top point
+        #     (self.x + arrow_width / 2, self.y),  # Middle point
+        #     (self.x - arrow_width / 2, self.y + arrow_height / 2),  # Bottom point
+        #     (self.x - arrow_width / 2, self.y + arrow_neck_width),
+        #     (self.x - (arrow_width * 1.5), self.y + arrow_neck_width),
+        #     (self.x - (arrow_width * 1.5), self.y - arrow_neck_width),
+        #     (self.x - arrow_width / 2, self.y - arrow_neck_width),
+        pointy_x = self.x + (arrow_width * 0.3)
+        arrow_vertices = [
+            (pointy_x, self.y - arrow_height / 1.5),  # Top point
+            (self.x + (arrow_width * 1.4), self.y),  # Middle point
+            (pointy_x, self.y + arrow_height / 1.5),  # Bottom point
+            (pointy_x, self.y + arrow_neck_width),
+            (self.x - (arrow_width * 1.2), self.y + arrow_neck_width),
+            (self.x - (arrow_width * 1.2), self.y - arrow_neck_width),
+            (pointy_x, self.y - arrow_neck_width),
+        ]
+        painter.draw_polygon(
+            arrow_vertices,
+            outline_colour="black",
+            fill_colour=painter.element_fill_colour,
+            outline_width=1,
+        )
