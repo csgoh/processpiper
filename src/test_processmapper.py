@@ -382,12 +382,17 @@ def test_case13():
     with ProcessMap("Test Case 13") as my_process_map:
         with my_process_map.add_pool("Hardware Retailer") as pool1:
             with pool1.add_lane("Lane 1") as lane1:
-                mesg = lane1.add_element("Email Received", EventType.MESSAGE)
-                poly = lane1.add_element("Polygon", GatewayType.EVENT)
-                task = lane1.add_element("Task 1", ActivityType.TASK)
-                end = lane1.add_element("Email Sent", EventType.END)
+                mesg = lane1.add_element("Message Event", EventType.MESSAGE)
+                poly = lane1.add_element("Event Gateway", GatewayType.EVENT)
+                signal = lane1.add_element("Signal Event", EventType.SIGNAL)
+                cond = lane1.add_element("Conditional Event", EventType.CONDITIONAL)
+                link = lane1.add_element("Link Event", EventType.LINK)
+                intermediate = lane1.add_element("Intermediate", EventType.INTERMEDIATE)
+                end = lane1.add_element("End", EventType.END)
 
-        mesg.connect(poly).connect(task).connect(end)
+        mesg.connect(poly).connect(signal).connect(cond).connect(link).connect(
+            intermediate
+        ).connect(end)
 
         my_process_map.draw()
         my_process_map.save(output_file)
