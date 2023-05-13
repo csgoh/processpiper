@@ -22,7 +22,7 @@
 import math
 import os
 import sys
-from PIL import Image, ImageDraw, ImageFont, ImageColor
+from PIL import Image, ImageDraw, ImageFont, ImageColor, ImageFilter, ImageEnhance
 import textwrap
 from .colourtheme import ColourTheme
 from .helper import Helper
@@ -77,7 +77,10 @@ class Painter:
         """Initialise the painter"""
         self.output_type = "PNG"
         self.__surface = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        ### Set DPI
+        # self.__surface.info["dpi"] = (1600, 1600)
         self.__cr = ImageDraw.Draw(self.__surface)
+
         self.width = width
         self.height = height
 
@@ -1067,4 +1070,24 @@ class Painter:
         """
         if self.output_type == "PNG":
             if self.__surface is not None:
-                self.__surface.save(filename)
+                # anti_alias_image = self.__surface.filter(ImageFilter.SMOOTH_MORE)
+                # anti_alias_image.save(filename)
+                # Set the DPI to 300
+                # info = self.__surface.info.copy()
+                # info["dpi"] = (600, 600)
+
+                # Save the image with the new DPI
+                # self.__surface.save(filename, **info)
+
+                length_x, width_y = self.__surface.size
+                factor = min(1, float(1024.0 / length_x))
+
+                factor = 1
+                size = int(factor * length_x), int(factor * width_y)
+                image_resize = self.__surface.resize(size, Image.ANTIALIAS)
+                image_resize.save(filename, dpi=(1200, 1200), optimize=False)
+
+                # enhancer = ImageEnhance.Sharpness(self.__surface)
+                # im_s_1 = enhancer.enhance(3)
+                # im_s_1.save("sharp.png")
+                # self.__surface.save(filename)
