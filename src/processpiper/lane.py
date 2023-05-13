@@ -41,6 +41,9 @@ class EventType:
     TIMER = "Timer"
     INTERMEDIATE = "Intermediate"
     MESSAGE = "Message"
+    SIGNAL = "Signal"
+    CONDITIONAL = "Conditional"
+    LINK = "Link"
 
 
 class ActivityType:
@@ -67,6 +70,9 @@ class ElementType(str, Enum):
     TIMER = "Timer"
     INTERMEDIATE = "Intermediate"
     MESSAGE = "Message"
+    SIGNAL = "Signal"
+    CONDITIONAL = "Conditional"
+    LINK = "Link"
     TASK = "Task"
     SUBPROCESS = "Subprocess"
     EXCLUSIVE = "Exclusive"
