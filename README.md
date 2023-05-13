@@ -65,7 +65,7 @@ Two frontend applications have been developed to showcase ProcessPiper capabilit
 * MacOS
 
 ## Documentation
-Please refer to [Processpiper Wiki](https://github.com/csgoh/processpiper/wiki) for more information on how to use this RaC library.
+Please refer to [Processpiper Wiki](https://github.com/csgoh/processpiper/wiki) for more information on how to use this library.
 
 ## Examples
 ### (Method 1) Generate diagram using plain text
