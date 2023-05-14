@@ -492,19 +492,30 @@ class Painter:
         fill_colour: str = "",
     ) -> None:
         """Draw a circle"""
+        outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
         if fill_colour == "":
             ### If no fill colour is specified, use the outline colour as the fill colour.
-            outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
             fill_red, fill_green, fill_blue = outline_red, outline_green, outline_blue
+            self.__cr.ellipse(
+                (x - radius, y - radius, x + radius, y + radius),
+                fill=(fill_red, fill_green, fill_blue),
+                outline=(outline_red, outline_green, outline_blue),
+                width=outline_width,
+            )
+        elif fill_colour == "transparent":
+            self.__cr.ellipse(
+                (x - radius, y - radius, x + radius, y + radius),
+                outline=(outline_red, outline_green, outline_blue),
+                width=outline_width,
+            )
         else:
-            outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
             fill_red, fill_green, fill_blue = ImageColor.getrgb(fill_colour)
-        self.__cr.ellipse(
-            (x - radius, y - radius, x + radius, y + radius),
-            fill=(fill_red, fill_green, fill_blue),
-            outline=(outline_red, outline_green, outline_blue),
-            width=outline_width,
-        )
+            self.__cr.ellipse(
+                (x - radius, y - radius, x + radius, y + radius),
+                fill=(fill_red, fill_green, fill_blue),
+                outline=(outline_red, outline_green, outline_blue),
+                width=outline_width,
+            )
 
     def draw_dot(self, x: int, y: int, colour: str) -> None:
         """Draw a dot"""
