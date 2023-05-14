@@ -41,8 +41,13 @@ class EventType:
     TIMER = "Timer"
     INTERMEDIATE = "Intermediate"
     MESSAGE = "Message"
+    MESSAGE_INTERMEDIATE = "MessageIntermediate"
+    MESSAGE_END = "MessageEnd"
     SIGNAL = "Signal"
+    SIGNAL_INTERMEDIATE = "SignalIntermediate"
+    SIGNAL_END = "SignalEnd"
     CONDITIONAL = "Conditional"
+    CONDITIONAL_INTERMEDIATE = "ConditionalIntermediate"
     LINK = "Link"
 
 
@@ -70,8 +75,13 @@ class ElementType(str, Enum):
     TIMER = "Timer"
     INTERMEDIATE = "Intermediate"
     MESSAGE = "Message"
+    MESSAGE_INTERMEDIATE = "MessageIntermediate"
+    MESSAGE_END = "MessageEnd"
     SIGNAL = "Signal"
+    SIGNAL_INTERMEDIATE = "SignalIntermediate"
+    SIGNAL_END = "SignalEnd"
     CONDITIONAL = "Conditional"
+    CONDITIONAL_INTERMEDIATE = "Conditional"
     LINK = "Link"
     TASK = "Task"
     SUBPROCESS = "Subprocess"
@@ -131,6 +141,7 @@ class Lane:
         if text_alignment == "":
             text_alignment = self.painter.element_text_alignment
 
+        Helper.info_log(f">>>{type}, {name}, {self.name}<<<")
         event_class = globals()[type]
         element = event_class(name, self.name)
         element.lane_id = self.id
