@@ -24,6 +24,34 @@ from .shape import Circle
 from .painter import Painter
 
 
+def draw_intermediate_circle(painter: Painter, x_pos: int, y_pos: int, radius: int):
+    painter.draw_circle(
+        x_pos,
+        y_pos,
+        radius,
+        outline_colour="black",
+        fill_colour="transparent",
+    )
+    painter.draw_circle(
+        x_pos,
+        y_pos,
+        radius - 4,
+        outline_colour="black",
+        fill_colour="transparent",
+    )
+
+
+def draw_stop_circle(painter: Painter, x_pos: int, y_pos: int, radius: int):
+    painter.draw_circle(
+        x_pos,
+        y_pos,
+        radius,
+        outline_colour="black",
+        fill_colour="transparent",
+        outline_width=3,
+    )
+
+
 class Event(Circle):
     """Event class for representing events in a process."""
 
@@ -41,8 +69,7 @@ class End(Event):
 
     def draw(self, painter: Painter):
         super().draw(painter)
-        painter.draw_circle(self.x, self.y, self.radius, "black")
-        painter.draw_circle(self.x, self.y, self.radius - 3, self.fill_colour)
+        draw_stop_circle(painter, self.x, self.y, self.radius)
 
 
 class Timer(Event):
@@ -124,10 +151,7 @@ class Intermediate(Event):
     def draw(self, painter: Painter):
         """Draw intermediate event"""
         super().draw(painter)
-        painter.draw_circle(self.x, self.y, self.radius, "black")
-        painter.draw_circle(self.x, self.y, self.radius - 2, self.fill_colour)
-        painter.draw_circle(self.x, self.y, self.radius - 4, "black")
-        painter.draw_circle(self.x, self.y, self.radius - 6, self.fill_colour)
+        draw_intermediate_circle(painter, self.x, self.y, self.radius)
 
 
 class Message(Event):
@@ -184,6 +208,22 @@ class Message(Event):
         )
 
 
+class MessageIntermediate(Message):
+    """MessageIntermediate event class for representing message event in a process"""
+
+    def draw(self, painter: Painter):
+        super().draw(painter)
+        draw_intermediate_circle(painter, self.x, self.y, self.radius)
+
+
+class MessageEnd(Message):
+    """MessageIntermediate event class for representing message event in a process"""
+
+    def draw(self, painter: Painter):
+        super().draw(painter)
+        draw_stop_circle(painter, self.x, self.y, self.radius)
+
+
 class Signal(Event):
     def draw(self, painter: Painter):
         """Draw message event"""
@@ -201,13 +241,27 @@ class Signal(Event):
                 self.y + triangle_radius * math.cos(math.pi / 3),
             ),
         ]
-        print(f"vertices {vertices}")
         painter.draw_polygon(
             vertices,
             outline_colour="black",
             fill_colour=painter.element_fill_colour,
             outline_width=2,
         )
+
+
+class SignalIntermediate(Signal):
+    def draw(self, painter: Painter):
+        """Draw message event"""
+        super().draw(painter)
+
+        draw_intermediate_circle(painter, self.x, self.y, self.radius)
+
+
+class SignalEnd(Signal):
+    def draw(self, painter: Painter):
+        """Draw message event"""
+        super().draw(painter)
+        draw_stop_circle(painter, self.x, self.y, self.radius)
 
 
 class Conditional(Event):
@@ -260,9 +314,16 @@ class Conditional(Event):
             )
 
 
+class ConditionalIntermediate(Conditional):
+    def draw(self, painter: Painter):
+        """Draw Conditional Intermediate event"""
+        super().draw(painter)
+        draw_intermediate_circle(painter, self.x, self.y, self.radius)
+
+
 class Link(Event):
     def draw(self, painter: Painter):
-        """Draw message event"""
+        """Draw Link event"""
         super().draw(painter)
 
         painter.draw_circle(self.x, self.y, self.radius, "black")
@@ -275,13 +336,6 @@ class Link(Event):
         arrow_height = arrow_radius * 0.6
         arrow_neck_width = 4
 
-        # (self.x - arrow_width / 2, self.y - arrow_height / 2),  # Top point
-        #     (self.x + arrow_width / 2, self.y),  # Middle point
-        #     (self.x - arrow_width / 2, self.y + arrow_height / 2),  # Bottom point
-        #     (self.x - arrow_width / 2, self.y + arrow_neck_width),
-        #     (self.x - (arrow_width * 1.5), self.y + arrow_neck_width),
-        #     (self.x - (arrow_width * 1.5), self.y - arrow_neck_width),
-        #     (self.x - arrow_width / 2, self.y - arrow_neck_width),
         pointy_x = self.x + (arrow_width * 0.3)
         arrow_vertices = [
             (pointy_x, self.y - arrow_height / 1.5),  # Top point
