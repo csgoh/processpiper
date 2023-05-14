@@ -466,7 +466,7 @@ class ProcessMap:
             for lane in pool._lanes:
                 for index, shape in enumerate(lane.shapes):
                     Helper.info_log(f"{shape.name} Shape type: {type(shape)}")
-
+                    print(f"index {index}")
                     if type(shape) == Signal:
                         Helper.info_log(f"  matched with Signal")
                         ### Check if the signal is a start signal. i.e it has no connection from
@@ -488,7 +488,9 @@ class ProcessMap:
                             new_shape.fill_colour = shape.fill_colour
                             new_shape.text_alignment = shape.text_alignment
                             new_shape.connection_to = shape.connection_to
-                            self.replace_connections(shape, new_shape)
+                            self.replace_connection_to(shape, new_shape)
+                            self.replace_connection_from(shape, new_shape)
+
                             lane.shapes[index] = new_shape
 
                         elif (  ### Check if the signal is an intermediate signal. i.e it has both connection from and to
@@ -510,7 +512,8 @@ class ProcessMap:
                             new_shape.text_alignment = shape.text_alignment
                             new_shape.connection_to = shape.connection_to
                             new_shape.connection_from = shape.connection_from
-                            self.replace_connections(shape, new_shape)
+                            self.replace_connection_to(shape, new_shape)
+                            self.replace_connection_from(shape, new_shape)
                             lane.shapes[index] = new_shape
 
                         else:  ### Check if the signal is an end signal. i.e it has no connection to
@@ -529,7 +532,8 @@ class ProcessMap:
                             new_shape.text_alignment = shape.text_alignment
                             new_shape.connection_to = shape.connection_to
                             new_shape.connection_from = shape.connection_from
-                            self.replace_connections(shape, new_shape)
+                            self.replace_connection_to(shape, new_shape)
+                            self.replace_connection_from(shape, new_shape)
                             lane.shapes[index] = new_shape
 
                     # if type(shape) == Message:
@@ -565,7 +569,7 @@ class ProcessMap:
         if self.auto_size == True:
             self.__painter.set_surface_size(self.width, self.height)
 
-    def replace_connections(self, current_shape, new_shape):
+    def replace_connection_to(self, current_shape, new_shape):
         for connection_index, connection in enumerate(current_shape.connection_to):
             new_connection = Connection(
                 new_shape,
@@ -577,14 +581,18 @@ class ProcessMap:
                 f"      creating new connection: {new_connection.source.name}"
             )
             new_shape.connection_to[connection_index] = new_connection
-            current_shape.connection_to[connection_index] = new_connection
+            # current_shape.connection_to[connection_index] = new_connection
 
-        for connection_index, connection in enumerate(current_shape.connection_from):
-            if connection == current_shape:
-                new_shape.connection_from[connection_index] = new_shape
-                Helper.printc(
-                    f"      replacing connection: {connection} with {new_shape}"
+    def replace_connection_from(self, current_shape, new_shape):
+        for shape_index, shape in enumerate(current_shape.connection_from):
+            for connection_index, connection_to in enumerate(shape.connection_to):
+                new_connection = Connection(
+                    connection_to.source,
+                    new_shape,
+                    connection_to.label,
+                    connection_to.connection_type,
                 )
+                shape.connection_to[shape_index] = new_connection
 
     def __set_colour_theme(self, palette: str) -> None:
         """This method sets the colour palette"""
