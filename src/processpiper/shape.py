@@ -121,6 +121,7 @@ class Shape:
             (tuple), (tuple): Nearest connection points between two sets of shapes
         """
         shortest_distance: int = 9_999_999
+
         for source_name, source_points in points_source.items():
             for target_name, target_points in points_target.items():
                 distance = self.get_distance(source_points, target_points)
@@ -261,7 +262,6 @@ class Shape:
         if self.connection_to:
             connection_style = "solid"
             for connection in self.connection_to:
-
                 target_points = connection.target.points
 
                 if self.is_same_lane(self, connection.target):
@@ -399,6 +399,10 @@ class Circle(Shape):
 
     def __post_init__(self):
         self.radius = CIRCLE_RADIUS
+        self.text_x: int = 0
+        self.text_y: int = 0
+        self.text_width: int = 0
+        self.text_height: int = 0
 
     def set_draw_position(self, painter: Painter) -> tuple:
         """Set draw position of circle"""
