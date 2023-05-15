@@ -109,18 +109,27 @@ class Pool:
             Lane: Lane object
         """
 
-        if font == "":
-            font = self.painter.lane_font
-        if font_size == 0:
-            font_size = self.painter.lane_font_size
-        if font_colour == "":
-            font_colour = self.painter.lane_font_colour
-        if fill_colour == "":
-            fill_colour = self.painter.lane_fill_colour
-        if text_alignment == "":
-            text_alignment = self.painter.lane_text_alignment
-        if background_fill_colour == "":
-            background_fill_colour = self.painter.lane_background_fill_colour
+        # if font == "":
+        #     font = self.painter.lane_font
+        # if font_size == 0:
+        #     font_size = self.painter.lane_font_size
+        # if font_colour == "":
+        #     font_colour = self.painter.lane_font_colour
+        # if fill_colour == "":
+        #     fill_colour = self.painter.lane_fill_colour
+        # if text_alignment == "":
+        #     text_alignment = self.painter.lane_text_alignment
+        # if background_fill_colour == "":
+        #     background_fill_colour = self.painter.lane_background_fill_colour
+
+        font = font or self.painter.lane_font
+        font_size = font_size or self.painter.lane_font_size
+        font_colour = font_colour or self.painter.lane_font_colour
+        fill_colour = fill_colour or self.painter.lane_fill_colour
+        text_alignment = text_alignment or self.painter.lane_text_alignment
+        background_fill_colour = (
+            background_fill_colour or self.painter.lane_background_fill_colour
+        )
 
         lane = Lane(
             lane_name,
