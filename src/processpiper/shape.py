@@ -120,7 +120,7 @@ class Shape:
         Returns:
             (tuple), (tuple): Nearest connection points between two sets of shapes
         """
-        shortest_distance: int = 9_999_999
+        shortest_distance: int = float("inf")
 
         for source_name, source_points in points_source.items():
             for target_name, target_points in points_target.items():
@@ -187,7 +187,7 @@ class Shape:
         """Find nearest connection points between two sets of shapes
         where source and target shapes are in the same pool but different lanes"""
 
-        shortest_distance: int = 9_999_999
+        shortest_distance: int = float("inf")
         nearest_points = {}
         source_connection_points = self.get_top_bottom_points(points_source)
         target_connection_points = self.get_left_right_points(points_target)
