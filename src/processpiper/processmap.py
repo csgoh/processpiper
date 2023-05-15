@@ -91,14 +91,11 @@ class ProcessMap:
         text_alignment: str = "centre",
     ) -> Pool:
         """Add a Pool to the Process Map"""
-        if font == "":
-            font = self.__painter.pool_font
-        if font_size == 0:
-            font_size = self.__painter.pool_font_size
-        if font_colour == "":
-            font_colour = self.__painter.pool_font_colour
-        if fill_colour == "":
-            fill_colour = self.__painter.pool_fill_colour
+
+        font = font or self.__painter.pool_font
+        font_size = font_size or self.__painter.pool_font_size
+        font_colour = font_colour or self.__painter.pool_font_colour
+        fill_colour = fill_colour or self.__painter.pool_fill_colour
 
         pool = Pool(
             pool_name,
@@ -123,18 +120,27 @@ class ProcessMap:
         background_fill_colour: str = "",
     ) -> Lane:
         """Add a Lane to the Process Map"""
-        if font == "":
-            font = self.__painter.lane_font
-        if font_size == 0:
-            font_size = self.__painter.lane_font_size
-        if font_colour == "":
-            font_colour = self.__painter.lane_font_colour
-        if fill_colour == "":
-            fill_colour = self.__painter.lane_fill_colour
-        if text_alignment == "":
-            text_alignment = self.__painter.lane_text_alignment
-        if background_fill_colour == "":
-            background_fill_colour = self.__painter.lane_background_fill_colour
+        # if font == "":
+        #     font = self.__painter.lane_font
+        # if font_size == 0:
+        #     font_size = self.__painter.lane_font_size
+        # if font_colour == "":
+        #     font_colour = self.__painter.lane_font_colour
+        # if fill_colour == "":
+        #     fill_colour = self.__painter.lane_fill_colour
+        # if text_alignment == "":
+        #     text_alignment = self.__painter.lane_text_alignment
+        # if background_fill_colour == "":
+        #     background_fill_colour = self.__painter.lane_background_fill_colour
+
+        font = font or self.__painter.lane_font
+        font_size = font_size or self.__painter.lane_font_size
+        font_colour = font_colour or self.__painter.lane_font_colour
+        fill_colour = fill_colour or self.__painter.lane_fill_colour
+        text_alignment = text_alignment or self.__painter.lane_text_alignment
+        background_fill_colour = (
+            background_fill_colour or self.__painter.lane_background_fill_colour
+        )
 
         pool = self.add_pool("Default Pool")
         lane = pool.add_lane(
