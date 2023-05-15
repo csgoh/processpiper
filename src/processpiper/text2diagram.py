@@ -195,6 +195,21 @@ def parse_lane_element(element_str):
         element_name = element_str[
             len("(@intermediate") : element_str.index(")")
         ].strip()
+    elif element_str.startswith("(@message"):
+        element_type = "EventType.MESSAGE"
+        element_name = element_str[len("(@message") : element_str.index(")")].strip()
+    elif element_str.startswith("(@signal"):
+        element_type = "EventType.SIGNAL"
+        element_name = element_str[len("(@signal") : element_str.index(")")].strip()
+    elif element_str.startswith("(@conditional"):
+        element_type = "EventType.CONDITIONAL"
+        element_name = element_str[
+            len("(@conditional") : element_str.index(")")
+        ].strip()
+    elif element_str.startswith("(@link"):
+        element_type = "EventType.LINK"
+        element_name = element_str[len("(@link") : element_str.index(")")].strip()
+
     ### ActivityType
     elif element_str.startswith("[@subprocess"):
         element_type = "ActivityType.SUBPROCESS"
@@ -215,6 +230,9 @@ def parse_lane_element(element_str):
     elif element_str.startswith("<"):
         element_type = "GatewayType.EXCLUSIVE"
         element_name = element_str[1 : element_str.index(">")].strip()
+    elif element_str.startswith("(@event"):
+        element_type = "GatewayType.EVENT"
+        element_name = element_str[len("(@event") : element_str.index(")")].strip()
 
     else:
         raise ValueError(f"Invalid element string: {element_str}")
