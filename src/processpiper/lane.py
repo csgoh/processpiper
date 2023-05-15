@@ -130,16 +130,22 @@ class Lane:
         text_alignment: str = "",
     ) -> Shape:
         """Add an element to the lane"""
-        if font == "":
-            font = self.painter.element_font
-        if font_size == 0:
-            font_size = self.painter.element_font_size
-        if font_colour == "":
-            font_colour = self.painter.element_font_colour
-        if fill_colour == "":
-            fill_colour = self.painter.element_fill_colour
-        if text_alignment == "":
-            text_alignment = self.painter.element_text_alignment
+        # if font == "":
+        #     font = self.painter.element_font
+        # if font_size == 0:
+        #     font_size = self.painter.element_font_size
+        # if font_colour == "":
+        #     font_colour = self.painter.element_font_colour
+        # if fill_colour == "":
+        #     fill_colour = self.painter.element_fill_colour
+        # if text_alignment == "":
+        #     text_alignment = self.painter.element_text_alignment
+
+        font = font or self.painter.element_font
+        font_size = font_size or self.painter.element_font_size
+        font_colour = font_colour or self.painter.element_font_colour
+        fill_colour = fill_colour or self.painter.element_fill_colour
+        text_alignment = text_alignment or self.painter.element_text_alignment
 
         event_class = globals()[type]
         element = event_class(name, self.name)
