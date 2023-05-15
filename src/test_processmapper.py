@@ -379,20 +379,16 @@ def test_case12():
 
 def test_case13():
     output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
-    with ProcessMap("Test Case 13") as my_process_map:
-        with my_process_map.add_pool("Hardware Retailer") as pool1:
+    with ProcessMap("Conditional Events") as my_process_map:
+        with my_process_map.add_pool("Pool 1") as pool1:
             with pool1.add_lane("Lane 1") as lane1:
-                mesg = lane1.add_element("Message Event", EventType.MESSAGE)
-                poly = lane1.add_element("Event Gateway", GatewayType.EVENT)
-                signal = lane1.add_element("Signal Event", EventType.SIGNAL)
-                cond = lane1.add_element("Conditional Event", EventType.CONDITIONAL)
-                link = lane1.add_element("Link Event", EventType.LINK)
-                intermediate = lane1.add_element("Intermediate", EventType.INTERMEDIATE)
+                cond = lane1.add_element("Start", EventType.CONDITIONAL)
+                cond_intermediate = lane1.add_element(
+                    "Intermediate", EventType.CONDITIONAL
+                )
                 end = lane1.add_element("End", EventType.END)
 
-        mesg.connect(poly).connect(signal).connect(cond).connect(link).connect(
-            intermediate
-        ).connect(end)
+        cond.connect(cond_intermediate).connect(end)
 
         my_process_map.draw()
         my_process_map.save(output_file)
@@ -401,13 +397,11 @@ def test_case13():
 def test_case14():
     output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
     with ProcessMap("Message Events") as my_process_map:
-        with my_process_map.add_pool("Hardware Retailer") as pool1:
+        with my_process_map.add_pool("Pool 1") as pool1:
             with pool1.add_lane("Lane 1") as lane1:
                 mesg = lane1.add_element("Start", EventType.MESSAGE)
-                mesg_intermediate = lane1.add_element(
-                    "Intermediate", EventType.MESSAGE_INTERMEDIATE
-                )
-                mesg_end = lane1.add_element("End", EventType.MESSAGE_END)
+                mesg_intermediate = lane1.add_element("Intermediate", EventType.MESSAGE)
+                mesg_end = lane1.add_element("End", EventType.MESSAGE)
 
         mesg.connect(mesg_intermediate).connect(mesg_end)
 
@@ -418,11 +412,10 @@ def test_case14():
 def test_case15():
     output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
     with ProcessMap("Signal Events") as my_process_map:
-        with my_process_map.add_pool("Hardware Retailer") as pool1:
+        with my_process_map.add_pool("Pool 1") as pool1:
             with pool1.add_lane("Lane 1") as lane1:
                 mesg = lane1.add_element("Start", EventType.SIGNAL)
                 mesg_intermediate = lane1.add_element("Intermediate", EventType.SIGNAL)
-                # mesg_mesg = lane1.add_element("Message", EventType.MESSAGE)
                 mesg_end = lane1.add_element("End", EventType.SIGNAL)
 
         # mesg.connect(mesg_intermediate).connect(mesg_mesg).connect(mesg_end)
@@ -480,7 +473,7 @@ if __name__ == "__main__":
     # test_case10(colour_theme="GREYWOOF")
     # test_case11()
     # test_case12()
-    # test_case13()
-    # test_case14()
+    test_case13()
+    test_case14()
     test_case15()
-    # test_case16()
+    test_case16()
