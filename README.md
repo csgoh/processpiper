@@ -27,9 +27,9 @@ A python library to generate business process diagram using code.
   * Pool(s)
   * Lane(s)
   * Elements:
-    * Event: Start, End, Timer, Intermediate
+    * Event: Start, End, Timer, Intermediate, Message, Signal, Conditional and Link
     * Activity: Task, Subprocess
-    * Gateway: Inclusive, Exclusive, Parallel
+    * Gateway: Inclusive, Exclusive, Parallel, Event
 * Support for different colour themes
   * Default
   * GREYWOOF
@@ -37,6 +37,11 @@ A python library to generate business process diagram using code.
   * ORANGEPEEL
   * GREENTURTLE
 * Save diagram as PNG file
+
+## Change Logs
+Refer to this [Change Logs](https://github.com/csgoh/processpiper/wiki/Change-Logs) page for the latest updates.
+
+
 
 ## Installation
 ### Install from PyPI
@@ -55,7 +60,7 @@ Two frontend applications have been developed to showcase ProcessPiper capabilit
 * Python 3.10, 3.11
   
 ### Library Dependencies
-* Pillow 9.4.0
+* Pillow 9.5.0
 
 ### Supported Platforms
 * Windows
