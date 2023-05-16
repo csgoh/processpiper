@@ -148,9 +148,9 @@ The generated diagram is as follows:
 ## Development Status
 Initial first release would only cover the following basic business process elements. Other element types will be introduced in subsequence releases.
 
-* Event: Start, End, Timer, Intermediate
+* Event: Start, End, Timer, Intermediate, Message, Signal, Conditional, Link
 * Activity: Task, Subprocess
-* Gateway: Inclusive, Exclusive, Parallel
+* Gateway: Inclusive, Exclusive, Parallel, Event
 
 Any ideas or suggestions, please send it to me via [GitHub Discussions](https://github.com/csgoh/processmapper/discussions).
 
