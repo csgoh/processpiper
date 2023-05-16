@@ -910,7 +910,13 @@ class Painter:
 
         if connection_style == "dashed":
             ### Draw round circle at the beginning of the line
-            self.draw_circle(x1, y1, 6, connector_arrow_colour, "white")
+            self.draw_circle(
+                x1,
+                y1,
+                radius=6,
+                outline_colour=connector_arrow_colour,
+                fill_colour="white",
+            )
 
             ### Draw white arrow head at the end of the line
 
@@ -1095,7 +1101,7 @@ class Painter:
 
                 factor = 1
                 size = int(factor * length_x), int(factor * width_y)
-                image_resize = self.__surface.resize(size, Image.ANTIALIAS)
+                image_resize = self.__surface.resize(size, resample=Image.LANCZOS)
                 image_resize.save(filename, dpi=(1200, 1200), optimize=False)
 
                 # enhancer = ImageEnhance.Sharpness(self.__surface)
