@@ -20,10 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from dataclasses import dataclass, field
-from .lane import Lane
+from .event import *
+from .lane import Lane, ElementType, EventType
 from .pool import Pool
 from .painter import Painter
-from .shape import Shape
+from .shape import *
 from .title import Title
 from .footer import Footer
 from .constants import Configs
@@ -90,14 +91,11 @@ class ProcessMap:
         text_alignment: str = "centre",
     ) -> Pool:
         """Add a Pool to the Process Map"""
-        if font == "":
-            font = self.__painter.pool_font
-        if font_size == 0:
-            font_size = self.__painter.pool_font_size
-        if font_colour == "":
-            font_colour = self.__painter.pool_font_colour
-        if fill_colour == "":
-            fill_colour = self.__painter.pool_fill_colour
+
+        font = font or self.__painter.pool_font
+        font_size = font_size or self.__painter.pool_font_size
+        font_colour = font_colour or self.__painter.pool_font_colour
+        fill_colour = fill_colour or self.__painter.pool_fill_colour
 
         pool = Pool(
             pool_name,
@@ -122,18 +120,27 @@ class ProcessMap:
         background_fill_colour: str = "",
     ) -> Lane:
         """Add a Lane to the Process Map"""
-        if font == "":
-            font = self.__painter.lane_font
-        if font_size == 0:
-            font_size = self.__painter.lane_font_size
-        if font_colour == "":
-            font_colour = self.__painter.lane_font_colour
-        if fill_colour == "":
-            fill_colour = self.__painter.lane_fill_colour
-        if text_alignment == "":
-            text_alignment = self.__painter.lane_text_alignment
-        if background_fill_colour == "":
-            background_fill_colour = self.__painter.lane_background_fill_colour
+        # if font == "":
+        #     font = self.__painter.lane_font
+        # if font_size == 0:
+        #     font_size = self.__painter.lane_font_size
+        # if font_colour == "":
+        #     font_colour = self.__painter.lane_font_colour
+        # if fill_colour == "":
+        #     fill_colour = self.__painter.lane_fill_colour
+        # if text_alignment == "":
+        #     text_alignment = self.__painter.lane_text_alignment
+        # if background_fill_colour == "":
+        #     background_fill_colour = self.__painter.lane_background_fill_colour
+
+        font = font or self.__painter.lane_font
+        font_size = font_size or self.__painter.lane_font_size
+        font_colour = font_colour or self.__painter.lane_font_colour
+        fill_colour = fill_colour or self.__painter.lane_fill_colour
+        text_alignment = text_alignment or self.__painter.lane_text_alignment
+        background_fill_colour = (
+            background_fill_colour or self.__painter.lane_background_fill_colour
+        )
 
         pool = self.add_pool("Default Pool")
         lane = pool.add_lane(
@@ -232,7 +239,6 @@ class ProcessMap:
             f"set_shape_x_position: {current_lane.name}, {current_shape.name}", "34"
         )
         if index == 0:
-
             if previous_shape is not None:
                 if previous_shape.pool_name == current_shape.pool_name:
                     if previous_shape.lane_id == current_shape.lane_id:
@@ -307,8 +313,12 @@ class ProcessMap:
         shape.y_pos_traversed = True
 
         # for shape in lane.shapes:
+        Helper.printc(f"         {shape.name} looping..", "32")
         for index, connection in enumerate(shape.connection_to):
             next_shape = connection.target
+            Helper.printc(
+                f"             {next_shape.name}, {next_shape.y_pos_traversed}", "32"
+            )
             if next_shape.y_pos_traversed is True:
                 continue
 
@@ -400,11 +410,13 @@ class ProcessMap:
 
     def reset_traversed_flags(self):
         """Reset the traversed flags for all shapes in the process map"""
+        Helper.printc("*** Resetting traversed flags...", "32")
         for pool in self._pools:
             for lane in pool._lanes:
                 lane.next_shape_y = 0
                 lane.shape_row_count = 0
                 for shape in lane.shapes:
+                    Helper.printc(f"    {shape.name}", "32")
                     shape.y_pos_traversed = False
 
     def get_orphan_elements(self) -> list:
@@ -419,6 +431,12 @@ class ProcessMap:
                         orphan_elements.append(shape.name)
 
         return orphan_elements
+
+    def print_connection(self, shape: Shape):
+        Helper.printc(f"*****    {shape.name}", "32")
+        for connection in shape.connection_to:
+            Helper.printc(f"            {connection.target.name}", "32")
+            self.print_connection(connection.target)
 
     def draw(self) -> None:
         """Draw the process map"""
@@ -448,6 +466,16 @@ class ProcessMap:
                 f"The following element(s) are defined but not connected to other element(s): \n{orphan_elements}"
             )
 
+        ### Replace the class type of shapes with the correct class type
+        # self.print_connection(self.find_start_shape())
+        for pool in self._pools:
+            for lane in pool._lanes:
+                for index, shape in enumerate(lane.shapes):
+                    self.replace_signal_element(lane, index, shape)
+                    self.replace_conditional_element(lane, index, shape)
+                    self.replace_message_element(lane, index, shape)
+
+        # self.print_connection(self.find_start_shape())
         self.set_draw_position(self.__painter)
 
         self._title.draw()
@@ -476,6 +504,122 @@ class ProcessMap:
 
         if self.auto_size == True:
             self.__painter.set_surface_size(self.width, self.height)
+
+    def replace_message_element(self, lane, index, shape):
+        if type(shape) == Message:
+            Helper.debug_log(f"  matched with Message")
+            ### Check if the signal is a start signal. i.e it has no connection from
+            if len(shape.connection_to) > 0 and len(shape.connection_from) == 0:
+                Helper.debug_log(f"      start MESSAGE")
+                new_shape = self.replace_element_type(lane, shape, ElementType.MESSAGE)
+
+                lane.shapes[index] = self.replace_connections(shape, new_shape)
+
+            elif (  ### Check if the signal is an intermediate signal. i.e it has both connection from and to
+                len(shape.connection_to) > 0 and len(shape.connection_from) > 0
+            ):
+                Helper.debug_log(f"      MESSAGE_INTERMEDIATE")
+                new_shape = self.replace_element_type(
+                    lane, shape, ElementType.MESSAGE_INTERMEDIATE
+                )
+                lane.shapes[index] = self.replace_connections(shape, new_shape)
+
+            else:  ### Check if the signal is an end signal. i.e it has no connection to
+                Helper.debug_log(f"      MESSAGE_END")
+                new_shape = self.replace_element_type(
+                    lane, shape, ElementType.MESSAGE_END
+                )
+                lane.shapes[index] = self.replace_connections(shape, new_shape)
+
+    def replace_conditional_element(self, lane, index, shape):
+        if type(shape) == Conditional:
+            Helper.debug_log(f"  matched with Conditional")
+            ### Check if the signal is a start signal. i.e it has no connection from
+            if len(shape.connection_to) > 0 and len(shape.connection_from) == 0:
+                Helper.debug_log(f"      start CONDITIONAL")
+                new_shape = self.replace_element_type(
+                    lane, shape, ElementType.CONDITIONAL
+                )
+
+                lane.shapes[index] = self.replace_connections(shape, new_shape)
+
+            elif (  ### Check if the signal is an intermediate signal. i.e it has both connection from and to
+                len(shape.connection_to) > 0 and len(shape.connection_from) > 0
+            ):
+                Helper.debug_log(f"      intermediate CONDITIONAL_INTERMEDIATE")
+                new_shape = self.replace_element_type(
+                    lane, shape, ElementType.CONDITIONAL_INTERMEDIATE
+                )
+                lane.shapes[index] = self.replace_connections(shape, new_shape)
+
+    def replace_signal_element(self, lane, index, shape):
+        if type(shape) == Signal:
+            Helper.debug_log(f"  matched with Signal")
+            ### Check if the signal is a start signal. i.e it has no connection from
+            if len(shape.connection_to) > 0 and len(shape.connection_from) == 0:
+                Helper.debug_log(f"      start signal")
+                new_shape = self.replace_element_type(lane, shape, ElementType.SIGNAL)
+
+                lane.shapes[index] = self.replace_connections(shape, new_shape)
+
+            elif (  ### Check if the signal is an intermediate signal. i.e it has both connection from and to
+                len(shape.connection_to) > 0 and len(shape.connection_from) > 0
+            ):
+                Helper.debug_log(f"      intermediate signal")
+                new_shape = self.replace_element_type(
+                    lane, shape, ElementType.SIGNAL_INTERMEDIATE
+                )
+                lane.shapes[index] = self.replace_connections(shape, new_shape)
+
+            else:  ### Check if the signal is an end signal. i.e it has no connection to
+                Helper.debug_log(f"      end signal")
+                new_shape = self.replace_element_type(
+                    lane, shape, ElementType.SIGNAL_END
+                )
+                lane.shapes[index] = self.replace_connections(shape, new_shape)
+
+    def replace_element_type(self, lane, shape, new_shape_type: ElementType):
+        event_class = globals()[new_shape_type]
+        new_shape = event_class(
+            shape.name,
+            lane.name,
+        )
+
+        return new_shape
+
+    def replace_connections(self, current_shape, new_shape):
+        new_shape.lane_id = current_shape.lane_id
+        new_shape.pool_name = current_shape.pool_name
+        new_shape.font = current_shape.font
+        new_shape.font_size = current_shape.font_size
+        new_shape.font_colour = current_shape.font_colour
+        new_shape.fill_colour = current_shape.fill_colour
+        new_shape.text_alignment = current_shape.text_alignment
+        new_shape.connection_to = current_shape.connection_to
+        for connection_index, connection in enumerate(current_shape.connection_to):
+            new_connection = Connection(
+                new_shape,
+                connection.target,
+                connection.label,
+                connection.connection_type,
+            )
+            Helper.printc(
+                f"      creating new connection: {new_connection.source.name}"
+            )
+            new_shape.connection_to[connection_index] = new_connection
+        self.replace_connection_from(current_shape, new_shape)
+        return new_shape
+
+    def replace_connection_from(self, current_shape, new_shape):
+        for shape_index, shape in enumerate(current_shape.connection_from):
+            for connection_index, connection_to in enumerate(shape.connection_to):
+                new_connection = Connection(
+                    connection_to.source,
+                    new_shape,
+                    connection_to.label,
+                    connection_to.connection_type,
+                )
+                shape.connection_to[shape_index] = new_connection
 
     def __set_colour_theme(self, palette: str) -> None:
         """This method sets the colour palette"""

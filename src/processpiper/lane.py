@@ -24,9 +24,9 @@ from enum import Enum
 from itertools import count
 from .shape import Shape
 from .painter import Painter
-from .event import Event, Start, End, Timer, Intermediate
-from .activity import Activity, Task, Subprocess
-from .gateway import Gateway, Exclusive, Parallel, Inclusive
+from .event import *
+from .activity import *
+from .gateway import *
 from .constants import Configs
 from .helper import Helper
 
@@ -40,6 +40,15 @@ class EventType:
     END = "End"
     TIMER = "Timer"
     INTERMEDIATE = "Intermediate"
+    MESSAGE = "Message"
+    MESSAGE_INTERMEDIATE = "MessageIntermediate"
+    MESSAGE_END = "MessageEnd"
+    SIGNAL = "Signal"
+    SIGNAL_INTERMEDIATE = "SignalIntermediate"
+    SIGNAL_END = "SignalEnd"
+    CONDITIONAL = "Conditional"
+    CONDITIONAL_INTERMEDIATE = "ConditionalIntermediate"
+    LINK = "Link"
 
 
 class ActivityType:
@@ -55,6 +64,7 @@ class GatewayType:
     EXCLUSIVE = "Exclusive"
     PARALLEL = "Parallel"
     INCLUSIVE = "Inclusive"
+    EVENT = "EventGateway"
 
 
 class ElementType(str, Enum):
@@ -64,11 +74,21 @@ class ElementType(str, Enum):
     END = "End"
     TIMER = "Timer"
     INTERMEDIATE = "Intermediate"
+    MESSAGE = "Message"
+    MESSAGE_INTERMEDIATE = "MessageIntermediate"
+    MESSAGE_END = "MessageEnd"
+    SIGNAL = "Signal"
+    SIGNAL_INTERMEDIATE = "SignalIntermediate"
+    SIGNAL_END = "SignalEnd"
+    CONDITIONAL = "Conditional"
+    CONDITIONAL_INTERMEDIATE = "ConditionalIntermediate"
+    LINK = "Link"
     TASK = "Task"
     SUBPROCESS = "Subprocess"
     EXCLUSIVE = "Exclusive"
     PARALLEL = "Parallel"
     INCLUSIVE = "Inclusive"
+    EVENT = "Event"
 
 
 @dataclass
@@ -110,16 +130,22 @@ class Lane:
         text_alignment: str = "",
     ) -> Shape:
         """Add an element to the lane"""
-        if font == "":
-            font = self.painter.element_font
-        if font_size == 0:
-            font_size = self.painter.element_font_size
-        if font_colour == "":
-            font_colour = self.painter.element_font_colour
-        if fill_colour == "":
-            fill_colour = self.painter.element_fill_colour
-        if text_alignment == "":
-            text_alignment = self.painter.element_text_alignment
+        # if font == "":
+        #     font = self.painter.element_font
+        # if font_size == 0:
+        #     font_size = self.painter.element_font_size
+        # if font_colour == "":
+        #     font_colour = self.painter.element_font_colour
+        # if fill_colour == "":
+        #     fill_colour = self.painter.element_fill_colour
+        # if text_alignment == "":
+        #     text_alignment = self.painter.element_text_alignment
+
+        font = font or self.painter.element_font
+        font_size = font_size or self.painter.element_font_size
+        font_colour = font_colour or self.painter.element_font_colour
+        fill_colour = fill_colour or self.painter.element_fill_colour
+        text_alignment = text_alignment or self.painter.element_text_alignment
 
         event_class = globals()[type]
         element = event_class(name, self.name)
@@ -268,7 +294,6 @@ class Lane:
 
             ### Set next elements' position
             for index, next_shape in enumerate(shape.connection_to.target):
-
                 ### Check whether the position has been set, if yes, skipped.
                 ### This is needed to avoid infinite recursion
                 if next_shape.traversed == True:

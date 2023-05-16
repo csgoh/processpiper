@@ -22,7 +22,7 @@
 import math
 import os
 import sys
-from PIL import Image, ImageDraw, ImageFont, ImageColor
+from PIL import Image, ImageDraw, ImageFont, ImageColor, ImageFilter, ImageEnhance
 import textwrap
 from .colourtheme import ColourTheme
 from .helper import Helper
@@ -77,7 +77,10 @@ class Painter:
         """Initialise the painter"""
         self.output_type = "PNG"
         self.__surface = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        ### Set DPI
+        # self.__surface.info["dpi"] = (1600, 1600)
         self.__cr = ImageDraw.Draw(self.__surface)
+
         self.width = width
         self.height = height
 
@@ -142,15 +145,22 @@ class Painter:
                 "/", "System", "Library", "Fonts", "Supplemental", f"{font_name}.ttf"
             )
         elif sys.platform.startswith("linux"):  # Linux
-            return os.path.join(
-                "/",
-                "usr",
-                "share",
-                "fonts",
-                "truetype",
-                "msttcorefonts",
-                f"{font_name}.ttf",
-            )
+            font_dir = f"/usr/share/fonts/truetype/msttcorefonts"
+
+            if os.path.exists(os.path.join(font_dir, f"{font_name}.ttf")):
+                return os.path.join(font_dir, f"{font_name}.ttf")
+            else:
+                ### This is cater for cases where msttcorefonts is not installed
+                linux_font_name = "DejaVuSans"  # Default font for Linux
+                return os.path.join(
+                    "/",
+                    "usr",
+                    "share",
+                    "fonts",
+                    "truetype",
+                    "dejavu",  # Use the DejaVu font directory instead of msttcorefonts
+                    f"{linux_font_name}.ttf",
+                )
         else:
             raise Exception("Unsupported operating system")
 
@@ -187,6 +197,34 @@ class Painter:
         """
         shape = [(x, y), (x + width, y + height)]
         self.__cr.rectangle(shape, fill=box_fill_colour)
+
+    def draw_box_with_outline(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        box_outline_colour: str,
+        box_outline_transparency: int,
+        box_outline_width: int,
+        box_fill_colour: str,
+    ) -> None:
+        """Draw a rectagle
+
+        Args:
+            x (int): X coordinate
+            y (int): Y coordinate
+            width (int): Rectangle width
+            height (int): Rectangle height
+            box_fill_colour (str: HTML colour name or hex code. Eg. #FFFFFF or LightGreen)
+        """
+        shape = [(x, y), (x + width, y + height)]
+        self.__cr.rectangle(
+            shape,
+            fill=box_fill_colour,
+            outline=box_outline_colour,
+            width=box_outline_width,
+        )
 
     def draw_rounded_box(
         self, x: int, y: int, width: int, height: int, box_fill_colour: str
@@ -409,6 +447,17 @@ class Painter:
             rotated_img = rotated_img.rotate(90, expand=1)
             self.__surface.paste(rotated_img, (int(x), int(y)), rotated_img)
 
+    def draw_polygon(
+        self,
+        points: list,
+        outline_colour: str = "",
+        outline_width: int = 1,
+        fill_colour: str = "",
+    ):
+        self.__cr.polygon(
+            points, fill=fill_colour, outline=outline_colour, width=outline_width
+        )
+
     def draw_diamond(
         self, x: int, y: int, width: int, height: int, fill_colour: str
     ) -> None:
@@ -434,21 +483,39 @@ class Painter:
         self.__cr.polygon(points, fill=fill_colour)
 
     def draw_circle(
-        self, x: int, y: int, radius: float, outline_colour: str, fill_colour: str = ""
+        self,
+        x: int,
+        y: int,
+        radius: float,
+        outline_colour: str,
+        outline_width: int = 1,
+        fill_colour: str = "",
     ) -> None:
         """Draw a circle"""
+        outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
         if fill_colour == "":
             ### If no fill colour is specified, use the outline colour as the fill colour.
-            outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
             fill_red, fill_green, fill_blue = outline_red, outline_green, outline_blue
+            self.__cr.ellipse(
+                (x - radius, y - radius, x + radius, y + radius),
+                fill=(fill_red, fill_green, fill_blue),
+                outline=(outline_red, outline_green, outline_blue),
+                width=outline_width,
+            )
+        elif fill_colour == "transparent":
+            self.__cr.ellipse(
+                (x - radius, y - radius, x + radius, y + radius),
+                outline=(outline_red, outline_green, outline_blue),
+                width=outline_width,
+            )
         else:
-            outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
             fill_red, fill_green, fill_blue = ImageColor.getrgb(fill_colour)
-        self.__cr.ellipse(
-            (x - radius, y - radius, x + radius, y + radius),
-            fill=(fill_red, fill_green, fill_blue),
-            outline=(outline_red, outline_green, outline_blue),
-        )
+            self.__cr.ellipse(
+                (x - radius, y - radius, x + radius, y + radius),
+                fill=(fill_red, fill_green, fill_blue),
+                outline=(outline_red, outline_green, outline_blue),
+                width=outline_width,
+            )
 
     def draw_dot(self, x: int, y: int, colour: str) -> None:
         """Draw a dot"""
@@ -823,7 +890,7 @@ class Painter:
 
         label_x_pos, label_y_pos = right_angle_point
 
-        label_w, label_h = self.get_multitext_dimension(label, "Arial", 12)
+        label_w, label_h = self.get_multitext_dimension(label, connector_font, 12)
         if label_x_pos == x1 and label_y_pos == y1:
             ### There is no right angle point
             label_x_pos = max(x1 + 5, x1 + (((x2 - x1) - label_w) / 2))
@@ -843,7 +910,13 @@ class Painter:
 
         if connection_style == "dashed":
             ### Draw round circle at the beginning of the line
-            self.draw_circle(x1, y1, 6, connector_arrow_colour, "white")
+            self.draw_circle(
+                x1,
+                y1,
+                radius=6,
+                outline_colour=connector_arrow_colour,
+                fill_colour="white",
+            )
 
             ### Draw white arrow head at the end of the line
 
@@ -1014,4 +1087,24 @@ class Painter:
         """
         if self.output_type == "PNG":
             if self.__surface is not None:
-                self.__surface.save(filename)
+                # anti_alias_image = self.__surface.filter(ImageFilter.SMOOTH_MORE)
+                # anti_alias_image.save(filename)
+                # Set the DPI to 300
+                # info = self.__surface.info.copy()
+                # info["dpi"] = (600, 600)
+
+                # Save the image with the new DPI
+                # self.__surface.save(filename, **info)
+
+                length_x, width_y = self.__surface.size
+                factor = min(1, float(1024.0 / length_x))
+
+                factor = 1
+                size = int(factor * length_x), int(factor * width_y)
+                image_resize = self.__surface.resize(size, resample=Image.LANCZOS)
+                image_resize.save(filename, dpi=(1200, 1200), optimize=False)
+
+                # enhancer = ImageEnhance.Sharpness(self.__surface)
+                # im_s_1 = enhancer.enhance(3)
+                # im_s_1.save("sharp.png")
+                # self.__surface.save(filename)

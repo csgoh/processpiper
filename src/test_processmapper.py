@@ -12,8 +12,8 @@ def prep_for_test(filename: str):
     output_file = os.path.join(path, filename)
 
     ### remove the file if it exists
-    if os.path.exists(output_file):
-        os.remove(output_file)
+    # if os.path.exists(output_file):
+    #     os.remove(output_file)
 
     return output_file
 
@@ -377,6 +377,85 @@ def test_case12():
                 my_process_map.save(output_file)
 
 
+def test_case13():
+    output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
+    with ProcessMap("Conditional Events") as my_process_map:
+        with my_process_map.add_pool("Pool 1") as pool1:
+            with pool1.add_lane("Lane 1") as lane1:
+                cond = lane1.add_element("Start", EventType.CONDITIONAL)
+                cond_intermediate = lane1.add_element(
+                    "Intermediate", EventType.CONDITIONAL
+                )
+                end = lane1.add_element("End", EventType.END)
+
+        cond.connect(cond_intermediate).connect(end)
+
+        my_process_map.draw()
+        my_process_map.save(output_file)
+
+
+def test_case14():
+    output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
+    with ProcessMap("Message Events") as my_process_map:
+        with my_process_map.add_pool("Pool 1") as pool1:
+            with pool1.add_lane("Lane 1") as lane1:
+                mesg = lane1.add_element("Start", EventType.MESSAGE)
+                mesg_intermediate = lane1.add_element("Intermediate", EventType.MESSAGE)
+                mesg_end = lane1.add_element("End", EventType.MESSAGE)
+
+        mesg.connect(mesg_intermediate).connect(mesg_end)
+
+        my_process_map.draw()
+        my_process_map.save(output_file)
+
+
+def test_case15():
+    output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
+    with ProcessMap("Signal Events") as my_process_map:
+        with my_process_map.add_pool("Pool 1") as pool1:
+            with pool1.add_lane("Lane 1") as lane1:
+                mesg = lane1.add_element("Start", EventType.SIGNAL)
+                mesg_intermediate = lane1.add_element("Intermediate", EventType.SIGNAL)
+                mesg_end = lane1.add_element("End", EventType.SIGNAL)
+
+        # mesg.connect(mesg_intermediate).connect(mesg_mesg).connect(mesg_end)
+        mesg.connect(mesg_intermediate).connect(mesg_end)
+
+        my_process_map.draw()
+        my_process_map.save(output_file)
+
+
+def test_case16():
+    output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
+    with ProcessMap("All Events") as my_process_map:
+        with my_process_map.add_pool("Pool 1") as pool1:
+            with pool1.add_lane("Lane 1") as lane1:
+                event1 = lane1.add_element("START", EventType.START)
+                event2 = lane1.add_element("INTERMEDIATE", EventType.INTERMEDIATE)
+                event3 = lane1.add_element("SIGNAL", EventType.SIGNAL)
+                event4 = lane1.add_element("SIGL_INT", EventType.SIGNAL_INTERMEDIATE)
+                event5 = lane1.add_element("SIGNAL_END", EventType.SIGNAL_END)
+                event6 = lane1.add_element("CONDITIONAL", EventType.CONDITIONAL)
+                event7 = lane1.add_element(
+                    "COND_INT", EventType.CONDITIONAL_INTERMEDIATE
+                )
+                event8 = lane1.add_element("MESSAGE", EventType.MESSAGE)
+                event9 = lane1.add_element("MSG_INT", EventType.MESSAGE_INTERMEDIATE)
+                event10 = lane1.add_element("MESSAGE_END", EventType.MESSAGE_END)
+                event11 = lane1.add_element("LINK", EventType.LINK)
+                event12 = lane1.add_element("END", EventType.END)
+
+        event1.connect(event2).connect(event3)
+        event3.connect(event4).connect(event5)
+        event5.connect(event6).connect(event7)
+        event7.connect(event8).connect(event9)
+        event9.connect(event10).connect(event11)
+        event11.connect(event12)
+
+        my_process_map.draw()
+        my_process_map.save(output_file)
+
+
 if __name__ == "__main__":
     test_case1()
     test_case2()
@@ -394,3 +473,7 @@ if __name__ == "__main__":
     test_case10(colour_theme="GREYWOOF")
     test_case11()
     test_case12()
+    test_case13()
+    test_case14()
+    test_case15()
+    test_case16()

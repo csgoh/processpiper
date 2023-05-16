@@ -102,6 +102,55 @@ done_baking-"Yes"->take_pizza_out_of_oven->end
 done_baking-"No"->put_pizza_in_oven
 """
 
+input_syntax = """
+title: Signal Example
+colourtheme: GREENTURTLE
+pool: pool 1
+lane: lane 1
+    (@signal signal 1) as event1
+    (@signal signal 2) as event2
+    (@signal signal 3) as event3
+
+event1->event2->event3
+"""
+
+input_syntax = """
+title: Signal Example
+colourtheme: GREENTURTLE
+pool: pool 1
+lane: lane 1
+    (@conditional signal 1) as event1
+    (@conditional signal 2) as event2
+    (end) as event3
+
+event1->event2->event3
+"""
+
+input_syntax = """
+title: Signal Example
+colourtheme: GREENTURTLE
+pool: pool 1
+lane: lane 1
+    (@message signal 1) as event1
+    (@message signal 2) as event2
+    (@message signal 3) as event3
+
+event1->event2->event3
+"""
+
+input_syntax = """
+title: Signal Example
+colourtheme: GREENTURTLE
+pool: pool 1
+lane: lane 1
+    (@message signal 1) as event1
+    (@message signal 2) as event2
+    (@message signal 3) as event3
+    (@link signal 4) as event4
+
+event1->event2->event3->event4
+"""
+
 gen_code, img = render(input_syntax)
 print(f"Generated code:\n{gen_code}")
 img.save("test_diagram.png")

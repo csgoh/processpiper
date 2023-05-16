@@ -54,3 +54,13 @@ class Subprocess(Activity):
             14,
             painter.element_font_colour,
         )
+
+
+class ServiceTask(Activity):
+    def draw(self, painter: Painter):
+        super().draw(painter)
+
+        raise NotImplementedError("ServiceTask is not implemented yet.")
+
+
+### To implement: User Task,Script Task,Business Rule Task, Manual Task, Received Task,Send Task, Receive Task
