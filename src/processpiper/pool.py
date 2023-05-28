@@ -45,7 +45,7 @@ class Pool:
 
     next_shape_x: int = field(init=False, default=0)
 
-    _lanes: list = field(init=False, default_factory=list)
+    lanes: list = field(init=False, default_factory=list)
 
     def __enter__(self):
         return self
@@ -58,8 +58,8 @@ class Pool:
         self.x = x
         self.y = y
         self.painter = painter
-        last_lane_y = self._lanes[-1].y
-        last_lane_height = self._lanes[-1].height
+        last_lane_y = self.lanes[-1].y
+        last_lane_height = self.lanes[-1].height
 
         self.width, self.height = (
             Configs.POOL_TEXT_WIDTH,
@@ -109,19 +109,6 @@ class Pool:
             Lane: Lane object
         """
 
-        # if font == "":
-        #     font = self.painter.lane_font
-        # if font_size == 0:
-        #     font_size = self.painter.lane_font_size
-        # if font_colour == "":
-        #     font_colour = self.painter.lane_font_colour
-        # if fill_colour == "":
-        #     fill_colour = self.painter.lane_fill_colour
-        # if text_alignment == "":
-        #     text_alignment = self.painter.lane_text_alignment
-        # if background_fill_colour == "":
-        #     background_fill_colour = self.painter.lane_background_fill_colour
-
         font = font or self.painter.lane_font
         font_size = font_size or self.painter.lane_font_size
         font_colour = font_colour or self.painter.lane_font_colour
@@ -142,5 +129,5 @@ class Pool:
             background_fill_colour,
             self.painter,
         )
-        self._lanes.append(lane)
+        self.lanes.append(lane)
         return lane
