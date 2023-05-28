@@ -455,25 +455,46 @@ def test_case16():
         my_process_map.draw()
         my_process_map.save(output_file)
 
+def test_case17():
+    output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
+    with ProcessMap("All Events") as my_process_map:
+        with my_process_map.add_pool("Pool 1") as pool1:
+            with pool1.add_lane("Lane 1A") as lane1:
+                event1 = lane1.add_element("START", EventType.START)
+
+                event12 = lane1.add_element("END", EventType.END)
+        with my_process_map.add_pool("Pool 2") as pool2:
+            with pool2.add_lane("Lane 1A") as lane2:
+                task1 = lane2.add_element("TASK 1", ActivityType.TASK)
+
+                task2 = lane2.add_element("TASK 22", ActivityType.TASK)
+
+        # event1.connect(task1).connect(task2).connect(event12)
+        # event1.connect(task2).connect(event12)
+        event1.connect(task1).connect(task2).connect(event12)
+
+        my_process_map.draw()
+        my_process_map.save(output_file)
 
 if __name__ == "__main__":
-    test_case1()
-    test_case2()
-    test_case3()
-    test_case4()
+    # test_case1()
+    # test_case2()
+    # test_case3()
+    # test_case4()
     test_case5()
-    test_case6()
-    test_case7()
-    test_case8()
-    test_case9()
-    test_case10(colour_theme="DEFAULT")
-    test_case10(colour_theme="BLUEMOUNTAIN")
-    test_case10(colour_theme="ORANGEPEEL")
-    test_case10(colour_theme="GREENTURTLE")
-    test_case10(colour_theme="GREYWOOF")
-    test_case11()
-    test_case12()
-    test_case13()
-    test_case14()
-    test_case15()
-    test_case16()
+    # test_case6()
+    # test_case7()
+    # test_case8()
+    # test_case9()
+    # test_case10(colour_theme="DEFAULT")
+    # test_case10(colour_theme="BLUEMOUNTAIN")
+    # test_case10(colour_theme="ORANGEPEEL")
+    # test_case10(colour_theme="GREENTURTLE")
+    # test_case10(colour_theme="GREYWOOF")
+    # test_case11()
+    # test_case12()
+    # test_case13()
+    # test_case14()
+    # test_case15()
+    # test_case16()
+    #test_case17()
