@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from dataclasses import dataclass, field
+import time
 from .event import *
 from .lane import Lane, ElementType, EventType
 from .pool import Pool
@@ -29,10 +30,10 @@ from .title import Title
 from .footer import Footer
 from .constants import Configs
 from .helper import Helper
-from PIL import Image
-import time
+from .layout import Grid
+
 import logging
-import PIL
+
 
 
 class UnconnectedElementException(Exception):
@@ -68,7 +69,7 @@ class ProcessMap:
         """Initialise the Process Map Class"""
         logging.basicConfig(
             # filename="processpiper.log",
-            level=logging.DEBUG,
+            level=logging.INFO,
             format="%(asctime)s [%(levelname)s] : %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
@@ -336,7 +337,9 @@ class ProcessMap:
             Configs.SURFACE_LEFT_MARGIN, Configs.SURFACE_TOP_MARGIN, painter
         )
         
-        self.populate_layout_grid()
+        
+        test_grid = Grid(self._pools)
+        test_grid.print()
 
         Helper.printc("*** Setting elements' x position...")
         start_shape = self._find_start_shape()
