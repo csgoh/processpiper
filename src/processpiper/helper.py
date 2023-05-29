@@ -24,13 +24,22 @@ import logging
 
 class Helper:
     @staticmethod
-    def printc(message: str, color: str = "30"):
+    def printc(message: str, color: str = "30", end:str = "\n"):
         """Print text in color"""
 
         root_logger = logging.getLogger()
 
         if root_logger.getEffectiveLevel() == logging.DEBUG:
-            print(f"\033[1;{color}m{message}\033[0m")
+            print(f"\033[1;{color}m{message}\033[0m", end=end)
+            
+    @staticmethod
+    def print_info(message: str, color: str = "30", end:str = "\n"):
+        """Print text in color"""
+
+        root_logger = logging.getLogger()
+
+        if root_logger.getEffectiveLevel() == logging.INFO:
+            print(f"\033[1;{color}m{message}\033[0m", end=end)
 
     @staticmethod
     def debug_log(message: str):
