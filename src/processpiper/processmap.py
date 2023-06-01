@@ -35,7 +35,6 @@ from .layout import Grid
 import logging
 
 
-
 class UnconnectedElementException(Exception):
     pass
 
@@ -62,7 +61,7 @@ class ProcessMap:
 
     lane_y_pos: int = field(init=False, default=0)
     lane_max_width: int = field(init=False, default=0)
-    
+
     layout_grid: list = field(init=False, default_factory=list)
 
     def __post_init__(self):
@@ -233,18 +232,24 @@ class ProcessMap:
             if previous_shape is not None:
                 if previous_shape.pool_name == current_shape.pool_name:
                     if previous_shape.lane_id == current_shape.lane_id:
-                        current_shape.x = self._get_next_x_position(previous_shape.width)
+                        current_shape.x = self._get_next_x_position(
+                            previous_shape.width
+                        )
                         Helper.printc("          same pool same lane", 31)
                     else:
-                        current_shape.x = self._get_next_x_position(previous_shape.width)
-                        Helper.printc("          same pool diff lane",32)
+                        current_shape.x = self._get_next_x_position(
+                            previous_shape.width
+                        )
+                        Helper.printc("          same pool diff lane", 32)
                 else:
-                    #current_shape.x = self._get_next_x_position(previous_shape.width)
+                    # current_shape.x = self._get_next_x_position(previous_shape.width)
                     current_shape.x = self._get_current_x_position()
-                    Helper.printc("          diff pool",33)
-                    Helper.printc(f"          {self.next_shape_x=}",36)
-                    self.next_shape_x += current_shape.width + Configs.VSPACE_BETWEEN_SHAPES
-                    Helper.printc(f"          {self.next_shape_x=}",37)
+                    Helper.printc("          diff pool", 33)
+                    Helper.printc(f"          {self.next_shape_x=}", 36)
+                    self.next_shape_x += (
+                        current_shape.width + Configs.VSPACE_BETWEEN_SHAPES
+                    )
+                    Helper.printc(f"          {self.next_shape_x=}", 37)
             else:
                 current_shape.x = self._get_next_x_position(0)
                 Helper.printc("          previous = none", 35)
@@ -319,27 +324,17 @@ class ProcessMap:
 
             self._set_shape_y_position(next_shape, index)
 
-    def populate_layout_grid(self):
-        """Populate the layout grid with the shapes in the process map"""
-        for pool in self._pools:
-            for lane in pool.lanes:
-                lane_grid = []
-                for shape in lane.shapes:
-                   lane_grid.append(shape.name)
-                self.layout_grid.append(lane_grid)
-                    
-        Helper.printc(f"===layout_grid: {self.layout_grid}", "32")
-
     def _set_draw_position(self, painter: Painter) -> tuple:
         """Set the draw position for the process map"""
         ### Set process map title
         self._title.set_draw_position(
             Configs.SURFACE_LEFT_MARGIN, Configs.SURFACE_TOP_MARGIN, painter
         )
-        
-        
+
+        ### Test Grid
         test_grid = Grid(self._pools)
-        test_grid.print()
+        test_grid.print_grid()
+        return None
 
         Helper.printc("*** Setting elements' x position...")
         start_shape = self._find_start_shape()
@@ -452,7 +447,7 @@ class ProcessMap:
         """Draw the process map"""
 
         ### --Validate the process map--
-        
+
         ### Ensure title is defined
         if (len(self.title) == 0) and (self._title is None):
             raise ValueError("The process map must contain a title")
@@ -488,7 +483,6 @@ class ProcessMap:
 
         ### Set the draw position of pools, lanes, shapes and connections
         self._set_draw_position(self.__painter)
-
 
         ### Draw the process map
         self._title.draw()
@@ -644,7 +638,6 @@ class ProcessMap:
 
         elapsed_time = (time.time() - self.start_time) * 1000
         Helper.info_log(f"Took [{elapsed_time:.2f}ms] to generate '{filename}' diagram")
-
 
     def __enter__(self):
         """This method is called when the 'with' statement is used"""
