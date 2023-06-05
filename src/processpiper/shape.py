@@ -123,33 +123,33 @@ class Shape:
         Returns:
             (tuple), (tuple): Nearest connection points between two sets of shapes
         """
-        match (direction):
-            case "horizontal":
-                source_connection_points = self.get_left_right_points(points_source)
-                target_connection_points = self.get_left_right_points(points_target)
-            case "down":
-                source_connection_points = self.get_top_bottom_points(points_source)
-                target_connection_points = self.get_top_bottom_points(points_target)
-            case "down_right":
-                source_connection_points = self.get_top_bottom_points(points_source)
-                target_connection_points = self.get_left_right_points(points_target)
-            case "down_left":
-                source_connection_points = self.get_top_bottom_points(points_source)
-                target_connection_points = self.get_top_bottom_points(points_target)
-            case "up":
-                source_connection_points = self.get_top_bottom_points(points_source)
-                target_connection_points = self.get_top_bottom_points(points_target)
-            case "up_right":
-                source_connection_points = self.get_left_right_points(points_source)
-                target_connection_points = self.get_left_right_points(points_target)
-            case "up_left":
-                source_connection_points = self.get_top_bottom_points(points_source)
-                target_connection_points = self.get_left_right_points(points_target)
+        # match (direction):
+        #     case "horizontal":
+        #         source_connection_points = self.get_left_right_points(points_source)
+        #         target_connection_points = self.get_left_right_points(points_target)
+        #     case "down":
+        #         source_connection_points = self.get_top_bottom_points(points_source)
+        #         target_connection_points = self.get_top_bottom_points(points_target)
+        #     case "down_right":
+        #         source_connection_points = self.get_top_bottom_points(points_source)
+        #         target_connection_points = self.get_left_right_points(points_target)
+        #     case "down_left":
+        #         source_connection_points = self.get_top_bottom_points(points_source)
+        #         target_connection_points = self.get_top_bottom_points(points_target)
+        #     case "up":
+        #         source_connection_points = self.get_top_bottom_points(points_source)
+        #         target_connection_points = self.get_top_bottom_points(points_target)
+        #     case "up_right":
+        #         source_connection_points = self.get_left_right_points(points_source)
+        #         target_connection_points = self.get_left_right_points(points_target)
+        #     case "up_left":
+        #         source_connection_points = self.get_top_bottom_points(points_source)
+        #         target_connection_points = self.get_left_right_points(points_target)
 
         shortest_distance: int = float("inf")
 
-        for source_name, source_points in source_connection_points.items():
-            for target_name, target_points in target_connection_points.items():
+        for source_name, source_points in points_source.items():
+            for target_name, target_points in points_target.items():
                 distance = self.get_distance(source_points, target_points)
 
                 if distance < shortest_distance:
@@ -257,8 +257,8 @@ class Shape:
                 source_connection_points = self.get_top_bottom_points(points_source)
                 target_connection_points = self.get_top_bottom_points(points_target)
             case "down_right":
-                source_connection_points = self.get_top_bottom_points(points_source)
-                target_connection_points = self.get_left_right_points(points_target)
+                source_connection_points = self.get_left_right_points(points_source)
+                target_connection_points = self.get_top_bottom_points(points_target)
             case "down_left":
                 source_connection_points = self.get_top_bottom_points(points_source)
                 target_connection_points = self.get_top_bottom_points(points_target)
@@ -266,7 +266,7 @@ class Shape:
                 source_connection_points = self.get_top_bottom_points(points_source)
                 target_connection_points = self.get_top_bottom_points(points_target)
             case "up_right":
-                source_connection_points = self.get_left_right_points(points_source)
+                source_connection_points = self.get_top_bottom_points(points_source)
                 target_connection_points = self.get_left_right_points(points_target)
             case "up_left":
                 source_connection_points = self.get_top_bottom_points(points_source)

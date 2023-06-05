@@ -78,21 +78,35 @@ class Grid:
                     )
                 else:
                     Helper.printc(
-                        f"        ==>Same lane: add_shape_to_lane_rowcolumn [{current_shape.name}, {previous_shape_col_number + 1=}]"
+                        f"        ==>Same lane: add_shape_to_lane_rowcolumn [{current_shape.name}, {previous_shape_col_number + 1}]"
                     )
-                    self.add_shape_to_lane_rowcolumn(
+                    if self.is_column_empty(
                         current_shape.lane_id,
-                        index + 1,
+                        previous_shape_row_number,
                         previous_shape_col_number + 1,
-                        current_shape,
-                    )
+                    ):
+                        Helper.printc("Is empty", 34)
+                        self.add_shape_to_lane_rowcolumn(
+                            current_shape.lane_id,
+                            previous_shape_row_number,
+                            previous_shape_col_number + 1,
+                            current_shape,
+                        )
+                    else:
+                        Helper.printc("Not empty", 34)
+                        self.add_shape_to_lane_rowcolumn(
+                            current_shape.lane_id,
+                            index + 1,
+                            previous_shape_col_number + 1,
+                            current_shape,
+                        )
             else:
                 # Same pool but different lane
                 # work for different pool too
                 if index == 0:
                     if self.is_same_pool(previous_shape, current_shape):
                         Helper.printc(
-                            f"        ==>Index=0, Same pool, diff lane: add_shape_to_lane [{current_shape.name}], {previous_shape_row_number=}"
+                            f"        ==>Index=0, Same pool, diff lane: add_shape_to_lane [{current_shape.name}], {previous_shape_row_number+1}"
                         )
                         # self.add_shape_to_lane(
                         #     current_shape.lane_id,
@@ -101,8 +115,8 @@ class Grid:
                         # )
                         self.add_shape_to_lane_rowcolumn(
                             current_shape.lane_id,
-                            index,
-                            previous_shape_col_number,
+                            index + 1,
+                            previous_shape_col_number + 1,
                             current_shape,
                         )
                     else:
