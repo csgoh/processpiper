@@ -62,13 +62,11 @@ class ProcessMap:
     lane_y_pos: int = field(init=False, default=0)
     lane_max_width: int = field(init=False, default=0)
 
-    layout_grid: list = field(init=False, default_factory=list)
-
     def __post_init__(self):
         """Initialise the Process Map Class"""
         logging.basicConfig(
             # filename="processpiper.log",
-            level=logging.INFO,
+            level=logging.DEBUG,
             format="%(asctime)s [%(levelname)s] : %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
@@ -82,6 +80,7 @@ class ProcessMap:
             self.__painter.title_font_size,
             self.__painter.title_font_colour,
         )
+        self._layout_grid = Grid()
 
     def add_pool(
         self,
@@ -218,6 +217,53 @@ class ProcessMap:
 
     def _set_shape_x_position(
         self,
+    ):
+        Helper.printc("*** Setting shapes' x position...", "32")
+        for lane_id, lane in self._layout_grid.get_grid_items():
+            Helper.printc(f"{lane_id=}")
+            for row_number, col in lane.items():
+                Helper.printc(f"{row_number=}", end=":\n")
+                for col_idx, item in enumerate(col):
+                    if item is not None:
+                        item.x = (
+                            Configs.SURFACE_LEFT_MARGIN
+                            + Configs.POOL_TEXT_WIDTH
+                            + Configs.HSPACE_BETWEEN_POOL_AND_LANE
+                            + Configs.LANE_TEXT_WIDTH
+                            + Configs.LANE_SHAPE_LEFT_MARGIN
+                        ) + (col_idx * (BOX_WIDTH + Configs.HSPACE_BETWEEN_SHAPES))
+                        Helper.printc(f"    {item.name=}, {col_idx+1=}, {item.x=}")
+                    else:
+                        Helper.printc(f"    {'None'}")
+            Helper.printc("")
+
+    def _set_shape_y_position(self):
+        Helper.printc("*** Setting shapes' y position...", "32")
+        for lane_id, lane in self._layout_grid.get_grid_items():
+            Helper.printc(f"{lane_id=}")
+            this_lane = self._get_lane_by_id(lane_id)
+            for row_number, col in lane.items():
+                Helper.printc(f"{row_number=}", end=":\n")
+                row_idx = int(row_number.replace("row", "")) - 1
+                for col_idx, item in enumerate(col):
+                    if item is not None:
+                        item.y = (
+                            this_lane.y
+                            + (Configs.LANE_SHAPE_TOP_MARGIN)
+                            + (row_idx * (BOX_HEIGHT + Configs.VSPACE_BETWEEN_SHAPES))
+                        )
+
+                        Helper.printc(
+                            f"    {item.name=}, {row_idx=}, {col_idx+1=}, {item.x=}, {item.y=}"
+                        )
+                        item.set_draw_position(self.__painter)
+                    else:
+                        Helper.printc(f"    {'None'}")
+            self.lane_max_width = max(self.lane_max_width, this_lane.width)
+            Helper.printc("")
+
+    def _set_shape_x_position_X(
+        self,
         previous_shape: Shape,
         current_shape: Shape,
         index: int = 0,
@@ -282,7 +328,7 @@ class ProcessMap:
 
         return current_shape.x
 
-    def _set_shape_y_position(self, shape: Shape, index: int = 0):
+    def _set_shape_y_position_Y(self, shape: Shape, index: int = 0):
         """Set the y position for the shape"""
         lane = self._get_lane_by_id(shape.lane_id)
         Helper.printc(
@@ -332,9 +378,103 @@ class ProcessMap:
         )
 
         ### Test Grid
-        test_grid = Grid(self._pools)
-        test_grid.print_grid()
-        return None
+        self._layout_grid.set_grid(self._pools)
+        self._layout_grid.print_grid()
+
+        Helper.printc("*** Calculating pool and lane width and height...")
+        x_pos, y_pos = (
+            0,
+            self._title.y + self._title.height + Configs.VSPACE_BETWEEN_TITLE_AND_POOL,
+        )
+        for pool in self._pools:
+            for lane in pool.lanes:
+                lane.painter = painter
+
+                ### Determine the number of rows for the lane
+                lane_row_count = self._layout_grid.get_lane_row_count(lane.id)
+
+                ### Determine lane x and y position
+                lane.x = (
+                    x_pos
+                    if x_pos > 0
+                    else Configs.SURFACE_LEFT_MARGIN
+                    + Configs.POOL_TEXT_WIDTH
+                    + Configs.HSPACE_BETWEEN_POOL_AND_LANE
+                )
+                lane.y = y_pos if y_pos > 0 else Configs.SURFACE_TOP_MARGIN
+
+                ### Determine lane width
+                max_column_count = self._layout_grid.get_max_column_count()
+                Helper.printc(f"### max column count: {max_column_count}")
+                lane.width = (
+                    (Configs.HSPACE_BETWEEN_SHAPES * max_column_count - 1)
+                    + (BOX_WIDTH * max_column_count)
+                    + (Configs.LANE_SHAPE_LEFT_MARGIN)
+                )
+
+                Helper.printc(
+                    f"*** [{lane.name}] shape row count: {lane_row_count}", 35
+                )
+
+                ### Determine lane height
+                lane.height = (
+                    (lane_row_count * 60)
+                    + ((lane_row_count - 1) * Configs.VSPACE_BETWEEN_SHAPES)
+                    + Configs.LANE_SHAPE_TOP_MARGIN
+                    + Configs.LANE_SHAPE_BOTTOM_MARGIN
+                )
+                Helper.printc(
+                    f"    [{lane.name}] {lane.x=}, {lane.y=}, {lane.width=}, {lane.height=}"
+                )
+                y_pos = lane.y + lane.height + Configs.VSPACE_BETWEEN_LANES
+
+            y_pos += Configs.VSPACE_BETWEEN_POOLS
+
+            first_lane_y = pool.lanes[0].y
+
+            pool.set_draw_position(Configs.SURFACE_LEFT_MARGIN, first_lane_y, painter)
+
+        ### Set shape x position
+        # start_shape = self._find_start_shape()
+        self._set_shape_x_position()
+
+        ### Set shape y position
+        self._set_shape_y_position()
+
+        ### Set process map footer
+        if self._footer is not None:
+            self._footer.set_draw_position(
+                Configs.SURFACE_LEFT_MARGIN,
+                y_pos + Configs.VSPACE_BETWEEN_POOL_AND_FOOTER,
+                painter,
+            )
+            self.height = (
+                self._footer.y + self._footer.height + Configs.SURFACE_BOTTOM_MARGIN
+            )
+        else:
+            self.height = (
+                y_pos
+                + Configs.VSPACE_BETWEEN_POOL_AND_FOOTER
+                + Configs.SURFACE_BOTTOM_MARGIN
+            )
+
+        self.width = (
+            Configs.SURFACE_LEFT_MARGIN
+            + Configs.POOL_TEXT_WIDTH
+            + self.lane_max_width
+            + Configs.SURFACE_LEFT_MARGIN
+        )
+
+    def _set_draw_positionX(self, painter: Painter) -> tuple:
+        """Set the draw position for the process map"""
+        ### Set process map title
+        self._title.set_draw_position(
+            Configs.SURFACE_LEFT_MARGIN, Configs.SURFACE_TOP_MARGIN, painter
+        )
+
+        ### Test Grid
+        self._layout_grid = Grid(self._pools)
+        self._layout_grid.print_grid()
 
         Helper.printc("*** Setting elements' x position...")
         start_shape = self._find_start_shape()

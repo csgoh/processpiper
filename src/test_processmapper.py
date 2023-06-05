@@ -287,7 +287,7 @@ def test_case10(colour_theme: str = "BLUEMOUNTAIN"):
 
             with pool1.add_lane("Clerk") as lane2:
                 start = lane2.add_element("Goods to ship", EventType.START)
-                branching1 = lane2.add_element("", GatewayType.PARALLEL)
+                branching1 = lane2.add_element("Branching 1", GatewayType.PARALLEL)
                 decide = lane2.add_element(
                     "Decide if normal post or special shipment", ActivityType.TASK
                 )
@@ -297,11 +297,11 @@ def test_case10(colour_theme: str = "BLUEMOUNTAIN"):
                 check_extra_insurance = lane2.add_element(
                     "Check if extra insurance is needed", ActivityType.TASK
                 )
-                branching3 = lane2.add_element("", GatewayType.INCLUSIVE)
+                branching3 = lane2.add_element("Branching 3", GatewayType.INCLUSIVE)
                 fill_in_post = lane2.add_element(
                     "Fill in a Post label", ActivityType.TASK
                 )
-                branching4 = lane2.add_element("", GatewayType.INCLUSIVE)
+                branching4 = lane2.add_element("Branching 4", GatewayType.INCLUSIVE)
 
                 request_quote = lane2.add_element(
                     "Request quotes from carriers", ActivityType.TASK
@@ -309,11 +309,11 @@ def test_case10(colour_theme: str = "BLUEMOUNTAIN"):
                 assign_carrier = lane2.add_element(
                     "Assign carrier & prepare paper work", ActivityType.TASK
                 )
-                branching5 = lane2.add_element("", GatewayType.EXCLUSIVE)
+                branching5 = lane2.add_element("Branching 5", GatewayType.EXCLUSIVE)
 
             with pool1.add_lane("Warehouse Worker") as lane3:
                 package_goods = lane3.add_element("Package goods", ActivityType.TASK)
-                branching6 = lane3.add_element("", GatewayType.PARALLEL)
+                branching6 = lane3.add_element("Branching 6", GatewayType.PARALLEL)
                 add_paperwork = lane3.add_element(
                     "Add paperwork to move package to pick area", ActivityType.TASK
                 )
@@ -455,6 +455,7 @@ def test_case16():
         my_process_map.draw()
         my_process_map.save(output_file)
 
+
 def test_case17():
     output_file = prep_for_test(f"{inspect.currentframe().f_code.co_name}.png")
     with ProcessMap("All Events") as my_process_map:
@@ -476,18 +477,19 @@ def test_case17():
         my_process_map.draw()
         my_process_map.save(output_file)
 
+
 if __name__ == "__main__":
     # test_case1()
     # test_case2()
-    # test_case3()
+    #/test_case3()
     # test_case4()
-    test_case5()
+    # test_case5()
     # test_case6()
-    # test_case7()
-    # test_case8()
+    #/test_case7()
+    #/test_case8()
     # test_case9()
-    # test_case10(colour_theme="DEFAULT")
-    # test_case10(colour_theme="BLUEMOUNTAIN")
+    #test_case10(colour_theme="DEFAULT")
+    test_case10(colour_theme="BLUEMOUNTAIN")
     # test_case10(colour_theme="ORANGEPEEL")
     # test_case10(colour_theme="GREENTURTLE")
     # test_case10(colour_theme="GREYWOOF")
@@ -497,4 +499,4 @@ if __name__ == "__main__":
     # test_case14()
     # test_case15()
     # test_case16()
-    #test_case17()
+    # test_case17()
