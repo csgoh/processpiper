@@ -894,10 +894,21 @@ class Painter:
         if label_x_pos == x1 and label_y_pos == y1:
             ### There is no right angle point
             label_x_pos = max(x1 + 5, x1 + (((x2 - x1) - label_w) / 2))
-            label_y_pos = y1 - label_h - 3
+            # label_y_pos = y1 - label_h - 3
+            if y1 == y2:
+                label_y_pos = y1 - label_h - 3
+            else:
+                label_y_pos = y1 + ((y2 - y1) / 2) - (label_h / 2)
+            Helper.printc(f"        @@@ {label=} No right angle point", 35)
+
         else:
             label_x_pos += 5
-            label_y_pos = label_y_pos - label_h - 3
+            # label_y_pos = label_y_pos - label_h - 3
+            if y1 == y2:
+                label_y_pos = label_y_pos - label_h - 3
+            else:
+                label_y_pos = y1 + ((y2 - y1) / 2) - (label_h / 2)
+            Helper.printc(f"        @@@ {label=} With right angle point", 35)
 
         self.draw_text(
             label_x_pos,
