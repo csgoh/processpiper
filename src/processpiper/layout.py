@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from .shape import Shape
-from .lane import Lane
 from .helper import Helper
 
 
@@ -10,25 +9,24 @@ class Grid:
     _grid: dict = field(init=False, default_factory=dict)
 
     def set_grid(self, pools: list):
+        """Set the grid for the process map"""
+
         self._pools = pools
         self._grid = {}
         self.set_shapes_position(None, self._find_start_shape(), 0)
 
-    def _get_lane_by_id(self, lane_id: int) -> Lane:
-        """Get a lane by its id"""
-        for pool in self._pools:
-            for lane in pool.lanes:
-                if lane.id == lane_id:
-                    return lane
-        return None
-
     def get_grid_items(self):
+        """Get the grid items"""
+
         return self._grid.items()
 
     def is_same_lane(self, previous_shape: Shape, current_shape: Shape) -> bool:
+        """Check if the previous shape and current shape are in the same lane"""
+
         return previous_shape.lane_id == current_shape.lane_id
 
     def is_same_pool(self, previous_shape: Shape, current_shape: Shape) -> bool:
+        """Check if the previous shape and current shape are in the same pool"""
         return previous_shape.pool_name == current_shape.pool_name
 
     def set_shapes_position(
@@ -37,6 +35,7 @@ class Grid:
         current_shape: Shape,
         index: int = 0,
     ):
+        """Set the position of the shapes in the grid"""
         if current_shape.grid_traversed is True:
             Helper.printc(f"{current_shape.name} is already traversed")
             return
@@ -54,10 +53,13 @@ class Grid:
     def add_shape_to_grid(
         self, previous_shape: Shape, current_shape: Shape, index: int
     ):
+        """Add the shape to the grid"""
         ### If previous_shape is None, it is the start shape
         if previous_shape is None:
             ### Add the start shape to the grid
-            Helper.printc(f"    ==>Start adding [{current_shape.name}] to grid")
+            Helper.printc(
+                f"    ==>Start adding [{current_shape.name}] to grid (append)"
+            )
             self.add_shape_to_lane_row(current_shape.lane_id, 1, current_shape)
         else:
             (
@@ -170,16 +172,19 @@ class Grid:
         return None
 
     def add_shape_to_lane_row(self, lane_id: str, row_number: int, shape: Shape):
+        """Add the shape to the lane row"""
         if lane_id not in self._grid:
             self._grid[lane_id] = {}
         row_number = f"row{row_number}"
         if row_number not in self._grid[lane_id]:
             self._grid[lane_id][row_number] = []
+        Helper.printc(f"            ###{shape.name=}, {lane_id=}, {row_number=}", 36)
         self._grid[lane_id][row_number].append(shape)
 
     def add_shape_to_lane_rowcolumn(
         self, lane_id: str, row_number: int, col_number: int, shape: Shape
     ):
+        """Add the shape to the lane row column"""
         if lane_id not in self._grid:
             self._grid[lane_id] = {}
 
@@ -193,11 +198,23 @@ class Grid:
                 for _ in range(col_number - len(self._grid[lane_id][row_number]) - 1):
                     self._grid[lane_id][row_number].append(None)
                 self._grid[lane_id][row_number].append(shape)
+                Helper.printc(
+                    f"            ###{col_number=} > {len(self._grid[lane_id][row_number])=})",
+                    36,
+                )
             else:
-                self._grid[lane_id][row_number][col_number - 1] = shape
+                if col_number == 1:
+                    self._grid[lane_id][row_number].append(shape)
+                else:
+                    self._grid[lane_id][row_number][col_number - 1] = shape
+                Helper.printc(
+                    f"            ###{col_number=} <= {len(self._grid[lane_id][row_number])=})",
+                    36,
+                )
 
         Helper.printc(
-            f"            ###{shape.name=}, {lane_id=}, {row_number=}, {col_number=}"
+            f"            ###{shape.name=}, {lane_id=}, {row_number=}, {col_number=}",
+            36,
         )
 
         ### add max columns to other lanes
@@ -209,6 +226,7 @@ class Grid:
                         self._grid[this_lane_id][row].append(None)
 
     def find_shape_rowcolumn_in_lane(self, lane_id: str, shape: Shape):
+        """Find the shape row and column in the lane"""
         if lane_id not in self._grid:
             return None, None
 
@@ -219,12 +237,15 @@ class Grid:
         return None, None
 
     def get_column_index(self, lane_id: str, shape: Shape):
+        """Get the column index of the shape in the lane"""
         # find shape column index
         for _, col in self._grid[lane_id].items():
             if shape in col:
                 return col.index(shape) + 1
 
     def is_column_empty(self, lane_id: str, row_number: int, col_number: int):
+        """Check if the column is empty"""
+
         row_number = f"row{row_number}"
         for row, col in self._grid[lane_id].items():
             if row == row_number:
@@ -233,6 +254,7 @@ class Grid:
         return True
 
     def get_shape_lane_rowcolumn(self, shape: Shape):
+        """Get the shape lane, row and column"""
         for lane_id, lane in self._grid.items():
             for row, col in lane.items():
                 # for item in col:
@@ -244,6 +266,7 @@ class Grid:
         return None, None, None
 
     def add_shape_to_lane(self, lane_id: str, row_number: int, current_shape: Shape):
+        """Add the shape to the lane"""
         if lane_id is not None:
             col_number = self.get_next_column(lane_id, row_number)
             Helper.printc(f"{lane_id=}, {row_number=}, {col_number=}", 33)
@@ -254,6 +277,7 @@ class Grid:
             raise ValueError("lane_id must be provided")
 
     def add_shape_to_same_lane(self, previous_shape: Shape, current_shape: Shape):
+        """Add the shape to the same lane"""
         lane_id, row_number, _ = self.get_shape_lane_rowcolumn(previous_shape)
 
         if lane_id is not None:
@@ -266,6 +290,7 @@ class Grid:
     def add_shape_to_same_lane_next_row(
         self, previous_shape: Shape, current_shape: Shape
     ):
+        """Add the shape to the same lane next row"""
         lane_id, row_number, _ = self.get_shape_lane_rowcolumn(previous_shape)
         if lane_id is not None:
             col_number = self.get_next_column(lane_id, row_number)
@@ -280,15 +305,8 @@ class Grid:
 
                 next_row_number += 1
 
-    def add_shape_to_diff_lane(self, previous_shape: Shape, current_shape: Shape):
-        ...
-
-    def add_shape_to_diff_lane_next_column(
-        self, lane_id: str, previous_shape: Shape, current_shape: Shape
-    ):
-        ...
-
     def get_next_column(self, lane_id: str, row_number: int) -> int:
+        """Get the next column"""
         # get next None column
         if lane_id not in self._grid:
             return 1
@@ -305,6 +323,7 @@ class Grid:
         return last_column + 1
 
     def format_item(self, item, repeat: bool = False):
+        """Format the item"""
         # get the first 20 characters from item
         item = str(item)[:20]
         fixed_length = 20
@@ -322,6 +341,7 @@ class Grid:
         return item + spaces[: fixed_length - len(item)] + "|"
 
     def get_max_column_count(self):
+        """Get the max number of columns"""
         max_columns = 0
         # calculate max number of columns
         for _, lane in self._grid.items():
@@ -331,11 +351,13 @@ class Grid:
         return max_columns
 
     def get_lane_row_count(self, lane_id: str):
+        """Get the lane row count"""
         return len(self._grid[lane_id])
 
     def print_header(
         self,
     ):
+        """Print the header"""
         max_columns = self.get_max_column_count()
         # calculate max number of columns
         for _, lane in self._grid.items():
@@ -354,6 +376,7 @@ class Grid:
             break
 
     def print_grid(self):
+        """Print the grid"""
         for lane_id, lane in self._grid.items():
             Helper.printc(lane_id)
             self.print_header()
