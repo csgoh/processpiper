@@ -29,6 +29,7 @@ from .activity import *
 from .gateway import *
 from .constants import Configs
 from .helper import Helper
+from .layout import Grid
 
 # from .helper import Helper
 
@@ -165,31 +166,6 @@ class Lane:
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         pass
 
-    def get_current_y_position(self) -> int:
-        """Get the current y position of the lane"""
-        if self.shape_row_count == 0:
-            self.shape_row_count = 1
-        if self.next_shape_y == 0:
-            self.next_shape_y = self.y + Configs.LANE_SHAPE_TOP_MARGIN
-
-        return self.next_shape_y
-
-    def get_next_y_position(self) -> int:
-        """Get the next y position of the lane"""
-
-        if self.next_shape_y == 0:
-            # self.next_shape_y = self.y + 60 + Configs.LANE_SHAPE_TOP_MARGIN
-            self.next_shape_y = self.y + Configs.LANE_SHAPE_TOP_MARGIN
-        else:
-            self.next_shape_y += 60 + Configs.VSPACE_BETWEEN_SHAPES
-
-        ### For every method call, increment the shape row count
-        if self.shape_row_count == 0:
-            self.shape_row_count = 1
-        else:
-            self.shape_row_count += 1
-        return self.next_shape_y
-
     def draw(self) -> None:
         """Draw the lane"""
 
@@ -243,90 +219,47 @@ class Lane:
             for shape in self.shapes:
                 shape.draw_connection(self.painter)
 
-    def set_draw_position(self, x: int, y: int, painter: Painter) -> None:
+    def set_draw_position(
+        self, x: int, y: int, painter: Painter, layout_grid: Grid
+    ) -> None:
         """Set the draw position of the lane"""
 
         self.painter = painter
 
-        ### Determine the x and y position of the lane
-        ### If x and y are not specified, add the default margin
-        self.x = x if x > 0 else Configs.SURFACE_LEFT_MARGIN + Configs.POOL_TEXT_WIDTH
+        ### Determine the number of rows for the lane
+        lane_row_count = layout_grid.get_lane_row_count(self.id)
+
+        ### Determine lane x and y position
+        self.x = (
+            x
+            if x > 0
+            else Configs.SURFACE_LEFT_MARGIN
+            + Configs.POOL_TEXT_WIDTH
+            + Configs.HSPACE_BETWEEN_POOL_AND_LANE
+        )
         self.y = y if y > 0 else Configs.SURFACE_TOP_MARGIN
 
-        if self.shapes:
-            self.next_shape_x = (
-                self.x
-                + Configs.POOL_TEXT_WIDTH
-                + Configs.LANE_TEXT_WIDTH
-                + Configs.LANE_SHAPE_LEFT_MARGIN
-            )
+        ### Determine lane width
+        max_column_count = layout_grid.get_max_column_count()
+        Helper.printc(f"### max column count: {max_column_count}")
+        self.width = (
+            (Configs.HSPACE_BETWEEN_SHAPES * max_column_count - 1)
+            + (Configs.BOX_WIDTH * max_column_count)
+            + (Configs.LANE_SHAPE_LEFT_MARGIN)
+        )
 
-            shape_x, shape_y, shape_w, shape_h = self.set_shape_draw_position(
-                self.next_shape_x, self.y, self.shapes[0], painter
-            )
+        Helper.printc(f"*** [{self.name}] shape row count: {lane_row_count}", 35)
 
-            self.width = max(self.width, shape_x + shape_w)
-            self.height = max(
-                self.height,
-                shape_y + shape_h - self.y + Configs.LANE_SHAPE_BOTTOM_MARGIN,
-            )
+        ### Determine lane height
+        self.height = (
+            (lane_row_count * 60)
+            + ((lane_row_count - 1) * Configs.VSPACE_BETWEEN_SHAPES)
+            + Configs.LANE_SHAPE_TOP_MARGIN
+            + Configs.LANE_SHAPE_BOTTOM_MARGIN
+        )
+        Helper.printc(
+            f"    [{self.name}] {self.x=}, {self.y=}, {self.width=}, {self.height=}"
+        )
+        y_pos = self.y + self.height + Configs.VSPACE_BETWEEN_LANES
 
-            self.next_shape_x = shape_x + shape_w + Configs.HSPACE_BETWEEN_SHAPES
-
-        return self.x, self.y, self.width, self.height
-
-    def set_shape_draw_position(
-        self, x: int, y: int, shape: Shape, painter: Painter
-    ) -> None:
-        """Set the draw position of the shapes in the lane"""
-        ### Set own shape position
-        if shape.lane_name == self.name:
-            shape_x, shape_y, shape_w, shape_h = shape.set_draw_position(
-                x,
-                (y + Configs.LANE_SHAPE_TOP_MARGIN),
-                painter,
-            )
-
-            #### Mark for removal
-            # shape.draw_position_set = True
-
-            shape.x_pos_traversed = True
-
-            ### Set next elements' position
-            for index, next_shape in enumerate(shape.connection_to.target):
-                ### Check whether the position has been set, if yes, skipped.
-                ### This is needed to avoid infinite recursion
-                if next_shape.traversed == True:
-                    continue
-
-                if index == 0:
-                    next_shape_y = y
-                else:
-                    next_shape_y = (
-                        y
-                        + Configs.LANE_SHAPE_TOP_MARGIN
-                        + Configs.HSPACE_BETWEEN_SHAPES
-                        + shape_h
-                    )
-
-                ### Perform recursive call to set the position of the next element
-                (
-                    next_shape_x,
-                    next_shape_y,
-                    next_shape_w,
-                    next_shape_h,
-                ) = self.set_shape_draw_position(
-                    self.next_shape_x, next_shape_y, next_shape, painter
-                )
-
-                shape_x, shape_y, shape_w, shape_h = (
-                    max(shape_x, next_shape_x),
-                    max(shape_y, next_shape_y),
-                    max(shape_w, next_shape_w),
-                    max(shape_h, next_shape_h),
-                )
-                self.next_shape_x = next_shape_x
-        else:
-            shape_x, shape_y, shape_w, shape_h = 0, 0, 0, 0
-
-        return shape_x, shape_y, shape_w, shape_h
+        return self.x, y_pos, self.width, self.height
