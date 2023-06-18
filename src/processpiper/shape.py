@@ -75,6 +75,8 @@ class Shape:
     connection_from: list = field(init=False, default_factory=list)
     connection_to: list = field(init=False, default_factory=list)
 
+    painter: Painter = field(init=False, default=None)
+
     def connect(
         self: TShape,
         target: TShape,
@@ -108,7 +110,7 @@ class Shape:
         x2, y2 = target
         return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
 
-    def find_nearest_points(self, points_source, points_target):
+    def find_nearest_points(self, target_shape, all_shapes_points: list):
         """Find nearest connection points between two sets of shapes
 
         Args:
@@ -118,31 +120,16 @@ class Shape:
         Returns:
             (tuple), (tuple): Nearest connection points between two sets of shapes
         """
-        # match (direction):
-        #     case "horizontal":
-        #         source_connection_points = self.get_left_right_points(points_source)
-        #         target_connection_points = self.get_left_right_points(points_target)
-        #     case "down":
-        #         source_connection_points = self.get_top_bottom_points(points_source)
-        #         target_connection_points = self.get_top_bottom_points(points_target)
-        #     case "down_right":
-        #         source_connection_points = self.get_top_bottom_points(points_source)
-        #         target_connection_points = self.get_left_right_points(points_target)
-        #     case "down_left":
-        #         source_connection_points = self.get_top_bottom_points(points_source)
-        #         target_connection_points = self.get_top_bottom_points(points_target)
-        #     case "up":
-        #         source_connection_points = self.get_top_bottom_points(points_source)
-        #         target_connection_points = self.get_top_bottom_points(points_target)
-        #     case "up_right":
-        #         source_connection_points = self.get_left_right_points(points_source)
-        #         target_connection_points = self.get_left_right_points(points_target)
-        #     case "up_left":
-        #         source_connection_points = self.get_top_bottom_points(points_source)
-        #         target_connection_points = self.get_left_right_points(points_target)
-
+        points_source = self.points
+        points_target = target_shape.points
         shortest_distance: int = float("inf")
 
+        Helper.printc(
+            f"        >>>> {points_source=}", 35, show_level="draw_connection"
+        )
+        Helper.printc(
+            f"        >>>> {points_target=}", 35, show_level="draw_connection"
+        )
         for source_name, source_points in points_source.items():
             for target_name, target_points in points_target.items():
                 distance = self.get_distance(source_points, target_points)
@@ -161,16 +148,15 @@ class Shape:
         del points_source[nearest_points["source_name"]]
         del points_target[nearest_points["target_name"]]
 
-        Helper.printc(f"        Nearest : {nearest_points}")
+        Helper.printc(
+            f"        Nearest : {nearest_points}", show_level="draw_connection"
+        )
         return (
             nearest_points["source_points"],
             nearest_points["source_name"],
             nearest_points["target_points"],
             nearest_points["target_name"],
         )
-
-    def find_nearest_points_diff_pools(self, points_source, points_target):
-        ...
 
     def get_top_bottom_points(self, points):
         """Get top and bottom points from a set of points
@@ -204,12 +190,93 @@ class Shape:
 
         return target_points
 
+    def check_line_collision(self, line1_start, line1_end, line2_start, line2_end):
+        # calculate the direction of the lines
+        x1, y1 = line1_start
+        x2, y2 = line1_end
+        x3, y3 = line2_start
+        x4, y4 = line2_end
+
+        if ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)) == 0:
+            return False
+        uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / (
+            (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)
+        )
+        uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / (
+            (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)
+        )
+
+        # if uA and uB are between 0-1, lines are colliding
+        if uA >= 0 and uA <= 1 and uB >= 0 and uB <= 1:
+            # optionally, draw a circle where the lines meet
+            intersection_x = x1 + (uA * (x2 - x1))
+            intersection_y = y1 + (uA * (y2 - y1))
+            ### self.painter.draw_circle(intersectionX, intersectionY, 5, "red")
+            Helper.printc(
+                f"        >>>> intersection ({intersection_x}, {intersection_y})",
+                35,
+                show_level="draw_connection",
+            )
+
+            return True
+        return False
+
+    def check_shape_collision(self, line_start, line_end, shape: TShape):
+        if shape.x == shape.origin_x and shape.y == shape.origin_y:
+            rx, ry = shape.x, shape.y
+            rw, rh = shape.width, shape.height
+        else:
+            rx, ry = shape.origin_x, shape.origin_y
+            rw, rh = Configs.BOX_WIDTH, Configs.BOX_HEIGHT
+
+        left_line_start = (rx, ry)
+        left_line_end = (rx, ry + rh)
+        left = self.check_line_collision(
+            line_start, line_end, left_line_start, left_line_end
+        )
+
+        right_line_start = (rx + rw, ry)
+        right_line_end = (rx + rw, ry + rh)
+        right = self.check_line_collision(
+            line_start, line_end, right_line_start, right_line_end
+        )
+
+        top_line_start = (rx, ry)
+        top_line_end = (rx + rw, ry)
+        top = self.check_line_collision(
+            line_start, line_end, top_line_start, top_line_end
+        )
+
+        bottom_line_start = (rx, ry + rh)
+        bottom_line_end = (rx + rw, ry + rh)
+        bottom = self.check_line_collision(
+            line_start, line_end, bottom_line_start, bottom_line_end
+        )
+        return left or right or top or bottom
+
+    def check_collision(self, line_start, line_end, shapes: list, target_shape: TShape):
+        # Helper.printc(f"        >>>>@ {len(shapes)=}", 34)
+        collision_found = False
+        for shape in shapes:
+            if self == shape or target_shape == shape:
+                ...
+            else:
+                if self.check_shape_collision(line_start, line_end, shape):
+                    Helper.printc(
+                        f"        >>>> Colliding with [{shape.name}]",
+                        31,
+                        show_level="draw_connection",
+                    )
+                    collision_found = True
+        return collision_found
+
     def find_nearest_points_same_pool_diff_lanes(
-        self, points_source, points_target, direction: str
+        self, target_shape, direction: str, all_shapes: list
     ):
         """Find nearest connection points between two sets of shapes
         where source and target shapes are in the same pool but different lanes"""
-
+        points_source = self.points
+        points_target = target_shape.points
         shortest_distance: int = float("inf")
         nearest_points = {}
         match (direction):
@@ -217,8 +284,8 @@ class Shape:
                 source_connection_points = self.get_top_bottom_points(points_source)
                 target_connection_points = self.get_top_bottom_points(points_target)
             case "down_right":
-                source_connection_points = self.get_left_right_points(points_source)
-                target_connection_points = self.get_top_bottom_points(points_target)
+                source_connection_points = points_source
+                target_connection_points = points_target
             case "down_left":
                 source_connection_points = self.get_top_bottom_points(points_source)
                 target_connection_points = self.get_top_bottom_points(points_target)
@@ -226,26 +293,74 @@ class Shape:
                 source_connection_points = self.get_top_bottom_points(points_source)
                 target_connection_points = self.get_top_bottom_points(points_target)
             case "up_right":
-                # source_connection_points = self.get_top_bottom_points(points_source)
-                # target_connection_points = self.get_left_right_points(points_target)
                 source_connection_points = points_source
                 target_connection_points = points_target
+                Helper.printc(
+                    f"        >>>>{direction=} {source_connection_points=} {target_connection_points=}",
+                    show_level="draw_connection",
+                )
 
             case "up_left":
-                # source_connection_points = self.get_top_bottom_points(points_source)
-                # target_connection_points = self.get_left_right_points(points_target)
                 source_connection_points = points_source
                 target_connection_points = points_target
-            case "horizontal":
+            case "left" | "right":
                 source_connection_points = self.get_left_right_points(points_source)
                 target_connection_points = self.get_left_right_points(points_target)
 
         if len(target_connection_points) == 0:
             target_connection_points = self.get_top_bottom_points(points_target)
 
+        ### Remove points that are colliding with other shapes
+        collision_names = []
+        for source_name, source_points in source_connection_points.items():
+            for target_name, target_points in target_connection_points.items():
+                nearest_points = {
+                    "source_name": source_name,
+                    "source_points": source_points,
+                    "target_name": target_name,
+                    "target_points": target_points,
+                    "distance": 0,
+                }
+                Helper.printc(
+                    f"        >>>># {nearest_points=}", 35, show_level="draw_connection"
+                )
+                points = self.painter.get_points(nearest_points)
+                collision_found = False
+                # loop through points, skip one point at a time
+                for i in range(0, len(points) - 1, 2):
+                    Helper.printc(
+                        f"        >>>> Line {i=}, {points[i]}->{points[i+1]}",
+                        35,
+                        show_level="draw_connection",
+                    )
+                    collision_found = self.check_collision(
+                        points[i], points[i + 1], all_shapes, target_shape
+                    )
+                    if collision_found:
+                        Helper.printc(
+                            f"        >>>> COLLISION FOUND: {source_name}->{target_name}",
+                            31,
+                            show_level="draw_connection",
+                        )
+                        break
+                if collision_found:
+                    # Helper.printc(
+                    #     f"        >>>> {collision_found=}, [{source_name} {target_name})]",
+                    #     31,
+                    # )
+                    collision_names.append((source_name, target_name))
+
         for source_name, source_points in source_connection_points.items():
             for target_name, target_points in target_connection_points.items():
                 distance = self.get_distance(source_points, target_points)
+                for col_source_name, col_target_name in collision_names:
+                    if (
+                        source_name == col_source_name
+                        and target_name == col_target_name
+                    ):
+                        ### If collision found, set distance to infinity so that it will not be selected
+                        distance = float("inf")
+
                 if distance < shortest_distance:
                     shortest_distance = distance
                     nearest_points = {
@@ -260,6 +375,7 @@ class Shape:
         del points_source[nearest_points["source_name"]]
         del points_target[nearest_points["target_name"]]
 
+        Helper.printc(nearest_points, 35, show_level="draw_connection")
         return (
             nearest_points["source_points"],
             nearest_points["source_name"],
@@ -268,17 +384,19 @@ class Shape:
         )
 
     def find_nearest_points_diff_pool(
-        self, points_source, points_target, direction: str
+        self, target_shape, direction: str, all_shapes_points: list
     ):
         """Find nearest connection points between two sets of shapes
         where source and target shapes are in the same pool but different lanes"""
 
+        points_source = self.points
+        points_target = target_shape.points
         shortest_distance: int = float("inf")
         nearest_points = {}
 
         source_connection_points = {}
         target_connection_points = {}
-        Helper.printc(f"        >>>>{direction=}")
+        Helper.printc(f"        >>>> {direction=}", show_level="draw_connection")
         match (direction):
             case "down":
                 source_connection_points = self.get_top_bottom_points(points_source)
@@ -298,7 +416,7 @@ class Shape:
             case "up_left":
                 source_connection_points = self.get_top_bottom_points(points_source)
                 target_connection_points = self.get_left_right_points(points_target)
-            case "horizontal":
+            case "left" | "right":
                 source_connection_points = self.get_left_right_points(points_source)
                 target_connection_points = self.get_left_right_points(points_target)
 
@@ -375,7 +493,10 @@ class Shape:
             str: Connection direction
         """
         if self.origin_y == target.origin_y:
-            return "horizontal"
+            if self.origin_x < target.origin_x:
+                return "right"
+            else:
+                return "left"
         elif self.origin_y < target.origin_y:
             if self.origin_x == target.origin_x:
                 return "down"
@@ -391,32 +512,37 @@ class Shape:
             else:
                 return "up_left"
 
-    def draw_connection(self, painter: Painter):
+    def draw_connection(self, painter: Painter, all_shapes: list):
         """Draw connection between shapes"""
+        self.painter = painter
 
-        source_points = self.points
-        Helper.printc(f"Draw connection for shape: [{self.name}]", 36)
+        Helper.printc(
+            f"Draw connection for shape: [{self.name}]",
+            36,
+            show_level="draw_connection",
+        )
         if self.connection_to:
             connection_style = "solid"
             for connection in self.connection_to:
-                target_points = connection.target.points
                 direction = self.get_connection_direction(connection.target)
 
                 if self.is_same_lane(self, connection.target):
                     Helper.printc(
                         f"Same lane: Connection between [{self.name}] and [{connection.target.name}], {direction=}",
                         31,
+                        show_level="draw_connection",
                     )
                     (
                         point_from,
                         point_face_from,
                         point_to,
                         point_face_to,
-                    ) = self.find_nearest_points(source_points, target_points)
+                    ) = self.find_nearest_points(connection.target, all_shapes)
                 elif self.is_same_pool(self, connection.target):
                     Helper.printc(
                         f"Same Pool: Connection between [{self.name}] and [{connection.target.name}], {direction=}",
                         32,
+                        show_level="draw_connection",
                     )
                     (
                         point_from,
@@ -424,12 +550,13 @@ class Shape:
                         point_to,
                         point_face_to,
                     ) = self.find_nearest_points_same_pool_diff_lanes(
-                        source_points, target_points, direction
+                        connection.target, direction, all_shapes
                     )
                 else:  ### different pool
                     Helper.printc(
                         f"Diff Pool: Connection between [{self.name}] and [{connection.target.name}]",
                         33,
+                        show_level="draw_connection",
                     )
                     (
                         point_from,
@@ -437,7 +564,7 @@ class Shape:
                         point_to,
                         point_face_to,
                     ) = self.find_nearest_points_diff_pool(
-                        source_points, target_points, direction
+                        connection.target, direction, all_shapes
                     )
                     connection_style = "dashed"
 
@@ -485,8 +612,8 @@ class Box(Shape):
         self.origin_y = self.y
         # self.x = x
         # self.y = y
-        # self.width = BOX_WIDTH
-        # self.height = BOX_HEIGHT
+        # self.width = Configs.BOX_WIDTH
+        # self.height = Configs.BOX_HEIGHT
         self.points = {
             ### Uncomment the following if we need more connection points
             # "top_left": (self.x, self.y),
@@ -545,6 +672,8 @@ class Circle(Shape):
         self.text_y: int = 0
         self.text_width: int = 0
         self.text_height: int = 0
+        self.width = Configs.CIRCLE_RADIUS * 2
+        self.height = Configs.CIRCLE_RADIUS * 2
 
     def set_draw_position(self, painter: Painter) -> tuple:
         """Set draw position of circle"""
@@ -560,7 +689,9 @@ class Circle(Shape):
         self.y = int(self.y + (Configs.BOX_HEIGHT / 2))
         # self.y = self.y + (BOX_HEIGHT / 2)
         self.radius = Configs.CIRCLE_RADIUS
-        Helper.printc(f"<<<<{self.x=}, {self.y=}, {self.radius=}")
+        Helper.printc(
+            f"<<<<{self.x=}, {self.y=}, {self.radius=}", show_level="draw_position"
+        )
         self.points = {
             "right": (
                 self.x + self.radius * math.cos(math.radians(0)),
