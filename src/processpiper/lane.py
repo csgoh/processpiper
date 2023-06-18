@@ -209,22 +209,21 @@ class Lane:
         if self.shapes:
             for shape in self.shapes:
                 Helper.printc(
-                    f"Drawing shape: {shape.name}, x={shape.x}, y={shape.y}, w={shape.width}, h={shape.height}"
+                    f"      Drawing shape: {shape.name}, x={shape.x}, y={shape.y}, w={shape.width}, h={shape.height}",
+                    show_level="draw",
                 )
                 shape.draw(self.painter)
 
-    def draw_connection(self) -> None:
+    def draw_connection(self, all_shapes: list) -> None:
         """Draw the connections in the lane"""
         if self.shapes:
             for shape in self.shapes:
-                shape.draw_connection(self.painter)
+                shape.draw_connection(self.painter, all_shapes)
 
-    def set_draw_position(
-        self, x: int, y: int, painter: Painter, layout_grid: Grid
-    ) -> None:
+    def set_draw_position(self, x: int, y: int, layout_grid: Grid) -> None:
         """Set the draw position of the lane"""
 
-        self.painter = painter
+        # self.painter = painter
 
         ### Determine the number of rows for the lane
         lane_row_count = layout_grid.get_lane_row_count(self.id)
@@ -241,14 +240,20 @@ class Lane:
 
         ### Determine lane width
         max_column_count = layout_grid.get_max_column_count()
-        Helper.printc(f"### max column count: {max_column_count}")
+        Helper.printc(
+            f"~~~ max column count: {max_column_count}", show_level="pool_lane"
+        )
         self.width = (
             (Configs.HSPACE_BETWEEN_SHAPES * max_column_count - 1)
             + (Configs.BOX_WIDTH * max_column_count)
             + (Configs.LANE_SHAPE_LEFT_MARGIN)
         )
 
-        Helper.printc(f"*** [{self.name}] shape row count: {lane_row_count}", 35)
+        Helper.printc(
+            f"~~~ Lane: [{self.name}] shape row count: {lane_row_count}",
+            35,
+            show_level="pool_lane",
+        )
 
         ### Determine lane height
         self.height = (
@@ -258,7 +263,8 @@ class Lane:
             + Configs.LANE_SHAPE_BOTTOM_MARGIN
         )
         Helper.printc(
-            f"    [{self.name}] {self.x=}, {self.y=}, {self.width=}, {self.height=}"
+            f"~~~    [{self.name}] {self.x=}, {self.y=}, {self.width=}, {self.height=}",
+            show_level="pool_lane",
         )
         y_pos = self.y + self.height + Configs.VSPACE_BETWEEN_LANES
 
