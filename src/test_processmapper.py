@@ -479,24 +479,24 @@ def test_case17():
 
 
 if __name__ == "__main__":
-    # test_case1()
-    test_case2()
-    # test_case3()
-    # test_case4()
-    # test_case5()
-    # test_case6()
-    # test_case7()
-    # test_case8()
-    # test_case9()
-    # test_case10(colour_theme="DEFAULT")
-    # test_case10(colour_theme="BLUEMOUNTAIN")
-    # test_case10(colour_theme="ORANGEPEEL")
-    # test_case10(colour_theme="GREENTURTLE")
-    # test_case10(colour_theme="GREYWOOF")
-    # test_case11()
-    # test_case12()
-    # test_case13()
-    # test_case14()
-    # test_case15()
-    # test_case16()
-    # test_case17()
+    test_case1()
+    test_case2()  # Regression test
+    test_case3()
+    test_case4()  # Regression test
+    test_case5()  # Regression test
+    test_case6()
+    test_case7()
+    test_case8()
+    test_case9()
+    test_case10(colour_theme="DEFAULT")  # Regression test
+    test_case10(colour_theme="BLUEMOUNTAIN")
+    test_case10(colour_theme="ORANGEPEEL")
+    test_case10(colour_theme="GREENTURTLE")
+    test_case10(colour_theme="GREYWOOF")
+    test_case11()
+    test_case12()  # Regression test
+    test_case13()
+    test_case14()
+    test_case15()
+    test_case16()
+    test_case17()

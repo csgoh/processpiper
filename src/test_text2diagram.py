@@ -153,4 +153,4 @@ event1->event2->event3->event4
 
 gen_code, img = render(input_syntax)
 print(f"Generated code:\n{gen_code}")
-img.save("test_diagram.png")
+img.save("images/test/test_diagram.png")
