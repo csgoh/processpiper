@@ -382,7 +382,7 @@ class Painter:
         ### Make '\n' work
         multi_lines = text.splitlines()
 
-        left, _, right, bottom = font.getbbox("a")
+        left, _, right, _ = font.getbbox("a")
         single_char_width = right - left
 
         ### wrap text
@@ -692,6 +692,24 @@ class Painter:
                     x1, y1, x2, y2, connector_line_width, connector_line_colour
                 )
 
+    def get_points(
+        self,
+        nearest_points,
+    ):
+        """Get the points to draw a line between two elements"""
+        x1, y1 = nearest_points["source_points"]
+        x2, y2 = nearest_points["target_points"]
+        face_source = nearest_points["source_name"]
+        face_target = nearest_points["target_name"]
+
+        Helper.printc(
+            f"      GET_POINTS(): {x1=}, {y1=}, {face_source=}, {x2=}, {y2=}, {face_target=}",
+            show_level="draw_connection",
+        )
+        points, _ = self.get_connection_points(x1, y1, face_source, x2, y2, face_target)
+
+        return points
+
     def draw_right_angle_line(
         self,
         x1: int,
@@ -706,41 +724,60 @@ class Painter:
     ):
         """Draw a right angle line between two points"""
         Helper.printc(
-            f"      x1: {x1}, y1: {y1}, face1: {face_source}, x2: {x2}, y2: {y2}, face2: {face_target}"
+            f"      DRAW_RIGHT_ANGLE_LINE() {x1=}, {y1=}, {face_source=}, {x2=}, {y2=}, {face_target=}",
+            show_level="draw_connection",
         )
+        points, right_angle_points = self.get_connection_points(
+            x1, y1, face_source, x2, y2, face_target
+        )
+
+        if connection_style == "dashed":
+            self.draw_dashed_line(points, connector_line_width, connector_line_colour)
+        else:
+            self.__cr.line(
+                points, fill=(connector_line_colour), width=connector_line_width
+            )
+        return right_angle_points
+
+    def get_connection_points(self, x1, y1, face_source, x2, y2, face_target):
         if x1 == x2 and y1 == y2:
             Helper.printc(
-                f"   A: right_angle_line: x1 == x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}"
+                f"      A: right_angle_line: x1 == x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
+                show_level="draw_connection",
             )
             points = [(x1, y1)]
-            right_angle_point = (x1, y1)
+            right_angle_point = points
 
         if x1 != x2 and y1 == y2:
             Helper.printc(
-                f"   B: right_angle_line: x1 != x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}"
+                f"      B: right_angle_line: x1 != x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
+                show_level="draw_connection",
             )
             points = [(x1, y1), (x2, y1)]
-            right_angle_point = (x1, y1)
+            right_angle_point = [(x1, y1)]
 
         if x1 == x2 and y1 != y2:
             Helper.printc(
-                f"   C: right_angle_line: x1 == x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+                f"      C: right_angle_line: x1 == x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
+                show_level="draw_connection",
             )
             points = [(x1, y1), (x1, y2)]
-            right_angle_point = (x1, y1)
+            right_angle_point = [(x1, y1)]
 
         if x1 != x2 and y1 != y2:
             # check if face1 string contained the word "right"
             if face_source.find("bottom") != -1:
                 Helper.printc(
-                    f"   D-bottom: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+                    f"      D-bottom: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
+                    show_level="draw_connection",
                 )
                 # if so, then the line should be drawn from the bottom side of the box
                 points = [(x1, y1), (x1, y2), (x2, y2)]
-                right_angle_point = (x1, y2)
+                right_angle_point = [(x1, y2)]
             elif face_source.find("right") != -1:
                 Helper.printc(
-                    f"   D-right: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+                    f"      D-right: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
+                    show_level="draw_connection",
                 )
                 if face_target.find("left") != -1:
                     # points = [(x1, y1), (x1, y2), (x2, y2)]
@@ -751,13 +788,76 @@ class Painter:
                         (x1 + elbow_height, y2),
                         (x2, y2),
                     ]
-                    right_angle_point = (x1 + elbow_height, y2)
+                    # right_angle_point = (x1 + elbow_height, y2)
+                    right_angle_point = [
+                        (x1 + elbow_height, y1),
+                        (x1 + elbow_height, y2),
+                    ]
+                elif face_target.find("right") != -1:
+                    # points = [(x1, y1), (x2, y1), (x2, y2)]
+                    # right_angle_point = [(x2, y1)]
+                    elbow_height = 40
+                    # points = [(x1, y1), (x2, y1), (x2, y2)]
+                    ### both faces are right
+                    Helper.printc(
+                        f"      D-right-right (x1 < x2)", show_level="draw_connection"
+                    )
+                    points = [
+                        (x1, y1),
+                        (x2 + elbow_height, y1),
+                        (x2 + elbow_height, y2),
+                        (x2, y2),
+                    ]
+                    right_angle_point = [
+                        (x2 + elbow_height, y1),
+                        (x2 + elbow_height, y2),
+                    ]
+                elif face_target.find("top") != -1:
+                    vertical_elbow_height = 40
+                    horizontal_elbow_height = 60
+                    if y1 < y2:
+                        Helper.printc(
+                            f"      D-right-top (y1 < y2)", show_level="draw_connection"
+                        )
+                        points = [
+                            (x1, y1),
+                            (x2, y1),
+                            (x2, y2),
+                        ]
+                        right_angle_point = [
+                            (x2, y1),
+                        ]
+                    else:
+                        Helper.printc(
+                            f"      D-right-top (y1 >= y2)",
+                            show_level="draw_connection",
+                        )
+                        points = [
+                            (x1, y1),
+                            (x2 + horizontal_elbow_height, y1),
+                            (x2 + horizontal_elbow_height, y2 - vertical_elbow_height),
+                            (x2, y2 - vertical_elbow_height),
+                            (x2, y2),
+                        ]
+                        right_angle_point = [
+                            (x2 + horizontal_elbow_height, y1),
+                            (x2 + horizontal_elbow_height, y2 - vertical_elbow_height),
+                            (x2, y2 - vertical_elbow_height),
+                        ]
                 else:
-                    points = [(x1, y1), (x2, y1), (x2, y2)]
-                    right_angle_point = (x2, y1)
+                    Helper.printc(f"      D-right-bottom", show_level="draw_connection")
+                    points = [
+                        (x1, y1),
+                        (x2, y1),
+                        (x2, y2),
+                    ]
+                    right_angle_point = [
+                        (x2, y1),
+                    ]
             elif face_source.find("top") != -1 and face_target.find("top") != -1:
                 Helper.printc(
-                    f"   D-top: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+                    f"      D-top: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
+                    show_level="draw_connection",
                 )
                 # draw 1 right angle line
                 elbow_height = 40
@@ -767,10 +867,12 @@ class Painter:
                     (x2, y1 - elbow_height),
                     (x2, y2),
                 ]
-                right_angle_point = (x2, y2 - elbow_height)
+                # right_angle_point = (x2, y2 - elbow_height)
+                right_angle_point = [(x1, y1 - elbow_height), (x2, y1 - elbow_height)]
             elif face_source.find("top") != -1 and face_target.find("bottom") != -1:
                 Helper.printc(
-                    f"   D-top/bottom: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+                    f"      D-top/bottom: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
+                    show_level="draw_connection",
                 )
                 # draw 1 right angle line
                 elbow_height = 20
@@ -780,14 +882,16 @@ class Painter:
                     (x2, y1 - elbow_height),
                     (x2, y2),
                 ]
-                right_angle_point = (x2, y1 - elbow_height)
+                # right_angle_point = (x2, y1 - elbow_height)
+                right_angle_point = [(x1, y1 - elbow_height), (x2, y1 - elbow_height)]
             else:
                 Helper.printc(
-                    f"   D-else: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}"
+                    f"      D-else: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
+                    show_level="draw_connection",
                 )
                 # if so, then the line should be drawn from the bottom side of the box
                 points = [(x1, y1), (x1, y2), (x2, y2)]
-                right_angle_point = (x1, y2)
+                right_angle_point = [(x1, y2)]
             # for point in points:
             #     self.draw_circle(point[0], point[1], 4, "yellow")
 
@@ -795,7 +899,8 @@ class Painter:
             if y1 <= y2:
                 if abs(y1 - y2) == 10:
                     Helper.printc(
-                        f"   E: right_angle_line: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}"
+                        f"      E: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
+                        show_level="draw_connection",
                     )
                     elbow_height = 40
                     points = [
@@ -804,14 +909,19 @@ class Painter:
                         (x2, y1 - elbow_height),
                         (x2, y2),
                     ]
-                    right_angle_point = (x2, y1 - elbow_height)
+                    # right_angle_point = (x2, y1 - elbow_height)
+                    right_angle_point = [
+                        (x1, y1 - elbow_height),
+                        (x2, y1 - elbow_height),
+                    ]
                 if abs(y1 - y2) >= 100:
                     if (
                         face_source.find("bottom") != -1
                         and face_target.find("right") != -1
                     ):
                         Helper.printc(
-                            f"   F1: right_angle_line: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}"
+                            f"      F1: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
+                            show_level="draw_connection",
                         )
                         elbow_height = 40
                         points = [
@@ -819,10 +929,11 @@ class Painter:
                             (x1, y2),
                             (x2, y2),
                         ]
-                        right_angle_point = (x1, y2)
+                        right_angle_point = [(x1, y2)]
                     else:
                         Helper.printc(
-                            f"   F2: right_angle_line: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}"
+                            f"      F2: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
+                            show_level="draw_connection",
                         )
                         elbow_height = 40
                         points = [
@@ -831,11 +942,16 @@ class Painter:
                             (x2, y1 + elbow_height),
                             (x2, y2),
                         ]
-                        right_angle_point = (x2, y1 - elbow_height)
+                        # right_angle_point = (x2, y1 - elbow_height)
+                        right_angle_point = [
+                            (x1, y1 - elbow_height),
+                            (x2, y1 - elbow_height),
+                        ]
             elif y1 > y2:
                 if len(points) == 0:
                     Helper.printc(
-                        f"   G: right_angle_line: x1 > x2 and y1 > y2: {x1}, {y1}, {x2}, {y2}"
+                        f"      G: x1 > x2 and y1 > y2: {x1=}, {y1=}, {x2=}, {y2=}",
+                        show_level="draw_connection",
                     )
                     elbow_height = (y1 - y2) / 2
                     points = [
@@ -846,15 +962,13 @@ class Painter:
                     ]
                     # for point in points:
                     #     self.draw_circle(point[0], point[1], 2, "green")
-                    right_angle_point = (x2, y2 + elbow_height)
+                    # right_angle_point = (x2, y2 + elbow_height)
+                    right_angle_point = [
+                        (x1, y1 - elbow_height),
+                        (x2, y1 - elbow_height),
+                    ]
 
-        if connection_style == "dashed":
-            self.draw_dashed_line(points, connector_line_width, connector_line_colour)
-        else:
-            self.__cr.line(
-                points, fill=(connector_line_colour), width=connector_line_width
-            )
-        return right_angle_point
+        return points, right_angle_point
 
     def draw_line_and_arrow(
         self,
@@ -876,7 +990,7 @@ class Painter:
     ):
         """Draw a line and arrow between two boxes"""
 
-        right_angle_point = self.draw_right_angle_line(
+        right_angle_points = self.draw_right_angle_line(
             x1,
             y1,
             face1,
@@ -888,27 +1002,54 @@ class Painter:
             connector_line_colour,
         )
 
-        label_x_pos, label_y_pos = right_angle_point
+        # if len(right_angle_points) >= 3:
+        #     label_x_pos, label_y_pos = right_angle_points[1]
+        #     arrow_angle_points = right_angle_points[2]
+        # elif len(right_angle_points) == 2:
+        #     label_x_pos, label_y_pos = right_angle_points[0]
+        #     arrow_angle_points = right_angle_points[1]
+        # else:
+        #     label_x_pos, label_y_pos = right_angle_points[0]
+        #     arrow_angle_points = right_angle_points[0]
+
+        label_x_pos, label_y_pos = right_angle_points[-1]
+        arrow_angle_points = right_angle_points[-1]
 
         label_w, label_h = self.get_multitext_dimension(label, connector_font, 12)
         if label_x_pos == x1 and label_y_pos == y1:
             ### There is no right angle point
             label_x_pos = max(x1 + 5, x1 + (((x2 - x1) - label_w) / 2))
-            # label_y_pos = y1 - label_h - 3
             if y1 == y2:
                 label_y_pos = y1 - label_h - 3
             else:
                 label_y_pos = y1 + ((y2 - y1) / 2) - (label_h / 2)
-            Helper.printc(f"        @@@ {label=} No right angle point", 35)
+            Helper.printc(
+                f"        @@@ {label=} No right angle point",
+                35,
+                show_level="draw_connection",
+            )
 
         else:
             label_x_pos += 5
-            # label_y_pos = label_y_pos - label_h - 3
-            if y1 == y2:
-                label_y_pos = label_y_pos - label_h - 3
+            if y1 == y2 or (abs(y1 - y2) <= 10):
+                Helper.printc(
+                    f"        @@@ {label=} {y1} == {y2}",
+                    35,
+                    show_level="draw_connection",
+                )
+                label_y_pos = label_y_pos + label_h
             else:
+                Helper.printc(
+                    f"        @@@ {label=} {y1} != {y2}",
+                    35,
+                    show_level="draw_connection",
+                )
                 label_y_pos = y1 + ((y2 - y1) / 2) - (label_h / 2)
-            Helper.printc(f"        @@@ {label=} With right angle point", 35)
+            Helper.printc(
+                f"        @@@ {label=} With right angle point",
+                35,
+                show_level="draw_connection",
+            )
 
         self.draw_text(
             label_x_pos,
@@ -932,8 +1073,8 @@ class Painter:
             ### Draw white arrow head at the end of the line
 
             self.draw_arrow_head(
-                right_angle_point[0],
-                right_angle_point[1],
+                arrow_angle_points[0],
+                arrow_angle_points[1],
                 x2,
                 y2,
                 connector_arrow_colour,
@@ -942,8 +1083,8 @@ class Painter:
             )
         else:
             self.draw_arrow_head(
-                right_angle_point[0],
-                right_angle_point[1],
+                arrow_angle_points[0],
+                arrow_angle_points[1],
                 x2,
                 y2,
                 connector_arrow_colour,
