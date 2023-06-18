@@ -66,7 +66,7 @@ class ProcessMap:
         """Initialise the Process Map Class"""
         logging.basicConfig(
             # filename="processpiper.log",
-            level=logging.INFO,
+            level=logging.DEBUG,
             format="%(asctime)s [%(levelname)s] : %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
@@ -178,11 +178,13 @@ class ProcessMap:
     def _set_shape_x_position(
         self,
     ):
-        Helper.printc("*** Setting shapes' x position...", "32")
+        Helper.printc(
+            "~~~ Setting shapes' x position...", "32", show_level="x_position"
+        )
         for lane_id, lane in self._layout_grid.get_grid_items():
-            Helper.printc(f"{lane_id=}")
+            Helper.printc(f"{lane_id=}", show_level="x_position")
             for row_number, col in lane.items():
-                Helper.printc(f"{row_number=}", end=":\n")
+                Helper.printc(f"{row_number=}", end=":\n", show_level="x_position")
                 for col_idx, item in enumerate(col):
                     if item is not None:
                         item.x = (
@@ -195,18 +197,27 @@ class ProcessMap:
                             col_idx
                             * (Configs.BOX_WIDTH + Configs.HSPACE_BETWEEN_SHAPES)
                         )
-                        Helper.printc(f"    {item.name=}, {col_idx+1=}, {item.x=}")
+                        Helper.printc(
+                            f"    {item.name=}, {col_idx+1=}, {item.x=}",
+                            show_level="x_position",
+                        )
                     else:
-                        Helper.printc(f"    {'None'}")
-            Helper.printc("")
+                        Helper.printc(f"    {'None'}", show_level="x_position")
+            Helper.printc("", show_level="x_position")
 
     def _set_shape_y_position(self):
-        Helper.printc("*** Setting shapes' y position...", "32")
+        Helper.printc(
+            "~~~ Setting shapes' y position...", "32", show_level="y_position"
+        )
         for lane_id, lane in self._layout_grid.get_grid_items():
-            Helper.printc(f"{lane_id=}")
+            Helper.printc(f"{lane_id=}", show_level="y_position")
             this_lane = self._get_lane_by_id(lane_id)
+            Helper.printc(
+                f"{this_lane.name=}, {this_lane.x=}, {this_lane.y=}",
+                show_level="y_position",
+            )
             for row_number, col in lane.items():
-                Helper.printc(f"{row_number=}", end=":\n")
+                Helper.printc(f"{row_number=}", end=":\n", show_level="y_position")
                 row_idx = int(row_number.replace("row", "")) - 1
                 for col_idx, item in enumerate(col):
                     if item is not None:
@@ -220,13 +231,14 @@ class ProcessMap:
                         )
 
                         Helper.printc(
-                            f"    {item.name=}, {row_idx=}, {col_idx+1=}, {item.x=}, {item.y=}"
+                            f"    {item.name=}, {row_idx=}, {col_idx+1=}, {item.x=}, {item.y=}",
+                            show_level="y_position",
                         )
                         item.set_draw_position(self.__painter)
                     else:
-                        Helper.printc(f"    {'None'}")
+                        Helper.printc(f"    {'None'}", show_level="y_position")
             self.lane_max_width = max(self.lane_max_width, this_lane.width)
-            Helper.printc("")
+            Helper.printc("", show_level="y_position")
 
     def _set_draw_position(self) -> tuple:
         """Set the draw position for the process map"""
@@ -235,11 +247,13 @@ class ProcessMap:
             Configs.SURFACE_LEFT_MARGIN, Configs.SURFACE_TOP_MARGIN, self.__painter
         )
 
-        ### Test Grid
+        ### Put shapes into grid
         self._layout_grid.set_grid(self._pools)
         self._layout_grid.print_grid()
 
-        Helper.printc("*** Calculating pool and lane width and height...")
+        Helper.printc(
+            "~~~ Calculating pool and lane width and height...", show_level="pool_lane"
+        )
         x_pos, y_pos = (
             0,
             self._title.y + self._title.height + Configs.VSPACE_BETWEEN_TITLE_AND_POOL,
@@ -247,7 +261,7 @@ class ProcessMap:
         for pool in self._pools:
             for lane in pool.lanes:
                 x_pos, y_pos, _, _ = lane.set_draw_position(
-                    x_pos, y_pos, self.__painter, self._layout_grid
+                    x_pos, y_pos, self._layout_grid
                 )
 
             y_pos += Configs.VSPACE_BETWEEN_POOLS
@@ -346,6 +360,8 @@ class ProcessMap:
         ### Draw the process map
         self._title.draw()
 
+        all_shapes = self._layout_grid.get_all_shapes()
+
         if self._pools:
             for pool in self._pools:
                 ### Draw the pools first
@@ -359,11 +375,16 @@ class ProcessMap:
                 if pool.lanes:
                     ### Then draw the shapes in the lanes
                     for lane in pool.lanes:
+                        Helper.printc(
+                            f"Drawing shape for ({pool.name}, {lane.name})",
+                            34,
+                            show_level="draw",
+                        )
                         lane.draw_shape()
 
                     ### Finally draw the connections between the shapes
                     for lane in pool.lanes:
-                        lane.draw_connection()
+                        lane.draw_connection(all_shapes)
 
         if self._footer is not None:
             self._footer.draw()
@@ -373,10 +394,8 @@ class ProcessMap:
 
     def _replace_message_element(self, lane, index, shape):
         if type(shape) == Message:
-            Helper.debug_log("  matched with Message")
             ### Check if the signal is a start signal. i.e it has no connection from
             if len(shape.connection_to) > 0 and len(shape.connection_from) == 0:
-                Helper.debug_log("      start MESSAGE")
                 new_shape = self._replace_element_type(lane, shape, ElementType.MESSAGE)
 
                 lane.shapes[index] = self._replace_connections(shape, new_shape)
@@ -384,14 +403,12 @@ class ProcessMap:
             elif (  ### Check if the signal is an intermediate signal. i.e it has both connection from and to
                 len(shape.connection_to) > 0 and len(shape.connection_from) > 0
             ):
-                Helper.debug_log("      MESSAGE_INTERMEDIATE")
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.MESSAGE_INTERMEDIATE
                 )
                 lane.shapes[index] = self._replace_connections(shape, new_shape)
 
             else:  ### Check if the signal is an end signal. i.e it has no connection to
-                Helper.debug_log("      MESSAGE_END")
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.MESSAGE_END
                 )
@@ -399,10 +416,8 @@ class ProcessMap:
 
     def _replace_conditional_element(self, lane, index, shape):
         if type(shape) == Conditional:
-            Helper.debug_log("  matched with Conditional")
             ### Check if the signal is a start signal. i.e it has no connection from
             if len(shape.connection_to) > 0 and len(shape.connection_from) == 0:
-                Helper.debug_log("      start CONDITIONAL")
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.CONDITIONAL
                 )
@@ -412,7 +427,6 @@ class ProcessMap:
             elif (  ### Check if the signal is an intermediate signal. i.e it has both connection from and to
                 len(shape.connection_to) > 0 and len(shape.connection_from) > 0
             ):
-                Helper.debug_log("      intermediate CONDITIONAL_INTERMEDIATE")
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.CONDITIONAL_INTERMEDIATE
                 )
@@ -420,10 +434,8 @@ class ProcessMap:
 
     def _replace_signal_element(self, lane, index, shape):
         if type(shape) == Signal:
-            Helper.debug_log("  matched with Signal")
             ### Check if the signal is a start signal. i.e it has no connection from
             if len(shape.connection_to) > 0 and len(shape.connection_from) == 0:
-                Helper.debug_log("      start signal")
                 new_shape = self._replace_element_type(lane, shape, ElementType.SIGNAL)
 
                 lane.shapes[index] = self._replace_connections(shape, new_shape)
@@ -431,14 +443,12 @@ class ProcessMap:
             elif (  ### Check if the signal is an intermediate signal. i.e it has both connection from and to
                 len(shape.connection_to) > 0 and len(shape.connection_from) > 0
             ):
-                Helper.debug_log("      intermediate signal")
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.SIGNAL_INTERMEDIATE
                 )
                 lane.shapes[index] = self._replace_connections(shape, new_shape)
 
             else:  ### Check if the signal is an end signal. i.e it has no connection to
-                Helper.debug_log("      end signal")
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.SIGNAL_END
                 )
@@ -469,9 +479,7 @@ class ProcessMap:
                 connection.label,
                 connection.connection_type,
             )
-            Helper.printc(
-                f"      creating new connection: {new_connection.source.name}"
-            )
+            
             new_shape.connection_to[connection_index] = new_connection
         self._replace_connection_from(current_shape, new_shape)
         return new_shape
