@@ -191,6 +191,19 @@ class Shape:
         return target_points
 
     def check_line_collision(self, line1_start, line1_end, line2_start, line2_end):
+        """
+        This function checks if two lines intersect and returns True if they do.
+
+        Args:
+          line1_start: The starting point of the first line segment.
+          line1_end: The end point of the first line segment.
+          line2_start: The starting point of the second line segment.
+          line2_end: The end point of the second line segment.
+
+        Returns:
+          a boolean value indicating whether or not two lines intersect.
+        """
+
         # calculate the direction of the lines
         x1, y1 = line1_start
         x2, y2 = line1_end
@@ -222,6 +235,21 @@ class Shape:
         return False
 
     def check_shape_collision(self, line_start, line_end, shape: TShape):
+        """
+        This function checks if a line collides with any of the sides of a given shape.
+
+        Args:
+          line_start: The starting point of a line segment, represented as a tuple of x and y
+        coordinates.
+          line_end: The end point of a line segment that is being checked for collision with a shape.
+          shape (TShape): TShape is a custom class or data structure that represents a shape in a Tetris
+        game. It contains information about the shape's position (x, y), its origin point (origin_x,
+        origin_y), width, height, and the blocks that make up the shape. The function is checking for
+
+        Returns:
+          a boolean value indicating whether there is a collision between the given line segment and any
+        of the four sides of the given shape.
+        """
         if shape.x == shape.origin_x and shape.y == shape.origin_y:
             rx, ry = shape.x, shape.y
             rw, rh = shape.width, shape.height
@@ -255,19 +283,35 @@ class Shape:
         return left or right or top or bottom
 
     def check_collision(self, line_start, line_end, shapes: list, target_shape: TShape):
+        """
+        This function checks for collisions between a line and a list of shapes, excluding the current
+        shape and a target shape.
+        
+        Args:
+          line_start: The starting point of a line segment used to check for collisions with shapes.
+          line_end: The end point of a line segment used to check for collisions with shapes in a list.
+          shapes (list): a list of shapes that are being checked for collision with the line segment
+        defined by line_start and line_end.
+          target_shape (TShape): TShape is likely a custom class or data type used in the code. It is
+        not clear from the given code what properties or methods this class has. However, it is being
+        used as a parameter in the check_collision method to identify a specific shape that is being
+        targeted for collision detection.
+        
+        Returns:
+          a boolean value indicating whether a collision was found or not.
+        """
         # Helper.printc(f"        >>>>@ {len(shapes)=}", 34)
         collision_found = False
         for shape in shapes:
             if self == shape or target_shape == shape:
                 ...
-            else:
-                if self.check_shape_collision(line_start, line_end, shape):
-                    Helper.printc(
-                        f"        >>>> Colliding with [{shape.name}]",
-                        31,
-                        show_level="draw_connection",
-                    )
-                    collision_found = True
+            elif self.check_shape_collision(line_start, line_end, shape):
+                Helper.printc(
+                    f"        >>>> Colliding with [{shape.name}]",
+                    31,
+                    show_level="draw_connection",
+                )
+                collision_found = True
         return collision_found
 
     def find_nearest_points_same_pool_diff_lanes(
