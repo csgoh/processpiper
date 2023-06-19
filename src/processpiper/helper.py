@@ -40,18 +40,17 @@ class Helper:
 
         root_logger = logging.getLogger()
 
-        if root_logger.getEffectiveLevel() == logging.DEBUG:
-            if (
-                (show_level == "layout_grid" and Helper.show_layout_grid)
-                or (show_level == "pool_lane" and Helper.show_pool_lane)
-                or (show_level == "x_position" and Helper.show_x_position)
-                or (show_level == "y_position" and Helper.show_y_position)
-                or (show_level == "draw_connection" and Helper.show_draw_connection)
-                or (show_level == "draw_position" and Helper.show_draw_position)
-                or (show_level == "draw" and Helper.show_draw)
-                or (show_level == "general" and Helper.show_general)
-            ):
-                print(f"\033[1;{color}m{message}\033[0m", end=end)
+        if root_logger.getEffectiveLevel() == logging.DEBUG and (
+            (show_level == "layout_grid" and Helper.show_layout_grid)
+            or (show_level == "pool_lane" and Helper.show_pool_lane)
+            or (show_level == "x_position" and Helper.show_x_position)
+            or (show_level == "y_position" and Helper.show_y_position)
+            or (show_level == "draw_connection" and Helper.show_draw_connection)
+            or (show_level == "draw_position" and Helper.show_draw_position)
+            or (show_level == "draw" and Helper.show_draw)
+            or (show_level == "general" and Helper.show_general)
+        ):
+            print(f"\033[1;{color}m{message}\033[0m", end=end)
 
     @staticmethod
     def print_info(message: str, color: str = "30", end: str = "\n"):
