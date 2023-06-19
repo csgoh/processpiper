@@ -27,6 +27,8 @@ import textwrap
 from .colourtheme import ColourTheme
 from .helper import Helper
 
+class UnsupportedOSException(Exception):
+    pass
 
 class Painter:
     """Painter class to draw the diagram"""
@@ -145,24 +147,23 @@ class Painter:
                 "/", "System", "Library", "Fonts", "Supplemental", f"{font_name}.ttf"
             )
         elif sys.platform.startswith("linux"):  # Linux
-            font_dir = f"/usr/share/fonts/truetype/msttcorefonts"
+            font_dir = "/usr/share/fonts/truetype/msttcorefonts"
 
             if os.path.exists(os.path.join(font_dir, f"{font_name}.ttf")):
                 return os.path.join(font_dir, f"{font_name}.ttf")
-            else:
-                ### This is cater for cases where msttcorefonts is not installed
-                linux_font_name = "DejaVuSans"  # Default font for Linux
-                return os.path.join(
-                    "/",
-                    "usr",
-                    "share",
-                    "fonts",
-                    "truetype",
-                    "dejavu",  # Use the DejaVu font directory instead of msttcorefonts
-                    f"{linux_font_name}.ttf",
-                )
+            ### This is cater for cases where msttcorefonts is not installed
+            linux_font_name = "DejaVuSans"  # Default font for Linux
+            return os.path.join(
+                "/",
+                "usr",
+                "share",
+                "fonts",
+                "truetype",
+                "dejavu",  # Use the DejaVu font directory instead of msttcorefonts
+                f"{linux_font_name}.ttf",
+            )
         else:
-            raise Exception("Unsupported operating system")
+            raise UnsupportedOSException("Unsupported operating system")
 
     def draw_grid(self):
         """Draw a grid of dots to help with alignment"""
@@ -255,7 +256,7 @@ class Painter:
             box_fill_colour (str: HTML colour name or hex code. Eg. #FFFFFF or LightGreen)
         """
         arrowhead_width = 10
-        width = width - arrowhead_width
+        width -= arrowhead_width
         shape = [(x, y), (x + width, y + height)]
 
         ### Draw the rectangle
@@ -493,7 +494,7 @@ class Painter:
     ) -> None:
         """Draw a circle"""
         outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
-        if fill_colour == "":
+        if not fill_colour:
             ### If no fill colour is specified, use the outline colour as the fill colour.
             fill_red, fill_green, fill_blue = outline_red, outline_green, outline_blue
             self.__cr.ellipse(
@@ -589,17 +590,14 @@ class Painter:
         y2: int,
         connector_line_width,
         connector_line_colour,
-    ):
+    ):  # sourcery skip: remove-unnecessary-cast
         """Draw a vertical dashed line"""
         gap_size = 10
         y1 = int(y1)
         y2 = int(y2)
         if y1 > y2:
             for i in range(y2, y1, gap_size):
-                if i - 5 < y2:
-                    new_y = y2
-                else:
-                    new_y = i - 5
+                new_y = max(i - 5, y2)
                 self.__cr.line(
                     (x1, i, x2, new_y),
                     fill=connector_line_colour,
@@ -607,10 +605,7 @@ class Painter:
                 )
         else:
             for i in range(y1, y2, gap_size):
-                if i + 5 > y2:
-                    new_y = y2
-                else:
-                    new_y = i + 5
+                new_y = min(i + 5, y2)
                 self.__cr.line(
                     (x1, i, x2, new_y),
                     fill=connector_line_colour,
@@ -635,18 +630,12 @@ class Painter:
             x1 += 10
             for i in range(x2, x1, gap_size):
                 # print(f">> {i}, {y1}, {x2}, {y2}")
-                if i - 5 < x2:
-                    new_x = x2
-                else:
-                    new_x = i - 5
+                new_x = max(i - 5, x2)
                 # print(f"x1 > x2    {i}, {y1}, {new_x}, {y2}")
                 self.__cr.line((i, y1, new_x, y2), fill="black", width=1)
         else:
             for i in range(x1, x2, gap_size):
-                if i + 5 > x2:
-                    new_x = x2
-                else:
-                    new_x = i + 5
+                new_x = min(i + 5, x2)
                 # print(f"x2 < x1    {i}, {y1}, {new_x}, {y2}")
                 self.__cr.line((i, y1, new_x, y2), fill="black", width=1)
 
@@ -655,17 +644,10 @@ class Painter:
         #     self.__cr.line((i, y1, i + 5, y2), fill="black", width=1)
 
     def draw_right_angle_dot_line(self, x1: int, y1: int, x2: int, y2: int):
-        if x1 < x2:
-            if y1 < y2:
-                right_angle_point = (x2, y1)
-            else:
-                right_angle_point = (x1, y2)
+        if x1 < x2 and y1 < y2 or x1 >= x2 and y1 >= y2:
+            right_angle_point = (x2, y1)
         else:
-            if y1 < y2:
-                right_angle_point = (x1, y2)
-            else:
-                right_angle_point = (x2, y1)
-
+            right_angle_point = (x1, y2)
         self.draw_horizontal_dashed_line(
             x1, y1, right_angle_point[0], right_angle_point[1]
         )
@@ -800,7 +782,7 @@ class Painter:
                     # points = [(x1, y1), (x2, y1), (x2, y2)]
                     ### both faces are right
                     Helper.printc(
-                        f"      D-right-right (x1 < x2)", show_level="draw_connection"
+                        "      D-right-right (x1 < x2)", show_level="draw_connection"
                     )
                     points = [
                         (x1, y1),
@@ -813,11 +795,9 @@ class Painter:
                         (x2 + elbow_height, y2),
                     ]
                 elif face_target.find("top") != -1:
-                    vertical_elbow_height = 40
-                    horizontal_elbow_height = 60
                     if y1 < y2:
                         Helper.printc(
-                            f"      D-right-top (y1 < y2)", show_level="draw_connection"
+                            "      D-right-top (y1 < y2)", show_level="draw_connection"
                         )
                         points = [
                             (x1, y1),
@@ -829,9 +809,11 @@ class Painter:
                         ]
                     else:
                         Helper.printc(
-                            f"      D-right-top (y1 >= y2)",
+                            "      D-right-top (y1 >= y2)",
                             show_level="draw_connection",
                         )
+                        vertical_elbow_height = 40
+                        horizontal_elbow_height = 60
                         points = [
                             (x1, y1),
                             (x2 + horizontal_elbow_height, y1),
@@ -845,7 +827,7 @@ class Painter:
                             (x2, y2 - vertical_elbow_height),
                         ]
                 else:
-                    Helper.printc(f"      D-right-bottom", show_level="draw_connection")
+                    Helper.printc("      D-right-bottom", show_level="draw_connection")
                     points = [
                         (x1, y1),
                         (x2, y1),
@@ -892,8 +874,8 @@ class Painter:
                 # if so, then the line should be drawn from the bottom side of the box
                 points = [(x1, y1), (x1, y2), (x2, y2)]
                 right_angle_point = [(x1, y2)]
-            # for point in points:
-            #     self.draw_circle(point[0], point[1], 4, "yellow")
+                # for point in points:
+                #     self.draw_circle(point[0], point[1], 4, "yellow")
 
         if x1 > x2:
             if y1 <= y2:
@@ -915,27 +897,15 @@ class Painter:
                         (x2, y1 - elbow_height),
                     ]
                 if abs(y1 - y2) >= 100:
+                    elbow_height = 40
                     if (
-                        face_source.find("bottom") != -1
-                        and face_target.find("right") != -1
+                        face_source.find("bottom") == -1
+                        or face_target.find("right") == -1
                     ):
-                        Helper.printc(
-                            f"      F1: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
-                            show_level="draw_connection",
-                        )
-                        elbow_height = 40
-                        points = [
-                            (x1, y1),
-                            (x1, y2),
-                            (x2, y2),
-                        ]
-                        right_angle_point = [(x1, y2)]
-                    else:
                         Helper.printc(
                             f"      F2: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
                             show_level="draw_connection",
                         )
-                        elbow_height = 40
                         points = [
                             (x1, y1),
                             (x1, y1 + elbow_height),
@@ -947,26 +917,36 @@ class Painter:
                             (x1, y1 - elbow_height),
                             (x2, y1 - elbow_height),
                         ]
-            elif y1 > y2:
-                if len(points) == 0:
-                    Helper.printc(
-                        f"      G: x1 > x2 and y1 > y2: {x1=}, {y1=}, {x2=}, {y2=}",
-                        show_level="draw_connection",
-                    )
-                    elbow_height = (y1 - y2) / 2
-                    points = [
-                        (x1, y1),
-                        (x1, y1 - elbow_height),
-                        (x2, y2 + elbow_height),
-                        (x2, y2),
-                    ]
-                    # for point in points:
-                    #     self.draw_circle(point[0], point[1], 2, "green")
-                    # right_angle_point = (x2, y2 + elbow_height)
-                    right_angle_point = [
-                        (x1, y1 - elbow_height),
-                        (x2, y1 - elbow_height),
-                    ]
+                    else:
+                        Helper.printc(
+                            f"      F1: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
+                            show_level="draw_connection",
+                        )
+                        points = [
+                            (x1, y1),
+                            (x1, y2),
+                            (x2, y2),
+                        ]
+                        right_angle_point = [(x1, y2)]
+            elif len(points) == 0:
+                Helper.printc(
+                    f"      G: x1 > x2 and y1 > y2: {x1=}, {y1=}, {x2=}, {y2=}",
+                    show_level="draw_connection",
+                )
+                elbow_height = (y1 - y2) / 2
+                points = [
+                    (x1, y1),
+                    (x1, y1 - elbow_height),
+                    (x2, y2 + elbow_height),
+                    (x2, y2),
+                ]
+                # for point in points:
+                #     self.draw_circle(point[0], point[1], 2, "green")
+                # right_angle_point = (x2, y2 + elbow_height)
+                right_angle_point = [
+                    (x1, y1 - elbow_height),
+                    (x2, y1 - elbow_height),
+                ]
 
         return points, right_angle_point
 
@@ -1128,11 +1108,10 @@ class Painter:
         right_y = y2 - length * normalised_dy - height * perpendicular_vector_y
 
         shape = [(x2, y2), (left_x, left_y), (right_x, right_y), (x2, y2)]
-        if connector_arrow_fill_colour == "":
-            outline_colour = connector_arrow_outline_colour
+        outline_colour = connector_arrow_outline_colour
+        if not connector_arrow_fill_colour:
             fill_colour = outline_colour
         else:
-            outline_colour = connector_arrow_outline_colour
             fill_colour = connector_arrow_fill_colour
         # self.__cr.polygon(shape, fill=connector_arrow_colour)
         self.__cr.polygon(shape, fill=fill_colour, outline=outline_colour, width=2)
@@ -1211,7 +1190,7 @@ class Painter:
 
         max_width = 0
         max_height = 0
-        for i, line in enumerate(wrap_lines):
+        for line in wrap_lines:
             font_width, font_height = self.get_text_dimension(
                 line, text_font, text_font_size
             )
@@ -1237,26 +1216,11 @@ class Painter:
         Args:
             filename (str): PNG file name
         """
-        if self.output_type == "PNG":
-            if self.__surface is not None:
-                # anti_alias_image = self.__surface.filter(ImageFilter.SMOOTH_MORE)
-                # anti_alias_image.save(filename)
-                # Set the DPI to 300
-                # info = self.__surface.info.copy()
-                # info["dpi"] = (600, 600)
-
-                # Save the image with the new DPI
-                # self.__surface.save(filename, **info)
-
-                length_x, width_y = self.__surface.size
-                factor = min(1, float(1024.0 / length_x))
-
-                factor = 1
-                size = int(factor * length_x), int(factor * width_y)
-                image_resize = self.__surface.resize(size, resample=Image.LANCZOS)
-                image_resize.save(filename, dpi=(1200, 1200), optimize=False)
-
-                # enhancer = ImageEnhance.Sharpness(self.__surface)
-                # im_s_1 = enhancer.enhance(3)
-                # im_s_1.save("sharp.png")
-                # self.__surface.save(filename)
+        if self.output_type == "PNG" and self.__surface is not None:
+            length_x, width_y = self.__surface.size
+            factor = min(1, float(1024.0 / length_x))
+        
+            factor = 1
+            size = int(factor * length_x), int(factor * width_y)
+            image_resize = self.__surface.resize(size, resample=Image.LANCZOS)
+            image_resize.save(filename, dpi=(1200, 1200), optimize=False)
