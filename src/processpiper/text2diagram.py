@@ -18,7 +18,7 @@ def parse_and_generate_code(input_str, png_output_file):
 
     process_map_title = parse_title(lines)
 
-    if len(lines) == 0:
+    if not lines:
         raise ValueError(
             "No business process definition found. Please add pool(s), lane(s) and element(s)."
         )
@@ -262,7 +262,7 @@ def validate_generated_code(code: str):
 def render(text: str, png_output_file: str = ""):
     """Render text to diagram"""
     output_file_provided = True
-    if png_output_file.strip() == "":
+    if not png_output_file.strip():
         output_file_provided = False
         # add datetime to the file name
         png_output_file = (
@@ -277,7 +277,7 @@ def render(text: str, png_output_file: str = ""):
     generated_image = Image.open(png_output_file)
     generated_image.load()
     # Clean up the generated image file
-    if output_file_provided == False:
+    if not output_file_provided:
         os.remove(png_output_file)
 
     return generated_code, generated_image
