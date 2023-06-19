@@ -26,17 +26,14 @@ from .painter import Painter
 class Activity(Box):
     """Represents an activity types in a process flow diagram."""
 
-    ...
-
 
 class Task(Activity):
     """A task is a special type of activity that is represented by a box."""
 
-    ...
-
 
 class Subprocess(Activity):
-    """A subprocess is a special type of activity that is represented by a box with a plus sign in it."""
+    """A subprocess is a special type of activity that
+    is represented by a box with a plus sign in it."""
 
     def draw(self, painter: Painter):
         super().draw(painter)
@@ -63,4 +60,5 @@ class ServiceTask(Activity):
         raise NotImplementedError("ServiceTask is not implemented yet.")
 
 
-### To implement: User Task,Script Task,Business Rule Task, Manual Task, Received Task,Send Task, Receive Task
+### To implement: User Task,Script Task,Business Rule Task,
+# Manual Task, Received Task,Send Task, Receive Task
