@@ -159,6 +159,7 @@ class Shape:
         )
 
     def get_top_bottom_points(self, points):
+        # sourcery skip: dict-comprehension, inline-immediately-returned-variable
         """Get top and bottom points from a set of points
 
         Args:
@@ -175,6 +176,7 @@ class Shape:
         return target_points
 
     def get_left_right_points(self, points):
+        # sourcery skip: dict-comprehension, inline-immediately-returned-variable
         """Get left and right points from a set of points
 
         Args:
@@ -286,7 +288,7 @@ class Shape:
         """
         This function checks for collisions between a line and a list of shapes, excluding the current
         shape and a target shape.
-        
+
         Args:
           line_start: The starting point of a line segment used to check for collisions with shapes.
           line_end: The end point of a line segment used to check for collisions with shapes in a list.
@@ -296,7 +298,7 @@ class Shape:
         not clear from the given code what properties or methods this class has. However, it is being
         used as a parameter in the check_collision method to identify a specific shape that is being
         targeted for collision detection.
-        
+
         Returns:
           a boolean value indicating whether a collision was found or not.
         """
@@ -323,36 +325,12 @@ class Shape:
         points_target = target_shape.points
         shortest_distance: int = float("inf")
         nearest_points = {}
-        match (direction):
-            case "down":
-                source_connection_points = self.get_top_bottom_points(points_source)
-                target_connection_points = self.get_top_bottom_points(points_target)
-            case "down_right":
-                source_connection_points = points_source
-                target_connection_points = points_target
-            case "down_left":
-                source_connection_points = self.get_top_bottom_points(points_source)
-                target_connection_points = self.get_top_bottom_points(points_target)
-            case "up":
-                source_connection_points = self.get_top_bottom_points(points_source)
-                target_connection_points = self.get_top_bottom_points(points_target)
-            case "up_right":
-                source_connection_points = points_source
-                target_connection_points = points_target
-                Helper.printc(
-                    f"        >>>>{direction=} {source_connection_points=} {target_connection_points=}",
-                    show_level="draw_connection",
-                )
-
-            case "up_left":
-                source_connection_points = points_source
-                target_connection_points = points_target
-            case "left" | "right":
-                source_connection_points = self.get_left_right_points(points_source)
-                target_connection_points = self.get_left_right_points(points_target)
-
-        if len(target_connection_points) == 0:
-            target_connection_points = self.get_top_bottom_points(points_target)
+        (
+            source_connection_points,
+            target_connection_points,
+        ) = self.get_diff_lanes_connection_points(
+            direction, points_source, points_target
+        )
 
         ### Remove points that are colliding with other shapes
         collision_names = []
@@ -369,31 +347,17 @@ class Shape:
                     f"        >>>># {nearest_points=}", 35, show_level="draw_connection"
                 )
                 points = self.painter.get_points(nearest_points)
-                collision_found = False
                 # loop through points, skip one point at a time
-                for i in range(0, len(points) - 1, 2):
-                    Helper.printc(
-                        f"        >>>> Line {i=}, {points[i]}->{points[i+1]}",
-                        35,
-                        show_level="draw_connection",
-                    )
-                    collision_found = self.check_collision(
-                        points[i], points[i + 1], all_shapes, target_shape
-                    )
-                    if collision_found:
-                        Helper.printc(
-                            f"        >>>> COLLISION FOUND: {source_name}->{target_name}",
-                            31,
-                            show_level="draw_connection",
-                        )
-                        break
-                if collision_found:
-                    # Helper.printc(
-                    #     f"        >>>> {collision_found=}, [{source_name} {target_name})]",
-                    #     31,
-                    # )
-                    collision_names.append((source_name, target_name))
+                self.get_collision_names(
+                    target_shape,
+                    all_shapes,
+                    collision_names,
+                    source_name,
+                    target_name,
+                    points,
+                )
 
+        ### Find nearest points
         for source_name, source_points in source_connection_points.items():
             for target_name, target_points in target_connection_points.items():
                 distance = self.get_distance(source_points, target_points)
@@ -426,6 +390,72 @@ class Shape:
             nearest_points["target_points"],
             nearest_points["target_name"],
         )
+
+    def get_collision_names(
+        self,
+        target_shape,
+        all_shapes,
+        collision_names,
+        source_name,
+        target_name,
+        points,
+    ):
+        collision_found = False
+        for i in range(0, len(points) - 1, 2):
+            Helper.printc(
+                f"        >>>> Line {i=}, {points[i]}->{points[i+1]}",
+                35,
+                show_level="draw_connection",
+            )
+            collision_found = self.check_collision(
+                points[i], points[i + 1], all_shapes, target_shape
+            )
+            if collision_found:
+                Helper.printc(
+                    f"        >>>> COLLISION FOUND: {source_name}->{target_name}",
+                    31,
+                    show_level="draw_connection",
+                )
+                break
+        if collision_found:
+            # Helper.printc(
+            #     f"        >>>> {collision_found=}, [{source_name} {target_name})]",
+            #     31,
+            # )
+            collision_names.append((source_name, target_name))
+
+    def get_diff_lanes_connection_points(self, direction, points_source, points_target):
+        match (direction):
+            case "down":
+                source_connection_points = self.get_top_bottom_points(points_source)
+                target_connection_points = self.get_top_bottom_points(points_target)
+            case "down_right":
+                source_connection_points = points_source
+                target_connection_points = points_target
+            case "down_left":
+                source_connection_points = self.get_top_bottom_points(points_source)
+                target_connection_points = self.get_top_bottom_points(points_target)
+            case "up":
+                source_connection_points = self.get_top_bottom_points(points_source)
+                target_connection_points = self.get_top_bottom_points(points_target)
+            case "up_right":
+                source_connection_points = points_source
+                target_connection_points = points_target
+                Helper.printc(
+                    f"        >>>>{direction=} {source_connection_points=} {target_connection_points=}",
+                    show_level="draw_connection",
+                )
+
+            case "up_left":
+                source_connection_points = points_source
+                target_connection_points = points_target
+            case "left" | "right":
+                source_connection_points = self.get_left_right_points(points_source)
+                target_connection_points = self.get_left_right_points(points_target)
+
+        if len(target_connection_points) == 0:
+            target_connection_points = self.get_top_bottom_points(points_target)
+        return source_connection_points, target_connection_points
 
     def find_nearest_points_diff_pool(
         self, target_shape, direction: str, all_shapes_points: list
@@ -528,6 +558,7 @@ class Shape:
         return source.pool_name == target.pool_name
 
     def get_connection_direction(self, target: TShape):
+        # sourcery skip: assign-if-exp, merge-else-if-into-elif
         """Get connection direction
 
         Args:
