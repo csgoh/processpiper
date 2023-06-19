@@ -132,7 +132,7 @@ class ProcessMap:
         )
 
         pool = self.add_pool("Default Pool")
-        lane = pool.add_lane(
+        return pool.add_lane(
             lane_name,
             font,
             font_size,
@@ -141,7 +141,6 @@ class ProcessMap:
             text_alignment,
             background_fill_colour,
         )
-        return lane
 
     def set_footer(
         self,
@@ -151,11 +150,11 @@ class ProcessMap:
         font_colour: str = "",
     ):
         """Set the footer text for the Process Map"""
-        if font == "":
+        if not font:
             font = self.__painter.footer_font
         if font_size == 0:
             font_size = self.__painter.footer_font_size
-        if font_colour == "":
+        if not font_colour:
             font_colour = self.__painter.footer_font_colour
 
         self._footer = Footer(footer_name, font, font_size, font_colour)
@@ -202,7 +201,7 @@ class ProcessMap:
                             show_level="x_position",
                         )
                     else:
-                        Helper.printc(f"    {'None'}", show_level="x_position")
+                        Helper.printc("    {'None'}", show_level="x_position")
             Helper.printc("", show_level="x_position")
 
     def _set_shape_y_position(self):
@@ -236,7 +235,7 @@ class ProcessMap:
                         )
                         item.set_draw_position(self.__painter)
                     else:
-                        Helper.printc(f"    {'None'}", show_level="y_position")
+                        Helper.printc("    {'None'}", show_level="y_position")
             self.lane_max_width = max(self.lane_max_width, this_lane.width)
             Helper.printc("", show_level="y_position")
 
@@ -333,11 +332,10 @@ class ProcessMap:
 
         ### Ensure at least one shape is defined
         for pool in self._pools:
-            if len(pool.lanes) > 0:
-                if len(pool.lanes[0].shapes) == 0:
-                    raise EmptyProcessMapException(
-                        "The process map must contain at least one shape"
-                    )
+            if len(pool.lanes) > 0 and len(pool.lanes[0].shapes) == 0:
+                raise EmptyProcessMapException(
+                    "The process map must contain at least one shape"
+                )
 
         ### Ensure connections are defined
         orphan_elements = self._get_orphan_elements()
@@ -398,35 +396,29 @@ class ProcessMap:
             if len(shape.connection_to) > 0 and len(shape.connection_from) == 0:
                 new_shape = self._replace_element_type(lane, shape, ElementType.MESSAGE)
 
-                lane.shapes[index] = self._replace_connections(shape, new_shape)
-
             elif (  ### Check if the signal is an intermediate signal. i.e it has both connection from and to
                 len(shape.connection_to) > 0 and len(shape.connection_from) > 0
             ):
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.MESSAGE_INTERMEDIATE
                 )
-                lane.shapes[index] = self._replace_connections(shape, new_shape)
-
             else:  ### Check if the signal is an end signal. i.e it has no connection to
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.MESSAGE_END
                 )
-                lane.shapes[index] = self._replace_connections(shape, new_shape)
+
+            lane.shapes[index] = self._replace_connections(shape, new_shape)
 
     def _replace_conditional_element(self, lane, index, shape):
-        if type(shape) == Conditional:
-            ### Check if the signal is a start signal. i.e it has no connection from
-            if len(shape.connection_to) > 0 and len(shape.connection_from) == 0:
+        if type(shape) == Conditional and len(shape.connection_to) > 0:
+            if len(shape.connection_from) == 0:
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.CONDITIONAL
                 )
-
+        
                 lane.shapes[index] = self._replace_connections(shape, new_shape)
-
-            elif (  ### Check if the signal is an intermediate signal. i.e it has both connection from and to
-                len(shape.connection_to) > 0 and len(shape.connection_from) > 0
-            ):
+        
+            elif len(shape.connection_from) > 0:
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.CONDITIONAL_INTERMEDIATE
                 )
@@ -438,30 +430,25 @@ class ProcessMap:
             if len(shape.connection_to) > 0 and len(shape.connection_from) == 0:
                 new_shape = self._replace_element_type(lane, shape, ElementType.SIGNAL)
 
-                lane.shapes[index] = self._replace_connections(shape, new_shape)
-
             elif (  ### Check if the signal is an intermediate signal. i.e it has both connection from and to
                 len(shape.connection_to) > 0 and len(shape.connection_from) > 0
             ):
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.SIGNAL_INTERMEDIATE
                 )
-                lane.shapes[index] = self._replace_connections(shape, new_shape)
-
             else:  ### Check if the signal is an end signal. i.e it has no connection to
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.SIGNAL_END
                 )
-                lane.shapes[index] = self._replace_connections(shape, new_shape)
+
+            lane.shapes[index] = self._replace_connections(shape, new_shape)
 
     def _replace_element_type(self, lane, shape, new_shape_type: ElementType):
         event_class = globals()[new_shape_type]
-        new_shape = event_class(
+        return event_class(
             shape.name,
             lane.name,
         )
-
-        return new_shape
 
     def _replace_connections(self, current_shape, new_shape):
         new_shape.lane_id = current_shape.lane_id
@@ -486,7 +473,7 @@ class ProcessMap:
 
     def _replace_connection_from(self, current_shape, new_shape):
         for shape_index, shape in enumerate(current_shape.connection_from):
-            for _, connection_to in enumerate(shape.connection_to):
+            for connection_to in shape.connection_to:
                 new_connection = Connection(
                     connection_to.source,
                     new_shape,
