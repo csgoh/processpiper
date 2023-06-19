@@ -79,7 +79,11 @@ class Grid:
 
                 if index == 0:
                     Helper.printc(
-                        f"        ==>Same lane: add_shape_to_lane [{current_shape.name}], {previous_shape_row_number=}",
+                        (
+                            "        ==>Same lane: ",
+                            f"add_shape_to_lane [{current_shape.name}],",
+                            f" {previous_shape_row_number=}",
+                        ),
                         show_level="layout_grid",
                     )
                     self.add_shape_to_lane(
@@ -110,57 +114,49 @@ class Grid:
                             previous_shape_col_number + 1,
                             current_shape,
                         )
-            else:
-                # Same pool but different lane
-                # work for different pool too
-                if index == 0:
-                    if self.is_same_pool(previous_shape, current_shape):
-                        Helper.printc(
-                            f"        ==> {index=}, Same pool, diff lane: add_shape_to_lane [{current_shape.name}], {previous_shape_row_number+1}",
-                            show_level="layout_grid",
-                        )
-                        self.add_shape_to_lane_rowcolumn(
-                            current_shape.lane_id,
-                            index + 1,
-                            previous_shape_col_number + 1,
-                            current_shape,
-                        )
-                    else:
-                        # Different pool
-                        Helper.printc(
-                            f"        ==> {index=}, Diff pool: add_shape_to_lane_rowcolumn [{current_shape.name}, {previous_shape_col_number=}]",
-                            show_level="layout_grid",
-                        )
-                        self.add_shape_to_lane_rowcolumn(
-                            current_shape.lane_id,
-                            index + 1,
-                            previous_shape_col_number,
-                            current_shape,
-                        )
+            elif index == 0:
+                if self.is_same_pool(previous_shape, current_shape):
+                    Helper.printc(
+                        f"        ==> {index=}, Same pool, diff lane: add_shape_to_lane [{current_shape.name}], {previous_shape_row_number+1}",
+                        show_level="layout_grid",
+                    )
+                    self.add_shape_to_lane_rowcolumn(
+                        current_shape.lane_id,
+                        index + 1,
+                        previous_shape_col_number + 1,
+                        current_shape,
+                    )
                 else:
-                    if self.is_same_pool(previous_shape, current_shape):
-                        Helper.printc(
-                            f"        ==> {index=}, Same pool, diff lane: add_shape_to_lane_rowcolumn [{current_shape.name}], {previous_shape_col_number=}",
-                            show_level="layout_grid",
-                        )
-                        self.add_shape_to_lane_rowcolumn(
-                            current_shape.lane_id,
-                            index,
-                            previous_shape_col_number,
-                            current_shape,
-                        )
-                    else:
-                        # Different pool
-                        Helper.printc(
-                            f"        ==> {index=}, Diff pool: add_shape_to_lane_rowcolumn [{current_shape.name}, {previous_shape_col_number=}]",
-                            show_level="layout_grid",
-                        )
-                        self.add_shape_to_lane_rowcolumn(
-                            current_shape.lane_id,
-                            index,
-                            previous_shape_col_number,
-                            current_shape,
-                        )
+                    # Different pool
+                    Helper.printc(
+                        f"        ==> {index=}, Diff pool: add_shape_to_lane_rowcolumn [{current_shape.name}, {previous_shape_col_number=}]",
+                        show_level="layout_grid",
+                    )
+                    self.add_shape_to_lane_rowcolumn(
+                        current_shape.lane_id,
+                        index + 1,
+                        previous_shape_col_number,
+                        current_shape,
+                    )
+            else:
+                if self.is_same_pool(previous_shape, current_shape):
+                    Helper.printc(
+                        f"        ==> {index=}, Same pool, diff lane: add_shape_to_lane_rowcolumn [{current_shape.name}], {previous_shape_col_number=}",
+                        show_level="layout_grid",
+                    )
+                else:
+                    # Different pool
+                    Helper.printc(
+                        f"        ==> {index=}, Diff pool: add_shape_to_lane_rowcolumn [{current_shape.name}, {previous_shape_col_number=}]",
+                        show_level="layout_grid",
+                    )
+
+                self.add_shape_to_lane_rowcolumn(
+                    current_shape.lane_id,
+                    index,
+                    previous_shape_col_number,
+                    current_shape,
+                )
 
     def _find_start_shape(self) -> Shape:
         """Find the start shape in the process map"""
@@ -217,11 +213,10 @@ class Grid:
                 for _ in range(col_number - len(self._grid[lane_id][row_number]) - 1):
                     self._grid[lane_id][row_number].append(None)
                 self._grid[lane_id][row_number].append(shape)
+            elif col_number == 1:
+                self._grid[lane_id][row_number].append(shape)
             else:
-                if col_number == 1:
-                    self._grid[lane_id][row_number].append(shape)
-                else:
-                    self._grid[lane_id][row_number][col_number - 1] = shape
+                self._grid[lane_id][row_number][col_number - 1] = shape
 
         Helper.printc(
             f"            ### {shape.name=}, {lane_id=}, {row_number=}, {col_number=}",
@@ -238,6 +233,7 @@ class Grid:
                         self._grid[this_lane_id][row].append(None)
 
     def find_shape_rowcolumn_in_lane(self, lane_id: str, shape: Shape):
+        # sourcery skip: use-next
         """Find the shape row and column in the lane"""
         if lane_id not in self._grid:
             return None, None
@@ -256,13 +252,13 @@ class Grid:
                 return col.index(shape) + 1
 
     def is_column_empty(self, lane_id: str, row_number: int, col_number: int):
+        # sourcery skip: use-any
         """Check if the column is empty"""
 
         row_number = f"row{row_number}"
         for row, col in self._grid[lane_id].items():
-            if row == row_number:
-                if col[col_number - 1] is not None:
-                    return False
+            if row == row_number and col[col_number - 1] is not None:
+                return False
         return True
 
     def get_shape_lane_rowcolumn(self, shape: Shape):
@@ -331,18 +327,16 @@ class Grid:
         row_number = f"row{row_number}"
         for col_number in range(max_columns + 1):
             for row, col in self._grid[lane_id].items():
-                if row == row_number:
-                    if col[col_number - 1] is not None:
-                        last_column = col_number
+                if row == row_number and col[col_number - 1] is not None:
+                    last_column = col_number
         return last_column + 1
 
     def format_item(self, item, repeat: bool = False):
+        # sourcery skip: assign-if-exp, simplify-boolean-comparison
         """Format the item"""
         # get the first 20 characters from item
         item = str(item)[:20]
         fixed_length = 20
-
-        # item = "" if item == "None" else item
 
         if repeat is False:
             spaces = " " * fixed_length
@@ -350,7 +344,7 @@ class Grid:
             spaces = item * fixed_length
 
         if item == "None":
-            return spaces + "|"
+            return f"{spaces}|"
 
         return item + spaces[: fixed_length - len(item)] + "|"
 
@@ -381,7 +375,7 @@ class Grid:
 
         for _, lane in self._grid.items():
             Helper.printc(
-                self.format_item("ROW \ COL"),
+                self.format_item(r"ROW \ COL"),
                 end="",
                 color=33,
                 show_level="layout_grid",
