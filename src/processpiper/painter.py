@@ -27,8 +27,10 @@ import textwrap
 from .colourtheme import ColourTheme
 from .helper import Helper
 
+
 class UnsupportedOSException(Exception):
     pass
+
 
 class Painter:
     """Painter class to draw the diagram"""
@@ -722,7 +724,9 @@ class Painter:
         return right_angle_points
 
     def get_connection_points(self, x1, y1, face_source, x2, y2, face_target):
+        """Get the points to draw a line between two elements"""
         if x1 == x2 and y1 == y2:
+            # Shapes are on top of each other / overlapping. NOTE: This should never happen
             Helper.printc(
                 f"      A: right_angle_line: x1 == x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
@@ -731,6 +735,7 @@ class Painter:
             right_angle_point = points
 
         if x1 != x2 and y1 == y2:
+            # Shapes are on the same horizontal line
             Helper.printc(
                 f"      B: right_angle_line: x1 != x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
@@ -739,6 +744,7 @@ class Painter:
             right_angle_point = [(x1, y1)]
 
         if x1 == x2 and y1 != y2:
+            # Shapes are on the same vertical line
             Helper.printc(
                 f"      C: right_angle_line: x1 == x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
@@ -747,6 +753,7 @@ class Painter:
             right_angle_point = [(x1, y1)]
 
         if x1 != x2 and y1 != y2:
+            # Shapes are on different horizontal and vertical lines
             # check if face1 string contained the word "right"
             if face_source.find("bottom") != -1:
                 Helper.printc(
@@ -1219,7 +1226,7 @@ class Painter:
         if self.output_type == "PNG" and self.__surface is not None:
             length_x, width_y = self.__surface.size
             factor = min(1, float(1024.0 / length_x))
-        
+
             factor = 1
             size = int(factor * length_x), int(factor * width_y)
             image_resize = self.__surface.resize(size, resample=Image.LANCZOS)
