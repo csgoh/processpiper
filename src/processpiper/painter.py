@@ -740,8 +740,21 @@ class Painter:
                 f"      B: right_angle_line: x1 != x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
             )
-            points = [(x1, y1), (x2, y1)]
-            right_angle_point = [(x1, y1)]
+            elbow_height = 40
+            if face_source.find("top") != -1:
+                points = [
+                    (x1, y1),
+                    (x1, y1 - elbow_height),
+                    (x2, y2 - elbow_height),
+                    (x2, y2),
+                ]
+                right_angle_point = [(x1, y1 - elbow_height), (x2, y2 - elbow_height)]
+            elif face_source.find("bottom") != -1:
+                points = [(x1, y1), (x1, y1 + elbow_height), (x2, y2 + elbow_height)]
+                right_angle_point = [(x1, y1 + elbow_height)]
+            else:
+                points = [(x1, y1), (x2, y1)]
+                right_angle_point = [(x1, y1)]
 
         if x1 == x2 and y1 != y2:
             # Shapes are on the same vertical line
@@ -1216,6 +1229,7 @@ class Painter:
         left, top, right, bottom = 0, 0, width, height
 
         self.__surface = self.__surface.crop((left, top, right, bottom))
+        
 
     def save_surface(self, filename: str) -> None:
         """Save surface to PNG file
