@@ -297,6 +297,7 @@ class ColourTheme:
     """Colour theme for the ProcessPiper."""
 
     def __init__(self, colour_theme_name: str) -> None:
+        # sourcery skip: simplify-boolean-comparison, use-any
         """Initialise the colour theme."""
 
         found = False
@@ -304,7 +305,7 @@ class ColourTheme:
             if theme["theme"] == colour_theme_name:
                 found = True
 
-        if found == False:
+        if found is False:
             raise ValueError(f"Colour theme {colour_theme_name} not recognised.")
 
         self._colour_theme_name = colour_theme_name
@@ -314,7 +315,7 @@ class ColourTheme:
 
         colour_settings = None
 
-        for _, value in enumerate(ColourThemesSettings):
+        for value in ColourThemesSettings:
             if value["theme"] == self._colour_theme_name:
                 colour_settings = value["settings"]
                 break

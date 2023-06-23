@@ -55,13 +55,9 @@ def draw_stop_circle(painter: Painter, x_pos: int, y_pos: int, radius: int):
 class Event(Circle):
     """Event class for representing events in a process."""
 
-    ...
-
 
 class Start(Event):
     """Start event class for representing start event in a process."""
-
-    ...
 
 
 class End(Event):
@@ -168,10 +164,10 @@ class Message(Event):
             circle_center[0] - envelope_width // 2,
             circle_center[1] - envelope_height // 2,
         )
-        envelope_bottom_right = (
-            circle_center[0] + envelope_width // 2,
-            circle_center[1] + envelope_height // 2,
-        )
+        # envelope_bottom_right = (
+        #     circle_center[0] + envelope_width // 2,
+        #     circle_center[1] + envelope_height // 2,
+        # )
 
         painter.draw_box_with_outline(
             envelope_top_left[0],

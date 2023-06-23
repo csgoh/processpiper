@@ -1,4 +1,4 @@
-from processpiper.text2diagram import render
+from processpiper.text2diagram import render, show_code_with_line_number
 
 # input_syntax = """
 # title: Sample Test Process
@@ -151,6 +151,41 @@ lane: lane 1
 event1->event2->event3->event4
 """
 
+input_syntax = """
+title: debug01
+width: 8192
+colourtheme: BLUEMOUNTAIN
+lane: customer
+    (start) as start
+    [brings a defective computer] as activity_9
+lane: crs
+    [checks the defect] as activity_10
+    [hand out a repair cost calculation] as activity_11
+    <the customer decide> as gateway_1
+    [are acceptable] as activity_3
+    [continues] as activity_4
+    [takes her computer] as activity_5
+    [consists of two activities] as activity_12
+    [execute two activities in an arbitrary order] as activity_13
+    [is] as activity_14
+    [check the hardware] as activity_15
+    [repair the hardware] as activity_16
+    [checks the software] as activity_17
+    [configure the software] as activity_18
+    [test the proper system functionality after each of these activities] as activity_19 
+    <detect an error> as gateway_6
+    [execute another arbitrary repair activity] as activity_8
+    (end) as end
+
+start->activity_9->activity_10->activity_11->gateway_1
+gateway_1->activity_3->activity_4->activity_12
+gateway_1->activity_5->activity_12
+activity_12->activity_13->activity_14->activity_15->activity_16->activity_17->activity_18->activity_19->gateway_6
+gateway_6->activity_8->end
+gateway_6->end
+"""
+
 gen_code, img = render(input_syntax)
-print(f"Generated code:\n{gen_code}")
-img.save("test_diagram.png")
+
+show_code_with_line_number(gen_code)
+img.save("images/test/test_diagram.png")
