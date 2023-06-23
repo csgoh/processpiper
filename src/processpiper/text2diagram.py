@@ -17,6 +17,7 @@ def parse_and_generate_code(input_str, png_output_file):
     ]
 
     process_map_title = parse_title(lines)
+    process_map_width = int(parse_width(lines))
 
     if not lines:
         raise ValueError(
@@ -25,12 +26,25 @@ def parse_and_generate_code(input_str, png_output_file):
 
     colour_theme = parse_colour_theme(lines)
 
+    colour_theme_code = f', colour_theme="{colour_theme}"'
+    process_map_width_code = f", width={process_map_width}"
     code_lines = [
         "from processpiper import ProcessMap, EventType, ActivityType, GatewayType",
-        f'with ProcessMap("{process_map_title}") as my_process_map:'
-        if colour_theme is None
-        else f'with ProcessMap("{process_map_title}", colour_theme="{colour_theme}") as my_process_map:',
+        f'with ProcessMap("{process_map_title}"{colour_theme_code if colour_theme is not None else ""}{process_map_width_code if process_map_width > 0 else ""}) as my_process_map:',
     ]
+
+    # if colour_theme is None and process_map_width is None:
+    #     code_lines.append(f'with ProcessMap("{process_map_title}") as my_process_map:')
+    # elif colour_theme is None:
+    #     code_lines.append(f'with ProcessMap("{process_map_title}", width="{process_map_width}") as my_process_map:')
+    # else:
+    #     code_lines.append(f'with ProcessMap("{process_map_title}", colour_theme="{colour_theme}") as my_process_map:')
+
+    #     if colour_theme is None
+    #     elif process_map_width is None:
+    #         f'with ProcessMap("{process_map_title}", colour_theme="{colour_theme}") as my_process_map:',
+    #     else f'with ProcessMap("{process_map_title}", colour_theme="{colour_theme}", width="{process_map_width}) as my_process_map:',
+    # ]
 
     indent = ""
     pool_id = 1
@@ -171,6 +185,19 @@ def parse_title(lines):
     else:
         raise ValueError("The first line must contain the word 'title'.")
     return process_map_title
+
+
+def parse_width(lines):
+    """
+    The function extracts the title from a list of lines if the first line contains the word "title".
+    """
+
+    if "width" in lines[0]:
+        process_map_width = lines.pop(0).split(":")[1].strip()
+    else:
+        process_map_width = 0
+
+    return process_map_width
 
 
 def parse_lane_element(element_str):
