@@ -415,9 +415,9 @@ class ProcessMap:
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.CONDITIONAL
                 )
-        
+
                 lane.shapes[index] = self._replace_connections(shape, new_shape)
-        
+
             elif len(shape.connection_from) > 0:
                 new_shape = self._replace_element_type(
                     lane, shape, ElementType.CONDITIONAL_INTERMEDIATE
@@ -466,7 +466,7 @@ class ProcessMap:
                 connection.label,
                 connection.connection_type,
             )
-            
+
             new_shape.connection_to[connection_index] = new_connection
         self._replace_connection_from(current_shape, new_shape)
         return new_shape
