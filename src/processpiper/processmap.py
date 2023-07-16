@@ -20,6 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from dataclasses import dataclass, field
+from rich.traceback import install
+from rich.console import Console
+from rich.table import Table
 import time
 from .event import *
 from .lane import Lane, ElementType, EventType
@@ -33,6 +36,8 @@ from .helper import Helper
 from .layout import Grid
 
 import logging
+
+install()
 
 
 class UnconnectedElementException(Exception):
@@ -64,6 +69,7 @@ class ProcessMap:
 
     def __post_init__(self):
         """Initialise the Process Map Class"""
+
         logging.basicConfig(
             # filename="processpiper.log",
             level=logging.DEBUG,
@@ -177,13 +183,20 @@ class ProcessMap:
     def _set_shape_x_position(
         self,
     ):
-        Helper.printc(
-            "~~~ Setting shapes' x position...", "32", show_level="x_position"
-        )
         for lane_id, lane in self._layout_grid.get_grid_items():
-            Helper.printc(f"{lane_id=}", show_level="x_position")
+            this_lane = self._get_lane_by_id(lane_id)
+            Helper.printc(
+                f"{lane_id=}, {this_lane.name=}, {this_lane.x=}, {this_lane.y=}",
+                show_level="x_position",
+            )
             for row_number, col in lane.items():
-                Helper.printc(f"{row_number=}", end=":\n", show_level="x_position")
+                #Helper.printc(f"    {row_number=}", end=":\n", show_level="x_position")
+                table = Table(
+                    title=str(row_number), show_header=True, header_style="bold magenta", show_edge=False, title_style="bold magenta reverse"
+                )
+                table.add_column("#")
+                table.add_column("item")
+                table.add_column("x")
                 for col_idx, item in enumerate(col):
                     if item is not None:
                         item.x = (
@@ -196,27 +209,30 @@ class ProcessMap:
                             col_idx
                             * (Configs.BOX_WIDTH + Configs.HSPACE_BETWEEN_SHAPES)
                         )
-                        Helper.printc(
-                            f"    {item.name=}, {col_idx+1=}, {item.x=}",
-                            show_level="x_position",
-                        )
-                    else:
-                        Helper.printc("    {'None'}", show_level="x_position")
+                        table.add_row(str(col_idx + 1), item.name, str(item.x))
+                        # Helper.printc(
+                        #     f"      ({col_idx+1}) {item.name},      {item.x=}",
+                        #     show_level="x_position",
+                        # )
+                console = Console()
+                console.print(table)
             Helper.printc("", show_level="x_position")
 
     def _set_shape_y_position(self):
-        Helper.printc(
-            "~~~ Setting shapes' y position...", "32", show_level="y_position"
-        )
         for lane_id, lane in self._layout_grid.get_grid_items():
-            Helper.printc(f"{lane_id=}", show_level="y_position")
             this_lane = self._get_lane_by_id(lane_id)
             Helper.printc(
-                f"{this_lane.name=}, {this_lane.x=}, {this_lane.y=}",
+                f"{lane_id=}, {this_lane.name=}, {this_lane.x=}, {this_lane.y=}",
                 show_level="y_position",
             )
             for row_number, col in lane.items():
-                Helper.printc(f"{row_number=}", end=":\n", show_level="y_position")
+                table = Table(
+                    title=str(row_number), show_header=True, header_style="bold magenta", show_edge=False, title_style="bold magenta reverse"
+                )
+                table.add_column("#")
+                table.add_column("item")
+                table.add_column("x")
+                table.add_column("y")
                 row_idx = int(row_number.replace("row", "")) - 1
                 for col_idx, item in enumerate(col):
                     if item is not None:
@@ -228,14 +244,16 @@ class ProcessMap:
                                 * (Configs.BOX_HEIGHT + Configs.VSPACE_BETWEEN_SHAPES)
                             )
                         )
-
-                        Helper.printc(
-                            f"    {item.name=}, {row_idx=}, {col_idx+1=}, {item.x=}, {item.y=}",
-                            show_level="y_position",
+                        table.add_row(
+                            str(col_idx + 1), item.name, str(item.x), str(item.y)
                         )
+                        # Helper.printc(
+                        #     f"      ({col_idx+1}) {item.name},      {item.x=}, {item.y=}",
+                        #     show_level="y_position",
+                        # )
                         item.set_draw_position(self.__painter)
-                    else:
-                        Helper.printc("    {'None'}", show_level="y_position")
+                console = Console()
+                console.print(table)
             self.lane_max_width = max(self.lane_max_width, this_lane.width)
             Helper.printc("", show_level="y_position")
 
@@ -247,11 +265,18 @@ class ProcessMap:
         )
 
         ### Put shapes into grid
+        Helper.printc(
+            "[cadet_blue][bold][  Putting shapes into grid  ]",
+            reverse=True,
+            show_level="layout_grid",
+        )
         self._layout_grid.set_grid(self._pools)
         self._layout_grid.print_grid()
 
         Helper.printc(
-            "~~~ Calculating pool and lane width and height...", show_level="pool_lane"
+            "[cadet_blue][bold][  Calculating pool and lane width and height   ]",
+            reverse=True,
+            show_level="pool_lane",
         )
         x_pos, y_pos = (
             0,
@@ -272,10 +297,19 @@ class ProcessMap:
             )
 
         ### Set shape x position
-        # start_shape = self._find_start_shape()
+        Helper.printc(
+            "[cadet_blue][bold][  Setting shapes X positions   ]",
+            reverse=True,
+            show_level="pool_lane",
+        )
         self._set_shape_x_position()
 
         ### Set shape y position
+        Helper.printc(
+            "[cadet_blue][bold][  Setting shapes Y positions   ]",
+            reverse=True,
+            show_level="pool_lane",
+        )
         self._set_shape_y_position()
 
         ### Set process map footer
