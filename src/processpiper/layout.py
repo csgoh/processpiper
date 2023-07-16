@@ -1,4 +1,6 @@
 from dataclasses import dataclass, field
+from rich.console import Console
+from rich.table import Table
 from .shape import Shape
 from .helper import Helper
 
@@ -38,21 +40,21 @@ class Grid:
         """Set the position of the shapes in the grid"""
         if current_shape.grid_traversed is True:
             Helper.printc(
-                f"{current_shape.name} is already traversed", show_level="layout_grid"
+                f"[orange4]{current_shape.name} is already traversed[/]", show_level="layout_grid"
             )
             return
-        Helper.printc(f"Traversing [{current_shape.name}]", show_level="layout_grid")
+        Helper.printc(f"Traversing [red]{current_shape.name}[/]", show_level="layout_grid")
         current_shape.grid_traversed = True
         self.add_shape_to_grid(previous_shape, current_shape, index)
         for connection_index, next_connection in enumerate(current_shape.connection_to):
             next_shape = next_connection.target
             Helper.printc(
-                f"    {connection_index}: [{current_shape.name}]->[{next_shape.name}]",
+                f"    [dodger_blue1]{connection_index}: {current_shape.name} -> {next_shape.name}[/]",
                 show_level="layout_grid",
             )
             self.set_shapes_position(current_shape, next_shape, connection_index)
         Helper.printc(
-            f"Done traversing [{current_shape.name}]", show_level="layout_grid"
+            f"Done traversing [:thumbsup: {current_shape.name}]", show_level="layout_grid"
         )
 
     def add_shape_to_grid(
@@ -331,7 +333,7 @@ class Grid:
                     last_column = col_number
         return last_column + 1
 
-    def format_item(self, item, repeat: bool = False):
+    def format_itemX(self, item, repeat: bool = False):
         # sourcery skip: assign-if-exp, simplify-boolean-comparison
         """Format the item"""
         # get the first 20 characters from item
@@ -348,6 +350,23 @@ class Grid:
 
         return item + spaces[: fixed_length - len(item)] + "|"
 
+    def format_item(self, item, repeat: bool = False):
+        # sourcery skip: assign-if-exp, simplify-boolean-comparison
+        """Format the item"""
+        # get the first 20 characters from item
+        item = str(item)[:20]
+        fixed_length = 20
+
+        if repeat is False:
+            spaces = " " * fixed_length
+        else:
+            spaces = item * fixed_length
+
+        if item == "None":
+            return f"{spaces}"
+
+        return item + spaces[: fixed_length - len(item)]
+
     def get_max_column_count(self):
         """Get the max number of columns"""
         max_columns = 0
@@ -362,7 +381,7 @@ class Grid:
         """Get the lane row count"""
         return len(self._grid[lane_id])
 
-    def print_header(
+    def print_headerX(
         self,
     ):
         """Print the header"""
@@ -398,7 +417,41 @@ class Grid:
             Helper.printc("", show_level="layout_grid")
             break
 
+    def print_header(self, table: Table):
+        max_columns = self.get_max_column_count()
+        for _, lane in self._grid.items():
+            for _, col in lane.items():
+                if len(col) > max_columns:
+                    max_columns = len(col)
+
+        for _, lane in self._grid.items():
+            table.add_column("ROW \ COL")
+            for i in range(max_columns):
+                table.add_column(self.format_item(i + 1))
+            break
+
     def print_grid(self):
+        if Helper.show_layout_grid is True:
+            for lane_id, lane in self._grid.items():
+                Helper.printc(f"{lane_id=}", color=33, show_level="layout_grid")
+                console = Console()
+                table = Table(
+                    show_header=True, header_style="bold magenta", show_lines=True
+                )
+                self.print_header(table)
+                for row_number, col in lane.items():
+                    row_data = [self.format_item(row_number)]
+                    for item in col:
+                        if item is not None:
+                            row_data.append(self.format_item(item.name))
+                        else:
+                            row_data.append(self.format_item("None"))
+
+                    table.add_row(*row_data)
+
+                console.print(table)
+
+    def print_gridX(self):
         """Print the grid"""
         for lane_id, lane in self._grid.items():
             Helper.printc(f"{lane_id=}", color=33, show_level="layout_grid")
