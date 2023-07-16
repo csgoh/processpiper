@@ -1,3 +1,4 @@
+
 from processpiper import ProcessMap, EventType, ActivityType, GatewayType
 
 with ProcessMap("debug01", colour_theme="BLUEMOUNTAIN", width=8192) as my_process_map:
