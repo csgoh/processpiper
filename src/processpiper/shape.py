@@ -692,7 +692,7 @@ class Shape:
         self.painter = painter
 
         Helper.printc(
-            f"Draw connection for shape: [{self.name}]",
+            f"Draw connection for shape: \[{self.name}]",
             36,
             show_level="draw_connection",
         )
@@ -703,7 +703,7 @@ class Shape:
 
                 if self.is_same_lane(self, connection.target):
                     Helper.printc(
-                        f"Same lane: Connection between [{self.name}] and [{connection.target.name}], {direction=}",
+                        f"Same lane: Connection between \[{self.name}] and \[{connection.target.name}], {direction=}",
                         31,
                         show_level="draw_connection",
                     )
@@ -717,7 +717,7 @@ class Shape:
                     )
                 elif self.is_same_pool(self, connection.target):
                     Helper.printc(
-                        f"Same Pool: Connection between [{self.name}] and [{connection.target.name}], {direction=}",
+                        f"Same Pool: Connection between \[{self.name}] and \[{connection.target.name}], {direction=}",
                         32,
                         show_level="draw_connection",
                     )
@@ -731,7 +731,7 @@ class Shape:
                     )
                 else:  ### different pool
                     Helper.printc(
-                        f"Diff Pool: Connection between [{self.name}] and [{connection.target.name}]",
+                        f"Diff Pool: Connection between \[{self.name}] and \[{connection.target.name}]",
                         33,
                         show_level="draw_connection",
                     )
