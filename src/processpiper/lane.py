@@ -216,6 +216,8 @@ class Lane:
 
     def draw_connection(self, all_shapes: list) -> None:
         """Draw the connections in the lane"""
+
+        # @TODO: The following code segment need to change. The flow should follow connection link, not in the order of shapes
         if self.shapes:
             for shape in self.shapes:
                 shape.draw_connection(self.painter, all_shapes)
