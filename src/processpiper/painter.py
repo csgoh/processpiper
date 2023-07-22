@@ -686,10 +686,10 @@ class Painter:
         face_source = nearest_points["source_name"]
         face_target = nearest_points["target_name"]
 
-        Helper.printc(
-            f"      GET_POINTS(): {x1=}, {y1=}, {face_source=}, {x2=}, {y2=}, {face_target=}",
-            show_level="draw_connection",
-        )
+        # Helper.printc(
+        #     f"      GET_POINTS(): {x1=}, {y1=}, {face_source=}, {x2=}, {y2=}, {face_target=}",
+        #     show_level="draw_connection",
+        # )
         points, _ = self.get_connection_points(x1, y1, face_source, x2, y2, face_target)
 
         return points
@@ -727,6 +727,7 @@ class Painter:
         """Get the points to draw a line between two elements"""
         if x1 == x2 and y1 == y2:
             # Shapes are on top of each other / overlapping. NOTE: This should never happen
+            Helper.printc("Shapes are on top of each other / overlapping", show_level="draw_connection")
             Helper.printc(
                 f"      A: right_angle_line: x1 == x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
@@ -736,6 +737,7 @@ class Painter:
 
         if x1 != x2 and y1 == y2:
             # Shapes are on the same horizontal line
+            Helper.printc("Shapes are on the same horizontal line", show_level="draw_connection")
             Helper.printc(
                 f"      B: right_angle_line: x1 != x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
@@ -758,6 +760,7 @@ class Painter:
 
         if x1 == x2 and y1 != y2:
             # Shapes are on the same vertical line
+            Helper.printc("Shapes are on the same vertical line", show_level="draw_connection")
             Helper.printc(
                 f"      C: right_angle_line: x1 == x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
@@ -768,6 +771,7 @@ class Painter:
         if x1 != x2 and y1 != y2:
             # Shapes are on different horizontal and vertical lines
             # check if face1 string contained the word "right"
+            Helper.printc("Shapes are on different horizontal and vertical lines", show_level="draw_connection")
             if face_source.find("bottom") != -1:
                 Helper.printc(
                     f"      D-bottom: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
