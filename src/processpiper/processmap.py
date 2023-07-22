@@ -214,8 +214,9 @@ class ProcessMap:
                         #     f"      ({col_idx+1}) {item.name},      {item.x=}",
                         #     show_level="x_position",
                         # )
-                console = Console()
-                console.print(table)
+                if Helper.show_x_position:
+                    console = Console()
+                    console.print(table)
             Helper.printc("", show_level="x_position")
 
     def _set_shape_y_position(self):
@@ -252,8 +253,9 @@ class ProcessMap:
                         #     show_level="y_position",
                         # )
                         item.set_draw_position(self.__painter)
-                console = Console()
-                console.print(table)
+                if Helper.show_x_position:
+                    console = Console()
+                    console.print(table)
             self.lane_max_width = max(self.lane_max_width, this_lane.width)
             Helper.printc("", show_level="y_position")
 
