@@ -113,7 +113,8 @@ class Grid:
                         self.add_shape_to_lane_rowcolumn(
                             current_shape.lane_id,
                             index + 1,
-                            previous_shape_col_number + 1,
+                            #previous_shape_col_number + 1,
+                            previous_shape_col_number,
                             current_shape,
                         )
             elif index == 0:
