@@ -1,4 +1,5 @@
 from processpiper.text2diagram import render, show_code_with_line_number
+from rich.console import Console
 
 # input_syntax = """
 # title: Sample Test Process
@@ -185,7 +186,42 @@ gateway_6->activity_8->end
 gateway_6->end
 """
 
+input_syntax = """title: debug
+width: 10000
+colourtheme: BLUEMOUNTAIN
+pool: Pool
+lane: 
+    (start) as start
+    [the customer receives feedback from the assessor or approver] as activity_14
+    (end) as end
+    [assess the request] as activity_13
+    <> as gateway_1
+    <> as gateway_2
+    [deny the loan] as deny_the_loan
+    [approve the loan] as approve_the_loan
+    [send the request] as send_the_request
+    <> as gateway_2_end
+    <> as gateway_1_end
+
+
+start->activity_13->gateway_1
+
+gateway_1->gateway_2
+gateway_1-"the loan is \\nsmall, the \\ncustomer is"->approve_the_loan->gateway_1_end
+
+gateway_2->deny_the_loan
+gateway_2-"the customer is"->send_the_request->gateway_2_end
+
+
+deny_the_loan->gateway_2_end
+gateway_2_end->gateway_1_end
+
+gateway_1_end->activity_14->end
+"""
+
 gen_code, img = render(input_syntax)
 
-show_code_with_line_number(gen_code)
+# show_code_with_line_number(gen_code)
+console = Console()
+console.print(gen_code)
 img.save("images/test/test_diagram.png")
