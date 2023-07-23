@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+from rich.console import Console
+from rich.panel import Panel
 
 
 class Helper:
@@ -28,13 +30,18 @@ class Helper:
     show_x_position = False
     show_y_position = False
     show_draw_position = False
-    show_draw_connection = False
     show_draw = False
+    show_draw_connection = False
     show_general = False
 
     @staticmethod
     def printc(
-        message: str, color: str = "30", end: str = "\n", show_level: str = "general"
+        message: str,
+        color: str = "30",
+        reverse: bool = False,
+        end: str = "\n",
+        rich_type: str = "text",
+        show_level: str = "general",
     ):
         """Print text in color"""
 
@@ -50,7 +57,12 @@ class Helper:
             or (show_level == "draw" and Helper.show_draw)
             or (show_level == "general" and Helper.show_general)
         ):
-            print(f"\033[1;{color}m{message}\033[0m", end=end)
+            console = Console()
+            if rich_type == "text":
+                style_attribute = "reverse" if reverse else ""
+                console.print(message, end=end, style=style_attribute)
+            elif rich_type == "panel":
+                console.print(Panel(message), style="blue")
 
     @staticmethod
     def print_info(message: str, color: str = "30", end: str = "\n"):
@@ -59,7 +71,8 @@ class Helper:
         root_logger = logging.getLogger()
 
         if root_logger.getEffectiveLevel() == logging.INFO:
-            print(f"\033[1;{color}m{message}\033[0m", end=end)
+            console = Console()
+            console.print(f"\033[1;{color}m{message}\033[0m", end=end)
 
     @staticmethod
     def debug_log(message: str):
