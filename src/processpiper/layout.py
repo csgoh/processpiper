@@ -223,7 +223,10 @@ class Grid:
             elif col_number == 1:
                 self._grid[lane_id][row_number].append(shape)
             else:
-                self._grid[lane_id][row_number][col_number - 1] = shape
+                if self._grid[lane_id][row_number][col_number - 1] is None:
+                    self._grid[lane_id][row_number][len(self._grid[lane_id][row_number]) - 1] = shape
+                else:
+                    self._grid[lane_id][row_number].append(shape)
 
         Helper.printc(
             f"            ### {shape.name=}, {lane_id=}, {row_number=}, {col_number=}",
