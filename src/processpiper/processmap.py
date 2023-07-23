@@ -72,7 +72,7 @@ class ProcessMap:
 
         logging.basicConfig(
             # filename="processpiper.log",
-            level=logging.DEBUG,
+            level=logging.ERROR,
             format="%(asctime)s [%(levelname)s] : %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
@@ -418,8 +418,7 @@ class ProcessMap:
                     ### Then draw the shapes in the lanes
                     for lane in pool.lanes:
                         Helper.printc(
-                            f"Drawing shape for ({pool.name}, {lane.name})",
-                            34,
+                            f"Drawing shape for ({pool.name=}, {lane.name=})",
                             show_level="draw",
                         )
                         lane.draw_shape()
@@ -427,6 +426,10 @@ class ProcessMap:
             for pool in self._pools:
                 ### Finally draw the connections between the shapes
                 for lane in pool.lanes:
+                    Helper.printc(
+                        f"Drawing connection for ({pool.name=}, {lane.name=})",
+                        show_level="draw_connection",
+                    )
                     lane.draw_connection(all_shapes)
 
         if self._footer is not None:
