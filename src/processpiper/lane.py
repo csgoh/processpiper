@@ -130,18 +130,6 @@ class Lane:
         fill_colour: str = "",
         text_alignment: str = "",
     ) -> Shape:
-        """Add an element to the lane"""
-        # if font == "":
-        #     font = self.painter.element_font
-        # if font_size == 0:
-        #     font_size = self.painter.element_font_size
-        # if font_colour == "":
-        #     font_colour = self.painter.element_font_colour
-        # if fill_colour == "":
-        #     fill_colour = self.painter.element_fill_colour
-        # if text_alignment == "":
-        #     text_alignment = self.painter.element_text_alignment
-
         font = font or self.painter.element_font
         font_size = font_size or self.painter.element_font_size
         font_colour = font_colour or self.painter.element_font_colour
@@ -214,13 +202,31 @@ class Lane:
                 )
                 shape.draw(self.painter)
 
+    # def _find_start_shape(self) -> Shape:
+    #     """Find the start shape in the process map"""
+    #     if self.shapes:
+    #     for pool in self._pools:
+    #         for lane in pool.lanes:
+    #             for shape in lane.shapes:
+    #                 ### If the shape has no connection_from, it is the start shape
+    #                 Helper.printc(
+    #                     f"{shape.name} - {len(shape.connection_from)}",
+    #                     show_level="layout_grid",
+    #                 )
+    #                 if len(shape.connection_from) == 0:
+    #                     return shape
+    #     return None
+
     def draw_connection(self, all_shapes: list) -> None:
         """Draw the connections in the lane"""
 
-        # @TODO: The following code segment need to change. The flow should follow connection link, not in the order of shapes
+        Helper.printc(f"***Lane: {self.name}", show_level="draw_connection")
         if self.shapes:
-            for shape in self.shapes:
-                shape.draw_connection(self.painter, all_shapes)
+            # Assumption: First shape in shapes is the first shape in the lane
+            # for shape in self.shapes:
+            # get the first shape in self.shapes
+            shape = self.shapes[0]
+            shape.draw_connection(self.painter, all_shapes)
 
     def set_draw_position(self, x: int, y: int, layout_grid: Grid) -> None:
         """Set the draw position of the lane"""
