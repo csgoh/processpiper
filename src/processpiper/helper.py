@@ -29,7 +29,7 @@ class Helper:
     show_x_position = False
     show_y_position = False
     show_draw_position = False
-    show_draw_connection = True
+    show_draw_connection = False
     show_draw = False
     show_general = False
 
