@@ -71,6 +71,7 @@ class Shape:
     x_pos_traversed: bool = field(init=False, default=False)
     y_pos_traversed: bool = field(init=False, default=False)
     grid_traversed: bool = field(init=False, default=False)
+    connection_traversed: bool = field(init=False, default=False)
 
     connection_from: list = field(init=False, default_factory=list)
     connection_to: list = field(init=False, default_factory=list)
@@ -124,12 +125,17 @@ class Shape:
         points_target = target_shape.points
         shortest_distance: int = float("inf")
 
+        # Print just the keys of points_source
         Helper.printc(
-            f"        >>>> {points_source=}", 35, show_level="draw_connection"
+            f"        >>>> {points_source.keys()}", 35, show_level="draw_connection"
         )
-        Helper.printc(
-            f"        >>>> {points_target=}", 35, show_level="draw_connection"
-        )
+
+        # Helper.printc(
+        #     f"        >>>> {points_source=}", 35, show_level="draw_connection"
+        # )
+        # Helper.printc(
+        #     f"        >>>> {points_target=}", 35, show_level="draw_connection"
+        # )
 
         nearest_points = {}
         (
@@ -151,7 +157,9 @@ class Shape:
                     "distance": 0,
                 }
                 Helper.printc(
-                    f"        >>>># {nearest_points=}", 35, show_level="draw_connection"
+                    f"        >>>># {nearest_points['source_name']=}, {nearest_points['target_name']=}",
+                    35,
+                    show_level="draw_connection",
                 )
                 points = self.painter.get_points(nearest_points)
                 # loop through points, skip one point at a time
@@ -280,11 +288,11 @@ class Shape:
             intersection_x = x1 + (uA * (x2 - x1))
             intersection_y = y1 + (uA * (y2 - y1))
             ### self.painter.draw_circle(intersectionX, intersectionY, 5, "red")
-            Helper.printc(
-                f"        >>>> intersection ({intersection_x}, {intersection_y})",
-                35,
-                show_level="draw_connection",
-            )
+            # Helper.printc(
+            #     f"        >>>> intersection ({intersection_x}, {intersection_y})",
+            #     35,
+            #     show_level="draw_connection",
+            # )
 
             return True
         return False
@@ -454,7 +462,7 @@ class Shape:
         points,
     ):
         collision_found = False
-        for i in range(0, len(points) - 1, 2):
+        for i in range(0, len(points) - 1, 1):
             Helper.printc(
                 f"        >>>> Line {i=}, {points[i]}->{points[i+1]}",
                 35,
@@ -517,7 +525,16 @@ class Shape:
         target_connection_points = points_target
 
         Helper.printc(
-            f"        >>>>{direction=} {source_connection_points=} {target_connection_points=}",
+            f"        >>>> {direction=} :",
+            show_level="draw_connection",
+        )
+        Helper.printc(
+            f"                source_connection: {source_connection_points.keys()}",
+            show_level="draw_connection",
+        )
+
+        Helper.printc(
+            f"                target_connection: {target_connection_points.keys()}",
             show_level="draw_connection",
         )
 
@@ -687,7 +704,7 @@ class Shape:
             else:
                 return "up_left"
 
-    def draw_connection(self, painter: Painter, all_shapes: list):
+    def draw_connectionX(self, painter: Painter, all_shapes: list):
         """Draw connection between shapes"""
         self.painter = painter
 
@@ -703,7 +720,7 @@ class Shape:
 
                 if self.is_same_lane(self, connection.target):
                     Helper.printc(
-                        f"Same lane: Connection between \[{self.name}] and \[{connection.target.name}], {direction=}",
+                        f"Same lane: Connection between [red]\[{self.name}] and \[{connection.target.name}][/red], {direction=}",
                         31,
                         show_level="draw_connection",
                     )
@@ -765,6 +782,94 @@ class Shape:
                     painter.connector_arrow_size,
                 )
 
+    def draw_connection(self, painter: Painter, all_shapes: list):
+        """Draw connection between shapes"""
+        if self.connection_traversed:
+            Helper.printc(
+                f"[orange4]{self.name} is already traversed[/]",
+                show_level="draw_connection",
+            )
+            return
+
+        self.connection_traversed = True
+        self.painter = painter
+
+        Helper.printc(
+            f"Draw connection for shape: [red]\[{self.name}][/red]",
+            36,
+            show_level="draw_connection",
+        )
+        if self.connection_to:
+            connection_style = "solid"
+            for connection in self.connection_to:
+                direction = self.get_connection_direction(connection.target)
+
+                if self.is_same_lane(self, connection.target):
+                    Helper.printc(
+                        f"Same lane: Connection between [red]\[{self.name}] and \[{connection.target.name}][/red], {direction=}",
+                        31,
+                        show_level="draw_connection",
+                    )
+                    (
+                        point_from,
+                        point_face_from,
+                        point_to,
+                        point_face_to,
+                    ) = self.find_nearest_points(
+                        connection.target, direction, all_shapes
+                    )
+                elif self.is_same_pool(self, connection.target):
+                    Helper.printc(
+                        f"Same Pool: Connection between \[{self.name}] and \[{connection.target.name}], {direction=}",
+                        32,
+                        show_level="draw_connection",
+                    )
+                    (
+                        point_from,
+                        point_face_from,
+                        point_to,
+                        point_face_to,
+                    ) = self.find_nearest_points_same_pool_diff_lanes(
+                        connection.target, direction, all_shapes
+                    )
+                else:  ### different pool
+                    Helper.printc(
+                        f"Diff Pool: Connection between \[{self.name}] and \[{connection.target.name}]",
+                        33,
+                        show_level="draw_connection",
+                    )
+                    (
+                        point_from,
+                        point_face_from,
+                        point_to,
+                        point_face_to,
+                    ) = self.find_nearest_points_diff_pool(
+                        connection.target, direction, all_shapes
+                    )
+                    connection_style = "dashed"
+
+                self.outgoing_points.append(point_from)
+                connection.target.incoming_points.append(point_to)
+                painter.draw_line_and_arrow(
+                    point_from[0],
+                    point_from[1],
+                    point_face_from,
+                    point_to[0],
+                    point_to[1],
+                    point_face_to,
+                    connection.label,
+                    connection_style,
+                    painter.connector_font,
+                    painter.connector_font_size,
+                    painter.connector_font_colour,
+                    painter.connector_line_width,
+                    painter.connector_line_colour,
+                    painter.connector_arrow_colour,
+                    painter.connector_arrow_size,
+                )
+                next_shape = connection.target
+                next_shape.draw_connection(painter, all_shapes)
+
 
 @dataclass
 class Box(Shape):
@@ -818,6 +923,7 @@ class Box(Shape):
 
     def draw(self, painter: Painter):
         """Draw box"""
+        Helper.printc("        >>>> Draw box", show_level="draw")
         painter.draw_box_with_text(
             self.x,
             self.y,
