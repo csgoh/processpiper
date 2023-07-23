@@ -127,14 +127,17 @@ class Shape:
 
         # Print just the keys of points_source
         Helper.printc(
-            f"        >>>> {points_source.keys()}", 35, show_level="draw_connection"
+            f"        >>>> source: {points_source.keys()}", show_level="draw_connection"
+        )
+        Helper.printc(
+            f"        >>>> target: {points_target.keys()}", show_level="draw_connection"
         )
 
         # Helper.printc(
-        #     f"        >>>> {points_source=}", 35, show_level="draw_connection"
+        #     f"        >>>> {points_source=}", show_level="draw_connection"
         # )
         # Helper.printc(
-        #     f"        >>>> {points_target=}", 35, show_level="draw_connection"
+        #     f"        >>>> {points_target=}", show_level="draw_connection"
         # )
 
         nearest_points = {}
@@ -157,7 +160,7 @@ class Shape:
                     "distance": 0,
                 }
                 Helper.printc(
-                    f"        >>>># {nearest_points['source_name']=}, {nearest_points['target_name']=}",
+                    f"              > source: [green]{nearest_points['source_name']}[/green], target: [cyan]{nearest_points['target_name']}[/cyan]",
                     35,
                     show_level="draw_connection",
                 )
@@ -210,7 +213,8 @@ class Shape:
         del points_target[nearest_points["target_name"]]
 
         Helper.printc(
-            f"        ### Nearest : {nearest_points}", show_level="draw_connection"
+            f"        >>>> FINAL Nearest : [green]{nearest_points['source_name']}[/green], [cyan]{nearest_points['target_name']}[/cyan]",
+            show_level="draw_connection",
         )
         return (
             nearest_points["source_points"],
@@ -365,17 +369,15 @@ class Shape:
         """
         # Helper.printc(f"        >>>>@ {len(shapes)=}", 34)
         collision_found = False
+        collision_shape = ""
         for shape in shapes:
             if self == shape or target_shape == shape:
                 ...
             elif self.check_shape_collision(line_start, line_end, shape):
-                Helper.printc(
-                    f"        >>>> Colliding with [{shape.name}]",
-                    31,
-                    show_level="draw_connection",
-                )
                 collision_found = True
-        return collision_found
+                collision_shape = shape.name
+                break
+        return collision_found, collision_shape
 
     def find_nearest_points_same_pool_diff_lanes(
         self, target_shape, direction: str, all_shapes: list
@@ -463,18 +465,18 @@ class Shape:
     ):
         collision_found = False
         for i in range(0, len(points) - 1, 1):
-            Helper.printc(
-                f"        >>>> Line {i=}, {points[i]}->{points[i+1]}",
-                35,
-                show_level="draw_connection",
-            )
-            collision_found = self.check_collision(
+            # Helper.printc(
+            #     f"        >>>> Line {i=}, {points[i]}->{points[i+1]}",
+            #     35,
+            #     show_level="draw_connection",
+            # )
+            collision_found, collision_shape = self.check_collision(
                 points[i], points[i + 1], all_shapes, target_shape
             )
             if collision_found:
                 Helper.printc(
-                    f"        >>>> COLLISION FOUND: {source_name}->{target_name}",
-                    31,
+                    "\t" * 4
+                    + f">>>> [red]***COLLISION FOUND***[/red] [orange4]{collision_shape}[/orange4]: [green]\[{source_name}][/green] -> [cyan]\[{target_name}][cyan]",
                     show_level="draw_connection",
                 )
                 break
@@ -486,57 +488,22 @@ class Shape:
             collision_names.append((source_name, target_name))
 
     def get_same_lanes_connection_points(self, direction, points_source, points_target):
-        # match (direction):
-        #     case "down":
-        #         source_connection_points = self.get_top_bottom_points(points_source)
-        #         target_connection_points = self.get_top_bottom_points(points_target)
-        #     case "down_right":
-        #         source_connection_points = points_source
-        #         target_connection_points = points_target
-        #     case "down_left":
-        #         source_connection_points = self.get_top_bottom_points(points_source)
-        #         target_connection_points = self.get_top_bottom_points(points_target)
-        #     case "up":
-        #         source_connection_points = self.get_top_bottom_points(points_source)
-        #         target_connection_points = self.get_top_bottom_points(points_target)
-        #     case "up_right":
-        #         source_connection_points = points_source
-        #         target_connection_points = points_target
-        #         Helper.printc(
-        #             f"        >>>>{direction=} {source_connection_points=} {target_connection_points=}",
-        #             show_level="draw_connection",
-        #         )
-
-        #     case "up_left":
-        #         source_connection_points = points_source
-        #         target_connection_points = points_target
-        #     case "left" | "right":
-        #         source_connection_points = self.get_left_right_points(points_source)
-        #         # target_connection_points = self.get_left_right_points(points_target)
-        #         target_connection_points = points_target
-
-        # if len(source_connection_points) == 0:
-        #     source_connection_points = points_source
-
-        # if len(target_connection_points) == 0:
-        #     target_connection_points = self.get_top_bottom_points(points_target)
-
         source_connection_points = points_source
         target_connection_points = points_target
 
-        Helper.printc(
-            f"        >>>> {direction=} :",
-            show_level="draw_connection",
-        )
-        Helper.printc(
-            f"                source_connection: {source_connection_points.keys()}",
-            show_level="draw_connection",
-        )
+        # Helper.printc(
+        #     f"        >>>> {direction=} :",
+        #     show_level="draw_connection",
+        # )
+        # Helper.printc(
+        #     f"                source_connection: {source_connection_points.keys()}",
+        #     show_level="draw_connection",
+        # )
 
-        Helper.printc(
-            f"                target_connection: {target_connection_points.keys()}",
-            show_level="draw_connection",
-        )
+        # Helper.printc(
+        #     f"                target_connection: {target_connection_points.keys()}",
+        #     show_level="draw_connection",
+        # )
 
         return source_connection_points, target_connection_points
 
@@ -704,89 +671,11 @@ class Shape:
             else:
                 return "up_left"
 
-    def draw_connectionX(self, painter: Painter, all_shapes: list):
-        """Draw connection between shapes"""
-        self.painter = painter
-
-        Helper.printc(
-            f"Draw connection for shape: \[{self.name}]",
-            36,
-            show_level="draw_connection",
-        )
-        if self.connection_to:
-            connection_style = "solid"
-            for connection in self.connection_to:
-                direction = self.get_connection_direction(connection.target)
-
-                if self.is_same_lane(self, connection.target):
-                    Helper.printc(
-                        f"Same lane: Connection between [red]\[{self.name}] and \[{connection.target.name}][/red], {direction=}",
-                        31,
-                        show_level="draw_connection",
-                    )
-                    (
-                        point_from,
-                        point_face_from,
-                        point_to,
-                        point_face_to,
-                    ) = self.find_nearest_points(
-                        connection.target, direction, all_shapes
-                    )
-                elif self.is_same_pool(self, connection.target):
-                    Helper.printc(
-                        f"Same Pool: Connection between \[{self.name}] and \[{connection.target.name}], {direction=}",
-                        32,
-                        show_level="draw_connection",
-                    )
-                    (
-                        point_from,
-                        point_face_from,
-                        point_to,
-                        point_face_to,
-                    ) = self.find_nearest_points_same_pool_diff_lanes(
-                        connection.target, direction, all_shapes
-                    )
-                else:  ### different pool
-                    Helper.printc(
-                        f"Diff Pool: Connection between \[{self.name}] and \[{connection.target.name}]",
-                        33,
-                        show_level="draw_connection",
-                    )
-                    (
-                        point_from,
-                        point_face_from,
-                        point_to,
-                        point_face_to,
-                    ) = self.find_nearest_points_diff_pool(
-                        connection.target, direction, all_shapes
-                    )
-                    connection_style = "dashed"
-
-                self.outgoing_points.append(point_from)
-                connection.target.incoming_points.append(point_to)
-                painter.draw_line_and_arrow(
-                    point_from[0],
-                    point_from[1],
-                    point_face_from,
-                    point_to[0],
-                    point_to[1],
-                    point_face_to,
-                    connection.label,
-                    connection_style,
-                    painter.connector_font,
-                    painter.connector_font_size,
-                    painter.connector_font_colour,
-                    painter.connector_line_width,
-                    painter.connector_line_colour,
-                    painter.connector_arrow_colour,
-                    painter.connector_arrow_size,
-                )
-
     def draw_connection(self, painter: Painter, all_shapes: list):
         """Draw connection between shapes"""
         if self.connection_traversed:
             Helper.printc(
-                f"[orange4]{self.name} is already traversed[/]",
+                f"  [orange4]{self.name} is already traversed[/]",
                 show_level="draw_connection",
             )
             return
@@ -796,7 +685,6 @@ class Shape:
 
         Helper.printc(
             f"Draw connection for shape: [red]\[{self.name}][/red]",
-            36,
             show_level="draw_connection",
         )
         if self.connection_to:
@@ -806,8 +694,7 @@ class Shape:
 
                 if self.is_same_lane(self, connection.target):
                     Helper.printc(
-                        f"Same lane: Connection between [red]\[{self.name}] and \[{connection.target.name}][/red], {direction=}",
-                        31,
+                        f"  Same lane: [red]\[{self.name}] -> \[{connection.target.name}][/red], {direction=}",
                         show_level="draw_connection",
                     )
                     (
@@ -820,8 +707,7 @@ class Shape:
                     )
                 elif self.is_same_pool(self, connection.target):
                     Helper.printc(
-                        f"Same Pool: Connection between \[{self.name}] and \[{connection.target.name}], {direction=}",
-                        32,
+                        f"  Same Pool: \[{self.name}] -> \[{connection.target.name}], {direction=}",
                         show_level="draw_connection",
                     )
                     (
@@ -834,8 +720,7 @@ class Shape:
                     )
                 else:  ### different pool
                     Helper.printc(
-                        f"Diff Pool: Connection between \[{self.name}] and \[{connection.target.name}]",
-                        33,
+                        f"  Diff Pool: \[{self.name}] -> \[{connection.target.name}]",
                         show_level="draw_connection",
                     )
                     (
@@ -923,7 +808,6 @@ class Box(Shape):
 
     def draw(self, painter: Painter):
         """Draw box"""
-        Helper.printc("        >>>> Draw box", show_level="draw")
         painter.draw_box_with_text(
             self.x,
             self.y,
