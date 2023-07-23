@@ -197,9 +197,11 @@ class Lane:
         if self.shapes:
             for shape in self.shapes:
                 Helper.printc(
-                    f"      Drawing shape: {shape.name}, x={shape.x}, y={shape.y}, w={shape.width}, h={shape.height}",
+                    f"      Drawing shape: [bold][red]\[{shape.name}][/red][/bold], x={shape.x}, y={shape.y}, w={shape.width}, h={shape.height}",
+                    rich_type="text",
                     show_level="draw",
                 )
+
                 shape.draw(self.painter)
 
     # def _find_start_shape(self) -> Shape:
@@ -220,18 +222,15 @@ class Lane:
     def draw_connection(self, all_shapes: list) -> None:
         """Draw the connections in the lane"""
 
-        Helper.printc(f"***Lane: {self.name}", show_level="draw_connection")
+        Helper.printc(
+            f"Lane: {self.name}", show_level="draw_connection", rich_type="panel"
+        )
         if self.shapes:
-            # Assumption: First shape in shapes is the first shape in the lane
-            # for shape in self.shapes:
-            # get the first shape in self.shapes
             shape = self.shapes[0]
             shape.draw_connection(self.painter, all_shapes)
 
     def set_draw_position(self, x: int, y: int, layout_grid: Grid) -> None:
         """Set the draw position of the lane"""
-
-        # self.painter = painter
 
         ### Determine the number of rows for the lane
         lane_row_count = layout_grid.get_lane_row_count(self.id)
