@@ -1,3 +1,5 @@
 Pillow>=9.5.0
 pytest>=7.3.2
 rich>=13.4.2
+build>=0.10.0
+twine>=4.0.2
