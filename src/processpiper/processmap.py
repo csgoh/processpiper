@@ -190,9 +190,13 @@ class ProcessMap:
                 show_level="x_position",
             )
             for row_number, col in lane.items():
-                #Helper.printc(f"    {row_number=}", end=":\n", show_level="x_position")
+                # Helper.printc(f"    {row_number=}", end=":\n", show_level="x_position")
                 table = Table(
-                    title=str(row_number), show_header=True, header_style="bold magenta", show_edge=False, title_style="bold magenta reverse"
+                    title=str(row_number),
+                    show_header=True,
+                    header_style="bold magenta",
+                    show_edge=False,
+                    title_style="bold magenta reverse",
                 )
                 table.add_column("#")
                 table.add_column("item")
@@ -228,7 +232,11 @@ class ProcessMap:
             )
             for row_number, col in lane.items():
                 table = Table(
-                    title=str(row_number), show_header=True, header_style="bold magenta", show_edge=False, title_style="bold magenta reverse"
+                    title=str(row_number),
+                    show_header=True,
+                    header_style="bold magenta",
+                    show_edge=False,
+                    title_style="bold magenta reverse",
                 )
                 table.add_column("#")
                 table.add_column("item")
@@ -388,7 +396,7 @@ class ProcessMap:
                     self._replace_conditional_element(lane, index, shape)
                     self._replace_message_element(lane, index, shape)
 
-        ### Set the draw position of pools, lanes, shapes and connections
+        ### Set the draw position of pools, lanes and shapes
         self._set_draw_position()
 
         ### Draw the process map
@@ -416,9 +424,10 @@ class ProcessMap:
                         )
                         lane.draw_shape()
 
-                    ### Finally draw the connections between the shapes
-                    for lane in pool.lanes:
-                        lane.draw_connection(all_shapes)
+            for pool in self._pools:
+                ### Finally draw the connections between the shapes
+                for lane in pool.lanes:
+                    lane.draw_connection(all_shapes)
 
         if self._footer is not None:
             self._footer.draw()
