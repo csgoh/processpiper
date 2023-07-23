@@ -68,7 +68,7 @@ def test_sample02():
         "debug", colour_theme="BLUEMOUNTAIN", width=10000
     ) as my_process_map:
         with my_process_map.add_pool("Pool") as pool1:
-            with pool1.add_lane("") as lane1:
+            with pool1.add_lane("lane1") as lane1:
                 start = lane1.add_element("start", EventType.START)
                 t5 = lane1.add_element(
                     "T5",
