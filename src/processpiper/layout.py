@@ -40,10 +40,13 @@ class Grid:
         """Set the position of the shapes in the grid"""
         if current_shape.grid_traversed is True:
             Helper.printc(
-                f"[orange4]{current_shape.name} is already traversed[/]", show_level="layout_grid"
+                f"[orange4]{current_shape.name} is already traversed[/]",
+                show_level="layout_grid",
             )
             return
-        Helper.printc(f"Traversing [red]{current_shape.name}[/]", show_level="layout_grid")
+        Helper.printc(
+            f"Traversing [red]{current_shape.name}[/]", show_level="layout_grid"
+        )
         current_shape.grid_traversed = True
         self.add_shape_to_grid(previous_shape, current_shape, index)
         for connection_index, next_connection in enumerate(current_shape.connection_to):
@@ -54,7 +57,8 @@ class Grid:
             )
             self.set_shapes_position(current_shape, next_shape, connection_index)
         Helper.printc(
-            f"Done traversing [:thumbsup: {current_shape.name}]", show_level="layout_grid"
+            f"Done traversing [:thumbsup: {current_shape.name}]",
+            show_level="layout_grid",
         )
 
     def add_shape_to_grid(
@@ -113,7 +117,7 @@ class Grid:
                         self.add_shape_to_lane_rowcolumn(
                             current_shape.lane_id,
                             index + 1,
-                            #previous_shape_col_number + 1,
+                            # previous_shape_col_number + 1,
                             previous_shape_col_number,
                             current_shape,
                         )
