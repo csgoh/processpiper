@@ -21,6 +21,7 @@
 # SOFTWARE.
 import logging
 from rich.console import Console
+from rich.panel import Panel
 
 
 class Helper:
@@ -29,8 +30,8 @@ class Helper:
     show_x_position = False
     show_y_position = False
     show_draw_position = False
-    show_draw_connection = False
     show_draw = False
+    show_draw_connection = False
     show_general = False
 
     @staticmethod
@@ -39,6 +40,7 @@ class Helper:
         color: str = "30",
         reverse: bool = False,
         end: str = "\n",
+        rich_type: str = "text",
         show_level: str = "general",
     ):
         """Print text in color"""
@@ -56,9 +58,11 @@ class Helper:
             or (show_level == "general" and Helper.show_general)
         ):
             console = Console()
-            # console.print(f"\033[1;{color}m{message}\033[0m", end=end)
-            style_attribute = "reverse" if reverse else ""
-            console.print(message, end=end, style=style_attribute)
+            if rich_type == "text":
+                style_attribute = "reverse" if reverse else ""
+                console.print(message, end=end, style=style_attribute)
+            elif rich_type == "panel":
+                console.print(Panel(message), style="blue")
 
     @staticmethod
     def print_info(message: str, color: str = "30", end: str = "\n"):
