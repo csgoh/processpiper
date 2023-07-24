@@ -711,7 +711,8 @@ class Painter:
             x1, y1, face_source, x2, y2, face_target
         )
         Helper.printc(
-            f"\t" * 2 + f"DRAW_RIGHT_ANGLE_LINE() {x1=}, {y1=}, {face_source=}, {x2=}, {y2=}, {face_target=}",
+            f"\t" * 2
+            + f"DRAW_RIGHT_ANGLE_LINE() {x1=}, {y1=}, {face_source=}, {x2=}, {y2=}, {face_target=}",
             show_level="draw_connection",
         )
 
@@ -729,11 +730,12 @@ class Painter:
         if x1 == x2 and y1 == y2:
             # Shapes are on top of each other / overlapping. NOTE: This should never happen
             Helper.printc(
-                 "\t" * tab_count + "Shapes are on top of each other / overlapping",
+                "\t" * tab_count + "Shapes are on top of each other / overlapping",
                 show_level="draw_connection",
             )
             Helper.printc(
-                f"\t" * tab_count + "A: right_angle_line: x1 == x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
+                f"\t" * tab_count
+                + "A: right_angle_line: x1 == x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
             )
             points = [(x1, y1)]
@@ -742,11 +744,12 @@ class Painter:
         if x1 != x2 and y1 == y2:
             # Shapes are on the same horizontal line
             Helper.printc(
-                 "\t" * tab_count + "Shapes are on the same horizontal line",
+                "\t" * tab_count + "Shapes are on the same horizontal line",
                 show_level="draw_connection",
             )
             Helper.printc(
-                f"\t" * tab_count + "B: right_angle_line: x1 != x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
+                f"\t" * tab_count
+                + "B: right_angle_line: x1 != x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
             )
             elbow_height = 40
@@ -759,8 +762,23 @@ class Painter:
                 ]
                 right_angle_point = [(x1, y1 - elbow_height), (x2, y2 - elbow_height)]
             elif face_source.find("bottom") != -1:
-                points = [(x1, y1), (x1, y1 + elbow_height), (x2, y2 + elbow_height)]
-                right_angle_point = [(x1, y1 + elbow_height)]
+                # points = [(x1, y1), (x1, y1 + elbow_height), (x2, y2 + elbow_height)]
+                # right_angle_point = [(x1, y1 + elbow_height)]
+                if y2 <= y1:
+                    angle_height = 40
+                else:
+                    angle_height = y2 - y1 + 40
+
+                points = [
+                    (x1, y1),
+                    (x1, y1 + angle_height),
+                    (x2, y1 + angle_height),
+                    (x2, y2),
+                ]
+                right_angle_point = [
+                    (x1, y1 + angle_height),
+                    (x2, y1 + angle_height),
+                ]
             else:
                 points = [(x1, y1), (x2, y1)]
                 right_angle_point = [(x1, y1)]
@@ -768,11 +786,12 @@ class Painter:
         if x1 == x2 and y1 != y2:
             # Shapes are on the same vertical line
             Helper.printc(
-                 "\t" * tab_count + "Shapes are on the same vertical line",
+                "\t" * tab_count + "Shapes are on the same vertical line",
                 show_level="draw_connection",
             )
             Helper.printc(
-                f"\t" * tab_count + "C: right_angle_line: x1 == x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
+                f"\t" * tab_count
+                + "C: right_angle_line: x1 == x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
             )
             points = [(x1, y1), (x1, y2)]
@@ -782,17 +801,22 @@ class Painter:
             # Shapes are on different horizontal and vertical lines
             # check if face1 string contained the word "right"
             Helper.printc(
-                "\t" * tab_count + "Shapes are on different horizontal and vertical lines",
+                "\t" * tab_count
+                + "Shapes are on different horizontal and vertical lines",
                 show_level="draw_connection",
             )
             if face_source.find("bottom") != -1:
                 if face_target.find("bottom") != -1:
                     Helper.printc(
-                         "\t" * tab_count + "D-bottom: both bottom",
+                        "\t" * tab_count + "D-bottom: both bottom",
                         show_level="draw_connection",
                     )
                     # if so, then the line should be drawn from the bottom side of the box
-                    angle_height = 40
+                    if y2 <= y1:
+                        angle_height = 50
+                    else:
+                        angle_height = y2 - y1 + 50
+
                     points = [
                         (x1, y1),
                         (x1, y1 + angle_height),
@@ -803,9 +827,25 @@ class Painter:
                         (x1, y1 + angle_height),
                         (x2, y1 + angle_height),
                     ]
-                else:
+                elif face_target.find("top") != -1:
                     Helper.printc(
-                         "\t" * tab_count + "D-bottom: source bottom",
+                        "\t" * tab_count + "D-bottom: source bottom, target top",
+                        show_level="draw_connection",
+                    )
+                    elbow_height = 40
+                    points = [
+                        (x1, y1),
+                        (x1, y1 + elbow_height),
+                        (x2, y1 + elbow_height),
+                        (x2, y2),
+                    ]
+                    right_angle_point = [
+                        (x1, y1 + elbow_height),
+                        (x2, y1 + elbow_height),
+                    ]
+                else:  ### target face is
+                    Helper.printc(
+                        "\t" * tab_count + "D-bottom: source bottom",
                         show_level="draw_connection",
                     )
                     # if so, then the line should be drawn from the bottom side of the box
@@ -817,11 +857,12 @@ class Painter:
                     right_angle_point = [(x1, y2)]
             elif face_source.find("right") != -1:
                 Helper.printc(
-                    f"\t" * tab_count + "D-right: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
+                    f"\t" * tab_count
+                    + "D-right: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                     show_level="draw_connection",
                 )
                 if face_target.find("left") != -1:
-                    elbow_height = 40
+                    elbow_height = x2 - x1 - 40
                     points = [
                         (x1, y1),
                         (x1 + elbow_height, y1),
@@ -836,7 +877,7 @@ class Painter:
                     elbow_height = 40
                     ### both faces are right
                     Helper.printc(
-                         "\t" * tab_count + "D-right-right (x1 < x2)",
+                        "\t" * tab_count + "D-right-right (x1 < x2)",
                         show_level="draw_connection",
                     )
                     points = [
@@ -852,7 +893,7 @@ class Painter:
                 elif face_target.find("top") != -1:
                     if y1 < y2:
                         Helper.printc(
-                             "\t" * 2 + "D-right-top (y1 < y2)",
+                            "\t" * 2 + "D-right-top (y1 < y2)",
                             show_level="draw_connection",
                         )
                         points = [
@@ -865,7 +906,7 @@ class Painter:
                         ]
                     else:
                         Helper.printc(
-                             "\t" * tab_count + "D-right-top (y1 >= y2)",
+                            "\t" * tab_count + "D-right-top (y1 >= y2)",
                             show_level="draw_connection",
                         )
                         vertical_elbow_height = 40
@@ -884,7 +925,8 @@ class Painter:
                         ]
                 else:
                     Helper.printc(
-                         "\t" * tab_count + "D-right-bottom", show_level="draw_connection"
+                        "\t" * tab_count + "D-right-bottom",
+                        show_level="draw_connection",
                     )
                     points = [
                         (x1, y1),
@@ -896,7 +938,8 @@ class Painter:
                     ]
             elif face_source.find("top") != -1 and face_target.find("top") != -1:
                 Helper.printc(
-                    f"\t" * tab_count + "D-top: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
+                    f"\t" * tab_count
+                    + "D-top: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                     show_level="draw_connection",
                 )
                 # draw 1 right angle line
@@ -911,7 +954,8 @@ class Painter:
                 right_angle_point = [(x1, y1 - elbow_height), (x2, y1 - elbow_height)]
             elif face_source.find("top") != -1 and face_target.find("bottom") != -1:
                 Helper.printc(
-                    f"\t" * tab_count + "D-top/bottom: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
+                    f"\t" * tab_count
+                    + "D-top/bottom: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                     show_level="draw_connection",
                 )
                 # draw 1 right angle line
@@ -926,7 +970,8 @@ class Painter:
                 right_angle_point = [(x1, y1 - elbow_height), (x2, y1 - elbow_height)]
             else:
                 Helper.printc(
-                    f"\t" * tab_count + "D-else: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
+                    f"\t" * tab_count
+                    + "D-else: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                     show_level="draw_connection",
                 )
                 # if so, then the line should be drawn from the bottom side of the box
@@ -939,7 +984,8 @@ class Painter:
             if y1 <= y2:
                 if abs(y1 - y2) == 10:
                     Helper.printc(
-                        f"\t" * tab_count + "E: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
+                        f"\t" * tab_count
+                        + "E: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
                         show_level="draw_connection",
                     )
                     elbow_height = 40
@@ -961,7 +1007,8 @@ class Painter:
                         or face_target.find("right") == -1
                     ):
                         Helper.printc(
-                            f"\t" * tab_count + "F2: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
+                            f"\t" * tab_count
+                            + "F2: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
                             show_level="draw_connection",
                         )
                         points = [
@@ -977,7 +1024,8 @@ class Painter:
                         ]
                     else:
                         Helper.printc(
-                            f"\t" * tab_count + "F1: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
+                            f"\t" * tab_count
+                            + "F1: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
                             show_level="draw_connection",
                         )
                         points = [
@@ -988,7 +1036,8 @@ class Painter:
                         right_angle_point = [(x1, y2)]
             elif len(points) == 0:
                 Helper.printc(
-                    f"\t" * tab_count + "G: x1 > x2 and y1 > y2: {x1=}, {y1=}, {x2=}, {y2=}",
+                    f"\t" * tab_count
+                    + "G: x1 > x2 and y1 > y2: {x1=}, {y1=}, {x2=}, {y2=}",
                     show_level="draw_connection",
                 )
                 elbow_height = (y1 - y2) / 2
