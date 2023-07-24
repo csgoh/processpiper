@@ -103,6 +103,54 @@ def test_sample02():
         my_process_map.save("images/test/test_sample02.png")
 
 
+def test_sample03():
+    from processpiper import ProcessMap, EventType, ActivityType, GatewayType
+    with ProcessMap("Break Glass Process", colour_theme="BLUEMOUNTAIN") as my_process_map:
+        with my_process_map.add_pool("Organisation") as pool1:
+            with pool1.add_lane("ProductA User") as lane1:
+                start = lane1.add_element("start", EventType.START)
+                report_issue = lane1.add_element("Report connectivity issue", ActivityType.TASK)
+            with pool1.add_lane("Service Desk") as lane2:
+                triage = lane2.add_element("Triage", ActivityType.TASK)
+                azure_ad_issue = lane2.add_element("Azure AD issue?", GatewayType.EXCLUSIVE)
+                escalate_ist = lane2.add_element("Escalate to IST team", ActivityType.TASK)
+                escalate_producta = lane2.add_element("Escalate to ProductA team", ActivityType.TASK)
+                notify_user = lane2.add_element("Notify user", ActivityType.TASK)
+                close_ticket = lane2.add_element("close", EventType.END)
+            with pool1.add_lane("ProductA Administrator") as lane3:
+                verify_issue = lane3.add_element("Verify Azure AD Authentication Issue", ActivityType.TASK)     
+                contact_esd = lane3.add_element("Notify Vendor Service Desk", ActivityType.TASK)
+                get_approval = lane3.add_element("Get break glass approval", ActivityType.TASK)
+                document_approval = lane3.add_element("Document reason and approval", ActivityType.TASK)        
+                access_account = lane3.add_element("Access to break glass account", ActivityType.TASK)
+                notify_service_desk = lane3.add_element("Notify Service Desk", ActivityType.TASK)
+                logout_account = lane3.add_element("logout from break glass account", ActivityType.TASK)        
+                end = lane3.add_element("end", EventType.END)
+        with my_process_map.add_pool("Vendor") as pool2:
+            with pool2.add_lane("Service Desk") as lane4:
+                fix_connectivity = lane4.add_element("Fix authentication issue", ActivityType.TASK)
+                notify_admin = lane4.add_element("Notify ProductA Administrator", ActivityType.TASK)
+            start.connect(report_issue)
+            report_issue.connect(triage)
+            triage.connect(azure_ad_issue)
+            azure_ad_issue.connect(escalate_ist, "Yes")
+            azure_ad_issue.connect(escalate_producta, "No")
+            escalate_producta.connect(verify_issue)
+            verify_issue.connect(contact_esd)
+            contact_esd.connect(get_approval)
+            get_approval.connect(document_approval)
+            document_approval.connect(access_account)
+            contact_esd.connect(fix_connectivity)
+            fix_connectivity.connect(notify_admin)
+            notify_admin.connect(notify_service_desk)
+            notify_service_desk.connect(notify_user)
+            notify_user.connect(close_ticket)
+            access_account.connect(logout_account)
+            logout_account.connect(end)
+        my_process_map.draw()
+        my_process_map.save("images/test/test_sample03.png")
+
 if __name__ == "__main__":
-    # test_case01()
+    test_sample01()
     test_sample02()
+    test_sample03()
