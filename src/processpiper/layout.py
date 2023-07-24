@@ -86,7 +86,7 @@ class Grid:
                 if index == 0:
                     Helper.printc(
                         (
-                            "        ==>Same lane: ",
+                            "        ==>Same lane (row 0): ",
                             f"add_shape_to_lane [{current_shape.name}],",
                             f" {previous_shape_row_number=}",
                         ),
@@ -95,25 +95,29 @@ class Grid:
                     self.add_shape_to_lane(
                         current_shape.lane_id, previous_shape_row_number, current_shape
                     )
-                else:
+                else:  ### Next row
                     Helper.printc(
-                        f"        ==>Same lane: add_shape_to_lane_rowcolumn [{current_shape.name}, {previous_shape_col_number + 1}]",
+                        f"        ==>Same lane (next row): add_shape_to_lane_rowcolumn [{current_shape.name}, {previous_shape_col_number}]",
                         show_level="layout_grid",
                     )
                     if self.is_column_empty(
                         current_shape.lane_id,
                         previous_shape_row_number,
-                        previous_shape_col_number + 1,
+                        previous_shape_col_number,
                     ):
                         Helper.printc("Is empty", 34, show_level="layout_grid")
                         self.add_shape_to_lane_rowcolumn(
                             current_shape.lane_id,
                             previous_shape_row_number,
-                            previous_shape_col_number + 1,
+                            previous_shape_col_number,
                             current_shape,
                         )
                     else:
                         Helper.printc("Not empty", 34, show_level="layout_grid")
+                        Helper.printc(
+                            f"Adding shape to {index + 1}, {previous_shape_col_number}",
+                            show_level="layout_grid",
+                        )
                         self.add_shape_to_lane_rowcolumn(
                             current_shape.lane_id,
                             index + 1,
@@ -224,7 +228,7 @@ class Grid:
                 self._grid[lane_id][row_number].append(shape)
             else:
                 if self._grid[lane_id][row_number][col_number - 1] is None:
-                    self._grid[lane_id][row_number][len(self._grid[lane_id][row_number]) - 1] = shape
+                    self._grid[lane_id][row_number][col_number - 1] = shape
                 else:
                     self._grid[lane_id][row_number].append(shape)
 
@@ -268,6 +272,8 @@ class Grid:
         row_number = f"row{row_number}"
         for row, col in self._grid[lane_id].items():
             if row == row_number and col[col_number - 1] is not None:
+                shape = col[col_number - 1]
+                Helper.printc(f"            ### {shape.name}", show_level="layout_grid")
                 return False
         return True
 
@@ -285,6 +291,7 @@ class Grid:
         """Add the shape to the lane"""
         if lane_id is not None:
             col_number = self.get_next_column(lane_id, row_number)
+            # col_number = self.get_next_empty_column(lane_id, row_number)
             Helper.printc(
                 f"            ### {lane_id=}, {row_number=}, {col_number=}",
                 33,
