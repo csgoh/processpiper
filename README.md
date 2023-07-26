@@ -65,8 +65,6 @@ render(input_syntax, "my_process_map.png")
 This is a sample code to generate a business process diagram using Python code. The code is self-explanatory. The diagram is generated using the default colour theme.
 
 ```python
-
-```python
 from processpiper import ProcessMap, EventType, ActivityType, GatewayType
 
 with ProcessMap(
