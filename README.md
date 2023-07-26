@@ -1,3 +1,7 @@
+<p align="center">
+<img src="images/logo/processpiper-logo.png"  width="300">
+</p>
+
 ![release](https://img.shields.io/pypi/v/processpiper?style=plastic)
 ![Wheel](https://img.shields.io/pypi/wheel/processpiper?style=plastic)
 ![Downloads](https://img.shields.io/pypi/dm/processpiper?style=plastic)
