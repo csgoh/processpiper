@@ -129,7 +129,7 @@ Two frontend applications have been developed to showcase ProcessPiper capabilit
 
 ## Support and Community
 
-If you have any problem, I will try my best to resolve it.<br>
+ProcessPiper is still in the early days of development, if you have any problem, I will try my best to resolve it.<br>
 
 * 📄 Find a solution in our [Wiki](https://github.com/csgoh/processpiper/wiki)
 * ⚠️ Open an issue right here on [GitHub](https://github.com/csgoh/processpiper/issues)<br>
