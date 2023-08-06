@@ -27,7 +27,7 @@ import time
 from .event import *
 from .lane import Lane, ElementType, EventType
 from .pool import Pool
-from .painter import Painter
+from .painter import PainterFactory
 from .shape import *
 from .title import Title
 from .footer import Footer
@@ -57,6 +57,7 @@ class ProcessMap:
     height: int = field(init=True, default=5000)
     auto_size: bool = field(init=True, default=True)
     colour_theme: str = field(init=True, default="DEFAULT")
+    painter_type: str = field(default="png", init=True)
 
     _title: Title = field(init=False)
     _footer: Footer = field(init=False, default=None)
@@ -77,9 +78,10 @@ class ProcessMap:
             datefmt="%Y-%m-%d %H:%M:%S",
         )
         self.start_time = time.time()
-        self.__painter = Painter(self.width, self.height)
+        factory = PainterFactory()
+        self.__painter = factory.get_painter(self.painter_type, self.width, self.height)
         self.__set_colour_theme(self.colour_theme)
-        self.__painter.set_background_colour(self.__painter.background_colour)
+        self.__painter.set_background_colour()
         self._title = Title(
             self.title,
             self.__painter.title_font,
