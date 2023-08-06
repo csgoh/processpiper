@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="2659" height="917" viewBox="0 0 2659 917">
+<defs>
+<path d="M34.5,432.0 V50" id="d0" />
+<path d="M88.5,198.0 V50" id="d1" />
+<path d="M88.5,434.0 V50" id="d2" />
+<path d="M77.5,660.5 V50" id="d3" />
+<path d="M99.5,677.5 V50" id="d4" />
+<path d="M36.5,824.5 V50" id="d5" />
+<path d="M88.5,848.0 V50" id="d6" />
+</defs>
+<rect x="0" y="0" width="5000" height="5000" fill="white" />
+<text x="20" y="20" font-size="26" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#0B5394">Break Glass Process</text>
+<rect x="20" y="59" width="50" height="644" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d0">
+<tspan dy="0em">Organisation</tspan>
+</textPath></text>
+<rect x="72" y="59" width="2569" height="160" fill="#D9D9D9" />
+<rect x="72" y="59" width="50" height="160" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d1">
+<tspan dy="0em">ProductA User</tspan>
+</textPath></text>
+<path d="M(122, 59),(122, 219)" stroke="(255, 255, 255)" stroke-width="5" />
+<rect x="72" y="221" width="2569" height="320" fill="#D9D9D9" />
+<rect x="72" y="221" width="50" height="320" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d2">
+<tspan dy="0em">Service Desk</tspan>
+</textPath></text>
+<path d="M(122, 221),(122, 541)" stroke="(255, 255, 255)" stroke-width="5" />
+<rect x="72" y="543" width="2569" height="160" fill="#D9D9D9" />
+<rect x="72" y="543" width="50" height="160" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d3">
+<tspan dy="0em">ProductA</tspan>
+</textPath></text>
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d4">
+<tspan dy="0em">Administrator</tspan>
+</textPath></text>
+<path d="M(122, 543),(122, 703)" stroke="(255, 255, 255)" stroke-width="5" />
+<rect x="20" y="715" width="50" height="160" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d5">
+<tspan dy="0em">Vendor</tspan>
+</textPath></text>
+<rect x="72" y="715" width="2569" height="160" fill="#D9D9D9" />
+<rect x="72" y="715" width="50" height="160" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d6">
+<tspan dy="0em">Service Desk</tspan>
+</textPath></text>
+<path d="M(122, 715),(122, 875)" stroke="(255, 255, 255)" stroke-width="5" />
+<circle cx="222.0" cy="139" r="20" fill="(159, 197, 232)" stroke="(159, 197, 232)" stroke-width="1" />
+<text x="228.0" y="159" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="black">start</text>
+<rect x="352" y="109" width="100" height="60" fill="#9FC5E8" />
+<text x="380.5" y="111.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Report</text>
+<text x="365.0" y="131.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">connectivity</text>
+<text x="385.5" y="149.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">issue</text>
+<rect x="532" y="271" width="100" height="60" fill="#9FC5E8" />
+<text x="561.5" y="293.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Triage</text>
+<path d="M(762.0, 281.0),(782.0, 301.0) L(762.0, 321.0),(742.0, 301.0) Z" fill="#9FC5E8" stroke="" stroke-width="1" />
+<text x="709.5" y="321.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="black">Azure AD issue?</text>
+<text x="754.0" y="290.5" font-size="23" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="black">X</text>
+<rect x="892" y="271" width="100" height="60" fill="#9FC5E8" />
+<text x="907.0" y="286.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Escalate to</text>
+<text x="913.0" y="303.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">IST team</text>
+<rect x="712" y="431" width="100" height="60" fill="#9FC5E8" />
+<text x="727.0" y="437.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Escalate to</text>
+<text x="732.5" y="454.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">ProductA</text>
+<text x="746.0" y="471.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">team</text>
+<rect x="2332" y="271" width="100" height="60" fill="#9FC5E8" />
+<text x="2348.0" y="293.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Notify user</text>
+<circle cx="2562.0" cy="301" r="20" fill="(159, 197, 232)" stroke="(159, 197, 232)" stroke-width="1" />
+<text x="2565.5" y="321" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="black">close</text>
+<circle cx="2562.0" cy="301" r="20" stroke="(0, 0, 0)" stroke-width="3" />
+<rect x="892" y="593" width="100" height="60" fill="#9FC5E8" />
+<text x="903.5" y="595.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Verify Azure</text>
+<text x="901.0" y="616.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">AD Authentic</text>
+<text x="907.5" y="633.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">ation Issue</text>
+<rect x="1072" y="593" width="100" height="60" fill="#9FC5E8" />
+<text x="1104.0" y="595.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Notify</text>
+<text x="1099.0" y="616.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Vendor</text>
+<text x="1080.5" y="633.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Service Desk</text>
+<rect x="1252" y="593" width="100" height="60" fill="#9FC5E8" />
+<text x="1270.5" y="599.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Get break</text>
+<text x="1285.5" y="615.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">glass</text>
+<text x="1274.5" y="635.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">approval</text>
+<rect x="1432" y="593" width="100" height="60" fill="#9FC5E8" />
+<text x="1449.5" y="599.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Document</text>
+<text x="1446.0" y="616.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">reason and</text>
+<text x="1454.5" y="635.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">approval</text>
+<rect x="1612" y="593" width="100" height="60" fill="#9FC5E8" />
+<text x="1631.5" y="599.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Access to</text>
+<text x="1625.5" y="615.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">break glass</text>
+<text x="1637.0" y="633.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">account</text>
+<rect x="2152" y="593" width="100" height="60" fill="#9FC5E8" />
+<text x="2184.0" y="605.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Notify</text>
+<text x="2160.5" y="625.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Service Desk</text>
+<rect x="1792" y="593" width="100" height="60" fill="#9FC5E8" />
+<text x="1806.0" y="595.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">logout from</text>
+<text x="1805.5" y="615.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">break glass</text>
+<text x="1817.0" y="633.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">account</text>
+<circle cx="2022.0" cy="623" r="20" fill="(159, 197, 232)" stroke="(159, 197, 232)" stroke-width="1" />
+<text x="2030.0" y="643" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="black">end</text>
+<circle cx="2022.0" cy="623" r="20" stroke="(0, 0, 0)" stroke-width="3" />
+<rect x="1072" y="765" width="100" height="60" fill="#9FC5E8" />
+<text x="1085.0" y="780.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Fix authenti</text>
+<text x="1084.5" y="797.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">cation issue</text>
+<rect x="1252" y="765" width="100" height="60" fill="#9FC5E8" />
+<text x="1284.0" y="767.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Notify</text>
+<text x="1256.5" y="788.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">ProductA Adm</text>
+<text x="1274.5" y="805.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">inistrator</text>
+<path d="M(242.0, 139.0),(352, 139.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="297.0" y="136.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(352, 139.0),(337.0, 149.0) L(337.0, 129.0),(352, 139.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(452, 139.0),(492, 139.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(492, 139.0),(492, 301.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(492, 301.0),(532, 301.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="497" y="220.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(532, 301.0),(517.0, 311.0) L(517.0, 291.0),(532, 301.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(632, 301.0),(742.0, 301.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="687.0" y="298.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(742.0, 301.0),(727.0, 311.0) L(727.0, 291.0),(742.0, 301.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(782.0, 301.0),(892, 301.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="826.5" y="283.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000">Yes</text>
+<path d="M(892, 301.0),(877.0, 311.0) L(877.0, 291.0),(892, 301.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(762.0, 321.0),(762.0, 431)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="767.0" y="368.5" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000">No</text>
+<path d="M(762.0, 431),(752.0, 416.0) L(772.0, 416.0),(762.0, 431) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(812, 461.0),(852, 461.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(852, 461.0),(852, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(852, 623.0),(892, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="857" y="542.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(892, 623.0),(877.0, 633.0) L(877.0, 613.0),(892, 623.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(992, 623.0),(1072, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="1032.0" y="620.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(1072, 623.0),(1057.0, 633.0) L(1057.0, 613.0),(1072, 623.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(1172, 623.0),(1252, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="1212.0" y="620.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(1252, 623.0),(1237.0, 633.0) L(1237.0, 613.0),(1252, 623.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(1352, 623.0),(1432, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="1392.0" y="620.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(1432, 623.0),(1417.0, 633.0) L(1417.0, 613.0),(1432, 623.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(1532, 623.0),(1612, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="1572.0" y="620.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(1612, 623.0),(1597.0, 633.0) L(1597.0, 613.0),(1612, 623.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(1712, 623.0),(1792, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="1752.0" y="620.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(1792, 623.0),(1777.0, 633.0) L(1777.0, 613.0),(1792, 623.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(1892, 623.0),(2002.0, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="1947.0" y="620.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(2002.0, 623.0),(1987.0, 633.0) L(1987.0, 613.0),(2002.0, 623.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(1122.0, 653),(1122.0, 658)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 663),(1122.0, 668)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 673),(1122.0, 678)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 683),(1122.0, 688)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 693),(1122.0, 698)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 703),(1122.0, 708)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 713),(1122.0, 718)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 723),(1122.0, 728)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 733),(1122.0, 738)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 743),(1122.0, 748)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 753),(1122.0, 758)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 763),(1122.0, 765)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="1127.0" y="709.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<circle cx="1122.0" cy="653" r="6" fill="(255, 255, 255)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1122.0, 765),(1112.0, 750.0) L(1132.0, 750.0),(1122.0, 765) Z" fill="white" stroke="#000000" stroke-width="1" />
+<path d="M(1172, 795.0),(1252, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="1212.0" y="792.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(1252, 795.0),(1237.0, 805.0) L(1237.0, 785.0),(1252, 795.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(1352, 795.0),(1357, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1362, 795.0),(1367, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1372, 795.0),(1377, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1382, 795.0),(1387, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1392, 795.0),(1397, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1402, 795.0),(1407, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1412, 795.0),(1417, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1422, 795.0),(1427, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1432, 795.0),(1437, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1442, 795.0),(1447, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1452, 795.0),(1457, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1462, 795.0),(1467, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1472, 795.0),(1477, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1482, 795.0),(1487, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1492, 795.0),(1497, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1502, 795.0),(1507, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1512, 795.0),(1517, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1522, 795.0),(1527, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1532, 795.0),(1537, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1542, 795.0),(1547, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1552, 795.0),(1557, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1562, 795.0),(1567, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1572, 795.0),(1577, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1582, 795.0),(1587, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1592, 795.0),(1597, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1602, 795.0),(1607, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1612, 795.0),(1617, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1622, 795.0),(1627, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1632, 795.0),(1637, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1642, 795.0),(1647, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1652, 795.0),(1657, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1662, 795.0),(1667, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1672, 795.0),(1677, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1682, 795.0),(1687, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1692, 795.0),(1697, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1702, 795.0),(1707, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1712, 795.0),(1717, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1722, 795.0),(1727, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1732, 795.0),(1737, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1742, 795.0),(1747, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1752, 795.0),(1757, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1762, 795.0),(1767, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1772, 795.0),(1777, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1782, 795.0),(1787, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1792, 795.0),(1797, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1802, 795.0),(1807, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1812, 795.0),(1817, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1822, 795.0),(1827, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1832, 795.0),(1837, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1842, 795.0),(1847, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1852, 795.0),(1857, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1862, 795.0),(1867, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1872, 795.0),(1877, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1882, 795.0),(1887, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1892, 795.0),(1897, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1902, 795.0),(1907, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1912, 795.0),(1917, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1922, 795.0),(1927, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1932, 795.0),(1937, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1942, 795.0),(1947, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1952, 795.0),(1957, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1962, 795.0),(1967, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1972, 795.0),(1977, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1982, 795.0),(1987, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(1992, 795.0),(1997, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2002, 795.0),(2007, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2012, 795.0),(2017, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2022, 795.0),(2027, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2032, 795.0),(2037, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2042, 795.0),(2047, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2052, 795.0),(2057, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2062, 795.0),(2067, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2072, 795.0),(2077, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2082, 795.0),(2087, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2092, 795.0),(2097, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2102, 795.0),(2107, 795.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 623),(2112, 623)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 633),(2112, 628)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 643),(2112, 638)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 653),(2112, 648)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 663),(2112, 658)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 673),(2112, 668)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 683),(2112, 678)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 693),(2112, 688)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 703),(2112, 698)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 713),(2112, 708)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 723),(2112, 718)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 733),(2112, 728)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 743),(2112, 738)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 753),(2112, 748)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 763),(2112, 758)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 773),(2112, 768)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 783),(2112, 778)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 793),(2112, 788)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2112, 623.0),(2117, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2122, 623.0),(2127, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2132, 623.0),(2137, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2142, 623.0),(2147, 623.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="2117" y="709.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<circle cx="1352" cy="795.0" r="6" fill="(255, 255, 255)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2152, 623.0),(2137.0, 633.0) L(2137.0, 613.0),(2152, 623.0) Z" fill="white" stroke="#000000" stroke-width="1" />
+<path d="M(2202.0, 593),(2202.0, 573)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2202.0, 573),(2382.0, 573)" stroke="(0, 0, 0)" stroke-width="1" />
+<path d="M(2382.0, 573),(2382.0, 331)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="2387.0" y="462.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(2382.0, 331),(2392.0, 346.0) L(2372.0, 346.0),(2382.0, 331) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+<path d="M(2432, 301.0),(2542.0, 301.0)" stroke="(0, 0, 0)" stroke-width="1" />
+<text x="2487.0" y="298.0" font-size="14" text-anchor="start" dominant-baseline="middle" font-family="Arial" stroke="#000000"></text>
+<path d="M(2542.0, 301.0),(2527.0, 311.0) L(2527.0, 291.0),(2542.0, 301.0) Z" fill="#000000" stroke="#000000" stroke-width="1" />
+</svg>
