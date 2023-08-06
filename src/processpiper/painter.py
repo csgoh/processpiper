@@ -325,7 +325,12 @@ class Painter:
         return display_lines
 
     def get_char_width(self, chars, text_font, text_font_size):
-        raise NotImplementedError
+        font = ImageFont.truetype(self.get_font_path(text_font), size=text_font_size)
+        left, _, right, bottom = font.getbbox(chars)
+        char_width = right - left
+        font_width = right
+        font_height = bottom
+        return font, char_width, font_width, font_height
 
     def draw_box_with_vertical_text(
         self,
@@ -435,12 +440,18 @@ class Painter:
             fill_colour (str): Diamond fill colour in HTML colour name or hex code. Eg. #FFFFFF or LightGreen
         """
 
-        return [
+        ### Calculate the coordinates of the four points of the diamond.
+        # points = super().draw_diamond(x, y, width, height, fill_colour)
+        points = [
             (x + width / 2, y),
             (x + width, y + height / 2),
             (x + width / 2, y + height),
             (x, y + height / 2),
         ]
+
+        ### Use Pillow's ImageDraw module to draw a polygon with the given points and fill color.
+        # self.__cr.polygon(points, fill=fill_colour)
+        self.draw_polygon(points, fill_colour=fill_colour)
 
     def draw_circle(
         self,
@@ -451,7 +462,9 @@ class Painter:
         outline_width: int = 1,
         fill_colour: str = "",
     ) -> None:
-        return (x - radius, y - radius, x + radius, y + radius)
+        raise NotImplementedError
+        # return (x - radius, y - radius, x + radius, y + radius)
+        # return (x, y, radius)
 
     def draw_dot(self, x: int, y: int, colour: str) -> None:
         raise NotImplementedError
@@ -1333,14 +1346,6 @@ class PNGPainter(Painter):
         for x, y, line in display_lines:
             self.__cr.text((x, y), line, fill=text_font_colour, anchor="la", font=font)
 
-    def get_char_width(self, chars, text_font, text_font_size):
-        font = ImageFont.truetype(self.get_font_path(text_font), size=text_font_size)
-        left, _, right, bottom = font.getbbox(chars)
-        char_width = right - left
-        font_width = right
-        font_height = bottom
-        return font, char_width, font_width, font_height
-
     def draw_box_with_vertical_text(
         self,
         box_x: int,
@@ -1384,32 +1389,14 @@ class PNGPainter(Painter):
     def draw_polygon(
         self,
         points: list,
-        outline_colour: str = "",
+        outline_colour: str = "black",
         outline_width: int = 1,
         fill_colour: str = "",
     ):
+        print(f"{points=},{outline_colour=}, {outline_width=}, {fill_colour=}")
         self.__cr.polygon(
             points, fill=fill_colour, outline=outline_colour, width=outline_width
         )
-
-    def draw_diamond(
-        self, x: int, y: int, width: int, height: int, fill_colour: str
-    ) -> None:
-        """Draw a diamond
-
-        Args:
-            x (int): X coordinate
-            y (int): Y coordinate
-            width (int): Diamond width
-            height (int): Diamond height
-            fill_colour (str): Diamond fill colour in HTML colour name or hex code. Eg. #FFFFFF or LightGreen
-        """
-
-        ### Calculate the coordinates of the four points of the diamond.
-        points = super().draw_diamond(x, y, width, height, fill_colour)
-
-        ### Use Pillow's ImageDraw module to draw a polygon with the given points and fill color.
-        self.__cr.polygon(points, fill=fill_colour)
 
     def draw_circle(
         self,
@@ -1421,12 +1408,13 @@ class PNGPainter(Painter):
         fill_colour: str = "",
     ) -> None:
         """Draw a circle"""
-        points = super().draw_circle(x, y, radius, outline_colour, outline_width)
+        points = (x - radius, y - radius, x + radius, y + radius)
 
         outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
         if not fill_colour:
             ### If no fill colour is specified, use the outline colour as the fill colour.
             fill_red, fill_green, fill_blue = outline_red, outline_green, outline_blue
+            print(f"{points=}")
             self.__cr.ellipse(
                 points,
                 fill=(fill_red, fill_green, fill_blue),
@@ -1532,6 +1520,349 @@ class PNGPainter(Painter):
             image_resize.save(filename, dpi=(1200, 1200), optimize=False)
 
 
+class SVGPainter(Painter):
+    """A wrapper class for DrawSVG library"""
+
+    def __init__(self, width: int = 500, height: int = 500) -> None:
+        """Initialise the painter"""
+        super().__init__(width, height)
+
+        self.__cr = None
+        self.elements = []
+
+    def draw_box(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        box_fill_colour: str,
+        box_outline_colour: str = "",
+        box_outline_width: int = 0,
+    ) -> None:
+        """Draw a rectagle
+
+        Args:
+            x (int): X coordinate
+            y (int): Y coordinate
+            width (int): Rectangle width
+            height (int): Rectangle height
+            box_fill_colour (str: HTML colour name or hex code. Eg. #FFFFFF or LightGreen)
+        """
+        shape = super().draw_box(x, y, width, height)
+        if box_outline_colour:
+            rectangle = dw.Rectangle(
+                x,
+                y,
+                width,
+                height,
+                fill=box_fill_colour,
+                stroke=box_outline_colour,
+                stroke_width=box_outline_width,
+            )
+        else:
+            rectangle = dw.Rectangle(x, y, width, height, fill=box_fill_colour)
+
+        self.elements.append(rectangle)
+
+    def draw_rounded_box(
+        self, x: int, y: int, width: int, height: int, box_fill_colour: str
+    ) -> None:
+        """Draw a rounded rectagle
+
+        Args:
+            x (int): X coordinate
+            y (int): Y coordinate
+            width (int): Rectangle width
+            height (int): Rectangle height
+            box_fill_colour (str: HTML colour name or hex code. Eg. #FFFFFF or LightGreen)
+        """
+        radius, shape = super().draw_rounded_box(x, y, width, height)
+        rectangle = dw.Rectangle(
+            x, y, width, height, rx=radius, ry=radius, fill=box_fill_colour
+        )
+
+        self.elements.append(rectangle)
+
+    def draw_box_with_text(
+        self,
+        box_x: int,
+        box_y: int,
+        box_width: int,
+        box_height: int,
+        box_fill_colour: int,
+        text: str,
+        text_alignment: str,
+        text_font: str,
+        text_font_size: int,
+        text_font_colour: str,
+        style: str = "rectangle",
+    ) -> list:
+        display_lines = super().draw_box_with_text(
+            box_x=box_x,
+            box_y=box_y,
+            box_width=box_width,
+            box_height=box_height,
+            box_fill_colour=box_fill_colour,
+            text=text,
+            text_alignment=text_alignment,
+            text_font=text_font,
+            text_font_size=text_font_size,
+            text_font_colour=text_font_colour,
+            style=style,
+        )
+
+        font = ImageFont.truetype(self.get_font_path(text_font), size=text_font_size)
+
+        for x, y, line in display_lines:
+            # self.__cr.text((x, y), line, fill=text_font_colour, anchor="la", font=font)
+            txt = dw.Text(
+                line,
+                x=x,
+                y=y,
+                font_size=text_font_size,
+                stroke=text_font_colour,
+                text_anchor="start",
+                dominant_baseline="hanging",
+                font_family=text_font,
+            )
+            self.elements.append(txt)
+
+    def draw_box_with_vertical_text(
+        self,
+        box_x: int,
+        box_y: int,
+        box_width: int,
+        box_height: int,
+        box_fill_colour: str,
+        text: str,
+        text_alignment: str,
+        text_font: str,
+        text_font_size: int,
+        text_font_colour: str,
+        style: str = "rectangle",
+    ) -> None:
+        """Draw a box with vertical text"""
+
+        display_lines = super().draw_box_with_vertical_text(
+            box_x=box_x,
+            box_y=box_y,
+            box_width=box_width,
+            box_height=box_height,
+            box_fill_colour=box_fill_colour,
+            text=text,
+            text_alignment=text_alignment,
+            text_font=text_font,
+            text_font_size=text_font_size,
+            text_font_colour=text_font_colour,
+            style=style,
+        )
+
+        font = ImageFont.truetype(self.get_font_path(text_font), size=text_font_size)
+
+        ### Rotate text
+        for x, y, font_width, font_height, line in display_lines:
+            # rotated_img = Image.new("RGBA", (font_width, font_height))
+            # rotated_draw = ImageDraw.Draw(rotated_img)
+            # rotated_draw.text((0, 0), line, font=font, fill=(text_font_colour))
+            # rotated_img = rotated_img.rotate(90, expand=1)
+            # self.__surface.paste(rotated_img, (int(x), int(y)), rotated_img)
+
+            _, char_width, _, _ = self.get_char_width(line, text_font, text_font_size)
+
+            vertical_path = dw.Path()
+            vertical_path.M(x, y + char_width).V(50)
+            txt = dw.Text(
+                line,
+                # x=x,
+                # y=y,
+                font_size=text_font_size,
+                stroke=text_font_colour,
+                text_anchor="Start",
+                dominant_baseline="Hanging",
+                font_family=text_font,
+                # transform=f"rotate(270, {x}, {y})",
+                path=vertical_path,
+            )
+            # txt.rotate(90, x, y)
+            self.elements.append(txt)
+
+    def draw_polygon(
+        self,
+        points: list,
+        outline_colour: str = "",
+        outline_width: int = 1,
+        fill_colour: str = "",
+    ):
+        # self.__cr.polygon(
+        #     points, fill=fill_colour, outline=outline_colour, width=outline_width
+        # )
+
+        lines = dw.Lines(
+            *points,
+            fill=fill_colour,
+            stroke=outline_colour,
+            stroke_width=1,
+            close="true",
+        )
+        self.elements.append(lines)
+
+    def draw_circle(
+        self,
+        x: int,
+        y: int,
+        radius: float,
+        outline_colour: str,
+        outline_width: int = 1,
+        fill_colour: str = "",
+    ) -> None:
+        """Draw a circle"""
+
+        outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
+        if not fill_colour:
+            ### If no fill colour is specified, use the outline colour as the fill colour.
+            fill_red, fill_green, fill_blue = outline_red, outline_green, outline_blue
+            circle = dw.Circle(
+                x,
+                y,
+                radius,
+                fill=(fill_red, fill_green, fill_blue),
+                stroke=(outline_red, outline_green, outline_blue),
+                stroke_width=outline_width,
+            )
+        elif fill_colour == "transparent":
+            # self.__cr.ellipse(
+            #     points,
+            #     outline=(outline_red, outline_green, outline_blue),
+            #     width=outline_width,
+            # )
+            circle = dw.Circle(
+                x,
+                y,
+                radius,
+                stroke=(outline_red, outline_green, outline_blue),
+                stroke_width=outline_width,
+            )
+        else:
+            fill_red, fill_green, fill_blue = ImageColor.getrgb(fill_colour)
+            # self.__cr.ellipse(
+            #     points,
+            #     fill=(fill_red, fill_green, fill_blue),
+            #     outline=(outline_red, outline_green, outline_blue),
+            #     width=outline_width,
+            # )
+            circle = dw.Circle(
+                x,
+                y,
+                radius,
+                fill=(fill_red, fill_green, fill_blue),
+                stroke=(outline_red, outline_green, outline_blue),
+                stroke_width=outline_width,
+            )
+
+        self.elements.append(circle)
+
+    def draw_dot(self, x: int, y: int, colour: str) -> None:
+        """Draw a dot"""
+        r, g, b = ImageColor.getrgb(colour)
+        # self.__cr.point((x, y), fill=(r, g, b))
+        dot = dw.Circle(x, y, 1, fill=(r, g, b))
+        self.elements.append(dot)
+
+    def draw_line(
+        self,
+        x1: int,
+        y1: int,
+        x2: int,
+        y2: int,
+        line_colour: str,
+        line_transparency: int,
+        line_width: int,
+        line_style: str = "solid",
+    ) -> None:
+        """Draw a line
+
+        Args:
+            x1 (int): Line begin X coordinate
+            y1 (int): Line begin Y coordinate
+            x2 (int): Line end X coordinate
+            y2 (int): Line end Y coordinate
+            line_colour (str): Line colour in HTML colour name or hex code. Eg. #FFFFFF or LightGreen
+            line_transparency (int): Line transparency. 0 is opaque and 255 is transparent
+            line_width (int): Line width
+            line_style (str, optional): Line style. Defaults to "solid". Options: "solid", "dashed"
+        """
+        lines = super().draw_line(x1, y1, x2, y2, line_colour, line_width, line_style)
+
+        r, g, b = ImageColor.getrgb(line_colour)
+
+        for line_point in lines:
+            if len(lines) > 1:
+                # self.__cr.line(
+                #     line_point, width=line_width, fill=(r, g, b, int(255 * line_transparency))
+                # )
+                line = dw.Lines(
+                    *line_point,
+                    stroke=(r, g, b, int(255 * line_transparency)),
+                    stroke_width=line_width,
+                )
+            else:
+                # self.__cr.line(line_point, width=line_width, fill=(r, g, b))
+                line = dw.Lines(*line_point, stroke=(r, g, b), stroke_width=line_width)
+            self.elements.append(line)
+
+    def draw_text(
+        self, x: int, y: int, text: str, font: str, font_size: int, font_colour: str
+    ) -> None:
+        """Draw text
+
+        Args:
+            x (int): X coordinate
+            y (int): Y coordinate
+            text (str): Text to draw/display
+        """
+        # self.__cr.text(
+        #     (x, y),
+        #     text,
+        #     font=ImageFont.truetype(self.get_font_path(font), font_size),
+        #     anchor="la",
+        #     fill=(font_colour),
+        # )
+        txt = dw.Text(
+            text,
+            x=x,
+            y=y,
+            font_size=font_size,
+            text_anchor="start",
+            dominant_baseline="middle",
+            font_family=font,
+            stroke=font_colour,
+        )
+        self.elements.append(txt)
+
+    def set_surface_size(self, width: int, height: int) -> None:
+        """Set surface size
+
+        Args:
+            width (int): Surface width
+            height (int): Surface height
+        """
+        left, top, right, bottom = super().set_surface_size(width, height)
+
+        self.__cr = dw.Drawing(right, bottom)
+        for element in self.elements:
+            self.__cr.append(element)
+
+    def save_surface(self, filename: str) -> None:
+        """Save surface to PNG file
+
+        Args:
+            filename (str): PNG file name
+        """
+        if self.__cr is not None:
+            self.__cr.save_svg(filename)
+
+
 class PainterFactory:
     """A factory class to create painter objects"""
 
@@ -1546,5 +1877,4 @@ class PainterFactory:
         return self._painters[painter_name]
 
     def _create_painter(self, painter_name, width, height):
-        # Return a painter object based on the painter_name without using if statement
         return globals()[f"{painter_name.upper()}Painter"](width, height)
