@@ -253,8 +253,75 @@ def test_sample04():
         my_process_map.save("images/test/test_sample04.svg")
 
 
+def test_sample05():
+    from processpiper import ProcessMap, EventType, ActivityType, GatewayType
+
+    with ProcessMap(
+        "Test Max Connection Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
+    ) as my_process_map:
+        with my_process_map.add_lane("Test Lane") as lane1:
+            start = lane1.add_element("start", EventType.START)
+            t1 = lane1.add_element("Task 1", ActivityType.TASK)
+            t2 = lane1.add_element("Task 2", ActivityType.TASK)
+            t3 = lane1.add_element("Task 3", ActivityType.TASK)
+            t4 = lane1.add_element("Task 4", ActivityType.TASK)
+            t5 = lane1.add_element("Task 5", ActivityType.TASK)
+            t6 = lane1.add_element("Task 6", ActivityType.TASK)
+            end = lane1.add_element("end", EventType.END)
+
+            start.connect(t1)
+            t1.connect(t2)
+            t1.connect(t3)
+            t1.connect(t4)
+            t1.connect(t5)
+            t1.connect(t6)
+            t6.connect(end)
+        my_process_map.draw()
+        my_process_map.save("images/test/test_sample05.svg")
+
+
+def test_sample06():
+    from processpiper import ProcessMap, EventType, ActivityType, GatewayType
+
+    with ProcessMap(
+        "Test Max Connection Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
+    ) as my_process_map:
+        with my_process_map.add_lane("Test Lane") as lane1:
+            start = lane1.add_element("start", EventType.START)
+            t1 = lane1.add_element("Task 1", ActivityType.TASK)
+            g1 = lane1.add_element("Gateway 1", GatewayType.EXCLUSIVE)
+            g2 = lane1.add_element("Gateway 2", GatewayType.EXCLUSIVE)
+
+            t2 = lane1.add_element("Task 2", ActivityType.TASK)
+            t3 = lane1.add_element("Task 3", ActivityType.TASK)
+            t4 = lane1.add_element("Task 4", ActivityType.TASK)
+            t5 = lane1.add_element("Task 5", ActivityType.TASK)
+            t51 = lane1.add_element("Task 5.1", ActivityType.TASK)
+            t6 = lane1.add_element("Task 6", ActivityType.TASK)
+            end = lane1.add_element("end", EventType.END)
+
+            start.connect(t1)
+            t1.connect(g1)
+            g1.connect(t2)
+            g1.connect(t3)
+            g1.connect(g2)
+            g2.connect(t4)
+            g2.connect(t5)
+            g2.connect(t51)
+            t2.connect(t6)
+            t3.connect(t6)
+            t4.connect(t6)
+            t5.connect(t6)
+            t51.connect(t6)
+            t6.connect(end)
+        my_process_map.draw()
+        my_process_map.save("images/test/test_sample06.svg")
+
+
 if __name__ == "__main__":
-    # test_sample01()
-    # test_sample02()
+    test_sample01()
+    test_sample02()
     test_sample03()
     test_sample04()
+    test_sample05()
+    test_sample06()
