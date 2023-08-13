@@ -1393,7 +1393,6 @@ class PNGPainter(Painter):
         outline_width: int = 1,
         fill_colour: str = "",
     ):
-        print(f"{points=},{outline_colour=}, {outline_width=}, {fill_colour=}")
         self.__cr.polygon(
             points, fill=fill_colour, outline=outline_colour, width=outline_width
         )
@@ -1414,7 +1413,6 @@ class PNGPainter(Painter):
         if not fill_colour:
             ### If no fill colour is specified, use the outline colour as the fill colour.
             fill_red, fill_green, fill_blue = outline_red, outline_green, outline_blue
-            print(f"{points=}")
             self.__cr.ellipse(
                 points,
                 fill=(fill_red, fill_green, fill_blue),
@@ -1698,11 +1696,13 @@ class SVGPainter(Painter):
         #     points, fill=fill_colour, outline=outline_colour, width=outline_width
         # )
 
+        coordinates = [val for tup in points for val in tup]
+
         lines = dw.Lines(
-            *points,
+            *coordinates,
             fill=fill_colour,
             stroke=outline_colour,
-            stroke_width=1,
+            stroke_width=outline_width,
             close="true",
         )
         self.elements.append(lines)
@@ -1718,47 +1718,36 @@ class SVGPainter(Painter):
     ) -> None:
         """Draw a circle"""
 
-        outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
         if not fill_colour:
             ### If no fill colour is specified, use the outline colour as the fill colour.
-            fill_red, fill_green, fill_blue = outline_red, outline_green, outline_blue
+            fill_colour = outline_colour
             circle = dw.Circle(
                 x,
                 y,
                 radius,
-                fill=(fill_red, fill_green, fill_blue),
-                stroke=(outline_red, outline_green, outline_blue),
+                fill=fill_colour,
+                stroke=outline_colour,
                 stroke_width=outline_width,
             )
         elif fill_colour == "transparent":
-            # self.__cr.ellipse(
-            #     points,
-            #     outline=(outline_red, outline_green, outline_blue),
-            #     width=outline_width,
-            # )
             circle = dw.Circle(
                 x,
                 y,
                 radius,
-                stroke=(outline_red, outline_green, outline_blue),
+                fill="none",
+                stroke=outline_colour,
                 stroke_width=outline_width,
             )
         else:
-            fill_red, fill_green, fill_blue = ImageColor.getrgb(fill_colour)
-            # self.__cr.ellipse(
-            #     points,
-            #     fill=(fill_red, fill_green, fill_blue),
-            #     outline=(outline_red, outline_green, outline_blue),
-            #     width=outline_width,
-            # )
             circle = dw.Circle(
                 x,
                 y,
                 radius,
-                fill=(fill_red, fill_green, fill_blue),
-                stroke=(outline_red, outline_green, outline_blue),
+                fill=fill_colour,
+                stroke=outline_colour,
                 stroke_width=outline_width,
             )
+           
 
         self.elements.append(circle)
 
@@ -1766,7 +1755,7 @@ class SVGPainter(Painter):
         """Draw a dot"""
         r, g, b = ImageColor.getrgb(colour)
         # self.__cr.point((x, y), fill=(r, g, b))
-        dot = dw.Circle(x, y, 1, fill=(r, g, b))
+        dot = dw.Circle(x, y, 1, fill=colour)
         self.elements.append(dot)
 
     def draw_line(
@@ -1794,21 +1783,26 @@ class SVGPainter(Painter):
         """
         lines = super().draw_line(x1, y1, x2, y2, line_colour, line_width, line_style)
 
-        r, g, b = ImageColor.getrgb(line_colour)
-
         for line_point in lines:
             if len(lines) > 1:
-                # self.__cr.line(
-                #     line_point, width=line_width, fill=(r, g, b, int(255 * line_transparency))
-                # )
                 line = dw.Lines(
                     *line_point,
-                    stroke=(r, g, b, int(255 * line_transparency)),
+                    # stroke=(r, g, b, int(255 * line_transparency)),
+                    stroke=line_colour,
                     stroke_width=line_width,
                 )
             else:
-                # self.__cr.line(line_point, width=line_width, fill=(r, g, b))
-                line = dw.Lines(*line_point, stroke=(r, g, b), stroke_width=line_width)
+                (src_x, src_y), (tgt_x, tgt_y) = line_point
+
+                line = dw.Line(
+                    src_x,
+                    src_y,
+                    tgt_x,
+                    tgt_y,
+                    stroke=line_colour,
+                    stroke_width=1,
+                )
+
             self.elements.append(line)
 
     def draw_text(
@@ -1834,7 +1828,7 @@ class SVGPainter(Painter):
             y=y,
             font_size=font_size,
             text_anchor="start",
-            dominant_baseline="middle",
+            dominant_baseline="Hanging",
             font_family=font,
             stroke=font_colour,
         )
@@ -1859,6 +1853,7 @@ class SVGPainter(Painter):
         Args:
             filename (str): PNG file name
         """
+        # self.__cr.append(dw.Line(0, 0, 100, 100, stroke="black"))
         if self.__cr is not None:
             self.__cr.save_svg(filename)
 
