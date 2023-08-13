@@ -34,6 +34,7 @@ class Gateway(Diamond):
         symbol_w, symbol_h = painter.get_text_dimension(
             symbol, painter.element_font, SYMBOL_SIZE
         )
+
         painter.draw_text(
             self.x + (self.width / 2) - (symbol_w / 2),
             self.y + (self.height / 2) - (symbol_h / 2),
@@ -106,7 +107,6 @@ class EventGateway(Gateway):
         painter.draw_circle(center_x, center_y, radius - 4, self.fill_colour)
 
         # Draw the pentagon
-        print(f"vertices: {vertices}")
         painter.draw_polygon(
             vertices,
             fill_colour=painter.element_fill_colour,
