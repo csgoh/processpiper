@@ -221,7 +221,7 @@ gateway_1_end->activity_14->end
 
 gen_code, img = render(input_syntax)
 
-# show_code_with_line_number(gen_code)
+show_code_with_line_number(gen_code)
 console = Console()
 console.print(gen_code)
 img.save("images/test/test_diagram.png")

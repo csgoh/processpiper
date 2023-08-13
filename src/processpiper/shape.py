@@ -34,6 +34,10 @@ from typing import TypeVar
 TShape = TypeVar("TShape", bound="Shape")
 
 
+class TooManyConnectionsException(Exception):
+    pass
+
+
 @dataclass
 class Connection:
     """Connection class for connecting shapes together."""
@@ -100,6 +104,26 @@ class Shape:
         connection = Connection(self, target, label, connection_type)
         self.connection_to.append(connection)
         target.connection_from.append(self)
+
+        ### Perform connection count validation
+        self_connection_count = len(self.connection_to) + len(self.connection_from)
+        if self_connection_count > 4:
+            raise TooManyConnectionsException(
+                f"Element '{self.name}' has exceeded 4 incoming and outgoing connections.\n"
+                + "An element can only have a maximum of 4 incoming and outgoing connections combined.\n"
+                + "Please use gateway to combine connections before connecting to this element."
+            )
+
+        target_connection_count = len(target.connection_to) + len(
+            target.connection_from
+        )
+        if target_connection_count > 4:
+            raise TooManyConnectionsException(
+                f"Element '{target.name}' has exceeded 4 incoming and outgoing connections.\n"
+                + "An element can only have a maximum of 4 incoming and outgoing connections combined.\n"
+                + "Please use gateway to combine connections before connecting to this element."
+            )
+
         return target
 
     def get_distance(self, source, target):
@@ -887,7 +911,13 @@ class Circle(Shape):
 
     def draw(self, painter: Painter):
         """Draw circle"""
-        painter.draw_circle(self.x, self.y, self.radius, self.fill_colour)
+        painter.draw_circle(
+            self.x,
+            self.y,
+            self.radius,
+            outline_colour="black",
+            fill_colour=self.fill_colour,
+        )
         painter.draw_text(
             self.text_x,
             self.text_y,
