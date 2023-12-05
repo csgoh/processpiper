@@ -27,7 +27,9 @@ ProcessPiper is an open source python library to generate business process diagr
 
 <br>
 
+:warning:<strong>Note: The connection lines are not displayed correctly when you have a complex diagram. I have been working on a fix and a better way to route the connections. Watch this space!
 
+<br>
 
 ## Method 1: Generate business process diagram using English like PiperFlow syntax
 This is a sample code to generate a business process diagram using  [PiperFlow](https://github.com/csgoh/processpiper/wiki/Usage-Documentation#syntax) syntax. 
