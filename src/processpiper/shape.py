@@ -25,12 +25,13 @@ from itertools import count
 from .painter import Painter
 from .helper import Helper
 from .constants import Configs
+from .coordinate import Coordinate
 
 
 from typing import TypeVar
 
 
-### This is to allow the connect method to return the same type of shape
+# -- This is to allow the connect method to return the same type of shape
 TShape = TypeVar("TShape", bound="Shape")
 
 
@@ -56,18 +57,23 @@ class Shape:
     name: str = field(init=True, default="")
     lane_id: int = field(init=True, default=0)
     pool_name: str = field(init=True, default="")
-    font: str = field(init=False, default=None)
-    font_size: int = field(init=False, default=None)
-    font_colour: str = field(init=False, default=None)
-    fill_colour: str = field(init=False, default=None)
-    text_alignment: str = field(init=False, default=None)
 
-    x: int = field(init=False, default=0)
-    y: int = field(init=False, default=0)
+    font: str = field(init=False)
+    font_size: int = field(init=False)
+    font_colour: str = field(init=False)
+    fill_colour: str = field(init=False)
+    text_alignment: str = field(init=False)
+
+    coord: Coordinate = field(init=True, default=Coordinate())
+    origin_coord: Coordinate = field(init=True, default=Coordinate())
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
-    origin_x: int = field(init=False, default=0)
-    origin_y: int = field(init=False, default=0)
+
+    top_middle: Coordinate = field(init=False)
+    right_middle: Coordinate = field(init=False)
+    bottom_middle: Coordinate = field(init=False)
+    left_middle: Coordinate = field(init=False)
+
     points: dict = field(init=False, default_factory=dict)
     incoming_points: list = field(init=False, default_factory=list)
     outgoing_points: list = field(init=False, default_factory=list)
@@ -81,6 +87,16 @@ class Shape:
     connection_to: list = field(init=False, default_factory=list)
 
     painter: Painter = field(init=False, default=None)
+
+    def __post_init__(self):
+        self.top_middle = Coordinate()
+        self.top_middle.side = Side.TOP
+        self.right_middle = Coordinate()
+        self.right_middle.side = Side.RIGHT
+        self.bottom_middle = Coordinate()
+        self.bottom_middle.side = Side.BOTTOM
+        self.left_middle = Coordinate()
+        self.left_middle.side = Side.LEFT
 
     def connect(
         self: TShape,
@@ -799,42 +815,28 @@ class Box(Shape):
         Returns:
             tuple: x, y position
         """
-        self.origin_x = self.x
-        self.origin_y = self.y
-        # self.x = x
-        # self.y = y
-        # self.width = Configs.BOX_WIDTH
-        # self.height = Configs.BOX_HEIGHT
-        self.points = {
-            ### Uncomment the following if we need more connection points
-            # "top_left": (self.x, self.y),
-            # "top_right": (self.x + self.width, self.y),
-            # "bottom_left": (self.x, self.y + self.height),
-            # "bottom_right": (self.x + self.width, self.y + self.height),
-            "left_middle": (self.x, self.y + self.height / 2),
-            "top_middle": (self.x + self.width / 2, self.y),
-            "right_middle": (self.x + self.width, self.y + self.height / 2),
-            "bottom_middle": (self.x + self.width / 2, self.y + self.height),
-            # "top_1": (self.x + self.width / 4, self.y),
-            # "top_middle": (self.x + self.width / 2, self.y),
-            # "top_3": (self.x + self.width / 4 * 3, self.y),
-            # "bottom_1": (self.x + self.width / 4, self.y + self.height),
-            # "bottom_middle": (self.x + self.width / 2, self.y + self.height),
-            # "bottom_3": (self.x + self.width / 4 * 3, self.y + self.height),
-            # "left_1": (self.x, self.y + self.height / 4),
-            # "left_middle": (self.x, self.y + self.height / 2),
-            # "left_3": (self.x, self.y + self.height / 4 * 3),
-            # "right_1": (self.x + self.width, self.y + self.height / 4),
-            # "right_middle": (self.x + self.width, self.y + self.height / 2),
-            # "right_3": (self.x + self.width, self.y + self.height / 4 * 3),
-        }
-        return self.x, self.y, self.width, self.height
+        self.origin_coord = self.coord
+
+        # -- Calculate the connections coordinate --
+        self.top_middle.x_pos = self.coord.x_pos + int(self.width / 2)
+        self.top_middle.y_pos = self.coord.y_pos
+
+        self.right_middle.x_pos = self.coord.x_pos + self.width
+        self.right_middle.y_pos = self.coord.y_pos + int(self.height / 2)
+
+        self.bottom_middle.x_pos = self.coord.x_pos + int(self.width / 2)
+        self.bottom_middle.y_pos = self.coord.y_pos + self.height
+
+        self.left_middle.x_pos = self.coord.x_pos
+        self.left_middle.y_pos = self.coord.y_pos + int(self.height / 2)
+
+        return self.coord.x_pos, self.coord.y_pos, self.width, self.height
 
     def draw(self, painter: Painter):
         """Draw box"""
         painter.draw_box_with_text(
-            self.x,
-            self.y,
+            self.coord.x_pos,
+            self.coord.y_pos,
             self.width,
             self.height,
             self.fill_colour,
@@ -852,15 +854,12 @@ class Box(Shape):
 class Circle(Shape):
     """Circle shape"""
 
-    text_x: int = field(init=False)
-    text_y: int = field(init=False)
-    text_width: int = field(init=False)
-    text_height: int = field(init=False)
+    text_coord: Coordinate = field(init=True, default=Coordinate())
 
     def __post_init__(self):
         self.radius = Configs.CIRCLE_RADIUS
-        self.text_x: int = 0
-        self.text_y: int = 0
+        self.text_coord.x_pos = 0
+        self.text_coord.y_pos = 0
         self.text_width: int = 0
         self.text_height: int = 0
         self.width = Configs.CIRCLE_RADIUS * 2
@@ -868,59 +867,67 @@ class Circle(Shape):
 
     def set_draw_position(self, painter: Painter) -> tuple:
         """Set draw position of circle"""
-        ### Circle x position starts from the circle centre, so add radius to x.
-        ### But we want to cater for cases when circle and box aligned vertically.
-        # self.x = int(self.x + CIRCLE_RADIUS + (BOX_WIDTH / 2) - (CIRCLE_RADIUS))
-        # self.x = int(self.x + CIRCLE_RADIUS)
-        # self.x = int(self.x + (BOX_WIDTH / 2) - (CIRCLE_RADIUS))
-        # self.x = int(self.x - (CIRCLE_RADIUS))
-        self.origin_x = self.x
-        self.origin_y = self.y
-        self.x = self.x + Configs.BOX_WIDTH / 2
-        self.y = int(self.y + (Configs.BOX_HEIGHT / 2))
-        # self.y = self.y + (BOX_HEIGHT / 2)
+        self.origin_coord = self.coord
+        self.coord.x_pos = self.coord.x_pos + int(Configs.BOX_WIDTH / 2)
+        self.coord.y_pos = int(self.coord.y_pos + (Configs.BOX_HEIGHT / 2))
+
         self.radius = Configs.CIRCLE_RADIUS
         Helper.printc(
-            f"<<<<{self.x=}, {self.y=}, {self.radius=}", show_level="draw_position"
+            f"<<<<{self.coord.x_pos=}, {self.coord.y_pos=}, {self.radius=}",
+            show_level="draw_position",
         )
-        self.points = {
-            "right": (
-                self.x + self.radius * math.cos(math.radians(0)),
-                self.y + self.radius * math.sin(math.radians(0)),
-            ),
-            "bottom": (
-                self.x + self.radius * math.cos(math.radians(90)),
-                self.y + self.radius * math.sin(math.radians(90)),
-            ),
-            "left": (
-                self.x + self.radius * math.cos(math.radians(180)),
-                self.y + self.radius * math.sin(math.radians(180)),
-            ),
-            "top": (
-                self.x + self.radius * math.cos(math.radians(270)),
-                self.y + self.radius * math.sin(math.radians(270)),
-            ),
-        }
+
+        # -- Calculate the connections coordinate --
+        self.top_middle.x_pos = self.coord.x_pos + int(
+            self.radius * math.cos(math.radians(270))
+        )
+        self.top_middle.y_pos = self.coord.y_pos + int(
+            self.radius * math.sin(math.radians(270))
+        )
+
+        self.right_middle.x_pos = self.coord.x_pos + int(
+            self.radius * math.cos(math.radians(0))
+        )
+        self.right_middle.y_pos = self.coord.y_pos + int(
+            self.radius * math.sin(math.radians(0))
+        )
+
+        self.bottom_middle.x_pos = self.coord.x_pos + int(
+            self.radius * math.cos(math.radians(90))
+        )
+        self.bottom_middle.y_pos = self.coord.y_pos + int(
+            self.radius * math.sin(math.radians(90))
+        )
+
+        self.left_middle.x_pos = self.coord.x_pos + int(
+            self.radius * math.cos(math.radians(180))
+        )
+        self.left_middle.y_pos = self.coord.y_pos + int(
+            self.radius * math.sin(math.radians(180))
+        )
+
         self.text_width, self.text_height = painter.get_text_dimension(
             self.name, self.font, self.font_size
         )
-        self.text_x = self.x + (self.width / 2) - (self.text_width / 2)
-        self.text_y = self.y + self.radius
+        self.text_coord.x_pos = (
+            self.coord.x_pos + (self.width / 2) - (self.text_width / 2)
+        )
+        self.text_coord.y_pos = self.coord.y_pos + self.radius
 
-        return self.x, self.y, self.radius, self.radius
+        return self.coord.x_pos, self.coord.y_pos, self.radius, self.radius
 
     def draw(self, painter: Painter):
         """Draw circle"""
         painter.draw_circle(
-            self.x,
-            self.y,
+            self.coord.x_pos,
+            self.coord.y_pos,
             self.radius,
             outline_colour="black",
             fill_colour=self.fill_colour,
         )
         painter.draw_text(
-            self.text_x,
-            self.text_y,
+            self.text_coord.x_pos,
+            self.text_coord.y_pos,
             self.name,
             self.font,
             self.font_size,
@@ -935,14 +942,13 @@ class Circle(Shape):
 class Diamond(Shape):
     """Diamond shape"""
 
-    text_x: int = field(init=False)
-    text_y: int = field(init=False)
+    text_coord: Coordinate = field(init=True, default=Coordinate())
     text_width: int = field(init=False)
     text_height: int = field(init=False)
 
     def __post_init__(self):
-        self.text_x: int = 0
-        self.text_y: int = 0
+        self.text_coord.x_pos = 0
+        self.text_coord.y_pos = 0
         self.text_width: int = 0
         self.text_height: int = 0
         self.width = Configs.DIAMOND_WIDTH
@@ -951,39 +957,57 @@ class Diamond(Shape):
     def set_draw_position(self, painter: Painter) -> tuple:
         """Set draw position of diamond"""
 
-        self.origin_x = self.x
-        self.origin_y = self.y
-        # self.x = self.x + (BOX_WIDTH / 2) - (DIAMOND_WIDTH / 2)
-        self.x = self.x + Configs.BOX_WIDTH / 2 - (Configs.DIAMOND_WIDTH / 2)
-        self.y = self.y + (Configs.BOX_HEIGHT / 2) - (Configs.DIAMOND_HEIGHT / 2)
+        self.origin_x = self.coord.x_pos
+        self.origin_y = self.coord.y_pos
+        self.coord.x_pos = (
+            self.coord.x_pos
+            + int(Configs.BOX_WIDTH / 2)
+            - int(Configs.DIAMOND_WIDTH / 2)
+        )
+        self.coord.y_pos = (
+            self.coord.y_pos
+            + int(Configs.BOX_HEIGHT / 2)
+            - int(Configs.DIAMOND_HEIGHT / 2)
+        )
 
-        # self.width = DIAMOND_WIDTH
-        # self.height = DIAMOND_HEIGHT
-        self.points = {
-            "top_middle": (self.x + self.width / 2, self.y),
-            "right_middle": (self.x + self.width, self.y + self.height / 2),
-            "bottom_middle": (self.x + self.width / 2, self.y + self.height),
-            "left_middle": (self.x, self.y + self.height / 2),
-        }
+        # -- Calculate the connections coordinate --
+        self.top_middle.x_pos = self.coord.x_pos + int(self.width / 2)
+        self.top_middle.y_pos = self.coord.y_pos
+
+        self.right_middle.x_pos = self.coord.x_pos + self.width
+        self.right_middle.y_pos = self.coord.y_pos + int(self.height / 2)
+
+        self.bottom_middle.x_pos = self.coord.x_pos + int(self.width / 2)
+        self.bottom_middle.y_pos = self.coord.y_pos + self.height
+
+        self.left_middle.x_pos = self.coord.x_pos
+        self.left_middle.y_pos = self.coord.y_pos + int(self.height / 2)
+
         self.text_width, self.text_height = painter.get_text_dimension(
             self.name, self.font, self.font_size
         )
-        self.text_x = self.x + (self.width / 2) - (self.text_width / 2)
-        self.text_y = self.y + self.height
+        self.text_coord.x_pos = (
+            self.coord.x_pos + (self.width / 2) - (self.text_width / 2)
+        )
+        self.text_coord.y_pos = self.coord.y_pos + self.height
 
-        return self.x, self.y, self.width, self.height
+        return self.coord.x_pos, self.coord.y_pos, self.width, self.height
 
     def draw(self, painter: Painter):
         """Draw diamond"""
         # Helper.printc(
-        #     f"draw <{self.text}>, x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
+        #     f"draw <{self.text}>, x: {self.coord.x_pos}, y: {self.coord.y_pos}, width: {self.width}, height: {self.height}"
         # )
         painter.draw_diamond(
-            self.x, self.y, self.width, self.height, fill_colour=self.fill_colour
+            self.coord.x_pos,
+            self.coord.y_pos,
+            self.width,
+            self.height,
+            fill_colour=self.fill_colour,
         )
         painter.draw_text(
-            self.text_x,
-            self.text_y,
+            self.text_coord.x_pos,
+            self.text_coord.y_pos,
             self.name,
             self.font,
             self.font_size,

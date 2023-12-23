@@ -65,9 +65,9 @@ class Grid:
         self, previous_shape: Shape, current_shape: Shape, index: int
     ):
         """Add the shape to the grid"""
-        ### If previous_shape is None, it is the start shape
+        # ---If previous_shape is None, it is the start shape---
         if previous_shape is None:
-            ### Add the start shape to the grid
+            # ---Add the start shape to the grid---
             Helper.printc(
                 f"    ==>Start adding [{current_shape.name}] to grid (append)",
                 show_level="layout_grid",
@@ -465,29 +465,3 @@ class Grid:
                     table.add_row(*row_data)
 
                 console.print(table)
-
-    def print_gridX(self):
-        """Print the grid"""
-        for lane_id, lane in self._grid.items():
-            Helper.printc(f"{lane_id=}", color=33, show_level="layout_grid")
-            self.print_header()
-            for row_number, col in lane.items():
-                Helper.printc(
-                    f"{self.format_item(row_number)}", end="", show_level="layout_grid"
-                )
-                for item in col:
-                    if item is not None:
-                        Helper.printc(
-                            f"{self.format_item(item.name)}",
-                            end="",
-                            show_level="layout_grid",
-                        )
-                    else:
-                        Helper.printc(
-                            f"{self.format_item('None')}",
-                            end="",
-                            show_level="layout_grid",
-                        )
-
-                Helper.printc("", show_level="layout_grid")
-            Helper.printc("", show_level="layout_grid")

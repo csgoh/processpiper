@@ -21,6 +21,7 @@
 # SOFTWARE.
 from dataclasses import dataclass, field
 from .painter import Painter
+from .coordinate import Coordinate
 
 
 @dataclass
@@ -32,21 +33,20 @@ class Footer:
     font_size: int = field(init=True, default=None)
     font_colour: str = field(init=True, default=None)
 
-    x: int = field(init=False, default=0)
-    y: int = field(init=False, default=0)
+    coord: Coordinate = field(init=True, default=Coordinate())
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
     painter: Painter = field(init=False)
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
         """Set the position of the footer to be drawn"""
-        self.x = x
-        self.y = y
+        self.coord.x_pos = x
+        self.coord.y_pos = y
         self.painter = painter
         self.width, self.height = painter.get_text_dimension(
             self.name, self.font, self.font_size
         )
-        return self.x, self.y, self.width, self.height
+        return self.coord.x_pos, self.coord.y_pos, self.width, self.height
 
     def draw(self, painter: Painter = None):
         """Draw the footer"""
@@ -54,5 +54,10 @@ class Footer:
             painter = self.painter
 
         painter.draw_text(
-            self.x, self.y, self.name, self.font, self.font_size, self.font_colour
+            self.coord.x_pos,
+            self.coord.y_pos,
+            self.name,
+            self.font,
+            self.font_size,
+            self.font_colour,
         )
