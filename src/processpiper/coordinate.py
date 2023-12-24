@@ -1,3 +1,6 @@
+from enum import Enum
+
+
 class Side(Enum):
     TOP = 1
     BOTTOM = 2
@@ -9,7 +12,6 @@ class Side(Enum):
 class Coordinate:
     x_pos: int
     y_pos: int
-    # declare enum variable
     side: Side
 
     def __init__(self):

@@ -118,6 +118,11 @@ class Lane:
     text_width: int = field(init=False, default=0)
     text_height: int = field(init=False, default=0)
 
+    def __post_init__(self):
+        self.coord = Coordinate()
+        self.next_shape_coord = Coordinate()
+        self.text_coord = Coordinate()
+
     def add_element(
         self,
         name: str,
@@ -157,16 +162,16 @@ class Lane:
 
         ### Draw the lane outline
         self.painter.draw_box(
-            self.x,
-            self.y,
+            self.coord.x_pos,
+            self.coord.y_pos,
             self.width,
             self.height,
             self.background_fill_colour,
         )
         ### Draw the lane text box
         self.painter.draw_box_with_vertical_text(
-            self.x,
-            self.y,
+            self.coord.x_pos,
+            self.coord.y_pos,
             Configs.LANE_TEXT_WIDTH,
             self.height,
             self.fill_colour,
@@ -178,10 +183,10 @@ class Lane:
         )
         ### Draw the lane text divider
         self.painter.draw_line(
-            self.x + Configs.LANE_TEXT_WIDTH,
-            self.y,
-            self.x + Configs.LANE_TEXT_WIDTH,
-            self.y + self.height,
+            self.coord.x_pos + Configs.LANE_TEXT_WIDTH,
+            self.coord.y_pos,
+            self.coord.x_pos + Configs.LANE_TEXT_WIDTH,
+            self.coord.y_pos + self.height,
             "white",
             0.5,
             5,
@@ -195,7 +200,7 @@ class Lane:
         if self.shapes:
             for shape in self.shapes:
                 Helper.printc(
-                    f"      Drawing shape: [bold][red]\[{shape.name}][/red][/bold], x={shape.x}, y={shape.y}, w={shape.width}, h={shape.height}",
+                    f"      Drawing shape: [bold][red]\[{shape.name}][/red][/bold], x={shape.coord.get_xy()}, w={shape.width}, h={shape.height}",
                     rich_type="text",
                     show_level="draw",
                 )

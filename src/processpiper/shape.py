@@ -25,7 +25,7 @@ from itertools import count
 from .painter import Painter
 from .helper import Helper
 from .constants import Configs
-from .coordinate import Coordinate
+from .coordinate import Coordinate, Side
 
 
 from typing import TypeVar
@@ -161,8 +161,18 @@ class Shape:
         Returns:
             (tuple), (tuple): Nearest connection points between two sets of shapes
         """
-        points_source = self.points
-        points_target = target_shape.points
+        points_source = {
+            "left_middle": self.left_middle.get_xy(),
+            "right_middle": self.right_middle.get_xy(),
+            "top_middle": self.top_middle.get_xy(),
+            "bottom_middle": self.bottom_middle.get_xy(),
+        }
+        points_target = {
+            "left_middle": target_shape.left_middle.get_xy(),
+            "right_middle": target_shape.right_middle.get_xy(),
+            "top_middle": target_shape.top_middle.get_xy(),
+            "bottom_middle": target_shape.bottom_middle.get_xy(),
+        }
         shortest_distance: int = float("inf")
 
         # Print just the keys of points_source
@@ -350,18 +360,21 @@ class Shape:
         coordinates.
           line_end: The end point of a line segment that is being checked for collision with a shape.
           shape (TShape): TShape is a custom class or data structure that represents a shape in a Tetris
-        game. It contains information about the shape's position (x, y), its origin point (origin_x,
-        origin_y), width, height, and the blocks that make up the shape. The function is checking for
+        game. It contains information about the shape's position (x, y), its origin point (origin_coord.x_pos,
+        origin_coord.y_pos), width, height, and the blocks that make up the shape. The function is checking for
 
         Returns:
           a boolean value indicating whether there is a collision between the given line segment and any
         of the four sides of the given shape.
         """
-        if shape.x == shape.origin_x and shape.y == shape.origin_y:
-            rx, ry = shape.x, shape.y
+        if (
+            shape.coord.x_pos == shape.origin_coord.x_pos
+            and shape.coord.y_pos == shape.origin_coord.y_pos
+        ):
+            rx, ry = shape.coord.x_pos, shape.coord.y_pos
             rw, rh = shape.width, shape.height
         else:
-            rx, ry = shape.origin_x, shape.origin_y
+            rx, ry = shape.origin_coord.x_pos, shape.origin_coord.y_pos
             rw, rh = Configs.BOX_WIDTH, Configs.BOX_HEIGHT
 
         left_line_start = (rx, ry)
@@ -424,8 +437,18 @@ class Shape:
     ):
         """Find nearest connection points between two sets of shapes
         where source and target shapes are in the same pool but different lanes"""
-        points_source = self.points
-        points_target = target_shape.points
+        points_source = {
+            "left_middle": self.left_middle.get_xy(),
+            "right_middle": self.right_middle.get_xy(),
+            "top_middle": self.top_middle.get_xy(),
+            "bottom_middle": self.bottom_middle.get_xy(),
+        }
+        points_target = {
+            "left_middle": target_shape.left_middle.get_xy(),
+            "right_middle": target_shape.right_middle.get_xy(),
+            "top_middle": target_shape.top_middle.get_xy(),
+            "bottom_middle": target_shape.bottom_middle.get_xy(),
+        }
         shortest_distance: int = float("inf")
         nearest_points = {}
         (
@@ -587,8 +610,18 @@ class Shape:
         """Find nearest connection points between two sets of shapes
         where source and target shapes are in the same pool but different lanes"""
 
-        points_source = self.points
-        points_target = target_shape.points
+        points_source = {
+            "left_middle": self.left_middle.get_xy(),
+            "right_middle": self.right_middle.get_xy(),
+            "top_middle": self.top_middle.get_xy(),
+            "bottom_middle": self.bottom_middle.get_xy(),
+        }
+        points_target = {
+            "left_middle": target_shape.left_middle.get_xy(),
+            "right_middle": target_shape.right_middle.get_xy(),
+            "top_middle": target_shape.top_middle.get_xy(),
+            "bottom_middle": target_shape.bottom_middle.get_xy(),
+        }
         shortest_distance: int = float("inf")
         nearest_points = {}
 
@@ -635,8 +668,10 @@ class Shape:
                     }
 
         ### remove points from source and target shapes once they are used
-        del points_source[nearest_points["source_name"]]
-        del points_target[nearest_points["target_name"]]
+        Helper.printc(f"*** {len(nearest_points)}", show_level="draw_connection")
+        if len(nearest_points) > 0:
+            del points_source[nearest_points["source_name"]]
+            del points_target[nearest_points["target_name"]]
 
         return (
             nearest_points["source_points"],
@@ -691,22 +726,22 @@ class Shape:
         Returns:
             str: Connection direction
         """
-        if self.origin_y == target.origin_y:
-            if self.origin_x < target.origin_x:
+        if self.origin_coord.y_pos == target.coord.y_pos:
+            if self.origin_coord.x_pos < target.origin_coord.x_pos:
                 return "right"
             else:
                 return "left"
-        elif self.origin_y < target.origin_y:
-            if self.origin_x == target.origin_x:
+        elif self.origin_coord.y_pos < target.origin_coord.y_pos:
+            if self.origin_coord.x_pos == target.origin_coord.x_pos:
                 return "down"
-            elif self.origin_x < target.origin_x:
+            elif self.origin_coord.x_pos < target.origin_coord.x_pos:
                 return "down_right"
             else:
                 return "down_left"
         else:
-            if self.origin_x == target.origin_x:
+            if self.origin_coord.x_pos == target.origin_coord.x_pos:
                 return "up"
-            elif self.origin_x < target.origin_x:
+            elif self.origin_coord.x_pos < target.origin_coord.x_pos:
                 return "up_right"
             else:
                 return "up_left"
@@ -801,6 +836,7 @@ class Box(Shape):
     """Box shape"""
 
     def __post_init__(self):
+        super().__post_init__()
         self.width = Configs.BOX_WIDTH
         self.height = Configs.BOX_HEIGHT
 
@@ -857,6 +893,7 @@ class Circle(Shape):
     text_coord: Coordinate = field(init=True, default=Coordinate())
 
     def __post_init__(self):
+        super().__post_init__()
         self.radius = Configs.CIRCLE_RADIUS
         self.text_coord.x_pos = 0
         self.text_coord.y_pos = 0
@@ -947,6 +984,7 @@ class Diamond(Shape):
     text_height: int = field(init=False)
 
     def __post_init__(self):
+        super().__post_init__()
         self.text_coord.x_pos = 0
         self.text_coord.y_pos = 0
         self.text_width: int = 0
@@ -957,8 +995,8 @@ class Diamond(Shape):
     def set_draw_position(self, painter: Painter) -> tuple:
         """Set draw position of diamond"""
 
-        self.origin_x = self.coord.x_pos
-        self.origin_y = self.coord.y_pos
+        self.origin_coord.x_pos = self.coord.x_pos
+        self.origin_coord.y_pos = self.coord.y_pos
         self.coord.x_pos = (
             self.coord.x_pos
             + int(Configs.BOX_WIDTH / 2)

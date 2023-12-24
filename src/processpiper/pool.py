@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from .painter import Painter
 from .lane import Lane
 from .constants import Configs
+from .coordinate import Coordinate
 
 
 @dataclass
@@ -38,8 +39,7 @@ class Pool:
     text_alignment: str = field(init=True, default=None)
     painter: Painter = field(init=True, default=None)
 
-    x: int = field(init=False, default=0)
-    y: int = field(init=False, default=0)
+    coord: Coordinate = field(init=False, default=None)
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
 
@@ -55,25 +55,26 @@ class Pool:
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
         """Set the position of the pool and return the position of the next shape to be drawn"""
-        self.x = x
-        self.y = y
+        self.coord = Coordinate()
+        self.coord.x_pos = x
+        self.coord.y_pos = y
         self.painter = painter
-        last_lane_y = self.lanes[-1].y
+        last_lane_y = self.lanes[-1].coord.y_pos
         last_lane_height = self.lanes[-1].height
 
         self.width, self.height = (
             Configs.POOL_TEXT_WIDTH,
-            last_lane_y + last_lane_height - self.y,
+            last_lane_y + last_lane_height - self.coord.y_pos,
         )
-        return self.x, self.y, self.width, self.height
+        return self.coord.x_pos, self.coord.y_pos, self.width, self.height
 
     def draw(self):
         """Draw the pool and the lanes in the pool"""
         if self.name != "Default Pool":
-            ### Draw the pool text box
+            # --Draw the pool text box--
             self.painter.draw_box_with_vertical_text(
-                self.x,
-                self.y,
+                self.coord.x_pos,
+                self.coord.y_pos,
                 Configs.POOL_TEXT_WIDTH,
                 self.height,
                 self.fill_colour,
