@@ -1002,6 +1002,119 @@ class Painter:
 
         return points, right_angle_point
 
+    def draw_connection(
+        self,
+        points,
+        label: str = "",
+        connection_style: str = "solid",
+        connector_font: str = "",
+        connector_font_size: int = 0,
+        connector_font_color: str = "",
+        connector_line_width: int = 0,
+        connector_line_colour: str = "",
+        connector_arrow_colour: str = "",
+        connector_arrow_size: int = 0,
+    ):
+        print(f"        >>>> POINTS : {points}")
+
+        if points is None:
+            return
+
+        previous_point = points[0]
+
+        if connection_style == "dashed":
+            self.draw_dashed_line(points, connector_line_width, connector_line_colour)
+        else:
+            for point in points[1:]:
+                self.draw_line(
+                    previous_point[0],
+                    previous_point[1],
+                    point[0],
+                    point[1],
+                    line_colour=connector_line_colour,
+                    line_transparency=255,
+                    line_width=connector_line_width,
+                    line_style=connection_style,
+                )
+                previous_point = point
+
+        # -- draw the text label at the middle points
+        num_points = len(points)
+        mid = num_points // 2
+        # print(f"       MID={mid}")
+        # font = ImageFont.truetype("arial.ttf", size=18)
+        # left, _, right, bottom = font.getbbox("#")
+        # font_width = right
+        # font_height = bottom
+        # font_width, font_height = self.get_text_dimension(label, connector_font, connector_font_size)
+        font_width, font_height = self.get_multitext_dimension(
+            label, connector_font, connector_font_size
+        )
+
+        start_x = points[mid - 1][0]
+        start_y = points[mid - 1][1]
+        end_x = points[mid][0]
+        end_y = points[mid][1]
+
+        if start_x == end_x:  # Same X Axis
+            # label = f"X:{label}"
+            text_width = font_width * len(label)
+            x_mid = start_x + 5
+            if start_y > end_y:
+                y_mid = start_y - ((abs(start_y - end_y) / 2) + (font_height / 2))
+            else:
+                y_mid = start_y + ((abs(start_y - end_y) / 2) - (font_height / 2))
+        elif start_y == end_y:  # Same Y Axis
+            # label = f"Y:{label}"
+            text_width = font_width * len(label)
+            if start_x > end_x:
+                x_mid = start_x - ((abs(start_x - end_x) / 2) + (text_width / 2))
+            else:
+                x_mid = start_x + ((abs(start_x - end_x) / 2) - (text_width / 2))
+            y_mid = start_y + 5
+
+
+        # -- draw text --
+
+        self.draw_text(
+            x_mid,
+            y_mid,
+            label,
+            font=connector_font,
+            font_size=connector_font_size,
+            font_colour=connector_font_color,
+        )
+
+        if connection_style == "dashed":
+            # --Draw round circle at the beginning of the line
+            self.draw_circle(
+                points[0][0],
+                points[0][1],
+                radius=6,
+                outline_colour=connector_arrow_colour,
+                fill_colour="white",
+            )
+
+            self.draw_arrow_head(
+                points[-2][0],
+                points[-2][1],
+                points[-1][0],
+                points[-1][1],
+                connector_line_colour,
+                connector_arrow_size,
+                "white",
+            )
+        else:
+            self.draw_arrow_head(
+                points[-2][0],
+                points[-2][1],
+                points[-1][0],
+                points[-1][1],
+                connector_line_colour,
+                connector_arrow_size,
+                connector_line_colour,
+            )
+
     def draw_line_and_arrow(
         self,
         x1: int,
@@ -1034,16 +1147,6 @@ class Painter:
             connector_line_colour,
         )
 
-        # if len(right_angle_points) >= 3:
-        #     label_x_pos, label_y_pos = right_angle_points[1]
-        #     arrow_angle_points = right_angle_points[2]
-        # elif len(right_angle_points) == 2:
-        #     label_x_pos, label_y_pos = right_angle_points[0]
-        #     arrow_angle_points = right_angle_points[1]
-        # else:
-        #     label_x_pos, label_y_pos = right_angle_points[0]
-        #     arrow_angle_points = right_angle_points[0]
-
         label_x_pos, label_y_pos = right_angle_points[-1]
         arrow_angle_points = right_angle_points[-1]
 
@@ -1055,27 +1158,12 @@ class Painter:
                 label_y_pos = y1 - label_h - 3
             else:
                 label_y_pos = y1 + ((y2 - y1) / 2) - (label_h / 2)
-            # Helper.printc(
-            #     f"        @@@ {label=} No right angle point",
-            #     35,
-            #     show_level="draw_connection",
-            # )
 
         else:
             label_x_pos += 5
             if y1 == y2 or (abs(y1 - y2) <= 10):
-                # Helper.printc(
-                #     f"        @@@ {label=} {y1} == {y2}",
-                #     35,
-                #     show_level="draw_connection",
-                # )
                 label_y_pos = label_y_pos + label_h
             else:
-                # Helper.printc(
-                #     f"        @@@ {label=} {y1} != {y2}",
-                #     35,
-                #     show_level="draw_connection",
-                # )
                 label_y_pos = y1 + ((y2 - y1) / 2) - (label_h / 2)
             # Helper.printc(
             #     f"        @@@ {label=} With right angle point",
@@ -1093,7 +1181,7 @@ class Painter:
         )
 
         if connection_style == "dashed":
-            ### Draw round circle at the beginning of the line
+            # --Draw round circle at the beginning of the line
             self.draw_circle(
                 x1,
                 y1,
@@ -1102,7 +1190,7 @@ class Painter:
                 fill_colour="white",
             )
 
-            ### Draw white arrow head at the end of the line
+            # --Draw white arrow head at the end of the line
 
             self.draw_arrow_head(
                 arrow_angle_points[0],
@@ -1747,7 +1835,6 @@ class SVGPainter(Painter):
                 stroke=outline_colour,
                 stroke_width=outline_width,
             )
-           
 
         self.elements.append(circle)
 
