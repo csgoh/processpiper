@@ -47,6 +47,8 @@ class Connection:
     target: TShape = field(init=True)
     label: str = field(init=True)
     connection_type: str = field(init=True)
+    source_connection_side: Side = field(init=True)
+    target_connection_side: Side = field(init=True)
 
 
 @dataclass
@@ -98,7 +100,7 @@ class Shape:
         self.left_middle = Coordinate()
         self.left_middle.side = Side.LEFT
 
-    def connect(
+    def connectX(
         self: TShape,
         target: TShape,
         label: str = "",
@@ -142,6 +144,59 @@ class Shape:
 
         return target
 
+    def connect(
+        self: TShape,
+        target: TShape,
+        label: str = "",
+        connection_type: str = "sequence",
+        source_connection_side: Side = Side.NONE,
+        target_connection_side: Side = Side.NONE,
+    ) -> TShape:
+        """Connect two shapes
+
+        Args:
+            source (TShape): Source shape
+            target (TShape): Target shape
+            label (str, optional): Label for the connection. Defaults to "".
+            connection_type (str, optional): Type of connection. Defaults to "sequence".
+
+        Returns:
+            TShape: Target shape
+
+        """
+
+        connection = Connection(
+            self,
+            target,
+            label,
+            connection_type,
+            source_connection_side,
+            target_connection_side,
+        )
+        self.connection_to.append(connection)
+        target.connection_from.append(self)
+
+        # --Perform connection count validation
+        self_connection_count = len(self.connection_to) + len(self.connection_from)
+        if self_connection_count > 4:
+            raise TooManyConnectionsException(
+                f"Element '{self.name}' has exceeded 4 incoming and outgoing connections.\n"
+                + "An element can only have a maximum of 4 incoming and outgoing connections combined.\n"
+                + "Please use gateway to combine connections before connecting to this element."
+            )
+
+        target_connection_count = len(target.connection_to) + len(
+            target.connection_from
+        )
+        if target_connection_count > 4:
+            raise TooManyConnectionsException(
+                f"Element '{target.name}' has exceeded 4 incoming and outgoing connections.\n"
+                + "An element can only have a maximum of 4 incoming and outgoing connections combined.\n"
+                + "Please use gateway to combine connections before connecting to this element."
+            )
+
+        return target
+
     def get_distance(self, source, target):
         """
         Return euclidean distance between points source and target
@@ -151,7 +206,7 @@ class Shape:
         x2, y2 = target
         return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
 
-    def find_nearest_points(self, target_shape, direction: str, all_shapes: list):
+    def find_nearest_pointsX(self, target_shape, direction: str, all_shapes: list):
         """Find nearest connection points between two sets of shapes
 
         Args:
@@ -298,6 +353,113 @@ class Shape:
             nearest_points["target_points"],
             nearest_points["target_name"],
         )
+
+    def find_nearest_points(
+        self,
+        target: TShape,
+        source_side: Side = Side.NONE,
+        target_side: Side = Side.NONE,
+        all_shapes: list = [],
+    ):
+        """
+        Draws a connection between two shapes
+        """
+
+        source_attributes = dir(self)
+        target_attributes = dir(target)
+
+        source_middle_attributes = [
+            attribute for attribute in source_attributes if "middle" in attribute
+        ]
+        target_middle_attributes = [
+            attribute for attribute in target_attributes if "middle" in attribute
+        ]
+
+        Helper.printc(
+            f"        Specified Sides: [yellow]({source_side}) => ({target_side})[/yellow]",
+            show_level="draw_connection",
+        )
+        # Helper.printc(
+        #     f"        >>>> source: {source_middle_attributes}",
+        #     show_level="draw_connection",
+        # )
+        # Helper.printc(
+        #     f"        >>>> target: {target_middle_attributes}",
+        #     show_level="draw_connection",
+        # )
+        if source_side is Side.NONE and target_side is Side.NONE:
+            print(f"        >>>> Searching nearest points")
+
+            shortest_duration = float("inf")
+
+            shortest_source_coord: Coordinate
+            shortest_target_coord: Coordinate
+
+            points = ()
+            for source_point in source_middle_attributes:
+                source_point_coord = getattr(self, source_point)
+                if source_point_coord.connected is True:
+                    continue
+                for target_point in target_middle_attributes:
+                    target_point_coord = getattr(target, target_point)
+                    if target_point_coord.connected is True:
+                        continue
+
+                    Helper.printc(
+                        f"              > source: [green]{source_point_coord.side}[/green], target: [cyan]{target_point_coord.side}[/cyan]",
+                        35,
+                        show_level="draw_connection",
+                    )
+                    # -- check for collision
+                    points = self.determine_right_angle_points(
+                        source_point_coord, target_point_coord
+                    )
+                    if self.is_collision(points, target, all_shapes):
+                        continue
+
+                    distance = self.get_distance(
+                        source_point_coord.get_xy(),
+                        target_point_coord.get_xy(),
+                    )
+                    if distance < shortest_duration:
+                        shortest_duration = int(distance)
+                        shortest_source_coord = source_point_coord
+                        shortest_target_coord = target_point_coord
+
+                        # print(
+                        #     f"      {shortest_duration=} between source.{shortest_source_coord.side} and target.{shortest_target_coord.side}"
+                        # )
+
+            shortest_source_coord.connected = True
+            shortest_target_coord.connected = True
+
+            points = self.determine_right_angle_points(
+                shortest_source_coord, shortest_target_coord
+            )
+
+            Helper.printc(
+                f"        >>>> FINAL Nearest : [green]{shortest_source_coord.side}[/green], [cyan]{shortest_target_coord.side}[/cyan]",
+                show_level="draw_connection",
+            )
+
+            # draw_connection(image, points, source.name + "->" + target.name)
+        else:
+            Helper.printc(
+                f"        >>>> Getting coordinates for specified sides [yellow]{source_side} -> {target_side}[/yellow]",
+                show_level="draw_connection",
+            )
+            if any(source_side.name.lower() in s for s in source_middle_attributes):
+                source_coord = getattr(self, source_side.name.lower() + "_middle")
+            if any(target_side.name.lower() in s for s in target_middle_attributes):
+                target_coord = getattr(target, target_side.name.lower() + "_middle")
+
+            source_coord.connected = True
+            target_coord.connected = True
+
+            points = self.determine_right_angle_points(source_coord, target_coord)
+            # draw_connection(image, points, source.name + "->" + target.name)
+
+        return points
 
     def get_top_bottom_points(self, points):
         # sourcery skip: dict-comprehension, inline-immediately-returned-variable
@@ -567,6 +729,26 @@ class Shape:
             nearest_points["target_name"],
         )
 
+    def is_collision(self, points, target_shape, all_shapes):
+        collision_found = False
+        for i in range(len(points) - 1):
+            # Helper.printc(
+            #     f"        >>>> Line {i=}, {points[i]}->{points[i+1]}",
+            #     35,
+            #     show_level="draw_connection",
+            # )
+            collision_found, collision_shape = self.check_collision(
+                points[i], points[i + 1], all_shapes, target_shape
+            )
+            if collision_found:
+                Helper.printc(
+                    "\t" * 4
+                    + f">>>> [red]***COLLISION FOUND***[/red] [orange4]{collision_shape}[/orange4]: [green]\[{source_name}][/green] -> [cyan]\[{target_name}][cyan]",
+                    show_level="draw_connection",
+                )
+                break
+        return collision_found
+
     def get_collision_names(
         self,
         target_shape,
@@ -603,20 +785,6 @@ class Shape:
     def get_same_lanes_connection_points(self, direction, points_source, points_target):
         source_connection_points = points_source
         target_connection_points = points_target
-
-        # Helper.printc(
-        #     f"        >>>> {direction=} :",
-        #     show_level="draw_connection",
-        # )
-        # Helper.printc(
-        #     f"                source_connection: {source_connection_points.keys()}",
-        #     show_level="draw_connection",
-        # )
-
-        # Helper.printc(
-        #     f"                target_connection: {target_connection_points.keys()}",
-        #     show_level="draw_connection",
-        # )
 
         return source_connection_points, target_connection_points
 
@@ -818,7 +986,7 @@ class Shape:
             else:
                 return "up_left"
 
-    def draw_connection(self, painter: Painter, all_shapes: list):
+    def draw_connectionX(self, painter: Painter, all_shapes: list):
         """Draw connection between shapes"""
         if self.connection_traversed:
             Helper.printc(
@@ -902,6 +1070,728 @@ class Shape:
                 next_shape = connection.target
                 next_shape.draw_connection(painter, all_shapes)
 
+    def draw_connection(self, painter: Painter, all_shapes: list):
+        """Draw connection between shapes"""
+        if self.connection_traversed:
+            Helper.printc(
+                f"  [orange4]{self.name} is already traversed[/]",
+                show_level="draw_connection",
+            )
+            return
+
+        self.connection_traversed = True
+        self.painter = painter
+
+        Helper.printc(
+            f"Draw connection for shape: [red]\[{self.name}][/red]",
+            show_level="draw_connection",
+        )
+        if self.connection_to:
+            connection_style = "solid"
+
+            for connection in self.connection_to:
+                if self.is_same_pool(self, connection.target):
+                    Helper.printc(
+                        f"  Same lane: [red]\[{self.name}] -> \[{connection.target.name}][/red]",
+                        show_level="draw_connection",
+                    )
+                else:  ### different pool
+                    Helper.printc(
+                        f"  Diff Pool: \[{self.name}] -> \[{connection.target.name}]",
+                        show_level="draw_connection",
+                    )
+                    connection_style = "dashed"
+
+                connection_points = self.find_nearest_points(
+                    connection.target,
+                    connection.source_connection_side,
+                    connection.target_connection_side,
+                    all_shapes,
+                )
+
+                self.outgoing_points.append(connection_points[0])
+                connection.target.incoming_points.append(connection_points[-1])
+                painter.draw_connection(
+                    connection_points,
+                    connection.label,
+                    connection_style,
+                    painter.connector_font,
+                    painter.connector_font_size,
+                    painter.connector_font_colour,
+                    painter.connector_line_width,
+                    painter.connector_line_colour,
+                    painter.connector_arrow_colour,
+                    painter.connector_arrow_size,
+                )
+                next_shape = connection.target
+                next_shape.draw_connection(painter, all_shapes)
+
+    def calc_right_angle_count(
+        self, source_coord: Coordinate, target_coord: Coordinate
+    ):
+        """
+        Return the number of right angle points to be drawn
+        between source and target coordinates
+        """
+
+        source_side = source_coord.side
+        target_side = target_coord.side
+
+        right_angle_count = 0
+
+        # -- RIGHT side treatment --
+        if source_side == Side.RIGHT:
+            if target_side == Side.LEFT:
+                if (
+                    source_coord.x_pos < target_coord.x_pos
+                    and source_coord.y_pos == target_coord.y_pos
+                ):
+                    right_angle_count = 0
+                elif source_coord.x_pos < target_coord.x_pos:
+                    right_angle_count = 2
+                else:
+                    right_angle_count = 4
+
+            if target_side == Side.TOP:
+                if (
+                    source_coord.x_pos < target_coord.x_pos
+                    and source_coord.y_pos < target_coord.y_pos
+                ):
+                    right_angle_count = 1
+                else:
+                    right_angle_count = 3
+
+            if target_side == Side.RIGHT:
+                if (
+                    source_coord.x_pos == target_coord.x_pos
+                    and source_coord.y_pos != target_coord.y_pos
+                ):
+                    right_angle_count = 2
+                else:
+                    right_angle_count = 4
+
+            if target_side == Side.BOTTOM:
+                if (
+                    source_coord.x_pos < target_coord.x_pos
+                    and source_coord.y_pos > target_coord.y_pos
+                ):
+                    right_angle_count = 1
+                else:
+                    right_angle_count = 3
+
+        # -- LEFT side treatment --
+        if source_side == Side.LEFT:
+            if target_side == Side.RIGHT:
+                if (
+                    source_coord.x_pos > target_coord.x_pos
+                    and source_coord.y_pos == target_coord.y_pos
+                ):
+                    right_angle_count = 0
+                elif source_coord.x_pos > target_coord.x_pos:
+                    right_angle_count = 2
+                else:
+                    right_angle_count = 4
+
+            if target_side == Side.TOP:
+                if (
+                    source_coord.x_pos > target_coord.x_pos
+                    and source_coord.y_pos < target_coord.y_pos
+                ):
+                    right_angle_count = 1
+                else:
+                    right_angle_count = 3
+
+            if target_side == Side.LEFT:
+                if (
+                    source_coord.x_pos
+                    != target_coord.x_pos
+                    # and source_coord.y_pos == target_coord.y_pos
+                ):
+                    right_angle_count = 4
+                else:
+                    right_angle_count = 2
+
+            if target_side == Side.BOTTOM:
+                if (
+                    source_coord.x_pos > target_coord.x_pos
+                    and source_coord.y_pos > target_coord.y_pos
+                ):
+                    right_angle_count = 1
+                else:
+                    right_angle_count = 3
+
+        # -- TOP side treatment --
+        if source_side == Side.TOP:
+            if target_side == Side.BOTTOM:
+                if (
+                    source_coord.x_pos == target_coord.x_pos
+                    and source_coord.y_pos > target_coord.y_pos
+                ):
+                    right_angle_count = 0
+                elif source_coord.y_pos > target_coord.y_pos:
+                    right_angle_count = 2
+                else:
+                    right_angle_count = 4
+
+            if target_side == Side.RIGHT:
+                if (
+                    source_coord.x_pos > target_coord.x_pos
+                    and source_coord.y_pos > target_coord.y_pos
+                ):
+                    right_angle_count = 1
+                else:
+                    right_angle_count = 3
+
+            if target_side == Side.TOP:
+                if source_coord.y_pos == target_coord.y_pos:
+                    right_angle_count = 2
+                else:
+                    right_angle_count = 4
+
+            if target_side == Side.LEFT:
+                if (
+                    source_coord.x_pos < target_coord.x_pos
+                    and source_coord.y_pos > target_coord.y_pos
+                ):
+                    right_angle_count = 1
+                else:
+                    right_angle_count = 3
+
+        # -- BOTTOM side treatment --
+        if source_side == Side.BOTTOM:
+            if target_side == Side.TOP:
+                if (
+                    source_coord.x_pos == target_coord.x_pos
+                    and source_coord.y_pos < target_coord.y_pos
+                ):
+                    right_angle_count = 0
+                elif source_coord.y_pos < target_coord.y_pos:
+                    right_angle_count = 2
+                else:
+                    right_angle_count = 4
+
+            if target_side == Side.RIGHT:
+                if (
+                    source_coord.x_pos > target_coord.x_pos
+                    and source_coord.y_pos < target_coord.y_pos
+                ):
+                    right_angle_count = 1
+                else:
+                    right_angle_count = 3
+
+            if target_side == Side.BOTTOM:
+                if (
+                    source_coord.x_pos != target_coord.x_pos
+                    and source_coord.y_pos == target_coord.y_pos
+                ):
+                    right_angle_count = 2
+                else:
+                    right_angle_count = 4
+
+            if target_side == Side.LEFT:
+                if (
+                    source_coord.x_pos < target_coord.x_pos
+                    and source_coord.y_pos < target_coord.y_pos
+                ):
+                    right_angle_count = 1
+                else:
+                    right_angle_count = 3
+
+        # Helper.printc(
+        #     f"                  > Right Angle Count: {right_angle_count}",
+        #     show_level="draw_connection",
+        # )
+
+        return right_angle_count
+
+    def determine_right_angle_points(
+        self, source_coord: Coordinate, target_coord: Coordinate
+    ):
+        """Determine the points for a right angle connection"""
+
+        right_angle_count = self.calc_right_angle_count(source_coord, target_coord)
+
+        mid_point = []
+
+        if right_angle_count == 0:
+            return (source_coord.get_xy(), target_coord.get_xy())
+        elif right_angle_count == 1:
+            if source_coord.side == Side.RIGHT and target_coord.side in [
+                Side.TOP,
+                Side.BOTTOM,
+            ]:
+                mid_point.append((target_coord.x_pos, source_coord.y_pos))
+            if source_coord.side == Side.LEFT and target_coord.side in [
+                Side.TOP,
+                Side.BOTTOM,
+            ]:
+                mid_point.append((target_coord.x_pos, source_coord.y_pos))
+            if source_coord.side == Side.TOP and target_coord.side in [
+                Side.LEFT,
+                Side.RIGHT,
+            ]:
+                mid_point.append((source_coord.x_pos, target_coord.y_pos))
+            if source_coord.side == Side.BOTTOM and target_coord.side in [
+                Side.LEFT,
+                Side.RIGHT,
+            ]:
+                mid_point.append((source_coord.x_pos, target_coord.y_pos))
+            return (source_coord.get_xy(), mid_point[0], target_coord.get_xy())
+        elif right_angle_count == 2:
+            if source_coord.side == Side.RIGHT and target_coord.side in [
+                Side.LEFT,
+                Side.RIGHT,
+            ]:
+                if source_coord.x_pos == target_coord.x_pos:
+                    mid_point.extend(
+                        (
+                            (
+                                source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                source_coord.y_pos,
+                            ),
+                            (
+                                source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                target_coord.y_pos,
+                            ),
+                        )
+                    )
+                else:
+                    mid_point.extend(
+                        (
+                            (
+                                source_coord.x_pos
+                                + (abs(target_coord.x_pos - source_coord.x_pos) / 2),
+                                source_coord.y_pos,
+                            ),
+                            (
+                                source_coord.x_pos
+                                + (abs(target_coord.x_pos - source_coord.x_pos) / 2),
+                                target_coord.y_pos,
+                            ),
+                        )
+                    )
+            if source_coord.side == Side.LEFT and target_coord.side in [
+                Side.LEFT,
+                Side.RIGHT,
+            ]:
+                mid_point.extend(
+                    (
+                        (
+                            source_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            source_coord.y_pos,
+                        ),
+                        (
+                            source_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            target_coord.y_pos,
+                        ),
+                    )
+                )
+            if source_coord.side == Side.TOP and target_coord.side in [
+                Side.TOP,
+                Side.BOTTOM,
+            ]:
+                if source_coord.y_pos == target_coord.y_pos:
+                    mid_point.extend(
+                        (
+                            (
+                                source_coord.x_pos,
+                                source_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                            (
+                                target_coord.x_pos,
+                                source_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                        )
+                    )
+                else:
+                    mid_point.extend(
+                        (
+                            (
+                                source_coord.x_pos,
+                                target_coord.y_pos
+                                + ((source_coord.y_pos - target_coord.y_pos) / 2),
+                            ),
+                            (
+                                target_coord.x_pos,
+                                target_coord.y_pos
+                                + ((source_coord.y_pos - target_coord.y_pos) / 2),
+                            ),
+                        )
+                    )
+                # print(f"{mid_point=}")
+            if source_coord.side == Side.BOTTOM and target_coord.side in [
+                Side.TOP,
+                Side.BOTTOM,
+            ]:
+                mid_point.extend(
+                    (
+                        (
+                            source_coord.x_pos,
+                            source_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        ),
+                        (
+                            target_coord.x_pos,
+                            source_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        ),
+                    )
+                )
+            return (
+                source_coord.get_xy(),
+                mid_point[0],
+                mid_point[1],
+                target_coord.get_xy(),
+            )
+        elif right_angle_count == 3:
+            # RIGHT, TOP/BOTTOM
+            if source_coord.side == Side.RIGHT and target_coord.side in [
+                Side.TOP,
+                Side.BOTTOM,
+            ]:
+                mid_point.append(
+                    (
+                        source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        source_coord.y_pos,
+                    )
+                )
+                if target_coord.side == Side.TOP:
+                    mid_point.extend(
+                        (
+                            (
+                                source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                target_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                            (
+                                target_coord.x_pos,
+                                target_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                        )
+                    )
+                else:  # BOTTOM
+                    mid_point.extend(
+                        (
+                            (
+                                source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                target_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                            (
+                                target_coord.x_pos,
+                                target_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                        )
+                    )
+            # LEFT, TOM/BOTTOM
+            if source_coord.side == Side.LEFT and target_coord.side in [
+                Side.TOP,
+                Side.BOTTOM,
+            ]:
+                mid_point.append(
+                    (
+                        source_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        source_coord.y_pos,
+                    )
+                )
+                if target_coord.side == Side.TOP:
+                    mid_point.extend(
+                        (
+                            (
+                                source_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                target_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                            (
+                                target_coord.x_pos,
+                                target_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                        )
+                    )
+                else:  # BOTTOM
+                    mid_point.extend(
+                        (
+                            (
+                                source_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                target_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                            (
+                                target_coord.x_pos,
+                                target_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                        )
+                    )
+            # TOP, RIGHT/LEFT
+            if source_coord.side == Side.TOP and target_coord.side in [
+                Side.LEFT,
+                Side.RIGHT,
+            ]:
+                mid_point.append(
+                    (
+                        source_coord.x_pos,
+                        source_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                    )
+                )
+                if target_coord.side == Side.LEFT:
+                    mid_point.extend(
+                        (
+                            (
+                                target_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                source_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                            (
+                                target_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                target_coord.y_pos,
+                            ),
+                        )
+                    )
+                else:  # RIGHT
+                    mid_point.extend(
+                        (
+                            (
+                                target_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                source_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            ),
+                            (
+                                target_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                target_coord.y_pos,
+                            ),
+                        )
+                    )
+            # BOTTOM, RIGHT/LEFT
+            if source_coord.side == Side.BOTTOM and target_coord.side in [
+                Side.LEFT,
+                Side.RIGHT,
+            ]:
+                mid_point.append((source_coord.x_pos, source_coord.y_pos + 50))
+                if target_coord.side == Side.LEFT:
+                    mid_point.extend(
+                        (
+                            (
+                                target_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                source_coord.y_pos + 50,
+                            ),
+                            (
+                                target_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                target_coord.y_pos,
+                            ),
+                        )
+                    )
+                else:
+                    mid_point.extend(
+                        (
+                            (
+                                target_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                source_coord.y_pos + 50,
+                            ),
+                            (
+                                target_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                                target_coord.y_pos,
+                            ),
+                        )
+                    )
+            return (
+                source_coord.get_xy(),
+                mid_point[0],
+                mid_point[1],
+                mid_point[2],
+                target_coord.get_xy(),
+            )
+        elif right_angle_count == 4:
+            # RIGHT, LEFT/RIGHT
+            # ─┐ ◄─┐     ─┐  ┌─►
+            #  └───┘      └──┘
+            if source_coord.side == Side.RIGHT and target_coord.side in [
+                Side.LEFT,
+                Side.RIGHT,
+            ]:
+                mid_point.append(
+                    (
+                        source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        source_coord.y_pos,
+                    )
+                )
+                mid_point.append(
+                    (
+                        source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        source_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                    )
+                )
+                if target_coord.side == Side.LEFT:
+                    mid_point.append(
+                        (
+                            target_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            source_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                        )
+                    )
+                    mid_point.append(
+                        (
+                            target_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            target_coord.y_pos,
+                        )
+                    )
+                else:  # RIGHT
+                    mid_point.append(
+                        (
+                            target_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            source_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                        )
+                    )
+                    mid_point.append(
+                        (
+                            target_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                            target_coord.y_pos,
+                        )
+                    )
+
+            # LEFT, RIGHT/LEFT
+            # ┌─ ◄─┐     ┌─  ┌►
+            # └────┘     └───┘
+            if source_coord.side == Side.LEFT and target_coord.side in [
+                Side.LEFT,
+                Side.RIGHT,
+            ]:
+                mid_point.append(
+                    (
+                        (source_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH),
+                        source_coord.y_pos,
+                    )
+                )
+                mid_point.append(
+                    (
+                        (source_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH),
+                        source_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                    )
+                )
+                if target_coord.side == Side.LEFT:
+                    mid_point.append(
+                        (
+                            (target_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH),
+                            source_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                        )
+                    )
+                    mid_point.append(
+                        (
+                            (target_coord.x_pos - Configs.RIGHT_ANGLE_LINE_LENGTH),
+                            target_coord.y_pos,
+                        )
+                    )
+
+                else:  # RIGHT
+                    mid_point.append(
+                        (
+                            (target_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH),
+                            source_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                        )
+                    )
+                    mid_point.append(
+                        (
+                            (target_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH),
+                            target_coord.y_pos,
+                        )
+                    )
+
+            # TOP, BOTTOM/TOP
+            # ┌──┐      ┌──┐
+            # ▲  │         │
+            # └──┘      ┌──┘
+            #           ▼
+            if source_coord.side == Side.TOP and target_coord.side in [
+                Side.TOP,
+                Side.BOTTOM,
+            ]:
+                mid_point.append(
+                    (
+                        source_coord.x_pos,
+                        source_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                    )
+                )
+                mid_point.append(
+                    (
+                        source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                        source_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                    )
+                )
+                if target_coord.side == Side.TOP:
+                    mid_point.append(
+                        (
+                            source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                            target_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        )
+                    )
+                    mid_point.append(
+                        (
+                            target_coord.x_pos,
+                            target_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        )
+                    )
+                else:  # BOTTOM
+                    mid_point.append(
+                        (
+                            source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                            target_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        )
+                    )
+                    mid_point.append(
+                        (
+                            target_coord.x_pos,
+                            target_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        )
+                    )
+
+            # BOTTOM, TOP/BOTTOM
+            #           ▲
+            # ┌──┐      └──┐
+            # ▼  │         │
+            # └──┘      └──┘
+
+            if source_coord.side == Side.BOTTOM and target_coord.side in [
+                Side.TOP,
+                Side.BOTTOM,
+            ]:
+                mid_point.append(
+                    (
+                        source_coord.x_pos,
+                        source_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                    )
+                )
+                mid_point.append(
+                    (
+                        source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                        source_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                    )
+                )
+                if target_coord.side == Side.TOP:
+                    mid_point.append(
+                        (
+                            source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                            target_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        )
+                    )
+                    mid_point.append(
+                        (
+                            target_coord.x_pos,
+                            target_coord.y_pos - Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        )
+                    )
+                else:  # BOTTOM
+                    mid_point.append(
+                        (
+                            source_coord.x_pos + Configs.RIGHT_ANGLE_LINE_LENGTH * 2,
+                            target_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        )
+                    )
+                    mid_point.append(
+                        (
+                            target_coord.x_pos,
+                            target_coord.y_pos + Configs.RIGHT_ANGLE_LINE_LENGTH,
+                        )
+                    )
+
+            return (
+                source_coord.get_xy(),
+                mid_point[0],
+                mid_point[1],
+                mid_point[2],
+                mid_point[3],
+                target_coord.get_xy(),
+            )
+
 
 @dataclass
 class Box(Shape):
@@ -962,11 +1852,12 @@ class Box(Shape):
 class Circle(Shape):
     """Circle shape"""
 
-    text_coord: Coordinate = field(init=True, default=Coordinate())
+    text_coord: Coordinate = field(init=False)
 
     def __post_init__(self):
         super().__post_init__()
         self.radius = Configs.CIRCLE_RADIUS
+        self.text_coord = Coordinate()
         self.text_coord.x_pos = 0
         self.text_coord.y_pos = 0
         self.text_width: int = 0
@@ -977,8 +1868,9 @@ class Circle(Shape):
     def set_draw_position(self, painter: Painter) -> tuple:
         """Set draw position of circle"""
         self.origin_coord = self.coord
-        self.coord.x_pos = self.coord.x_pos + int(Configs.BOX_WIDTH / 2)
-        self.coord.y_pos = int(self.coord.y_pos + (Configs.BOX_HEIGHT / 2))
+        self.coord.x_pos = self.coord.x_pos + (Configs.BOX_WIDTH / 2)
+        self.coord.y_pos = self.coord.y_pos + (Configs.BOX_HEIGHT / 2)
+        self.coord.y_pos = self.coord.y_pos
 
         self.radius = Configs.CIRCLE_RADIUS
         Helper.printc(
@@ -1023,6 +1915,11 @@ class Circle(Shape):
         )
         self.text_coord.y_pos = self.coord.y_pos + self.radius
 
+        Helper.printc(
+            f"        >>>> 1. Shape Text: {self.name}, {self.text_coord.get_xy()}",
+            show_level="draw_position",
+        )
+
         return self.coord.x_pos, self.coord.y_pos, self.radius, self.radius
 
     def draw(self, painter: Painter):
@@ -1033,6 +1930,10 @@ class Circle(Shape):
             self.radius,
             outline_colour="black",
             fill_colour=self.fill_colour,
+        )
+        Helper.printc(
+            f"        >>>> 2. Shape Text: {self.name}, {self.text_coord.get_xy()}",
+            show_level="draw_position",
         )
         painter.draw_text(
             self.text_coord.x_pos,
