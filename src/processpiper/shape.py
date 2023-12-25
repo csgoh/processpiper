@@ -121,7 +121,7 @@ class Shape:
         self.connection_to.append(connection)
         target.connection_from.append(self)
 
-        ### Perform connection count validation
+        # --Perform connection count validation
         self_connection_count = len(self.connection_to) + len(self.connection_from)
         if self_connection_count > 4:
             raise TooManyConnectionsException(
@@ -161,18 +161,27 @@ class Shape:
         Returns:
             (tuple), (tuple): Nearest connection points between two sets of shapes
         """
-        points_source = {
-            "left_middle": self.left_middle.get_xy(),
-            "right_middle": self.right_middle.get_xy(),
-            "top_middle": self.top_middle.get_xy(),
-            "bottom_middle": self.bottom_middle.get_xy(),
-        }
-        points_target = {
-            "left_middle": target_shape.left_middle.get_xy(),
-            "right_middle": target_shape.right_middle.get_xy(),
-            "top_middle": target_shape.top_middle.get_xy(),
-            "bottom_middle": target_shape.bottom_middle.get_xy(),
-        }
+
+        points_source = {}
+        if self.left_middle.connected is False:
+            points_source["left_middle"] = self.left_middle.get_xy()
+        if self.right_middle.connected is False:
+            points_source["right_middle"] = self.right_middle.get_xy()
+        if self.top_middle.connected is False:
+            points_source["top_middle"] = self.top_middle.get_xy()
+        if self.bottom_middle.connected is False:
+            points_source["bottom_middle"] = self.bottom_middle.get_xy()
+
+        points_target = {}
+        if target_shape.left_middle.connected is False:
+            points_target["left_middle"] = target_shape.left_middle.get_xy()
+        if target_shape.right_middle.connected is False:
+            points_target["right_middle"] = target_shape.right_middle.get_xy()
+        if target_shape.top_middle.connected is False:
+            points_target["top_middle"] = target_shape.top_middle.get_xy()
+        if target_shape.bottom_middle.connected is False:
+            points_target["bottom_middle"] = target_shape.bottom_middle.get_xy()
+
         shortest_distance: int = float("inf")
 
         # Print just the keys of points_source
@@ -182,13 +191,6 @@ class Shape:
         Helper.printc(
             f"        >>>> target: {points_target.keys()}", show_level="draw_connection"
         )
-
-        # Helper.printc(
-        #     f"        >>>> {points_source=}", show_level="draw_connection"
-        # )
-        # Helper.printc(
-        #     f"        >>>> {points_target=}", show_level="draw_connection"
-        # )
 
         nearest_points = {}
         (
@@ -258,9 +260,33 @@ class Shape:
                         "distance": distance,
                     }
 
-        ### remove points from source and target shapes once they are used
-        del points_source[nearest_points["source_name"]]
-        del points_target[nearest_points["target_name"]]
+        # --mark points from source and target shapes once they are used
+        match nearest_points["source_name"]:
+            case "right_middle":
+                self.right_middle.connected = True
+            case "left_middle":
+                self.left_middle.connected = True
+            case "top_middle":
+                self.top_middle.connected = True
+            case "bottom_middle":
+                self.bottom_middle.connected = True
+
+        match nearest_points["target_name"]:
+            case "right_middle":
+                target_shape.right_middle.connected = True
+            case "left_middle":
+                target_shape.left_middle.connected = True
+            case "top_middle":
+                target_shape.top_middle.connected = True
+            case "bottom_middle":
+                target_shape.bottom_middle.connected = True
+
+        Helper.printc(
+            f"***** AFTER SRC: {len(points_source)}", show_level="draw_connection"
+        )
+        Helper.printc(
+            f"***** AFTER TGT: {len(points_source)}", show_level="draw_connection"
+        )
 
         Helper.printc(
             f"        >>>> FINAL Nearest : [green]{nearest_points['source_name']}[/green], [cyan]{nearest_points['target_name']}[/cyan]",
@@ -437,18 +463,25 @@ class Shape:
     ):
         """Find nearest connection points between two sets of shapes
         where source and target shapes are in the same pool but different lanes"""
-        points_source = {
-            "left_middle": self.left_middle.get_xy(),
-            "right_middle": self.right_middle.get_xy(),
-            "top_middle": self.top_middle.get_xy(),
-            "bottom_middle": self.bottom_middle.get_xy(),
-        }
-        points_target = {
-            "left_middle": target_shape.left_middle.get_xy(),
-            "right_middle": target_shape.right_middle.get_xy(),
-            "top_middle": target_shape.top_middle.get_xy(),
-            "bottom_middle": target_shape.bottom_middle.get_xy(),
-        }
+        points_source = {}
+        if self.left_middle.connected is False:
+            points_source["left_middle"] = self.left_middle.get_xy()
+        if self.right_middle.connected is False:
+            points_source["right_middle"] = self.right_middle.get_xy()
+        if self.top_middle.connected is False:
+            points_source["top_middle"] = self.top_middle.get_xy()
+        if self.bottom_middle.connected is False:
+            points_source["bottom_middle"] = self.bottom_middle.get_xy()
+
+        points_target = {}
+        if target_shape.left_middle.connected is False:
+            points_target["left_middle"] = target_shape.left_middle.get_xy()
+        if target_shape.right_middle.connected is False:
+            points_target["right_middle"] = target_shape.right_middle.get_xy()
+        if target_shape.top_middle.connected is False:
+            points_target["top_middle"] = target_shape.top_middle.get_xy()
+        if target_shape.bottom_middle.connected is False:
+            points_target["bottom_middle"] = target_shape.bottom_middle.get_xy()
         shortest_distance: int = float("inf")
         nearest_points = {}
         (
@@ -505,9 +538,26 @@ class Shape:
                         "distance": distance,
                     }
 
-        ### remove points from source and target shapes once they are used
-        del points_source[nearest_points["source_name"]]
-        del points_target[nearest_points["target_name"]]
+        # --mark points from source and target shapes once they are used
+        match nearest_points["source_name"]:
+            case "right_middle":
+                self.right_middle.connected = True
+            case "left_middle":
+                self.left_middle.connected = True
+            case "top_middle":
+                self.top_middle.connected = True
+            case "bottom_middle":
+                self.bottom_middle.connected = True
+
+        match nearest_points["target_name"]:
+            case "right_middle":
+                target_shape.right_middle.connected = True
+            case "left_middle":
+                target_shape.left_middle.connected = True
+            case "top_middle":
+                target_shape.top_middle.connected = True
+            case "bottom_middle":
+                target_shape.bottom_middle.connected = True
 
         Helper.printc(nearest_points, 35, show_level="draw_connection")
         return (
@@ -610,18 +660,25 @@ class Shape:
         """Find nearest connection points between two sets of shapes
         where source and target shapes are in the same pool but different lanes"""
 
-        points_source = {
-            "left_middle": self.left_middle.get_xy(),
-            "right_middle": self.right_middle.get_xy(),
-            "top_middle": self.top_middle.get_xy(),
-            "bottom_middle": self.bottom_middle.get_xy(),
-        }
-        points_target = {
-            "left_middle": target_shape.left_middle.get_xy(),
-            "right_middle": target_shape.right_middle.get_xy(),
-            "top_middle": target_shape.top_middle.get_xy(),
-            "bottom_middle": target_shape.bottom_middle.get_xy(),
-        }
+        points_source = {}
+        if self.left_middle.connected is False:
+            points_source["left_middle"] = self.left_middle.get_xy()
+        if self.right_middle.connected is False:
+            points_source["right_middle"] = self.right_middle.get_xy()
+        if self.top_middle.connected is False:
+            points_source["top_middle"] = self.top_middle.get_xy()
+        if self.bottom_middle.connected is False:
+            points_source["bottom_middle"] = self.bottom_middle.get_xy()
+
+        points_target = {}
+        if target_shape.left_middle.connected is False:
+            points_target["left_middle"] = target_shape.left_middle.get_xy()
+        if target_shape.right_middle.connected is False:
+            points_target["right_middle"] = target_shape.right_middle.get_xy()
+        if target_shape.top_middle.connected is False:
+            points_target["top_middle"] = target_shape.top_middle.get_xy()
+        if target_shape.bottom_middle.connected is False:
+            points_target["bottom_middle"] = target_shape.bottom_middle.get_xy()
         shortest_distance: int = float("inf")
         nearest_points = {}
 
@@ -667,11 +724,26 @@ class Shape:
                         "distance": distance,
                     }
 
-        ### remove points from source and target shapes once they are used
-        Helper.printc(f"*** {len(nearest_points)}", show_level="draw_connection")
-        if len(nearest_points) > 0:
-            del points_source[nearest_points["source_name"]]
-            del points_target[nearest_points["target_name"]]
+        # --mark points from source and target shapes once they are used
+        match nearest_points["source_name"]:
+            case "right_middle":
+                self.right_middle.connected = True
+            case "left_middle":
+                self.left_middle.connected = True
+            case "top_middle":
+                self.top_middle.connected = True
+            case "bottom_middle":
+                self.bottom_middle.connected = True
+
+        match nearest_points["target_name"]:
+            case "right_middle":
+                target_shape.right_middle.connected = True
+            case "left_middle":
+                target_shape.left_middle.connected = True
+            case "top_middle":
+                target_shape.top_middle.connected = True
+            case "bottom_middle":
+                target_shape.bottom_middle.connected = True
 
         return (
             nearest_points["source_points"],
