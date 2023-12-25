@@ -29,7 +29,7 @@ class Helper:
     show_pool_lane = False
     show_x_position = False
     show_y_position = False
-    show_draw_position = False
+    show_draw_position = True
     show_draw = True
     show_draw_connection = True
     show_general = False
