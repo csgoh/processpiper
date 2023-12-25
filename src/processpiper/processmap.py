@@ -261,10 +261,6 @@ class ProcessMap:
                         table.add_row(
                             str(col_idx + 1), item.name, str(item.coord.x_pos), str(item.coord.y_pos)
                         )
-                        # Helper.printc(
-                        #     f"      ({col_idx+1}) {item.name},      {item.x=}, {item.y=}",
-                        #     show_level="y_position",
-                        # )
                         item.set_draw_position(self.__painter)
                 if Helper.show_x_position:
                     console = Console()
