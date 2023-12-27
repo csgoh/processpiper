@@ -25,13 +25,13 @@ from rich.panel import Panel
 
 
 class Helper:
-    show_layout_grid = False
+    show_layout_grid = True
     show_pool_lane = False
     show_x_position = False
     show_y_position = False
     show_draw_position = True
     show_draw = True
-    show_draw_connection = True
+    show_draw_connection = False
     show_general = False
 
     @staticmethod
