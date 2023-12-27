@@ -1041,6 +1041,7 @@ class Painter:
         # -- draw the text label at the middle points
         num_points = len(points)
         mid = num_points // 2
+        
         # print(f"       MID={mid}")
         # font = ImageFont.truetype("arial.ttf", size=18)
         # left, _, right, bottom = font.getbbox("#")
@@ -1058,22 +1059,24 @@ class Painter:
 
         if start_x == end_x:  # Same X Axis
             # label = f"X:{label}"
-            text_width = font_width * len(label)
+            text_width = font_width  # * len(label)
             x_mid = start_x + 5
             if start_y > end_y:
                 y_mid = start_y - ((abs(start_y - end_y) / 2) + (font_height / 2))
             else:
                 y_mid = start_y + ((abs(start_y - end_y) / 2) - (font_height / 2))
+            # Helper.printc(f"        1. @@@ {points=}, {num_points=}, {mid=}, {(start_x, start_y)}, {(end_x, end_y)}, {(x_mid, y_mid)=}", show_level="draw_connection")
         elif start_y == end_y:  # Same Y Axis
             # label = f"Y:{label}"
-            text_width = font_width * len(label)
+            text_width = font_width # * len(label)
             if start_x > end_x:
                 x_mid = start_x - ((abs(start_x - end_x) / 2) + (text_width / 2))
             else:
                 x_mid = start_x + ((abs(start_x - end_x) / 2) - (text_width / 2))
             y_mid = start_y + 5
+            # Helper.printc(f"        2. @@@ {text_width=}, {points=}, {num_points=}, {mid=}, {(start_x, start_y)}, {(end_x, end_y)}, {(x_mid, y_mid)=}", show_level="draw_connection")
 
-
+        
         # -- draw text --
 
         self.draw_text(
