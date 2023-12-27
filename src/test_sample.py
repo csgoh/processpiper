@@ -320,8 +320,8 @@ def test_sample06():
 
 if __name__ == "__main__":
     #test_sample01()
-    #test_sample02()
-    #test_sample03()
-    test_sample04()
-    #test_sample05()
+    # test_sample02()
+    # test_sample03()
+    #test_sample04()
+    # test_sample05()
     #test_sample06()
