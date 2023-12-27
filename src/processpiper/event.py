@@ -181,7 +181,7 @@ class Message(Event):
 
         envelope_width = self.radius * 1.2
         envelope_height = self.radius * 0.9
-        circle_center = (self.coord.x_pos, self.y)
+        circle_center = (self.coord.x_pos, self.coord.y_pos)
         envelope_top_left = (
             circle_center[0] - envelope_width // 2,
             circle_center[1] - envelope_height // 2,
@@ -375,7 +375,7 @@ class Link(Event):
         pointy_x = self.coord.x_pos + (arrow_width * 0.3)
         arrow_vertices = [
             (pointy_x, self.coord.y_pos - arrow_height / 1.5),  # Top point
-            (self.coord.x_pos + (arrow_width * 1.4), self.y),  # Middle point
+            (self.coord.x_pos + (arrow_width * 1.4), self.coord.y_pos),  # Middle point
             (pointy_x, self.coord.y_pos + arrow_height / 1.5),  # Bottom point
             (pointy_x, self.coord.y_pos + arrow_neck_width),
             (
