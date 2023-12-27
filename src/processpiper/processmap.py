@@ -218,7 +218,9 @@ class ProcessMap:
                             * (Configs.BOX_WIDTH + Configs.HSPACE_BETWEEN_SHAPES)
                         )
                         item.coord.y_pos = 0
-                        table.add_row(str(col_idx + 1), item.name, str(item.coord.x_pos))
+                        table.add_row(
+                            str(col_idx + 1), item.name, str(item.coord.x_pos)
+                        )
                         # Helper.printc(
                         #     f"      ({col_idx+1}) {item.name},      {item.x=}",
                         #     show_level="x_position",
@@ -259,7 +261,10 @@ class ProcessMap:
                             )
                         )
                         table.add_row(
-                            str(col_idx + 1), item.name, str(item.coord.x_pos), str(item.coord.y_pos)
+                            str(col_idx + 1),
+                            item.name,
+                            str(item.coord.x_pos),
+                            str(item.coord.y_pos),
                         )
                         item.set_draw_position(self.__painter)
                 if Helper.show_x_position:
@@ -333,7 +338,9 @@ class ProcessMap:
                 self.__painter,
             )
             self.height = (
-                self._footer.coord.y_pos + self._footer.height + Configs.SURFACE_BOTTOM_MARGIN
+                self._footer.coord.y_pos
+                + self._footer.height
+                + Configs.SURFACE_BOTTOM_MARGIN
             )
         else:
             self.height = (
@@ -516,6 +523,8 @@ class ProcessMap:
                 connection.target,
                 connection.label,
                 connection.connection_type,
+                connection.source_connection_side,
+                connection.target_connection_side,
             )
 
             new_shape.connection_to[connection_index] = new_connection
@@ -530,6 +539,8 @@ class ProcessMap:
                     new_shape,
                     connection_to.label,
                     connection_to.connection_type,
+                    connection_to.source_connection_side,
+                    connection_to.target_connection_side,
                 )
                 shape.connection_to[shape_index] = new_connection
 
