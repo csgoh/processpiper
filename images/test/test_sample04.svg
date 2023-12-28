@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="2659" height="917" viewBox="0 0 2659 917">
+<defs>
+<path d="M34.5,432.0 V50" id="d0" />
+<path d="M88.5,198.0 V50" id="d1" />
+<path d="M88.5,434.0 V50" id="d2" />
+<path d="M77.5,660.5 V50" id="d3" />
+<path d="M99.5,677.5 V50" id="d4" />
+<path d="M36.5,824.5 V50" id="d5" />
+<path d="M88.5,848.0 V50" id="d6" />
+</defs>
+<rect x="0" y="0" width="5000" height="5000" fill="white" />
+<text x="20" y="20" font-size="26" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#0B5394">Break Glass Process</text>
+<rect x="20" y="59" width="50" height="644" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d0">
+<tspan dy="0em">Organisation</tspan>
+</textPath></text>
+<rect x="72" y="59" width="2569" height="160" fill="#D9D9D9" />
+<rect x="72" y="59" width="50" height="160" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d1">
+<tspan dy="0em">ProductA User</tspan>
+</textPath></text>
+<path d="M122,59 L122,219" stroke="white" stroke-width="1" />
+<rect x="72" y="221" width="2569" height="320" fill="#D9D9D9" />
+<rect x="72" y="221" width="50" height="320" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d2">
+<tspan dy="0em">Service Desk</tspan>
+</textPath></text>
+<path d="M122,221 L122,541" stroke="white" stroke-width="1" />
+<rect x="72" y="543" width="2569" height="160" fill="#D9D9D9" />
+<rect x="72" y="543" width="50" height="160" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d3">
+<tspan dy="0em">ProductA</tspan>
+</textPath></text>
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d4">
+<tspan dy="0em">Administrator</tspan>
+</textPath></text>
+<path d="M122,543 L122,703" stroke="white" stroke-width="1" />
+<rect x="20" y="715" width="50" height="160" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d5">
+<tspan dy="0em">Vendor</tspan>
+</textPath></text>
+<rect x="72" y="715" width="2569" height="160" fill="#D9D9D9" />
+<rect x="72" y="715" width="50" height="160" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d6">
+<tspan dy="0em">Service Desk</tspan>
+</textPath></text>
+<path d="M122,715 L122,875" stroke="white" stroke-width="1" />
+<circle cx="222.0" cy="139.0" r="30" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="208.0" y="169.0" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="black">start</text>
+<rect x="352" y="109" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="380.5" y="111.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Report</text>
+<text x="365.0" y="131.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">connectivity</text>
+<text x="385.5" y="149.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">issue</text>
+<rect x="532" y="271" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="561.5" y="293.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Triage</text>
+<path d="M762.0,271 L802,301.0 L762.0,331 L722,301.0 Z" fill="#9FC5E8" stroke="" stroke-width="1" />
+<text x="709.5" y="331" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="black">Azure AD issue?</text>
+<text x="754.0" y="290.5" font-size="23" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="black">X</text>
+<rect x="892" y="271" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="907.0" y="286.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Escalate to</text>
+<text x="913.0" y="303.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">IST team</text>
+<rect x="712" y="431" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="727.0" y="437.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Escalate to</text>
+<text x="732.5" y="454.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">ProductA</text>
+<text x="746.0" y="471.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">team</text>
+<rect x="2332" y="271" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="2348.0" y="293.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Notify user</text>
+<circle cx="2562.0" cy="301.0" r="30" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="2545.5" y="331.0" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="black">close</text>
+<circle cx="2562.0" cy="301.0" r="30" fill="none" stroke="black" stroke-width="3" />
+<rect x="892" y="593" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="903.5" y="595.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Verify Azure</text>
+<text x="901.0" y="616.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">AD Authentic</text>
+<text x="907.5" y="633.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">ation Issue</text>
+<rect x="1072" y="593" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="1104.0" y="595.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Notify</text>
+<text x="1099.0" y="616.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Vendor</text>
+<text x="1080.5" y="633.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Service Desk</text>
+<rect x="1252" y="593" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="1270.5" y="599.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Get break</text>
+<text x="1285.5" y="615.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">glass</text>
+<text x="1274.5" y="635.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">approval</text>
+<rect x="1432" y="593" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="1449.5" y="599.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Document</text>
+<text x="1446.0" y="616.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">reason and</text>
+<text x="1454.5" y="635.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">approval</text>
+<rect x="1612" y="593" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="1631.5" y="599.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Access to</text>
+<text x="1625.5" y="615.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">break glass</text>
+<text x="1637.0" y="633.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">account</text>
+<rect x="2152" y="593" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="2184.0" y="605.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Notify</text>
+<text x="2160.5" y="625.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Service Desk</text>
+<rect x="1792" y="593" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="1806.0" y="595.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">logout from</text>
+<text x="1805.5" y="615.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">break glass</text>
+<text x="1817.0" y="633.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">account</text>
+<circle cx="2022.0" cy="623.0" r="30" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="2010.0" y="653.0" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="black">end</text>
+<circle cx="2022.0" cy="623.0" r="30" fill="none" stroke="black" stroke-width="3" />
+<rect x="1072" y="765" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="1085.0" y="780.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Fix authenti</text>
+<text x="1084.5" y="797.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">cation issue</text>
+<rect x="1252" y="765" width="100" height="60" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="1284.0" y="767.0" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Notify</text>
+<text x="1256.5" y="788.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">ProductA Adm</text>
+<text x="1274.5" y="805.5" font-size="14" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">inistrator</text>
+<path d="M252.0,139.0 L352,139" stroke="#000000" stroke-width="1" />
+<text x="302.0" y="144.0" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M352,139 L337.0,149.0 L337.0,129.0 L352,139 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M452,139 L492.0,139" stroke="#000000" stroke-width="1" />
+<path d="M492.0,139 L492.0,301" stroke="#000000" stroke-width="1" />
+<path d="M492.0,301 L532,301" stroke="#000000" stroke-width="1" />
+<text x="497.0" y="220.0" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M532,301 L517.0,311.0 L517.0,291.0 L532,301 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M632,301 L722,301" stroke="#000000" stroke-width="1" />
+<text x="677.0" y="306" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M722,301 L707.0,311.0 L707.0,291.0 L722,301 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M802,301 L892,301" stroke="#000000" stroke-width="1" />
+<text x="835.0" y="306" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000">Yes</text>
+<path d="M892,301 L877.0,311.0 L877.0,291.0 L892,301 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M762,331 L762,431" stroke="#000000" stroke-width="1" />
+<text x="767" y="372.5" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000">No</text>
+<path d="M762,431 L752.0,416.0 L772.0,416.0 L762,431 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M812,461 L852.0,461" stroke="#000000" stroke-width="1" />
+<path d="M852.0,461 L852.0,623" stroke="#000000" stroke-width="1" />
+<path d="M852.0,623 L892,623" stroke="#000000" stroke-width="1" />
+<text x="857.0" y="542.0" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M892,623 L877.0,633.0 L877.0,613.0 L892,623 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M992,623 L1072,623" stroke="#000000" stroke-width="1" />
+<text x="1032.0" y="628" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M1072,623 L1057.0,633.0 L1057.0,613.0 L1072,623 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1172,623 L1252,623" stroke="#000000" stroke-width="1" />
+<text x="1212.0" y="628" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M1252,623 L1237.0,633.0 L1237.0,613.0 L1252,623 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1352,623 L1432,623" stroke="#000000" stroke-width="1" />
+<text x="1392.0" y="628" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M1432,623 L1417.0,633.0 L1417.0,613.0 L1432,623 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1532,623 L1612,623" stroke="#000000" stroke-width="1" />
+<text x="1572.0" y="628" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M1612,623 L1597.0,633.0 L1597.0,613.0 L1612,623 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1712,623 L1792,623" stroke="#000000" stroke-width="1" />
+<text x="1752.0" y="628" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M1792,623 L1777.0,633.0 L1777.0,613.0 L1792,623 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1892,623 L1992.0,623.0" stroke="#000000" stroke-width="1" />
+<text x="1942.0" y="628" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M1992.0,623.0 L1977.0,633.0 L1977.0,613.0 L1992.0,623.0 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1122,653 L1122,658" stroke="#000000" stroke-width="1" />
+<path d="M1122,663 L1122,668" stroke="#000000" stroke-width="1" />
+<path d="M1122,673 L1122,678" stroke="#000000" stroke-width="1" />
+<path d="M1122,683 L1122,688" stroke="#000000" stroke-width="1" />
+<path d="M1122,693 L1122,698" stroke="#000000" stroke-width="1" />
+<path d="M1122,703 L1122,708" stroke="#000000" stroke-width="1" />
+<path d="M1122,713 L1122,718" stroke="#000000" stroke-width="1" />
+<path d="M1122,723 L1122,728" stroke="#000000" stroke-width="1" />
+<path d="M1122,733 L1122,738" stroke="#000000" stroke-width="1" />
+<path d="M1122,743 L1122,748" stroke="#000000" stroke-width="1" />
+<path d="M1122,753 L1122,758" stroke="#000000" stroke-width="1" />
+<path d="M1122,763 L1122,765" stroke="#000000" stroke-width="1" />
+<text x="1127" y="709.0" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<circle cx="1122" cy="653" r="6" fill="white" stroke="#000000" stroke-width="1" />
+<path d="M1122,765 L1112.0,750.0 L1132.0,750.0 L1122,765 Z" fill="white" stroke="#000000" stroke-width="2" />
+<path d="M1172,795 L1252,795" stroke="#000000" stroke-width="1" />
+<text x="1212.0" y="800" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M1252,795 L1237.0,805.0 L1237.0,785.0 L1252,795 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1352,795 L1357,795" stroke="#000000" stroke-width="1" />
+<path d="M1362,795 L1367,795" stroke="#000000" stroke-width="1" />
+<path d="M1372,795 L1377,795" stroke="#000000" stroke-width="1" />
+<path d="M1382,795 L1387,795" stroke="#000000" stroke-width="1" />
+<path d="M1392,795 L1397,795" stroke="#000000" stroke-width="1" />
+<path d="M1402,795 L1407,795" stroke="#000000" stroke-width="1" />
+<path d="M1412,795 L1417,795" stroke="#000000" stroke-width="1" />
+<path d="M1422,795 L1427,795" stroke="#000000" stroke-width="1" />
+<path d="M1432,795 L1437,795" stroke="#000000" stroke-width="1" />
+<path d="M1442,795 L1447,795" stroke="#000000" stroke-width="1" />
+<path d="M1452,795 L1457,795" stroke="#000000" stroke-width="1" />
+<path d="M1462,795 L1467,795" stroke="#000000" stroke-width="1" />
+<path d="M1472,795 L1477,795" stroke="#000000" stroke-width="1" />
+<path d="M1482,795 L1487,795" stroke="#000000" stroke-width="1" />
+<path d="M1492,795 L1497,795" stroke="#000000" stroke-width="1" />
+<path d="M1502,795 L1507,795" stroke="#000000" stroke-width="1" />
+<path d="M1512,795 L1517,795" stroke="#000000" stroke-width="1" />
+<path d="M1522,795 L1527,795" stroke="#000000" stroke-width="1" />
+<path d="M1532,795 L1537,795" stroke="#000000" stroke-width="1" />
+<path d="M1542,795 L1547,795" stroke="#000000" stroke-width="1" />
+<path d="M1552,795 L1557,795" stroke="#000000" stroke-width="1" />
+<path d="M1562,795 L1567,795" stroke="#000000" stroke-width="1" />
+<path d="M1572,795 L1577,795" stroke="#000000" stroke-width="1" />
+<path d="M1582,795 L1587,795" stroke="#000000" stroke-width="1" />
+<path d="M1592,795 L1597,795" stroke="#000000" stroke-width="1" />
+<path d="M1602,795 L1607,795" stroke="#000000" stroke-width="1" />
+<path d="M1612,795 L1617,795" stroke="#000000" stroke-width="1" />
+<path d="M1622,795 L1627,795" stroke="#000000" stroke-width="1" />
+<path d="M1632,795 L1637,795" stroke="#000000" stroke-width="1" />
+<path d="M1642,795 L1647,795" stroke="#000000" stroke-width="1" />
+<path d="M1652,795 L1657,795" stroke="#000000" stroke-width="1" />
+<path d="M1662,795 L1667,795" stroke="#000000" stroke-width="1" />
+<path d="M1672,795 L1677,795" stroke="#000000" stroke-width="1" />
+<path d="M1682,795 L1687,795" stroke="#000000" stroke-width="1" />
+<path d="M1692,795 L1697,795" stroke="#000000" stroke-width="1" />
+<path d="M1702,795 L1707,795" stroke="#000000" stroke-width="1" />
+<path d="M1712,795 L1717,795" stroke="#000000" stroke-width="1" />
+<path d="M1722,795 L1727,795" stroke="#000000" stroke-width="1" />
+<path d="M1732,795 L1737,795" stroke="#000000" stroke-width="1" />
+<path d="M1742,795 L1747,795" stroke="#000000" stroke-width="1" />
+<path d="M1752,795 L1757,795" stroke="#000000" stroke-width="1" />
+<path d="M1762,795 L1767,795" stroke="#000000" stroke-width="1" />
+<path d="M1772,795 L1777,795" stroke="#000000" stroke-width="1" />
+<path d="M1782,795 L1787,795" stroke="#000000" stroke-width="1" />
+<path d="M1792,795 L1797,795" stroke="#000000" stroke-width="1" />
+<path d="M1802,795 L1807,795" stroke="#000000" stroke-width="1" />
+<path d="M1812,795 L1817,795" stroke="#000000" stroke-width="1" />
+<path d="M1822,795 L1827,795" stroke="#000000" stroke-width="1" />
+<path d="M1832,795 L1837,795" stroke="#000000" stroke-width="1" />
+<path d="M1842,795 L1847,795" stroke="#000000" stroke-width="1" />
+<path d="M1852,795 L1857,795" stroke="#000000" stroke-width="1" />
+<path d="M1862,795 L1867,795" stroke="#000000" stroke-width="1" />
+<path d="M1872,795 L1877,795" stroke="#000000" stroke-width="1" />
+<path d="M1882,795 L1887,795" stroke="#000000" stroke-width="1" />
+<path d="M1892,795 L1897,795" stroke="#000000" stroke-width="1" />
+<path d="M1902,795 L1907,795" stroke="#000000" stroke-width="1" />
+<path d="M1912,795 L1917,795" stroke="#000000" stroke-width="1" />
+<path d="M1922,795 L1927,795" stroke="#000000" stroke-width="1" />
+<path d="M1932,795 L1937,795" stroke="#000000" stroke-width="1" />
+<path d="M1942,795 L1947,795" stroke="#000000" stroke-width="1" />
+<path d="M1952,795 L1957,795" stroke="#000000" stroke-width="1" />
+<path d="M1962,795 L1967,795" stroke="#000000" stroke-width="1" />
+<path d="M1972,795 L1977,795" stroke="#000000" stroke-width="1" />
+<path d="M1982,795 L1987,795" stroke="#000000" stroke-width="1" />
+<path d="M1992,795 L1997,795" stroke="#000000" stroke-width="1" />
+<path d="M2002,795 L2007,795" stroke="#000000" stroke-width="1" />
+<path d="M2012,795 L2017,795" stroke="#000000" stroke-width="1" />
+<path d="M2022,795 L2027,795" stroke="#000000" stroke-width="1" />
+<path d="M2032,795 L2037,795" stroke="#000000" stroke-width="1" />
+<path d="M2042,795 L2047,795" stroke="#000000" stroke-width="1" />
+<path d="M2052,795 L2057,795" stroke="#000000" stroke-width="1" />
+<path d="M2062,795 L2067,795" stroke="#000000" stroke-width="1" />
+<path d="M2072,795 L2077,795" stroke="#000000" stroke-width="1" />
+<path d="M2082,795 L2087,795" stroke="#000000" stroke-width="1" />
+<path d="M2092,795 L2097,795" stroke="#000000" stroke-width="1" />
+<path d="M2102,795 L2107,795" stroke="#000000" stroke-width="1" />
+<path d="M2112,795 L2117,795" stroke="#000000" stroke-width="1" />
+<path d="M2122,795 L2127,795" stroke="#000000" stroke-width="1" />
+<path d="M2132,795 L2137,795" stroke="#000000" stroke-width="1" />
+<path d="M2142,795 L2147,795" stroke="#000000" stroke-width="1" />
+<path d="M2152,795 L2157,795" stroke="#000000" stroke-width="1" />
+<path d="M2162,795 L2167,795" stroke="#000000" stroke-width="1" />
+<path d="M2172,795 L2177,795" stroke="#000000" stroke-width="1" />
+<path d="M2182,795 L2187,795" stroke="#000000" stroke-width="1" />
+<path d="M2192,795 L2197,795" stroke="#000000" stroke-width="1" />
+<path d="M2202,653 L2202,653" stroke="#000000" stroke-width="1" />
+<path d="M2202,663 L2202,658" stroke="#000000" stroke-width="1" />
+<path d="M2202,673 L2202,668" stroke="#000000" stroke-width="1" />
+<path d="M2202,683 L2202,678" stroke="#000000" stroke-width="1" />
+<path d="M2202,693 L2202,688" stroke="#000000" stroke-width="1" />
+<path d="M2202,703 L2202,698" stroke="#000000" stroke-width="1" />
+<path d="M2202,713 L2202,708" stroke="#000000" stroke-width="1" />
+<path d="M2202,723 L2202,718" stroke="#000000" stroke-width="1" />
+<path d="M2202,733 L2202,728" stroke="#000000" stroke-width="1" />
+<path d="M2202,743 L2202,738" stroke="#000000" stroke-width="1" />
+<path d="M2202,753 L2202,748" stroke="#000000" stroke-width="1" />
+<path d="M2202,763 L2202,758" stroke="#000000" stroke-width="1" />
+<path d="M2202,773 L2202,768" stroke="#000000" stroke-width="1" />
+<path d="M2202,783 L2202,778" stroke="#000000" stroke-width="1" />
+<path d="M2202,793 L2202,788" stroke="#000000" stroke-width="1" />
+<text x="1777.0" y="800" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<circle cx="1352" cy="795" r="6" fill="white" stroke="#000000" stroke-width="1" />
+<path d="M2202,653 L2212.0,668.0 L2192.0,668.0 L2202,653 Z" fill="white" stroke="#000000" stroke-width="2" />
+<path d="M2202,593 L2202,462.0" stroke="#000000" stroke-width="1" />
+<path d="M2202,462.0 L2382,462.0" stroke="#000000" stroke-width="1" />
+<path d="M2382,462.0 L2382,331" stroke="#000000" stroke-width="1" />
+<text x="2292.0" y="467.0" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M2382,331 L2392.0,346.0 L2372.0,346.0 L2382,331 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M2432,301 L2532.0,301.0" stroke="#000000" stroke-width="1" />
+<text x="2482.0" y="306" font-size="14" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M2532.0,301.0 L2517.0,311.0 L2517.0,291.0 L2532.0,301.0 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+</svg>
