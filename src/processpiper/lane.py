@@ -24,15 +24,13 @@ from enum import Enum
 from itertools import count
 from .shape import Shape
 from .painter import Painter
+from .constants import Configs
 from .event import *
 from .activity import *
 from .gateway import *
-from .constants import Configs
 from .helper import Helper
 from .layout import Grid
 from .coordinate import Coordinate
-
-# from .helper import Helper
 
 
 class EventType:
@@ -131,12 +129,16 @@ class Lane:
         font_size: int = 0,
         font_colour: str = "",
         fill_colour: str = "",
+        outline_colour: str = "",
+        outline_width: int = 0,
         text_alignment: str = "",
     ) -> Shape:
         font = font or self.painter.element_font
         font_size = font_size or self.painter.element_font_size
         font_colour = font_colour or self.painter.element_font_colour
         fill_colour = fill_colour or self.painter.element_fill_colour
+        outline_colour = outline_colour or self.painter.element_outline_colour
+        outline_width = outline_width or self.painter.element_outline_width
         text_alignment = text_alignment or self.painter.element_text_alignment
 
         event_class = globals()[type]
@@ -147,6 +149,8 @@ class Lane:
         element.font_size = font_size
         element.font_colour = font_colour
         element.fill_colour = fill_colour
+        element.outline_colour = outline_colour
+        element.outline_width = outline_width
         element.text_alignment = text_alignment
         self.shapes.append(element)
         return element
@@ -160,7 +164,7 @@ class Lane:
     def draw(self) -> None:
         """Draw the lane"""
 
-        ### Draw the lane outline
+        # --Draw the lane outline
         self.painter.draw_box(
             self.coord.x_pos,
             self.coord.y_pos,
@@ -168,20 +172,22 @@ class Lane:
             self.height,
             self.background_fill_colour,
         )
-        ### Draw the lane text box
+        #  --Draw the lane text box
         self.painter.draw_box_with_vertical_text(
             self.coord.x_pos,
             self.coord.y_pos,
             Configs.LANE_TEXT_WIDTH,
             self.height,
             self.fill_colour,
+            "",
+            0,
             self.name,
             text_alignment=self.text_alignment,
             text_font=self.font,
             text_font_size=self.font_size,
             text_font_colour=self.font_colour,
         )
-        ### Draw the lane text divider
+        #  --Draw the lane text divider
         self.painter.draw_line(
             self.coord.x_pos + Configs.LANE_TEXT_WIDTH,
             self.coord.y_pos,
@@ -192,15 +198,15 @@ class Lane:
             5,
             "solid",
         )
-        ### Uncomment the following line to see the grid. Useful for debugging
-        ###self.painter.draw_grid()
+        #  --Uncomment the following line to see the grid. Useful for debugging
+        # self.painter.draw_grid()
 
     def draw_shape(self) -> None:
         """Draw the shapes in the lane"""
         if self.shapes:
             for shape in self.shapes:
                 Helper.printc(
-                    f"      Drawing shape: [bold][red]\[{shape.name}][/red][/bold], x={shape.coord.get_xy()}, w={shape.width}, h={shape.height}",
+                    f"      Drawing shape: [bold][red][{shape.name}][/red][/bold], x={shape.coord.get_xy()}, w={shape.width}, h={shape.height}",
                     rich_type="text",
                     show_level="draw",
                 )
@@ -222,10 +228,10 @@ class Lane:
     ) -> tuple[int, int, int, int]:
         """Set the draw position of the lane"""
 
-        ### Determine the number of rows for the lane
+        # --Determine the number of rows for the lane
         lane_row_count = layout_grid.get_lane_row_count(self.id)
 
-        ### Determine lane x and y position
+        #  --Determine lane x and y position
         self.coord.x_pos = (
             x
             if x > 0
@@ -235,7 +241,7 @@ class Lane:
         )
         self.coord.y_pos = y if y > 0 else Configs.SURFACE_TOP_MARGIN
 
-        ### Determine lane width
+        #  --Determine lane width
         max_column_count = layout_grid.get_max_column_count()
         Helper.printc(
             f"~~~ max column count: {max_column_count}", show_level="pool_lane"
@@ -252,7 +258,7 @@ class Lane:
             show_level="pool_lane",
         )
 
-        ### Determine lane height
+        # --Determine lane height
         self.height = (
             (lane_row_count * 60)
             + ((lane_row_count - 1) * Configs.VSPACE_BETWEEN_SHAPES)
