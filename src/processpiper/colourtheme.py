@@ -354,20 +354,20 @@ purplerain_colour_settings = {
         "title": {
             "title_font": DEFAULT_FONT,
             "title_font_size": DEFAULT_TITLE_FONT_SIZE,
-            "title_font_colour": "#FF005F",
+            "title_font_colour": "#660099",
         },
         "pool": {
             "pool_font": DEFAULT_FONT,
             "pool_font_size": DEFAULT_POOL_FONT_SIZE,
             "pool_font_colour": "white",
-            "pool_fill_colour": "#FF005F",
+            "pool_fill_colour": "#660099",
             "pool_text_alignment": "centre",
         },
         "lane": {
             "lane_font": DEFAULT_FONT,
             "lane_font_size": DEFAULT_LANE_FONT_SIZE,
             "lane_font_colour": "white",
-            "lane_fill_colour": "#FF005F",
+            "lane_fill_colour": "#660099",
             "lane_text_alignment": "centre",
             "lane_background_fill_colour": "#D9D9D9",
         },
@@ -392,7 +392,7 @@ purplerain_colour_settings = {
         "footer": {
             "footer_font": DEFAULT_FONT,
             "footer_font_size": DEFAULT_FOOTER_FONT_SIZE,
-            "footer_font_colour": "#FF005F",
+            "footer_font_colour": "#660099",
         },
     },
 }
@@ -449,6 +449,109 @@ rubyred_colour_settings = {
     },
 }
 
+teal_waters_colour_settings = {
+    "theme": "TEALWATERS",
+    "settings": {
+        "background": {
+            "background_fill_colour": "white",
+        },
+        "title": {
+            "title_font": DEFAULT_FONT,
+            "title_font_size": DEFAULT_TITLE_FONT_SIZE,
+            "title_font_colour": "#008B8B",
+        },
+        "pool": {
+            "pool_font": DEFAULT_FONT,
+            "pool_font_size": DEFAULT_POOL_FONT_SIZE,
+            "pool_font_colour": "white",
+            "pool_fill_colour": "#008B8B",
+            "pool_text_alignment": "centre",
+        },
+        "lane": {
+            "lane_font": DEFAULT_FONT,
+            "lane_font_size": DEFAULT_LANE_FONT_SIZE,
+            "lane_font_colour": "white",
+            "lane_fill_colour": "#008B8B",
+            "lane_text_alignment": "centre",
+            "lane_background_fill_colour": "#D9D9D9",
+        },
+        "element": {
+            "element_font": DEFAULT_FONT,
+            "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
+            "element_font_colour": "black",
+            "element_fill_colour": "#00CCCC",
+            "element_outline_colour": DEFAULT_OUTLINE_COLOUR,
+            "element_outline_width": DEFAULT_OUTLINE_WIDTH,
+            "element_text_alignment": "centre",
+        },
+        "connector": {
+            "connector_font": DEFAULT_FONT,
+            "connector_font_size": DEFAULT_CONNECTOR_FONT_SIZE,
+            "connector_font_colour": "#000000",
+            "connector_line_width": 1,
+            "connector_line_colour": "#000000",
+            "connector_arrow_colour": "#000000",
+            "connector_arrow_size": DEFAULT_CONNECTOR_ARROW_SIZE,
+        },
+        "footer": {
+            "footer_font": DEFAULT_FONT,
+            "footer_font_size": DEFAULT_FOOTER_FONT_SIZE,
+            "footer_font_colour": "#008B8B",
+        },
+    },
+}
+
+seafoam_colour_settings = {
+    "theme": "SEAFOAMS",
+    "settings": {
+        "background": {
+            "background_fill_colour": "white",
+        },
+        "title": {
+            "title_font": DEFAULT_FONT,
+            "title_font_size": DEFAULT_TITLE_FONT_SIZE,
+            "title_font_colour": "#3F889F",
+        },
+        "pool": {
+            "pool_font": DEFAULT_FONT,
+            "pool_font_size": DEFAULT_POOL_FONT_SIZE,
+            "pool_font_colour": "white",
+            "pool_fill_colour": "#3F889F",
+            "pool_text_alignment": "centre",
+        },
+        "lane": {
+            "lane_font": DEFAULT_FONT,
+            "lane_font_size": DEFAULT_LANE_FONT_SIZE,
+            "lane_font_colour": "white",
+            "lane_fill_colour": "#3F889F",
+            "lane_text_alignment": "centre",
+            "lane_background_fill_colour": "#D9D9D9",
+        },
+        "element": {
+            "element_font": DEFAULT_FONT,
+            "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
+            "element_font_colour": "black",
+            "element_fill_colour": "#80CBC4",
+            "element_outline_colour": DEFAULT_OUTLINE_COLOUR,
+            "element_outline_width": DEFAULT_OUTLINE_WIDTH,
+            "element_text_alignment": "centre",
+        },
+        "connector": {
+            "connector_font": DEFAULT_FONT,
+            "connector_font_size": DEFAULT_CONNECTOR_FONT_SIZE,
+            "connector_font_colour": "#000000",
+            "connector_line_width": 1,
+            "connector_line_colour": "#000000",
+            "connector_arrow_colour": "#000000",
+            "connector_arrow_size": DEFAULT_CONNECTOR_ARROW_SIZE,
+        },
+        "footer": {
+            "footer_font": DEFAULT_FONT,
+            "footer_font_size": DEFAULT_FOOTER_FONT_SIZE,
+            "footer_font_colour": "#3F889F",
+        },
+    },
+}
 
 ColourThemesSettings = [
     default_colour_settings,
@@ -459,6 +562,8 @@ ColourThemesSettings = [
     sunflower_colour_settings,
     purplerain_colour_settings,
     rubyred_colour_settings,
+    teal_waters_colour_settings,
+    seafoam_colour_settings,
     ### Add more themes here
 ]
 
