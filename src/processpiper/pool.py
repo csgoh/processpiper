@@ -78,6 +78,8 @@ class Pool:
                 Configs.POOL_TEXT_WIDTH,
                 self.height,
                 self.fill_colour,
+                "",
+                0,
                 self.name,
                 text_alignment=self.text_alignment,
                 text_font=self.font,
