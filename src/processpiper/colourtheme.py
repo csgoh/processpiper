@@ -30,7 +30,8 @@ DEFAULT_ELEMENT_FONT_SIZE = 14
 DEFAULT_CONNECTOR_FONT_SIZE = 14
 DEFAULT_CONNECTOR_ARROW_SIZE = 15
 DEFAULT_FOOTER_FONT_SIZE = 18
-
+DEFAULT_OUTLINE_COLOUR = "black"
+DEFAULT_OUTLINE_WIDTH = 1
 
 default_colour_settings = {
     "theme": "DEFAULT",
@@ -63,6 +64,8 @@ default_colour_settings = {
             "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
             "element_font_colour": "black",
             "element_fill_colour": "darkgrey",
+            "element_outline_colour": DEFAULT_OUTLINE_COLOUR,
+            "element_outline_width": DEFAULT_OUTLINE_WIDTH,
             "element_text_alignment": "centre",
         },
         "connector": {
@@ -113,6 +116,8 @@ greywoof_colour_settings = {
             "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
             "element_font_colour": "black",
             "element_fill_colour": "#A9A9A9",
+            "element_outline_colour": DEFAULT_OUTLINE_COLOUR,
+            "element_outline_width": DEFAULT_OUTLINE_WIDTH,
             "element_text_alignment": "centre",
         },
         "connector": {
@@ -163,6 +168,8 @@ bluemountain_colour_settings = {
             "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
             "element_font_colour": "black",
             "element_fill_colour": "#9FC5E8",
+            "element_outline_colour": DEFAULT_OUTLINE_COLOUR,
+            "element_outline_width": DEFAULT_OUTLINE_WIDTH,
             "element_text_alignment": "centre",
         },
         "connector": {
@@ -213,6 +220,8 @@ orangepeel_colour_settings = {
             "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
             "element_font_colour": "black",
             "element_fill_colour": "#F6B26B",
+            "element_outline_colour": DEFAULT_OUTLINE_COLOUR,
+            "element_outline_width": DEFAULT_OUTLINE_WIDTH,
             "element_text_alignment": "centre",
         },
         "connector": {
@@ -263,6 +272,8 @@ greenturtle_colour_settings = {
             "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
             "element_font_colour": "black",
             "element_fill_colour": "#93C47D",
+            "element_outline_colour": DEFAULT_OUTLINE_COLOUR,
+            "element_outline_width": DEFAULT_OUTLINE_WIDTH,
             "element_text_alignment": "centre",
         },
         "connector": {
@@ -282,12 +293,172 @@ greenturtle_colour_settings = {
     },
 }
 
+sunflower_colour_settings = {
+    "theme": "SUNFLOWER",
+    "settings": {
+        "background": {
+            "background_fill_colour": "white",
+        },
+        "title": {
+            "title_font": DEFAULT_FONT,
+            "title_font_size": DEFAULT_TITLE_FONT_SIZE,
+            "title_font_colour": "#FFC300",
+        },
+        "pool": {
+            "pool_font": DEFAULT_FONT,
+            "pool_font_size": DEFAULT_POOL_FONT_SIZE,
+            "pool_font_colour": "black",
+            "pool_fill_colour": "#FFC300",
+            "pool_text_alignment": "centre",
+        },
+        "lane": {
+            "lane_font": DEFAULT_FONT,
+            "lane_font_size": DEFAULT_LANE_FONT_SIZE,
+            "lane_font_colour": "white",
+            "lane_fill_colour": "#38761D",
+            "lane_text_alignment": "centre",
+            "lane_background_fill_colour": "#D9D9D9",
+        },
+        "element": {
+            "element_font": DEFAULT_FONT,
+            "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
+            "element_font_colour": "black",
+            "element_fill_colour": "#FFF68F",
+            "element_outline_colour": DEFAULT_OUTLINE_COLOUR,
+            "element_outline_width": DEFAULT_OUTLINE_WIDTH,
+            "element_text_alignment": "centre",
+        },
+        "connector": {
+            "connector_font": DEFAULT_FONT,
+            "connector_font_size": DEFAULT_CONNECTOR_FONT_SIZE,
+            "connector_font_colour": "#000000",
+            "connector_line_width": 1,
+            "connector_line_colour": "#000000",
+            "connector_arrow_colour": "#000000",
+            "connector_arrow_size": DEFAULT_CONNECTOR_ARROW_SIZE,
+        },
+        "footer": {
+            "footer_font": DEFAULT_FONT,
+            "footer_font_size": DEFAULT_FOOTER_FONT_SIZE,
+            "footer_font_colour": "#FFC300",
+        },
+    },
+}
+
+purplerain_colour_settings = {
+    "theme": "PURPLERAIN",
+    "settings": {
+        "background": {
+            "background_fill_colour": "white",
+        },
+        "title": {
+            "title_font": DEFAULT_FONT,
+            "title_font_size": DEFAULT_TITLE_FONT_SIZE,
+            "title_font_colour": "#FF005F",
+        },
+        "pool": {
+            "pool_font": DEFAULT_FONT,
+            "pool_font_size": DEFAULT_POOL_FONT_SIZE,
+            "pool_font_colour": "white",
+            "pool_fill_colour": "#FF005F",
+            "pool_text_alignment": "centre",
+        },
+        "lane": {
+            "lane_font": DEFAULT_FONT,
+            "lane_font_size": DEFAULT_LANE_FONT_SIZE,
+            "lane_font_colour": "white",
+            "lane_fill_colour": "#FF005F",
+            "lane_text_alignment": "centre",
+            "lane_background_fill_colour": "#D9D9D9",
+        },
+        "element": {
+            "element_font": DEFAULT_FONT,
+            "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
+            "element_font_colour": "black",
+            "element_fill_colour": "#B19CD9",
+            "element_outline_colour": DEFAULT_OUTLINE_COLOUR,
+            "element_outline_width": DEFAULT_OUTLINE_WIDTH,
+            "element_text_alignment": "centre",
+        },
+        "connector": {
+            "connector_font": DEFAULT_FONT,
+            "connector_font_size": DEFAULT_CONNECTOR_FONT_SIZE,
+            "connector_font_colour": "#000000",
+            "connector_line_width": 1,
+            "connector_line_colour": "#000000",
+            "connector_arrow_colour": "#000000",
+            "connector_arrow_size": DEFAULT_CONNECTOR_ARROW_SIZE,
+        },
+        "footer": {
+            "footer_font": DEFAULT_FONT,
+            "footer_font_size": DEFAULT_FOOTER_FONT_SIZE,
+            "footer_font_colour": "#FF005F",
+        },
+    },
+}
+
+rubyred_colour_settings = {
+    "theme": "RUBYRED",
+    "settings": {
+        "background": {
+            "background_fill_colour": "white",
+        },
+        "title": {
+            "title_font": DEFAULT_FONT,
+            "title_font_size": DEFAULT_TITLE_FONT_SIZE,
+            "title_font_colour": "#FF005F",
+        },
+        "pool": {
+            "pool_font": DEFAULT_FONT,
+            "pool_font_size": DEFAULT_POOL_FONT_SIZE,
+            "pool_font_colour": "white",
+            "pool_fill_colour": "#FF005F",
+            "pool_text_alignment": "centre",
+        },
+        "lane": {
+            "lane_font": DEFAULT_FONT,
+            "lane_font_size": DEFAULT_LANE_FONT_SIZE,
+            "lane_font_colour": "white",
+            "lane_fill_colour": "#FF005F",
+            "lane_text_alignment": "centre",
+            "lane_background_fill_colour": "#D9D9D9",
+        },
+        "element": {
+            "element_font": DEFAULT_FONT,
+            "element_font_size": DEFAULT_ELEMENT_FONT_SIZE,
+            "element_font_colour": "black",
+            "element_fill_colour": "#FF869A",
+            "element_outline_colour": DEFAULT_OUTLINE_COLOUR,
+            "element_outline_width": DEFAULT_OUTLINE_WIDTH,
+            "element_text_alignment": "centre",
+        },
+        "connector": {
+            "connector_font": DEFAULT_FONT,
+            "connector_font_size": DEFAULT_CONNECTOR_FONT_SIZE,
+            "connector_font_colour": "#000000",
+            "connector_line_width": 1,
+            "connector_line_colour": "#000000",
+            "connector_arrow_colour": "#000000",
+            "connector_arrow_size": DEFAULT_CONNECTOR_ARROW_SIZE,
+        },
+        "footer": {
+            "footer_font": DEFAULT_FONT,
+            "footer_font_size": DEFAULT_FOOTER_FONT_SIZE,
+            "footer_font_colour": "#FF005F",
+        },
+    },
+}
+
+
 ColourThemesSettings = [
     default_colour_settings,
     greywoof_colour_settings,
     bluemountain_colour_settings,
     orangepeel_colour_settings,
     greenturtle_colour_settings,
+    sunflower_colour_settings,
+    purplerain_colour_settings,
+    rubyred_colour_settings,
     ### Add more themes here
 ]
 
