@@ -62,6 +62,8 @@ class Painter:
     element_font_size: int
     element_font_colour: str
     element_fill_colour: str
+    element_outline_colour: str
+    element_outline_width: int
     element_text_alignment: str
 
     connector_font: str
@@ -117,6 +119,8 @@ class Painter:
             self.element_font_size,
             self.element_font_colour,
             self.element_fill_colour,
+            self.element_outline_colour,
+            self.element_outline_width,
             self.element_text_alignment,
         ) = self.colour_theme.get_colour_theme_settings("element")
         (
@@ -185,7 +189,14 @@ class Painter:
             self.draw_box(0, 0, self.width, self.height, self.background_fill_colour)
 
     def draw_box(
-        self, x: int, y: int, width: int, height: int, box_fill_colour: str = ""
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        box_fill_colour: str = "",
+        box_outline_colour: str = "",
+        box_outline_width=0,
     ) -> None:
         """Draw a rectagle
 
@@ -224,7 +235,14 @@ class Painter:
         )
 
     def draw_rounded_box(
-        self, x: int, y: int, width: int, height: int, box_fill_colour: str = ""
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        box_fill_colour: str = "",
+        box_outline_colour: str = "",
+        box_outline_width: int = 0,
     ) -> None:
         """Draw a rounded rectagle
 
@@ -244,6 +262,8 @@ class Painter:
         box_width: int,
         box_height: int,
         box_fill_colour: int,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -264,15 +284,29 @@ class Painter:
                     box_y1,
                     box_width,
                     box_height,
-                    box_fill_colour=box_fill_colour,
+                    box_fill_colour,
+                    box_outline_colour,
+                    box_outline_width,
                 )
             case "rounded":
                 self.draw_rounded_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                    box_x1,
+                    box_y1,
+                    box_width,
+                    box_height,
+                    box_fill_colour,
+                    box_outline_colour,
+                    box_outline_width,
                 )
             case "arrowhead":
                 self.draw_arrowhead_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                    box_x1,
+                    box_y1,
+                    box_width,
+                    box_height,
+                    box_fill_colour,
+                    box_outline_colour,
+                    box_outline_width,
                 )
             case _:
                 raise ValueError("Invalid style")
@@ -339,6 +373,8 @@ class Painter:
         box_width: int,
         box_height: int,
         box_fill_colour: str,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -376,14 +412,16 @@ class Painter:
                     box_width,
                     box_height,
                     box_fill_colour=box_fill_colour,
+                    box_outline_colour=box_outline_colour,
+                    box_outline_width=box_outline_width,
                 )
             case "rounded":
                 self.draw_rounded_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                    box_x1, box_y1, box_width, box_height, box_fill_colour, box_outline_colour, box_outline_width
                 )
             case "arrowhead":
                 self.draw_arrowhead_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                    box_x1, box_y1, box_width, box_height, box_fill_colour, box_outline_colour, box_outline_width
                 )
             case _:
                 raise ValueError("Invalid style")
@@ -1015,7 +1053,7 @@ class Painter:
         connector_arrow_colour: str = "",
         connector_arrow_size: int = 0,
     ):
-        print(f"        >>>> POINTS : {points}")
+        Helper.printc(f"        >>>> POINTS : {points}", show_level="draw_connection")
 
         if points is None:
             return
@@ -1041,7 +1079,7 @@ class Painter:
         # -- draw the text label at the middle points
         num_points = len(points)
         mid = num_points // 2
-        
+
         # print(f"       MID={mid}")
         # font = ImageFont.truetype("arial.ttf", size=18)
         # left, _, right, bottom = font.getbbox("#")
@@ -1068,7 +1106,7 @@ class Painter:
             # Helper.printc(f"        1. @@@ {points=}, {num_points=}, {mid=}, {(start_x, start_y)}, {(end_x, end_y)}, {(x_mid, y_mid)=}", show_level="draw_connection")
         elif start_y == end_y:  # Same Y Axis
             # label = f"Y:{label}"
-            text_width = font_width # * len(label)
+            text_width = font_width  # * len(label)
             if start_x > end_x:
                 x_mid = start_x - ((abs(start_x - end_x) / 2) + (text_width / 2))
             else:
@@ -1076,7 +1114,6 @@ class Painter:
             y_mid = start_y + 5
             # Helper.printc(f"        2. @@@ {text_width=}, {points=}, {num_points=}, {mid=}, {(start_x, start_y)}, {(end_x, end_y)}, {(x_mid, y_mid)=}", show_level="draw_connection")
 
-        
         # -- draw text --
 
         self.draw_text(
@@ -1378,7 +1415,10 @@ class PNGPainter(Painter):
             height (int): Rectangle height
             box_fill_colour (str: HTML colour name or hex code. Eg. #FFFFFF or LightGreen)
         """
-        shape = super().draw_box(x, y, width, height)
+        shape = super().draw_box(
+            x, y, width, height, box_fill_colour, box_outline_colour, box_outline_width
+        )
+
         if box_outline_colour:
             self.__cr.rectangle(
                 shape,
@@ -1411,6 +1451,8 @@ class PNGPainter(Painter):
         box_width: int,
         box_height: int,
         box_fill_colour: int,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -1424,6 +1466,8 @@ class PNGPainter(Painter):
             box_width=box_width,
             box_height=box_height,
             box_fill_colour=box_fill_colour,
+            box_outline_colour=box_outline_colour,
+            box_outline_width=box_outline_width,
             text=text,
             text_alignment=text_alignment,
             text_font=text_font,
@@ -1444,6 +1488,8 @@ class PNGPainter(Painter):
         box_width: int,
         box_height: int,
         box_fill_colour: str,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -1459,6 +1505,8 @@ class PNGPainter(Painter):
             box_width=box_width,
             box_height=box_height,
             box_fill_colour=box_fill_colour,
+            box_outline_colour=box_outline_colour,
+            box_outline_width=box_outline_width,
             text=text,
             text_alignment=text_alignment,
             text_font=text_font,
@@ -1655,7 +1703,14 @@ class SVGPainter(Painter):
         self.elements.append(rectangle)
 
     def draw_rounded_box(
-        self, x: int, y: int, width: int, height: int, box_fill_colour: str
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        box_fill_colour: str,
+        box_outline_colour: str,
+        box_outline_width: int,
     ) -> None:
         """Draw a rounded rectagle
 
@@ -1668,7 +1723,15 @@ class SVGPainter(Painter):
         """
         radius, shape = super().draw_rounded_box(x, y, width, height)
         rectangle = dw.Rectangle(
-            x, y, width, height, rx=radius, ry=radius, fill=box_fill_colour
+            x,
+            y,
+            width,
+            height,
+            rx=radius,
+            ry=radius,
+            fill=box_fill_colour,
+            stroke=box_outline_colour,
+            stroke_width=box_outline_width,
         )
 
         self.elements.append(rectangle)
@@ -1680,6 +1743,8 @@ class SVGPainter(Painter):
         box_width: int,
         box_height: int,
         box_fill_colour: int,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -1693,6 +1758,8 @@ class SVGPainter(Painter):
             box_width=box_width,
             box_height=box_height,
             box_fill_colour=box_fill_colour,
+            box_outline_colour=box_outline_colour,
+            box_outline_width=box_outline_width,
             text=text,
             text_alignment=text_alignment,
             text_font=text_font,
@@ -1724,6 +1791,8 @@ class SVGPainter(Painter):
         box_width: int,
         box_height: int,
         box_fill_colour: str,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -1739,6 +1808,8 @@ class SVGPainter(Painter):
             box_width=box_width,
             box_height=box_height,
             box_fill_colour=box_fill_colour,
+            box_outline_colour=box_outline_colour,
+            box_outline_width=box_outline_width,
             text=text,
             text_alignment=text_alignment,
             text_font=text_font,
