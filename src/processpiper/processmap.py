@@ -369,10 +369,8 @@ class ProcessMap:
 
         return orphan_elements
 
-    def draw(self) -> None:
-        """Draw the process map"""
-
-        # --Validate the process map--
+    def _validate(self) -> None:
+        # *** Validate the process map ***
 
         # --Ensure title is defined--
         if (len(self.title) == 0) and (self._title is None):
@@ -397,6 +395,11 @@ class ProcessMap:
             raise UnconnectedElementException(
                 f"The following element(s) are defined but not connected to other element(s): \n{orphan_elements}"
             )
+
+    def draw(self) -> None:
+        """Draw the process map"""
+
+        self._validate()
 
         # --Replace the class type of shapes with the correct class type
         for pool in self._pools:
@@ -515,6 +518,8 @@ class ProcessMap:
         new_shape.font_size = current_shape.font_size
         new_shape.font_colour = current_shape.font_colour
         new_shape.fill_colour = current_shape.fill_colour
+        new_shape.outline_colour = current_shape.outline_colour
+        new_shape.outline_width = current_shape.outline_width
         new_shape.text_alignment = current_shape.text_alignment
         new_shape.connection_to = current_shape.connection_to
         for connection_index, connection in enumerate(current_shape.connection_to):
