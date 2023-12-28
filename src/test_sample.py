@@ -1,4 +1,4 @@
-from processpiper import ProcessMap, EventType, ActivityType, GatewayType
+from .processpiper import ProcessMap, EventType, ActivityType, GatewayType
 
 
 def test_sample01():
@@ -100,8 +100,6 @@ def test_sample02():
 
 
 def test_sample03():
-    from processpiper import ProcessMap, EventType, ActivityType, GatewayType
-
     with ProcessMap(
         "Break Glass Process", colour_theme="BLUEMOUNTAIN"
     ) as my_process_map:
@@ -177,8 +175,6 @@ def test_sample03():
 
 
 def test_sample04():
-    from processpiper import ProcessMap, EventType, ActivityType, GatewayType
-
     with ProcessMap(
         "Break Glass Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
     ) as my_process_map:
@@ -254,8 +250,6 @@ def test_sample04():
 
 
 def test_sample05():
-    from processpiper import ProcessMap, EventType, ActivityType, GatewayType
-
     with ProcessMap(
         "Test Max Connection Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
     ) as my_process_map:
@@ -281,8 +275,6 @@ def test_sample05():
 
 
 def test_sample06():
-    from processpiper import ProcessMap, EventType, ActivityType, GatewayType
-
     with ProcessMap(
         "Test Max Connection Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
     ) as my_process_map:
@@ -319,9 +311,9 @@ def test_sample06():
 
 
 if __name__ == "__main__":
-    #test_sample01()
-    # test_sample02()
-    # test_sample03()
-    #test_sample04()
-    # test_sample05()
-    #test_sample06()
+    test_sample01()
+    test_sample02()
+    test_sample03()
+    #test_sample04()  # -- Test validation
+    #test_sample05()  # -- Test validation
+    #test_sample06()  # -- Test validation

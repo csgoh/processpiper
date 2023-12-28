@@ -1,5 +1,5 @@
-from processpiper import ProcessMap, EventType, ActivityType, GatewayType
-from processpiper.coordinate import Side
+from .processpiper import ProcessMap, EventType, ActivityType, GatewayType
+
 
 # with ProcessMap("This is a test diagram", colour_theme="GREENTURTLE") as my_process_map:
 #     with my_process_map.add_lane("Customer") as lane1:

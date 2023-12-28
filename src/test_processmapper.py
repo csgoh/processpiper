@@ -1,7 +1,7 @@
 import inspect
 import os.path
-from processpiper import ProcessMap, EventType, ActivityType, GatewayType
-from processpiper.coordinate import Side
+from .processpiper import ProcessMap, EventType, ActivityType, GatewayType
+from .processpiper.coordinate import Side
 
 
 def prep_for_test(filename: str):
@@ -10,13 +10,7 @@ def prep_for_test(filename: str):
     if not os.path.exists(path):
         os.mkdir(path)
 
-    output_file = os.path.join(path, filename)
-
-    ### remove the file if it exists
-    # if os.path.exists(output_file):
-    #     os.remove(output_file)
-
-    return output_file
+    return os.path.join(path, filename)
 
 
 def test_case1():
@@ -325,19 +319,26 @@ def test_case10(colour_theme: str = "BLUEMOUNTAIN"):
             branching1.connect(package_goods).connect(branching6)
 
             branching2.connect(check_extra_insurance).connect(branching3)
-            
+
             # branching2.connect(request_quote).connect(assign_carrier).connect(
             #     branching5
             # )
             branching2.connect(request_quote).connect(assign_carrier).connect(
-                branching5, source_connection_side=Side.RIGHT, target_connection_side=Side.BOTTOM
+                branching5,
+                source_connection_side=Side.RIGHT,
+                target_connection_side=Side.BOTTOM,
             )
             branching3.connect(take_insurance).connect(branching4)
             # branching3.connect(fill_in_post).connect(branching4)
-            
+
             branching3.connect(fill_in_post).connect(branching4, source_connection_side=Side.BOTTOM, target_connection_side=Side.BOTTOM)
+
             # branching4.connect(branching5).connect(branching6)
-            branching4.connect(branching5).connect(branching6, source_connection_side=Side.RIGHT, target_connection_side=Side.TOP)
+            branching4.connect(branching5).connect(
+                branching6,
+                source_connection_side=Side.RIGHT,
+                target_connection_side=Side.TOP,
+            )
 
             branching6.connect(add_paperwork).connect(end)
 
@@ -485,24 +486,27 @@ def test_case17():
 
 
 if __name__ == "__main__":
-    # test_case1()
-    # test_case2()  # Regression test
-    # test_case3()
-    # test_case4()  # Regression test
-    # test_case5()  # Regression test
-    # test_case6()  # To fix / fixed
-    # test_case7()
-    # test_case8()
-    # test_case9()
-    test_case10(colour_theme="DEFAULT")  # To fix
-    # test_case10(colour_theme="BLUEMOUNTAIN")
-    # test_case10(colour_theme="ORANGEPEEL")
-    # test_case10(colour_theme="GREENTURTLE")
-    # test_case10(colour_theme="GREYWOOF")
-    # test_case11()
-    # test_case12()  # Regression test
-    # test_case13()  # to fix / fixed
-    # test_case14()
-    # test_case15()
-    # test_case16()
-    # test_case17()
+    test_case1()
+    test_case2()
+    test_case3()
+    test_case4()
+    test_case5()
+    test_case6()
+    test_case7()
+    test_case8()
+    test_case9()
+    test_case10(colour_theme="DEFAULT")
+    test_case10(colour_theme="BLUEMOUNTAIN")
+    test_case10(colour_theme="ORANGEPEEL")
+    test_case10(colour_theme="GREENTURTLE")
+    test_case10(colour_theme="GREYWOOF")
+    test_case10(colour_theme="SUNFLOWER")
+    test_case10(colour_theme="PURPLERAIN")
+    test_case10(colour_theme="RUBYRED")
+    test_case11()
+    test_case12()
+    test_case13()
+    test_case14()
+    test_case15()
+    test_case16()
+    test_case17()
