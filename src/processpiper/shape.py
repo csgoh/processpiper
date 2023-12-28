@@ -136,19 +136,6 @@ class Shape:
         self.connection_to.append(connection)
         target.connection_from.append(self)
 
-        # --Check if either source_connection_side and target_connection_side is equal to Side.NONE, but not both.
-        if source_connection_side == Side.NONE and target_connection_side != Side.NONE:
-            raise ValueError(
-                f"Please set source_connection_side parameter for element '{self.name}'.\n"
-                + "source_connection_side and target_connection_side parameters must be both Side.NONE or both not Side.NONE.\n"
-            )
-
-        if source_connection_side != Side.NONE and target_connection_side == Side.NONE:
-            raise ValueError(
-                f"Please set target_connection_side parameter for element '{target.name}'.\n"
-                + "source_connection_side and target_connection_side parameters must be both Side.NONE or both not Side.NONE.\n"
-            )
-
         # --Perform connection count validation
         self_connection_count = len(self.connection_to) + len(self.connection_from)
         if self_connection_count > 4:
@@ -179,24 +166,13 @@ class Shape:
         x2, y2 = target
         return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
 
-    def find_nearest_points(
-        self,
-        target: TShape,
-        source_side: Side = Side.NONE,
-        target_side: Side = Side.NONE,
-        all_shapes: list = [],
-    ):
-        """
-        Draws a connection between two shapes
-        """
+    def find_both_sides_nearest_points(self, target, all_shapes):
+        Helper.printc(
+            "        >>>> Searching nearest points", show_level="draw_connection"
+        )
 
         source_attributes = dir(self)
         target_attributes = dir(target)
-
-        # Helper.printc(
-        #     f"        Original target: [yellow]{target.name}=({target.coord.get_xy()})[/yellow]",
-        #     show_level="draw_connection",
-        # )
 
         source_middle_attributes = [
             attribute for attribute in source_attributes if "middle" in attribute
@@ -205,95 +181,190 @@ class Shape:
             attribute for attribute in target_attributes if "middle" in attribute
         ]
 
+        return self.find_nearest(
+            target, all_shapes, source_middle_attributes, target_middle_attributes
+        )
+
+    def find_source_side_nearest_points(
+        self, target: TShape, all_shapes: list, target_side: Side
+    ):
         Helper.printc(
-            f"        Specified Sides: [yellow]({source_side}) => ({target_side})[/yellow]",
+            "        >>>> Searching nearest target side", show_level="draw_connection"
+        )
+
+        source_attributes = dir(self)
+        target_attributes = dir(target)
+
+        source_middle_attributes = [
+            attribute for attribute in source_attributes if "middle" in attribute
+        ]
+        target_middle_attributes = [
+            attribute
+            for attribute in target_attributes
+            if f"{target_side.name.lower()}_middle" in attribute
+        ]
+
+        return self.find_nearest(
+            target, all_shapes, source_middle_attributes, target_middle_attributes
+        )
+
+    def find_target_side_nearest_points(
+        self, target: TShape, all_shapes: list, source_side: Side
+    ):
+        Helper.printc(
+            "        >>>> Searching nearest target side", show_level="draw_connection"
+        )
+
+        source_attributes = dir(self)
+        target_attributes = dir(target)
+
+        source_middle_attributes = [
+            attribute
+            for attribute in source_attributes
+            if f"{source_side.name.lower()}_middle" in attribute
+        ]
+        target_middle_attributes = [
+            attribute for attribute in target_attributes if "middle" in attribute
+        ]
+
+        return self.find_nearest(
+            target, all_shapes, source_middle_attributes, target_middle_attributes
+        )
+
+    def find_nearest(
+        self, target, all_shapes, source_middle_attributes, target_middle_attributes
+    ):
+        shortest_duration = float("inf")
+
+        shortest_source_coord: Coordinate
+        shortest_target_coord: Coordinate
+
+        points = ()
+        for source_point in source_middle_attributes:
+            source_point_coord = getattr(self, source_point)
+
+            if (
+                source_point_coord.connected is True
+            ):  # Skip if source point is already connected
+                continue
+
+            for target_point in target_middle_attributes:
+                target_point_coord = getattr(target, target_point)
+
+                if (
+                    target_point_coord.connected is True
+                ):  # Skip if target point is already connected
+                    continue
+
+                # -- find out how many right angle points
+                points = self.determine_right_angle_points(
+                    source_point_coord, target_point_coord
+                )
+                Helper.printc(
+                    "\t" * 2
+                    + f"Checking collision between {source_point_coord.side} and {target_point_coord.side}",
+                    show_level="draw_connection",
+                )
+                # -- for each right angle line, check for collision
+                if self.is_collision(points, target, all_shapes):
+                    continue
+
+                distance = self.get_distance(
+                    source_point_coord.get_xy(),
+                    target_point_coord.get_xy(),
+                )
+                if distance < shortest_duration:
+                    shortest_duration = int(distance)
+                    shortest_source_coord = source_point_coord
+                    shortest_target_coord = target_point_coord
+
+                    Helper.printc(
+                        "\t" * 3
+                        + f"{shortest_duration=} between source.{shortest_source_coord.side} and target.{shortest_target_coord.side}",
+                        show_level="draw_connection",
+                    )
+
+        shortest_source_coord.connected = True
+        shortest_target_coord.connected = True
+
+        points = self.determine_right_angle_points(
+            shortest_source_coord, shortest_target_coord
+        )
+
+        Helper.printc(
+            "\t" * 2
+            + f">>>> FINAL Nearest : [green]{shortest_source_coord.side}[/green], [cyan]{shortest_target_coord.side}[/cyan]",
             show_level="draw_connection",
         )
-        # Helper.printc(
-        #     f"        >>>> source: {source_middle_attributes}",
-        #     show_level="draw_connection",
-        # )
-        # Helper.printc(
-        #     f"        >>>> target: {target_middle_attributes}",
-        #     show_level="draw_connection",
-        # )
+
+        return points
+
+    def find_specified_points(self, target, source_side, target_side):
+        Helper.printc(
+            "\t" * 2
+            + f">>>> Getting coordinates for specified sides [yellow]{source_side} -> {target_side}[/yellow]",
+            show_level="draw_connection",
+        )
+        source_attributes = dir(self)
+        target_attributes = dir(target)
+
+        source_middle_attributes = [
+            attribute for attribute in source_attributes if "middle" in attribute
+        ]
+        target_middle_attributes = [
+            attribute for attribute in target_attributes if "middle" in attribute
+        ]
+
+        if any(source_side.name.lower() in s for s in source_middle_attributes):
+            source_coord = getattr(self, f"{source_side.name.lower()}_middle")
+        if any(target_side.name.lower() in s for s in target_middle_attributes):
+            target_coord = getattr(target, f"{target_side.name.lower()}_middle")
+
+        source_coord.connected = True
+        target_coord.connected = True
+
+        points = self.determine_right_angle_points(source_coord, target_coord)
+
+        return points
+
+    def find_connection_points(
+        self,
+        target: TShape,
+        source_side: Side = Side.NONE,
+        target_side: Side = Side.NONE,
+        all_shapes: list = None,
+    ):
+        """
+        Draws a connection between two shapes
+        """
+
+        if all_shapes is None:
+            all_shapes = []
+
+        Helper.printc(
+            f"        Specified Sides: [yellow]({source_side}) "
+            + f"=> ({target_side})[/yellow]",
+            show_level="draw_connection",
+        )
+
         if source_side is Side.NONE and target_side is Side.NONE:
-            Helper.printc(
-                f"        >>>> Searching nearest points", show_level="draw_connection"
+            # -- find the nearest points and sides
+            points = self.find_both_sides_nearest_points(target, all_shapes)
+        elif source_side is Side.NONE and target_side is not Side.NONE:
+            # -- find the nearest source side
+            points = self.find_source_side_nearest_points(
+                target, all_shapes, target_side
             )
-
-            shortest_duration = float("inf")
-
-            shortest_source_coord: Coordinate
-            shortest_target_coord: Coordinate
-
-            points = ()
-            for source_point in source_middle_attributes:
-                source_point_coord = getattr(self, source_point)
-                if source_point_coord.connected is True:
-                    continue
-                for target_point in target_middle_attributes:
-                    target_point_coord = getattr(target, target_point)
-                    # Helper.printc(
-                    #     f"        In loop target: [yellow]({target.name}={target.coord.get_xy()})[/yellow]",
-                    #     show_level="draw_connection",
-                    # )
-                    if target_point_coord.connected is True:
-                        continue
-
-                    # Helper.printc(
-                    #     f"              > source: [green]{source_point_coord.side}[/green], target: [cyan]{target_point_coord.side}[/cyan]",
-                    #     35,
-                    #     show_level="draw_connection",
-                    # )
-                    # -- check for collision
-                    points = self.determine_right_angle_points(
-                        source_point_coord, target_point_coord
-                    )
-                    if self.is_collision(points, target, all_shapes):
-                        continue
-
-                    distance = self.get_distance(
-                        source_point_coord.get_xy(),
-                        target_point_coord.get_xy(),
-                    )
-                    if distance < shortest_duration:
-                        shortest_duration = int(distance)
-                        shortest_source_coord = source_point_coord
-                        shortest_target_coord = target_point_coord
-
-                        # print(
-                        #     f"      {shortest_duration=} between source.{shortest_source_coord.side} and target.{shortest_target_coord.side}"
-                        # )
-
-            shortest_source_coord.connected = True
-            shortest_target_coord.connected = True
-
-            points = self.determine_right_angle_points(
-                shortest_source_coord, shortest_target_coord
+            pass
+        elif source_side is not Side.NONE and target_side is Side.NONE:
+            # -- find the nearest target side
+            points = self.find_target_side_nearest_points(
+                target, all_shapes, source_side
             )
-
-            Helper.printc(
-                f"        >>>> FINAL Nearest : [green]{shortest_source_coord.side}[/green], [cyan]{shortest_target_coord.side}[/cyan]",
-                show_level="draw_connection",
-            )
-
-            # draw_connection(image, points, source.name + "->" + target.name)
+            pass
         else:
-            Helper.printc(
-                f"        >>>> Getting coordinates for specified sides [yellow]{source_side} -> {target_side}[/yellow]",
-                show_level="draw_connection",
-            )
-            if any(source_side.name.lower() in s for s in source_middle_attributes):
-                source_coord = getattr(self, source_side.name.lower() + "_middle")
-            if any(target_side.name.lower() in s for s in target_middle_attributes):
-                target_coord = getattr(target, target_side.name.lower() + "_middle")
-
-            source_coord.connected = True
-            target_coord.connected = True
-
-            points = self.determine_right_angle_points(source_coord, target_coord)
-            # draw_connection(image, points, source.name + "->" + target.name)
+            # -- both sides have been specified
+            points = self.find_specified_points(target, source_side, target_side)
 
         return points
 
@@ -513,7 +584,7 @@ class Shape:
             )
             if collision_found:
                 Helper.printc(
-                    "\t" * 4
+                    "\t" * 3
                     + f">>>> [red]***COLLISION FOUND***[/red] [orange4]{collision_shape}[/orange4], {target_shape.name=}",
                     show_level="draw_connection",
                 )
@@ -588,7 +659,7 @@ class Shape:
                     )
                     connection_style = "dashed"
 
-                connection_points = self.find_nearest_points(
+                connection_points = self.find_connection_points(
                     connection.target,
                     connection.source_connection_side,
                     connection.target_connection_side,
