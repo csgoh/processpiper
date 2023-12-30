@@ -49,6 +49,10 @@ class EmptyProcessMapException(Exception):
     pass
 
 
+class DanglingElementException(Exception):
+    pass
+
+
 @dataclass
 class ProcessMap:
     """Process Map Class"""
@@ -369,6 +373,20 @@ class ProcessMap:
 
         return orphan_elements
 
+    def _get_dangling_elements(self) -> list:
+        dangling_elements = []
+        for pool in self._pools:
+            for lane in pool.lanes:
+                for shape in lane.shapes:
+                    if (
+                        type(shape)
+                        not in [Start, End, Timer, Message, MessageEnd, Signal, SignalEnd]
+                        and len(shape.connection_from) == 0
+                    ):
+                        dangling_elements.append(shape.name)
+
+        return dangling_elements
+
     def _validate(self) -> None:
         # *** Validate the process map ***
 
@@ -394,6 +412,13 @@ class ProcessMap:
         if len(orphan_elements) > 0:
             raise UnconnectedElementException(
                 f"The following element(s) are defined but not connected to other element(s): \n{orphan_elements}"
+            )
+
+        # --Ensure non event elements has at least one incoming connection
+        dangling_elements = self._get_dangling_elements()
+        if len(dangling_elements) > 0:
+            raise DanglingElementException(
+                f"The following element(s) have no incoming connection defined: \n{dangling_elements}"
             )
 
     def draw(self) -> None:
