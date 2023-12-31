@@ -231,12 +231,12 @@ lane: Lane 1
     (end) as end
     
 start-(top, top)->t1: label 1 2 3
-t1-(bottom, bottom)->t2-(top, right)->end: finishing
+t1-(bottom, bottom)->t2->end: finishing
 """    
 #start-"label1"->t1-"label2"->end
 
 gen_code, img = render(input_syntax)
 
-show_code_with_line_number(gen_code)
+#show_code_with_line_number(gen_code)
 console = Console()
 img.save("images/test/test_diagram.png")
