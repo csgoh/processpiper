@@ -219,9 +219,24 @@ gateway_2_end->gateway_1_end
 gateway_1_end->activity_14->end
 """
 
+input_syntax = """
+title: Demo
+width: 900
+colourtheme: BLUEMOUNTAIN
+pool: Pool 1
+lane: Lane 1
+    (start) as start
+    [task 1] as t1
+    [task 2] as t2
+    (end) as end
+    
+start-(top, top)->t1: label 1 2 3
+t1-(bottom, bottom)->t2-(top, right)->end: finishing
+"""    
+#start-"label1"->t1-"label2"->end
+
 gen_code, img = render(input_syntax)
 
 show_code_with_line_number(gen_code)
 console = Console()
-console.print(gen_code)
 img.save("images/test/test_diagram.png")
