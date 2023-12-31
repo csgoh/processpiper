@@ -2,6 +2,8 @@ import datetime
 import re
 import os
 from PIL import Image
+from rich.console import Console
+from unittest import result
 
 
 def parse_and_generate_code(input_str, png_output_file):
@@ -30,6 +32,7 @@ def parse_and_generate_code(input_str, png_output_file):
     process_map_width_code = f", width={process_map_width}"
     code_lines = [
         "from processpiper import ProcessMap, EventType, ActivityType, GatewayType",
+        "from processpiper.coordinate import Side",
         f'with ProcessMap("{process_map_title}"{colour_theme_code if colour_theme is not None else ""}{process_map_width_code if process_map_width > 0 else ""}) as my_process_map:',
     ]
 
@@ -132,29 +135,122 @@ def parse_pool(code_lines, pool_id, line):
     return pool_found, pool_id
 
 
+# def parse_connection(input_str, code_lines):
+#     """
+#     The function parses a string input containing connection information and generates code lines to
+#     establish those connections in Python.
+#     """
+#     console = Console()
+#     connections_list = [
+#         line.split("->") for line in input_str.strip().split("\n") if "->" in line
+#     ]
+#     console.print(f">{connections_list=}")
+
+#     for connection in connections_list:
+#         console.print("\t" * 1 + f">{connection=}")
+#         for i in range(len(connection) - 1):
+#             element_name, label = get_element_name_and_label(connection[i].strip())
+#             target_element_name, target_label = get_element_name_and_label(
+#                 connection[i + 1].strip()
+#             )
+#             console.print("\t" * 2 + f">{element_name=}, {label=}")
+#             console.print("\t" * 2 + f">{target_element_name=}, {target_label=}")
+#             if target_label:
+#                 code_lines.append(
+#                     f'        {element_name}.connect({target_element_name}, "{target_label}")'
+#                 )
+#             else:
+#                 code_lines.append(
+#                     f"        {element_name}.connect({target_element_name})"
+#                 )
+
+
 def parse_connection(input_str, code_lines):
     """
     The function parses a string input containing connection information and generates code lines to
     establish those connections in Python.
     """
+    console = Console()
     connections_list = [
         line.split("->") for line in input_str.strip().split("\n") if "->" in line
     ]
+    console.print(f">{connections_list=}")
 
     for connection in connections_list:
+        console.print("\t" * 1 + f">{connection=}")
         for i in range(len(connection) - 1):
-            element_name, label = get_element_name_and_label(connection[i].strip())
-            target_element_name, target_label = get_element_name_and_label(
-                connection[i + 1].strip()
+            (
+                element_name,
+                label,
+                source_source_side,
+                source_target_side,
+            ) = get_element_name_and_label(connection[i].strip())
+            (
+                target_element_name,
+                target_label,
+                source_side,
+                target_side,
+            ) = get_element_name_and_label(connection[i + 1].strip())
+            console.print(
+                "\t" * 2
+                + f">{element_name=}, {label=}, {source_source_side=}, {source_target_side=}"
             )
-            if label:
-                code_lines.append(
-                    f'        {element_name}.connect({target_element_name}, "{label}")'
-                )
+            console.print(
+                "\t" * 2
+                + f">{target_element_name=}, {target_label=}, {source_side=}, {target_side=}"
+            )
+            if target_label:
+                if source_source_side is not None and source_target_side is not None:
+                    code_lines.append(
+                        " " * 8
+                        + f"{element_name}.connect({target_element_name}, "
+                        + f'"{target_label}", '
+                        + f"source_connection_side=Side.{source_source_side.upper()}, "
+                        + f"target_connection_side=Side.{source_target_side.upper()})"
+                    )
+                if source_source_side is not None and source_target_side is None:
+                    code_lines.append(
+                        " " * 8
+                        + f"{element_name}.connect({target_element_name}, "
+                        + f'"{target_label}", '
+                        + f"source_connection_side=Side.{source_source_side.upper()})"
+                    )
+                if source_source_side is None and source_target_side is not None:
+                    code_lines.append(
+                        " " * 8
+                        + f"{element_name}.connect({target_element_name}, "
+                        + f'"{target_label}", '
+                        + f"target_connection_side=Side.{source_target_side.upper()})"
+                    )
+                if source_source_side is None and source_target_side is None:
+                    code_lines.append(
+                        " " * 8
+                        + f'{element_name}.connect({target_element_name}, "{target_label}")'
+                    )
             else:
-                code_lines.append(
-                    f"        {element_name}.connect({target_element_name})"
-                )
+                if source_source_side is not None and source_target_side is not None:
+                    code_lines.append(
+                        " " * 8
+                        + f"{element_name}.connect({target_element_name}, "
+                        + f"source_connection_side=Side.{source_source_side.upper()}, "
+                        + f"target_connection_side=Side.{source_target_side.upper()})"
+                    )
+                if source_source_side is not None and source_target_side is None:
+                    code_lines.append(
+                        " " * 8
+                        + f"{element_name}.connect({target_element_name}, "
+                        + f"source_connection_side=Side.{source_side.upper()})"
+                    )
+                if source_source_side is None and source_target_side is not None:
+                    code_lines.append(
+                        " " * 8
+                        + f"{element_name}.connect({target_element_name}, "
+                        + f"target_connection_side=Side.{source_target_side.upper()})"
+                    )
+                if source_source_side is None and source_target_side is None:
+                    code_lines.append(
+                        " " * 8 + f"{element_name}.connect({target_element_name})"
+                    )
 
 
 def get_element_name_and_label(connection: str):
@@ -162,11 +258,49 @@ def get_element_name_and_label(connection: str):
     The function extracts the element name and label from a given connection string using regular
     expressions.
     """
-    pattern = r"(\w+)-\"(.*?)\""
+
+    console = Console()
+    console.print("\t" * 3 + f"#{connection=}")
+    pattern = r"(.*): (.*)"
     if result := re.search(pattern, connection):
-        return result[1], result[2]
-    else:
-        return connection, None
+        return result[1], result[2], None, None
+
+    element_name = connection.split(":")[0]
+    direction_pattern = r"(.*)-(?:\((.*?),(.*?)\))?"
+    if match := re.search(direction_pattern, connection):
+        g1 = match[1]
+        console.print("\t" * 4 + f">{g1=}")
+        g2 = match[2]
+        console.print("\t" * 4 + f">{g2=}")
+        g3 = match[3].strip()
+        console.print("\t" * 4 + f">{g3=}")
+        return g1, None, g2, g3
+
+    return connection.split(":")[0], None, None, None
+
+
+# def get_element_name_and_label(connection: str):
+#     """
+#     The function extracts the element name and label from a given connection string using regular
+#     expressions.
+#     """
+
+#     pattern = r"(.*): (.*)"
+#     if result := re.search(pattern, connection):
+#         return result[1], result[2]
+#     else:
+#         return connection.split(":")[0], None
+
+# def get_element_name_and_labeX(connection: str):
+#     """
+#     The function extracts the element name and label from a given connection string using regular
+#     expressions.
+#     """
+#     pattern = r"(\w+)-\"(.*?)\""
+#     if result := re.search(pattern, connection):
+#         return result[1], result[2]
+#     else:
+#         return connection, None
 
 
 def parse_colour_theme(lines):
@@ -272,9 +406,10 @@ def show_code_with_line_number(code: str):
     """
     The function takes a string of code and prints it with line numbers.
     """
-    print("Generated code: ")
+    console = Console()
+    console.print("Generated code: ")
     for i, line in enumerate(code.split("\n")):
-        print(f"{i+1:3} {line}")
+        console.print(f"{i+1:3} {line}")
 
 
 def validate_generated_code(code: str):
