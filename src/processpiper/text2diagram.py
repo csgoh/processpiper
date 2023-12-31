@@ -174,10 +174,10 @@ def parse_connection(input_str, code_lines):
     connections_list = [
         line.split("->") for line in input_str.strip().split("\n") if "->" in line
     ]
-    console.print(f">{connections_list=}")
+    # console.print(f">{connections_list=}")
 
     for connection in connections_list:
-        console.print("\t" * 1 + f">{connection=}")
+        # console.print("\t" * 1 + f">{connection=}")
         for i in range(len(connection) - 1):
             (
                 element_name,
@@ -191,14 +191,14 @@ def parse_connection(input_str, code_lines):
                 source_side,
                 target_side,
             ) = get_element_name_and_label(connection[i + 1].strip())
-            console.print(
-                "\t" * 2
-                + f">{element_name=}, {label=}, {source_source_side=}, {source_target_side=}"
-            )
-            console.print(
-                "\t" * 2
-                + f">{target_element_name=}, {target_label=}, {source_side=}, {target_side=}"
-            )
+            # console.print(
+            #     "\t" * 2
+            #     + f">{element_name=}, {label=}, {source_source_side=}, {source_target_side=}"
+            # )
+            # console.print(
+            #     "\t" * 2
+            #     + f">{target_element_name=}, {target_label=}, {source_side=}, {target_side=}"
+            # )
             if target_label:
                 if source_source_side is not None and source_target_side is not None:
                     code_lines.append(
@@ -259,49 +259,23 @@ def get_element_name_and_label(connection: str):
     expressions.
     """
 
-    console = Console()
-    console.print("\t" * 3 + f"#{connection=}")
+    # console = Console()
+    # console.print("\t" * 3 + f"#{connection=}")
     pattern = r"(.*): (.*)"
     if result := re.search(pattern, connection):
         return result[1], result[2], None, None
 
-    element_name = connection.split(":")[0]
     direction_pattern = r"(.*)-(?:\((.*?),(.*?)\))?"
     if match := re.search(direction_pattern, connection):
-        g1 = match[1]
-        console.print("\t" * 4 + f">{g1=}")
-        g2 = match[2]
-        console.print("\t" * 4 + f">{g2=}")
-        g3 = match[3].strip()
-        console.print("\t" * 4 + f">{g3=}")
-        return g1, None, g2, g3
+        element_name = match[1]
+        # console.print("\t" * 4 + f">{element_name=}")
+        source_side = match[2]
+        # console.print("\t" * 4 + f">{source_side=}")
+        target_side = match[3].strip()
+        # console.print("\t" * 4 + f">{target_side=}")
+        return element_name, None, source_side, target_side
 
     return connection.split(":")[0], None, None, None
-
-
-# def get_element_name_and_label(connection: str):
-#     """
-#     The function extracts the element name and label from a given connection string using regular
-#     expressions.
-#     """
-
-#     pattern = r"(.*): (.*)"
-#     if result := re.search(pattern, connection):
-#         return result[1], result[2]
-#     else:
-#         return connection.split(":")[0], None
-
-# def get_element_name_and_labeX(connection: str):
-#     """
-#     The function extracts the element name and label from a given connection string using regular
-#     expressions.
-#     """
-#     pattern = r"(\w+)-\"(.*?)\""
-#     if result := re.search(pattern, connection):
-#         return result[1], result[2]
-#     else:
-#         return connection, None
-
 
 def parse_colour_theme(lines):
     """
