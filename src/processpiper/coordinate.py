@@ -2,11 +2,11 @@ from enum import Enum
 
 
 class Side(Enum):
-    TOP = 1
-    BOTTOM = 2
-    LEFT = 3
-    RIGHT = 4
-    NONE = 5
+    TOP = "TOP"
+    BOTTOM = "BOTTOM"
+    LEFT = "LEFT"
+    RIGHT = "RIGHT"
+    NONE = ""
 
 
 class Coordinate:
