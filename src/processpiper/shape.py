@@ -1465,11 +1465,19 @@ class Circle(Shape):
         self.text_width, self.text_height = painter.get_text_dimension(
             self.name, self.font, self.font_size
         )
+        # self.text_coord.x_pos = (
+        #     # self.coord.x_pos + (self.width / 2) - (self.text_width / 2)
+        #     self.coord.x_pos
+        #     - (self.text_width / 2)
+        # )
         self.text_coord.x_pos = (
-            # self.coord.x_pos + (self.width / 2) - (self.text_width / 2)
             self.coord.x_pos
+            + (self.width / 2)
             - (self.text_width / 2)
+            # self.coord.x_pos
+            # - (self.text_width / 2)
         )
+        # self.text_x = self.x + (self.width / 2) - (self.text_width / 2)
         self.text_coord.y_pos = self.coord.y_pos + self.radius
 
         return self.coord.x_pos, self.coord.y_pos, self.radius, self.radius
