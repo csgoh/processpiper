@@ -42,10 +42,10 @@ class Subprocess(Activity):
         subprocess_width, subprocess_height = painter.get_text_dimension(
             "[+]", painter.element_font, 14
         )
-        subprocess_x_pos = self.x + ((self.width - subprocess_width) / 2)
+        subprocess_x_pos = self.coord.x_pos + ((self.width - subprocess_width) / 2)
         painter.draw_text(
             subprocess_x_pos,
-            self.y + self.height - subprocess_height,
+            self.coord.y_pos + self.height - subprocess_height,
             "[+]",
             painter.element_font,
             14,

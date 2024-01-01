@@ -62,6 +62,8 @@ class Painter:
     element_font_size: int
     element_font_colour: str
     element_fill_colour: str
+    element_outline_colour: str
+    element_outline_width: int
     element_text_alignment: str
 
     connector_font: str
@@ -117,6 +119,8 @@ class Painter:
             self.element_font_size,
             self.element_font_colour,
             self.element_fill_colour,
+            self.element_outline_colour,
+            self.element_outline_width,
             self.element_text_alignment,
         ) = self.colour_theme.get_colour_theme_settings("element")
         (
@@ -185,7 +189,14 @@ class Painter:
             self.draw_box(0, 0, self.width, self.height, self.background_fill_colour)
 
     def draw_box(
-        self, x: int, y: int, width: int, height: int, box_fill_colour: str = ""
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        box_fill_colour: str = "",
+        box_outline_colour: str = "",
+        box_outline_width=0,
     ) -> None:
         """Draw a rectagle
 
@@ -224,7 +235,14 @@ class Painter:
         )
 
     def draw_rounded_box(
-        self, x: int, y: int, width: int, height: int, box_fill_colour: str = ""
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        box_fill_colour: str = "",
+        box_outline_colour: str = "",
+        box_outline_width: int = 0,
     ) -> None:
         """Draw a rounded rectagle
 
@@ -244,6 +262,8 @@ class Painter:
         box_width: int,
         box_height: int,
         box_fill_colour: int,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -264,15 +284,29 @@ class Painter:
                     box_y1,
                     box_width,
                     box_height,
-                    box_fill_colour=box_fill_colour,
+                    box_fill_colour,
+                    box_outline_colour,
+                    box_outline_width,
                 )
             case "rounded":
                 self.draw_rounded_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                    box_x1,
+                    box_y1,
+                    box_width,
+                    box_height,
+                    box_fill_colour,
+                    box_outline_colour,
+                    box_outline_width,
                 )
             case "arrowhead":
                 self.draw_arrowhead_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                    box_x1,
+                    box_y1,
+                    box_width,
+                    box_height,
+                    box_fill_colour,
+                    box_outline_colour,
+                    box_outline_width,
                 )
             case _:
                 raise ValueError("Invalid style")
@@ -339,6 +373,8 @@ class Painter:
         box_width: int,
         box_height: int,
         box_fill_colour: str,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -376,14 +412,16 @@ class Painter:
                     box_width,
                     box_height,
                     box_fill_colour=box_fill_colour,
+                    box_outline_colour=box_outline_colour,
+                    box_outline_width=box_outline_width,
                 )
             case "rounded":
                 self.draw_rounded_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                    box_x1, box_y1, box_width, box_height, box_fill_colour, box_outline_colour, box_outline_width
                 )
             case "arrowhead":
                 self.draw_arrowhead_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour
+                    box_x1, box_y1, box_width, box_height, box_fill_colour, box_outline_colour, box_outline_width
                 )
             case _:
                 raise ValueError("Invalid style")
@@ -1002,6 +1040,121 @@ class Painter:
 
         return points, right_angle_point
 
+    def draw_connection(
+        self,
+        points,
+        label: str = "",
+        connection_style: str = "solid",
+        connector_font: str = "",
+        connector_font_size: int = 0,
+        connector_font_color: str = "",
+        connector_line_width: int = 0,
+        connector_line_colour: str = "",
+        connector_arrow_colour: str = "",
+        connector_arrow_size: int = 0,
+    ):
+        Helper.printc(f"        >>>> POINTS : {points}", show_level="draw_connection")
+
+        if points is None:
+            return
+
+        previous_point = points[0]
+
+        if connection_style == "dashed":
+            self.draw_dashed_line(points, connector_line_width, connector_line_colour)
+        else:
+            for point in points[1:]:
+                self.draw_line(
+                    previous_point[0],
+                    previous_point[1],
+                    point[0],
+                    point[1],
+                    line_colour=connector_line_colour,
+                    line_transparency=255,
+                    line_width=connector_line_width,
+                    line_style=connection_style,
+                )
+                previous_point = point
+
+        # -- draw the text label at the middle points
+        num_points = len(points)
+        mid = num_points // 2
+
+        # print(f"       MID={mid}")
+        # font = ImageFont.truetype("arial.ttf", size=18)
+        # left, _, right, bottom = font.getbbox("#")
+        # font_width = right
+        # font_height = bottom
+        # font_width, font_height = self.get_text_dimension(label, connector_font, connector_font_size)
+        font_width, font_height = self.get_multitext_dimension(
+            label, connector_font, connector_font_size
+        )
+
+        start_x = points[mid - 1][0]
+        start_y = points[mid - 1][1]
+        end_x = points[mid][0]
+        end_y = points[mid][1]
+
+        if start_x == end_x:  # Same X Axis
+            # label = f"X:{label}"
+            text_width = font_width  # * len(label)
+            x_mid = start_x + 5
+            if start_y > end_y:
+                y_mid = start_y - ((abs(start_y - end_y) / 2) + (font_height / 2))
+            else:
+                y_mid = start_y + ((abs(start_y - end_y) / 2) - (font_height / 2))
+            # Helper.printc(f"        1. @@@ {points=}, {num_points=}, {mid=}, {(start_x, start_y)}, {(end_x, end_y)}, {(x_mid, y_mid)=}", show_level="draw_connection")
+        elif start_y == end_y:  # Same Y Axis
+            # label = f"Y:{label}"
+            text_width = font_width  # * len(label)
+            if start_x > end_x:
+                x_mid = start_x - ((abs(start_x - end_x) / 2) + (text_width / 2))
+            else:
+                x_mid = start_x + ((abs(start_x - end_x) / 2) - (text_width / 2))
+            y_mid = start_y + 5
+            # Helper.printc(f"        2. @@@ {text_width=}, {points=}, {num_points=}, {mid=}, {(start_x, start_y)}, {(end_x, end_y)}, {(x_mid, y_mid)=}", show_level="draw_connection")
+
+        # -- draw text --
+
+        self.draw_text(
+            x_mid,
+            y_mid,
+            label,
+            font=connector_font,
+            font_size=connector_font_size,
+            font_colour=connector_font_color,
+        )
+
+        if connection_style == "dashed":
+            # --Draw round circle at the beginning of the line
+            self.draw_circle(
+                points[0][0],
+                points[0][1],
+                radius=6,
+                outline_colour=connector_arrow_colour,
+                fill_colour="white",
+            )
+
+            self.draw_arrow_head(
+                points[-2][0],
+                points[-2][1],
+                points[-1][0],
+                points[-1][1],
+                connector_line_colour,
+                connector_arrow_size,
+                "white",
+            )
+        else:
+            self.draw_arrow_head(
+                points[-2][0],
+                points[-2][1],
+                points[-1][0],
+                points[-1][1],
+                connector_line_colour,
+                connector_arrow_size,
+                connector_line_colour,
+            )
+
     def draw_line_and_arrow(
         self,
         x1: int,
@@ -1034,16 +1187,6 @@ class Painter:
             connector_line_colour,
         )
 
-        # if len(right_angle_points) >= 3:
-        #     label_x_pos, label_y_pos = right_angle_points[1]
-        #     arrow_angle_points = right_angle_points[2]
-        # elif len(right_angle_points) == 2:
-        #     label_x_pos, label_y_pos = right_angle_points[0]
-        #     arrow_angle_points = right_angle_points[1]
-        # else:
-        #     label_x_pos, label_y_pos = right_angle_points[0]
-        #     arrow_angle_points = right_angle_points[0]
-
         label_x_pos, label_y_pos = right_angle_points[-1]
         arrow_angle_points = right_angle_points[-1]
 
@@ -1055,27 +1198,12 @@ class Painter:
                 label_y_pos = y1 - label_h - 3
             else:
                 label_y_pos = y1 + ((y2 - y1) / 2) - (label_h / 2)
-            # Helper.printc(
-            #     f"        @@@ {label=} No right angle point",
-            #     35,
-            #     show_level="draw_connection",
-            # )
 
         else:
             label_x_pos += 5
             if y1 == y2 or (abs(y1 - y2) <= 10):
-                # Helper.printc(
-                #     f"        @@@ {label=} {y1} == {y2}",
-                #     35,
-                #     show_level="draw_connection",
-                # )
                 label_y_pos = label_y_pos + label_h
             else:
-                # Helper.printc(
-                #     f"        @@@ {label=} {y1} != {y2}",
-                #     35,
-                #     show_level="draw_connection",
-                # )
                 label_y_pos = y1 + ((y2 - y1) / 2) - (label_h / 2)
             # Helper.printc(
             #     f"        @@@ {label=} With right angle point",
@@ -1093,7 +1221,7 @@ class Painter:
         )
 
         if connection_style == "dashed":
-            ### Draw round circle at the beginning of the line
+            # --Draw round circle at the beginning of the line
             self.draw_circle(
                 x1,
                 y1,
@@ -1102,7 +1230,7 @@ class Painter:
                 fill_colour="white",
             )
 
-            ### Draw white arrow head at the end of the line
+            # --Draw white arrow head at the end of the line
 
             self.draw_arrow_head(
                 arrow_angle_points[0],
@@ -1287,7 +1415,10 @@ class PNGPainter(Painter):
             height (int): Rectangle height
             box_fill_colour (str: HTML colour name or hex code. Eg. #FFFFFF or LightGreen)
         """
-        shape = super().draw_box(x, y, width, height)
+        shape = super().draw_box(
+            x, y, width, height, box_fill_colour, box_outline_colour, box_outline_width
+        )
+
         if box_outline_colour:
             self.__cr.rectangle(
                 shape,
@@ -1320,6 +1451,8 @@ class PNGPainter(Painter):
         box_width: int,
         box_height: int,
         box_fill_colour: int,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -1333,6 +1466,8 @@ class PNGPainter(Painter):
             box_width=box_width,
             box_height=box_height,
             box_fill_colour=box_fill_colour,
+            box_outline_colour=box_outline_colour,
+            box_outline_width=box_outline_width,
             text=text,
             text_alignment=text_alignment,
             text_font=text_font,
@@ -1353,6 +1488,8 @@ class PNGPainter(Painter):
         box_width: int,
         box_height: int,
         box_fill_colour: str,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -1368,6 +1505,8 @@ class PNGPainter(Painter):
             box_width=box_width,
             box_height=box_height,
             box_fill_colour=box_fill_colour,
+            box_outline_colour=box_outline_colour,
+            box_outline_width=box_outline_width,
             text=text,
             text_alignment=text_alignment,
             text_font=text_font,
@@ -1564,7 +1703,14 @@ class SVGPainter(Painter):
         self.elements.append(rectangle)
 
     def draw_rounded_box(
-        self, x: int, y: int, width: int, height: int, box_fill_colour: str
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        box_fill_colour: str,
+        box_outline_colour: str,
+        box_outline_width: int,
     ) -> None:
         """Draw a rounded rectagle
 
@@ -1577,7 +1723,15 @@ class SVGPainter(Painter):
         """
         radius, shape = super().draw_rounded_box(x, y, width, height)
         rectangle = dw.Rectangle(
-            x, y, width, height, rx=radius, ry=radius, fill=box_fill_colour
+            x,
+            y,
+            width,
+            height,
+            rx=radius,
+            ry=radius,
+            fill=box_fill_colour,
+            stroke=box_outline_colour,
+            stroke_width=box_outline_width,
         )
 
         self.elements.append(rectangle)
@@ -1589,6 +1743,8 @@ class SVGPainter(Painter):
         box_width: int,
         box_height: int,
         box_fill_colour: int,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -1602,6 +1758,8 @@ class SVGPainter(Painter):
             box_width=box_width,
             box_height=box_height,
             box_fill_colour=box_fill_colour,
+            box_outline_colour=box_outline_colour,
+            box_outline_width=box_outline_width,
             text=text,
             text_alignment=text_alignment,
             text_font=text_font,
@@ -1633,6 +1791,8 @@ class SVGPainter(Painter):
         box_width: int,
         box_height: int,
         box_fill_colour: str,
+        box_outline_colour: str,
+        box_outline_width: int,
         text: str,
         text_alignment: str,
         text_font: str,
@@ -1648,6 +1808,8 @@ class SVGPainter(Painter):
             box_width=box_width,
             box_height=box_height,
             box_fill_colour=box_fill_colour,
+            box_outline_colour=box_outline_colour,
+            box_outline_width=box_outline_width,
             text=text,
             text_alignment=text_alignment,
             text_font=text_font,
@@ -1747,7 +1909,6 @@ class SVGPainter(Painter):
                 stroke=outline_colour,
                 stroke_width=outline_width,
             )
-           
 
         self.elements.append(circle)
 

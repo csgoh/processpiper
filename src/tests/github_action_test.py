@@ -2,7 +2,7 @@ import inspect
 import os.path
 
 
-from src.processpiper import ProcessMap, EventType, ActivityType, GatewayType
+from ..processpiper import ProcessMap, EventType, ActivityType, GatewayType
 
 
 def prep_for_test(filename: str):
@@ -13,7 +13,7 @@ def prep_for_test(filename: str):
 
     output_file = os.path.join(path, filename)
 
-    ### remove the file if it exists
+    # --remove the file if it exists
     if os.path.exists(output_file):
         os.remove(output_file)
 

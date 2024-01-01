@@ -24,14 +24,13 @@ from enum import Enum
 from itertools import count
 from .shape import Shape
 from .painter import Painter
+from .constants import Configs
 from .event import *
 from .activity import *
 from .gateway import *
-from .constants import Configs
 from .helper import Helper
 from .layout import Grid
-
-# from .helper import Helper
+from .coordinate import Coordinate
 
 
 class EventType:
@@ -108,17 +107,19 @@ class Lane:
 
     id: int = field(init=False, default_factory=count().__next__)
     shapes: list = field(init=False, default_factory=list)
-    x: int = field(init=False, default=0)
-    y: int = field(init=False, default=0)
+    coord: Coordinate = field(init=False, default=None)
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
-    next_shape_x: int = field(init=False, default=0)
-    next_shape_y: int = field(init=False, default=0)
+    next_shape_coord: Coordinate = field(init=False, default=None)
     shape_row_count: int = field(init=False, default=0)
-    text_x: int = field(init=False, default=0)
-    text_y: int = field(init=False, default=0)
+    text_coord: Coordinate = field(init=False, default=None)
     text_width: int = field(init=False, default=0)
     text_height: int = field(init=False, default=0)
+
+    def __post_init__(self):
+        self.coord = Coordinate()
+        self.next_shape_coord = Coordinate()
+        self.text_coord = Coordinate()
 
     def add_element(
         self,
@@ -128,12 +129,16 @@ class Lane:
         font_size: int = 0,
         font_colour: str = "",
         fill_colour: str = "",
+        outline_colour: str = "",
+        outline_width: int = 0,
         text_alignment: str = "",
     ) -> Shape:
         font = font or self.painter.element_font
         font_size = font_size or self.painter.element_font_size
         font_colour = font_colour or self.painter.element_font_colour
         fill_colour = fill_colour or self.painter.element_fill_colour
+        outline_colour = outline_colour or self.painter.element_outline_colour
+        outline_width = outline_width or self.painter.element_outline_width
         text_alignment = text_alignment or self.painter.element_text_alignment
 
         event_class = globals()[type]
@@ -144,6 +149,8 @@ class Lane:
         element.font_size = font_size
         element.font_colour = font_colour
         element.fill_colour = fill_colour
+        element.outline_colour = outline_colour
+        element.outline_width = outline_width
         element.text_alignment = text_alignment
         self.shapes.append(element)
         return element
@@ -157,67 +164,54 @@ class Lane:
     def draw(self) -> None:
         """Draw the lane"""
 
-        ### Draw the lane outline
+        # --Draw the lane outline
         self.painter.draw_box(
-            self.x,
-            self.y,
+            self.coord.x_pos,
+            self.coord.y_pos,
             self.width,
             self.height,
             self.background_fill_colour,
         )
-        ### Draw the lane text box
+        #  --Draw the lane text box
         self.painter.draw_box_with_vertical_text(
-            self.x,
-            self.y,
+            self.coord.x_pos,
+            self.coord.y_pos,
             Configs.LANE_TEXT_WIDTH,
             self.height,
             self.fill_colour,
+            "",
+            0,
             self.name,
             text_alignment=self.text_alignment,
             text_font=self.font,
             text_font_size=self.font_size,
             text_font_colour=self.font_colour,
         )
-        ### Draw the lane text divider
+        #  --Draw the lane text divider
         self.painter.draw_line(
-            self.x + Configs.LANE_TEXT_WIDTH,
-            self.y,
-            self.x + Configs.LANE_TEXT_WIDTH,
-            self.y + self.height,
+            self.coord.x_pos + Configs.LANE_TEXT_WIDTH,
+            self.coord.y_pos,
+            self.coord.x_pos + Configs.LANE_TEXT_WIDTH,
+            self.coord.y_pos + self.height,
             "white",
             0.5,
             5,
             "solid",
         )
-        ### Uncomment the following line to see the grid. Useful for debugging
-        ###self.painter.draw_grid()
+        #  --Uncomment the following line to see the grid. Useful for debugging
+        # self.painter.draw_grid()
 
     def draw_shape(self) -> None:
         """Draw the shapes in the lane"""
         if self.shapes:
             for shape in self.shapes:
                 Helper.printc(
-                    f"      Drawing shape: [bold][red]\[{shape.name}][/red][/bold], x={shape.x}, y={shape.y}, w={shape.width}, h={shape.height}",
+                    f"      Drawing shape: [bold][red][{shape.name}][/red][/bold], x={shape.coord.get_xy()}, w={shape.width}, h={shape.height}",
                     rich_type="text",
                     show_level="draw",
                 )
 
                 shape.draw(self.painter)
-
-    # def _find_start_shape(self) -> Shape:
-    #     """Find the start shape in the process map"""
-    #     if self.shapes:
-    #     for pool in self._pools:
-    #         for lane in pool.lanes:
-    #             for shape in lane.shapes:
-    #                 ### If the shape has no connection_from, it is the start shape
-    #                 Helper.printc(
-    #                     f"{shape.name} - {len(shape.connection_from)}",
-    #                     show_level="layout_grid",
-    #                 )
-    #                 if len(shape.connection_from) == 0:
-    #                     return shape
-    #     return None
 
     def draw_connection(self, all_shapes: list) -> None:
         """Draw the connections in the lane"""
@@ -229,23 +223,25 @@ class Lane:
             shape = self.shapes[0]
             shape.draw_connection(self.painter, all_shapes)
 
-    def set_draw_position(self, x: int, y: int, layout_grid: Grid) -> None:
+    def set_draw_position(
+        self, x: int, y: int, layout_grid: Grid
+    ) -> tuple[int, int, int, int]:
         """Set the draw position of the lane"""
 
-        ### Determine the number of rows for the lane
+        # --Determine the number of rows for the lane
         lane_row_count = layout_grid.get_lane_row_count(self.id)
 
-        ### Determine lane x and y position
-        self.x = (
+        #  --Determine lane x and y position
+        self.coord.x_pos = (
             x
             if x > 0
             else Configs.SURFACE_LEFT_MARGIN
             + Configs.POOL_TEXT_WIDTH
             + Configs.HSPACE_BETWEEN_POOL_AND_LANE
         )
-        self.y = y if y > 0 else Configs.SURFACE_TOP_MARGIN
+        self.coord.y_pos = y if y > 0 else Configs.SURFACE_TOP_MARGIN
 
-        ### Determine lane width
+        #  --Determine lane width
         max_column_count = layout_grid.get_max_column_count()
         Helper.printc(
             f"~~~ max column count: {max_column_count}", show_level="pool_lane"
@@ -262,7 +258,7 @@ class Lane:
             show_level="pool_lane",
         )
 
-        ### Determine lane height
+        # --Determine lane height
         self.height = (
             (lane_row_count * 60)
             + ((lane_row_count - 1) * Configs.VSPACE_BETWEEN_SHAPES)
@@ -270,9 +266,9 @@ class Lane:
             + Configs.LANE_SHAPE_BOTTOM_MARGIN
         )
         Helper.printc(
-            f"~~~    [{self.name}] {self.x=}, {self.y=}, {self.width=}, {self.height=}",
+            f"~~~    [{self.name}] {self.coord.x_pos=}, {self.coord.y_pos=}, {self.width=}, {self.height=}",
             show_level="pool_lane",
         )
-        y_pos = self.y + self.height + Configs.VSPACE_BETWEEN_LANES
+        y_pos = self.coord.y_pos + self.height + Configs.VSPACE_BETWEEN_LANES
 
-        return self.x, y_pos, self.width, self.height
+        return self.coord.x_pos, y_pos, self.width, self.height

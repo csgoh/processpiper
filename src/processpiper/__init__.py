@@ -6,4 +6,5 @@ __all__ = [
     "ActivityType",
     "GatewayType",
     "ProcessMap",
+    "Side",
 ]

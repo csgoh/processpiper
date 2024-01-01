@@ -36,8 +36,8 @@ class Gateway(Diamond):
         )
 
         painter.draw_text(
-            self.x + (self.width / 2) - (symbol_w / 2),
-            self.y + (self.height / 2) - (symbol_h / 2),
+            self.coord.x_pos + (self.width / 2) - (symbol_w / 2),
+            self.coord.y_pos + (self.height / 2) - (symbol_h / 2),
             symbol,
             painter.element_font,
             SYMBOL_SIZE,
@@ -51,7 +51,7 @@ class Exclusive(Gateway):
     def draw(self, painter: Painter):
         """Draw the gateway and the symbol in the middle of the gateway"""
         super().draw(painter)
-        ### Overlay a cross on top of the diamond
+        # --- Overlay a cross on top of the diamond ---
         symbol = "X"
         super().draw_symbol(symbol, painter)
 
@@ -88,7 +88,7 @@ class EventGateway(Gateway):
         # Define the pentagon's properties
         num_sides = 5
         side_length = 7
-        center_x, center_y = self.x + self.width // 2, self.y + self.height // 2
+        center_x, center_y = self.coord.x_pos + self.width // 2, self.coord.y_pos + self.height // 2
         angle = 2 * math.pi / num_sides
         starting_angle = -math.pi / 2
 
