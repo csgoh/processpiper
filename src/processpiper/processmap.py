@@ -380,7 +380,7 @@ class ProcessMap:
                 for shape in lane.shapes:
                     if (
                         type(shape)
-                        not in [Start, End, Timer, Message, MessageEnd, Signal, SignalEnd]
+                        not in [Start, End, Timer, Message, MessageEnd, Signal, SignalEnd, Conditional]
                         and len(shape.connection_from) == 0
                     ):
                         dangling_elements.append(shape.name)
