@@ -543,10 +543,10 @@ if __name__ == "__main__":
     # test_sample01()
     # test_sample02()
     # test_sample03()
-    # test_sample04()  # -- Test validation. Should fail
+    # test_sample04()  
     # test_sample05()  # -- Test validation. Should fail
     # test_sample06()  # -- Test validation. Should fail
-    # test_sample07()
+    # test_sample07()  # -- Test validation. Should fail
     test_sample08()
     # test_sample09()  # -- Test validation. Should fail
     # test_sample10()  # -- Test validation. Should fail

@@ -31,10 +31,12 @@ title: Pizza Order Process
 
 
         start->browse_website->order_pizza->make_payment
-        make_payment-"Order details"->receive_order->bake_pizza
+        make_payment->receive_order: Order details
+        receive_order->bake_pizza
         bake_pizza->pizza_ready
-        pizza_ready-"Yes"->deliver_pizza-"Freshly baked \\npizza"->receive_pizza
-        pizza_ready-"No"->bake_pizza
+        pizza_ready->deliver_pizza: Yes
+        deliver_pizza->receive_pizza: Freshly baked \\npizza
+        pizza_ready->bake_pizza: No
         receive_pizza->end
 
 

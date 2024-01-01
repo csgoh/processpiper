@@ -1,7 +1,7 @@
 import inspect
 import os.path
-from processpiper import ProcessMap, EventType, ActivityType, GatewayType
-from processpiper.coordinate import Side
+from .processpiper import ProcessMap, EventType, ActivityType, GatewayType
+from .processpiper.coordinate import Side
 
 
 def prep_for_test(filename: str):
@@ -492,7 +492,7 @@ def test_case17():
 if __name__ == "__main__":
     # test_case1()
     # test_case2()
-    # test_case3()
+    test_case3()
     # test_case4()
     # test_case5()
     # test_case6()
@@ -510,8 +510,8 @@ if __name__ == "__main__":
     test_case10(colour_theme="TEALWATERS")
     test_case10(colour_theme="SEAFOAMS")
     
-    # test_case11()
-    # test_case12()
+    # test_case11()  # should fail
+    # test_case12()  # should fail
     # test_case13()
     # test_case14()
     # test_case15()
