@@ -39,7 +39,7 @@ class Painter:
     height: int
     output_type: str
 
-    ### Colour scheme attributes - Start
+    # --Colour scheme attributes - Start
     background_fill_colour: str
     title_font: str
     title_font_size: int
@@ -77,7 +77,7 @@ class Painter:
     footer_font: str
     footer_font_size: int
     footer_font_colour: str
-    ### Colour scheme attributes - End
+    # --Colour scheme attributes - End
 
     def __init__(self, width: int = 500, height: int = 500) -> None:
         """Initialise the painter"""
@@ -151,7 +151,7 @@ class Painter:
 
             if os.path.exists(os.path.join(font_dir, f"{font_name}.ttf")):
                 return os.path.join(font_dir, f"{font_name}.ttf")
-            ### This is cater for cases where msttcorefonts is not installed
+            # This is cater for cases where msttcorefonts is not installed
             linux_font_name = "DejaVuSans"  # Default font for Linux
             return os.path.join(
                 "/",
@@ -167,10 +167,10 @@ class Painter:
 
     def draw_grid(self):
         """Draw a grid of dots to help with alignment"""
-        ### Set the dot size and spacing
+        #  Set the dot size and spacing
         spacing = 10
 
-        ### Draw the grid of dots
+        # Draw the grid of dots
         for x in range(0, self.width, spacing):
             for y in range(0, self.height, spacing):
                 if x > 0 and y > 0:
@@ -314,14 +314,14 @@ class Painter:
         multi_lines = []
         wrap_lines = []
 
-        ### Make '\n' work
+        # Make '\n' work
         multi_lines = text.splitlines()
 
         font, single_char_width, _, _ = self.get_char_width(
             "a", text_font, text_font_size
         )
 
-        ### wrap text
+        # wrap text
         for line in multi_lines:
             wrap_lines.extend(textwrap.wrap(line, int(box_width / single_char_width)))
 
@@ -387,14 +387,14 @@ class Painter:
         multi_lines = []
         wrap_lines = []
 
-        ### Make '\n' work
+        # Make '\n' work
         multi_lines = text.splitlines()
 
         font, single_char_width, _, _ = self.get_char_width(
             "a", text_font, text_font_size
         )
 
-        ### wrap text
+        # wrap text
         for line in multi_lines:
             wrap_lines.extend(textwrap.wrap(line, int(box_height / single_char_width)))
 
@@ -417,11 +417,23 @@ class Painter:
                 )
             case "rounded":
                 self.draw_rounded_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour, box_outline_colour, box_outline_width
+                    box_x1,
+                    box_y1,
+                    box_width,
+                    box_height,
+                    box_fill_colour,
+                    box_outline_colour,
+                    box_outline_width,
                 )
             case "arrowhead":
                 self.draw_arrowhead_box(
-                    box_x1, box_y1, box_width, box_height, box_fill_colour, box_outline_colour, box_outline_width
+                    box_x1,
+                    box_y1,
+                    box_width,
+                    box_height,
+                    box_fill_colour,
+                    box_outline_colour,
+                    box_outline_width,
                 )
             case _:
                 raise ValueError("Invalid style")
@@ -478,7 +490,7 @@ class Painter:
             fill_colour (str): Diamond fill colour in HTML colour name or hex code. Eg. #FFFFFF or LightGreen
         """
 
-        ### Calculate the coordinates of the four points of the diamond.
+        # Calculate the coordinates of the four points of the diamond.
         # points = super().draw_diamond(x, y, width, height, fill_colour)
         points = [
             (x + width / 2, y),
@@ -487,7 +499,7 @@ class Painter:
             (x, y + height / 2),
         ]
 
-        ### Use Pillow's ImageDraw module to draw a polygon with the given points and fill color.
+        # Use Pillow's ImageDraw module to draw a polygon with the given points and fill color.
         # self.__cr.polygon(points, fill=fill_colour)
         self.draw_polygon(points, fill_colour=fill_colour)
 
@@ -543,10 +555,10 @@ class Painter:
         if line_style == "solid":
             lines.append(((x1, y1), (x2, y2)))
         elif line_style == "dashed":
-            ### given a line between x1, y1 and x2, y2, divide it into multiple shorter lines
-            ### and draw them with a gap in between.
+            # given a line between x1, y1 and x2, y2, divide it into multiple shorter lines
+            # and draw them with a gap in between.
 
-            ### Calculate the number of dashes
+            # Calculate the number of dashes
             gap_counts = int((y2 - y1) / 7)
 
             for i, (x, y) in enumerate(
@@ -681,7 +693,7 @@ class Painter:
             x1, y1, face_source, x2, y2, face_target
         )
         Helper.printc(
-            f"\t" * 2
+            "\t" * 2
             + f"DRAW_RIGHT_ANGLE_LINE() {x1=}, {y1=}, {face_source=}, {x2=}, {y2=}, {face_target=}",
             show_level="draw_connection",
         )
@@ -717,7 +729,7 @@ class Painter:
                 show_level="draw_connection",
             )
             Helper.printc(
-                f"\t" * tab_count
+                "\t" * tab_count
                 + "A: right_angle_line: x1 == x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
             )
@@ -731,7 +743,7 @@ class Painter:
                 show_level="draw_connection",
             )
             Helper.printc(
-                f"\t" * tab_count
+                "\t" * tab_count
                 + "B: right_angle_line: x1 != x2 and y1 == y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
             )
@@ -773,7 +785,7 @@ class Painter:
                 show_level="draw_connection",
             )
             Helper.printc(
-                f"\t" * tab_count
+                "\t" * tab_count
                 + "C: right_angle_line: x1 == x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                 show_level="draw_connection",
             )
@@ -826,7 +838,7 @@ class Painter:
                         (x1, y1 + elbow_height),
                         (x2, y1 + elbow_height),
                     ]
-                else:  ### target face is
+                else:  # target face is
                     Helper.printc(
                         "\t" * tab_count + "D-bottom: source bottom",
                         show_level="draw_connection",
@@ -840,7 +852,7 @@ class Painter:
                     right_angle_point = [(x1, y2)]
             elif face_source.find("right") != -1:
                 Helper.printc(
-                    f"\t" * tab_count
+                    "\t" * tab_count
                     + "D-right: right_angle_line: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                     show_level="draw_connection",
                 )
@@ -858,7 +870,7 @@ class Painter:
                     ]
                 elif face_target.find("right") != -1:
                     elbow_height = 40
-                    ### both faces are right
+                    # both faces are right
                     Helper.printc(
                         "\t" * tab_count + "D-right-right (x1 < x2)",
                         show_level="draw_connection",
@@ -921,7 +933,7 @@ class Painter:
                     ]
             elif face_source.find("top") != -1 and face_target.find("top") != -1:
                 Helper.printc(
-                    f"\t" * tab_count
+                    "\t" * tab_count
                     + "D-top: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                     show_level="draw_connection",
                 )
@@ -937,7 +949,7 @@ class Painter:
                 right_angle_point = [(x1, y1 - elbow_height), (x2, y1 - elbow_height)]
             elif face_source.find("top") != -1 and face_target.find("bottom") != -1:
                 Helper.printc(
-                    f"\t" * tab_count
+                    "\t" * tab_count
                     + "D-top/bottom: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                     show_level="draw_connection",
                 )
@@ -953,7 +965,7 @@ class Painter:
                 right_angle_point = [(x1, y1 - elbow_height), (x2, y1 - elbow_height)]
             else:
                 Helper.printc(
-                    f"\t" * tab_count
+                    "\t" * tab_count
                     + "D-else: x1 != x2 and y1 != y2: {x1}, {y1}, {x2}, {y2}",
                     show_level="draw_connection",
                 )
@@ -967,7 +979,7 @@ class Painter:
             if y1 <= y2:
                 if abs(y1 - y2) == 10:
                     Helper.printc(
-                        f"\t" * tab_count
+                        "\t" * tab_count
                         + "E: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
                         show_level="draw_connection",
                     )
@@ -990,7 +1002,7 @@ class Painter:
                         or face_target.find("right") == -1
                     ):
                         Helper.printc(
-                            f"\t" * tab_count
+                            "\t" * tab_count
                             + "F2: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
                             show_level="draw_connection",
                         )
@@ -1007,7 +1019,7 @@ class Painter:
                         ]
                     else:
                         Helper.printc(
-                            f"\t" * tab_count
+                            "\t" * tab_count
                             + "F1: x1 > x2 and y1 <= y2: {x1}, {y1}, {x2}, {y2}",
                             show_level="draw_connection",
                         )
@@ -1019,7 +1031,7 @@ class Painter:
                         right_angle_point = [(x1, y2)]
             elif len(points) == 0:
                 Helper.printc(
-                    f"\t" * tab_count
+                    "\t" * tab_count
                     + "G: x1 > x2 and y1 > y2: {x1=}, {y1=}, {x2=}, {y2=}",
                     show_level="draw_connection",
                 )
@@ -1192,7 +1204,7 @@ class Painter:
 
         label_w, label_h = self.get_multitext_dimension(label, connector_font, 12)
         if label_x_pos == x1 and label_y_pos == y1:
-            ### There is no right angle point
+            # There is no right angle point
             label_x_pos = max(x1 + 5, x1 + (((x2 - x1) - label_w) / 2))
             if y1 == y2:
                 label_y_pos = y1 - label_h - 3
@@ -1268,17 +1280,17 @@ class Painter:
 
         vector_length = math.sqrt(dx * dx + dy * dy)
 
-        ### normalized direction vector components
+        # normalized direction vector components
         normalised_dx = dx / vector_length
         normalised_dy = dy / vector_length
 
-        ### perpendicular vector
+        # perpendicular vector
         perpendicular_vector_x = -normalised_dy
         perpendicular_vector_y = normalised_dx
 
-        ### points forming arrowhead
-        ### with length L and half-width H
-        ### arrowend = end
+        # points forming arrowhead
+        # with length L and half-width H
+        # arrowend = end
         length = connector_arrow_size
         height = connector_arrow_size - 5
         left_x = x2 - length * normalised_dx + height * perpendicular_vector_x
@@ -1314,7 +1326,7 @@ class Painter:
             (text_width (int), text_height (int)): Text dimension (width, height)
         """
         # Use Pillow's ImageFont module to get the dimensions of the text.
-        image_font = ImageFont.truetype(self.get_font_path(font), font_size)
+        # image_font = ImageFont.truetype(self.get_font_path(font), font_size)
 
         # ascent, descent = image_font.getmetrics()
 
@@ -1322,7 +1334,12 @@ class Painter:
         # font_width = right
         # font_height = bottom
 
-        _, _, font_width, font_height = self.get_char_width(text, font, font_size)
+        text_lines = text.splitlines()
+        longest_text = max(text_lines, key=len)
+
+        _, _, font_width, font_height = self.get_char_width(
+            longest_text, font, font_size
+        )
 
         return font_width, font_height
 
@@ -1344,7 +1361,7 @@ class Painter:
         multi_lines = []
         wrap_lines = []
 
-        ### Make '\n' work
+        # Make '\n' work
         multi_lines = text.splitlines()
 
         # image_font = ImageFont.truetype(self.get_font_path(text_font), text_font_size)
@@ -1355,7 +1372,7 @@ class Painter:
         #     text_font, text_font_size
         # )
 
-        ### wrap text
+        # wrap text
         for line in multi_lines:
             wrap_lines.extend(textwrap.wrap(line, 70))
 
@@ -1517,7 +1534,7 @@ class PNGPainter(Painter):
 
         font = ImageFont.truetype(self.get_font_path(text_font), size=text_font_size)
 
-        ### Rotate text
+        # Rotate text
         for x, y, font_width, font_height, line in display_lines:
             rotated_img = Image.new("RGBA", (font_width, font_height))
             rotated_draw = ImageDraw.Draw(rotated_img)
@@ -1550,7 +1567,7 @@ class PNGPainter(Painter):
 
         outline_red, outline_green, outline_blue = ImageColor.getrgb(outline_colour)
         if not fill_colour:
-            ### If no fill colour is specified, use the outline colour as the fill colour.
+            # If no fill colour is specified, use the outline colour as the fill colour.
             fill_red, fill_green, fill_blue = outline_red, outline_green, outline_blue
             self.__cr.ellipse(
                 points,
@@ -1820,7 +1837,7 @@ class SVGPainter(Painter):
 
         font = ImageFont.truetype(self.get_font_path(text_font), size=text_font_size)
 
-        ### Rotate text
+        # Rotate text
         for x, y, font_width, font_height, line in display_lines:
             # rotated_img = Image.new("RGBA", (font_width, font_height))
             # rotated_draw = ImageDraw.Draw(rotated_img)
@@ -1881,7 +1898,7 @@ class SVGPainter(Painter):
         """Draw a circle"""
 
         if not fill_colour:
-            ### If no fill colour is specified, use the outline colour as the fill colour.
+            # If no fill colour is specified, use the outline colour as the fill colour.
             fill_colour = outline_colour
             circle = dw.Circle(
                 x,
