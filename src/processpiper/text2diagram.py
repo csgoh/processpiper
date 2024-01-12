@@ -253,58 +253,58 @@ def _parse_lane_element(element_str):
     """
     """Detect element type"""
     # --EventType--
-    if element_str.startswith("(start)"):
+    if element_str.startswith("(start"):
         element_type = "EventType.START"
-        element_name = element_str[1 : element_str.index(")")].strip()
-    elif element_str.startswith("(end)"):
+        element_name = element_str[1: element_str.index(")")].strip()
+    elif element_str.startswith("(end"):
         element_type = "EventType.END"
-        element_name = element_str[1 : element_str.index(")")].strip()
+        element_name = element_str[1: element_str.index(")")].strip()
     elif element_str.startswith("(@timer"):
         element_type = "EventType.TIMER"
-        element_name = element_str[len("(@timer") : element_str.index(")")].strip()
+        element_name = element_str[len("(@timer"): element_str.index(")")].strip()
     elif element_str.startswith("(@intermediate"):
         element_type = "EventType.INTERMEDIATE"
         element_name = element_str[
-            len("(@intermediate") : element_str.index(")")
+            len("(@intermediate"): element_str.index(")")
         ].strip()
     elif element_str.startswith("(@message"):
         element_type = "EventType.MESSAGE"
-        element_name = element_str[len("(@message") : element_str.index(")")].strip()
+        element_name = element_str[len("(@message"): element_str.index(")")].strip()
     elif element_str.startswith("(@signal"):
         element_type = "EventType.SIGNAL"
-        element_name = element_str[len("(@signal") : element_str.index(")")].strip()
+        element_name = element_str[len("(@signal"): element_str.index(")")].strip()
     elif element_str.startswith("(@conditional"):
         element_type = "EventType.CONDITIONAL"
         element_name = element_str[
-            len("(@conditional") : element_str.index(")")
+            len("(@conditional"): element_str.index(")")
         ].strip()
     elif element_str.startswith("(@link"):
         element_type = "EventType.LINK"
-        element_name = element_str[len("(@link") : element_str.index(")")].strip()
+        element_name = element_str[len("(@link"): element_str.index(")")].strip()
 
     #  --ActivityType--
     elif element_str.startswith("[@subprocess"):
         element_type = "ActivityType.SUBPROCESS"
-        element_name = element_str[len("[@subprocess") : element_str.index("]")].strip()
+        element_name = element_str[len("[@subprocess"): element_str.index("]")].strip()
     elif element_str.startswith("["):
         element_type = "ActivityType.TASK"
-        element_name = element_str[1 : element_str.index("]")].strip()
+        element_name = element_str[1: element_str.index("]")].strip()
     #  --GatewayType--
     elif element_str.startswith("<@parallel"):
         element_type = "GatewayType.PARALLEL"
-        element_name = element_str[len("<@parallel") : element_str.index(">")].strip()
+        element_name = element_str[len("<@parallel"): element_str.index(">")].strip()
     elif element_str.startswith("<@inclusive"):
         element_type = "GatewayType.INCLUSIVE"
-        element_name = element_str[len("<@exclusive") : element_str.index(">")].strip()
+        element_name = element_str[len("<@exclusive"): element_str.index(">")].strip()
     elif element_str.startswith("<@exclusive"):
         element_type = "GatewayType.EXCLUSIVE"
-        element_name = element_str[len("<@exclusive") : element_str.index(">")].strip()
+        element_name = element_str[len("<@exclusive"): element_str.index(">")].strip()
     elif element_str.startswith("<"):
         element_type = "GatewayType.EXCLUSIVE"
-        element_name = element_str[1 : element_str.index(">")].strip()
+        element_name = element_str[1: element_str.index(">")].strip()
     elif element_str.startswith("(@event"):
         element_type = "GatewayType.EVENT"
-        element_name = element_str[len("(@event") : element_str.index(")")].strip()
+        element_name = element_str[len("(@event"): element_str.index(")")].strip()
 
     else:
         raise ValueError(f"Invalid element string: {element_str}")
@@ -333,7 +333,7 @@ def show_code_with_line_number(code: str):
         console.print(f"{i+1:3} {line}")
 
 
-def render(text: str, png_output_file: str = ""):
+def render(text: str, png_output_file: str = "", show_code: bool = False):
     """Render text to diagram"""
     output_file_provided = True
     if not png_output_file.strip():
@@ -345,7 +345,8 @@ def render(text: str, png_output_file: str = ""):
 
     generated_code = _parse_and_generate_code(text, png_output_file)
     _validate_generated_code(generated_code)
-    # show_code_with_line_number(generated_code)
+    if show_code:
+        show_code_with_line_number(generated_code)
     exec(generated_code)
     generated_image = Image.open(png_output_file)
     generated_image.load()
