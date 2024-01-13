@@ -172,6 +172,20 @@ class ProcessMap:
 
         self._footer = Footer(footer_name, font, font_size, font_colour)
 
+    def set_title_font_size(self, font_size: int) -> None:
+        """Set the font size for the title"""
+        self.__painter.set_title_font_size(font_size)
+        self._title.font_size = font_size
+
+    def set_element_font_size(self, font_size: int) -> None:
+        """Set the font size for all element type"""
+        self.__painter.set_element_font_size(font_size)
+        # update all elements font size
+        for pool in self._pools:
+            for lane in pool.lanes:
+                for element in lane.shapes:
+                    element.font_size = font_size
+
     def _get_lane_by_id(self, lane_id: int) -> Lane:
         """Get a lane by its id"""
         for pool in self._pools:
@@ -380,7 +394,16 @@ class ProcessMap:
                 for shape in lane.shapes:
                     if (
                         type(shape)
-                        not in [Start, End, Timer, Message, MessageEnd, Signal, SignalEnd, Conditional]
+                        not in [
+                            Start,
+                            End,
+                            Timer,
+                            Message,
+                            MessageEnd,
+                            Signal,
+                            SignalEnd,
+                            Conditional,
+                        ]
                         and len(shape.connection_from) == 0
                     ):
                         dangling_elements.append(shape.name)
