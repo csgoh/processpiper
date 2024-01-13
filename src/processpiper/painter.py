@@ -138,6 +138,22 @@ class Painter:
             self.footer_font_colour,
         ) = self.colour_theme.get_colour_theme_settings("footer")
 
+    def set_element_font_size(self, font_size: int) -> None:
+        """Set the font size for all element type"""
+
+        if not isinstance(font_size, int):
+            raise TypeError("font_size must be an integer")
+
+        self.element_font_size = font_size
+
+    def set_title_font_size(self, font_size: int) -> None:
+        """Set the font size for the title"""
+
+        if not isinstance(font_size, int):
+            raise TypeError("font_size must be an integer")
+
+        self.title_font_size = font_size
+
     def get_font_path(self, font_name: str) -> str:
         """Get the path to the font file"""
         if sys.platform.startswith("win"):  # Windows
