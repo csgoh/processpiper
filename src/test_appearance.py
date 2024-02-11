@@ -1,4 +1,4 @@
-from processpiper import ProcessMap, EventType, ActivityType, GatewayType
+from .processpiper import ProcessMap, EventType, ActivityType, GatewayType
 
 
 def test_case01():
