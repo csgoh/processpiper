@@ -28,10 +28,20 @@ def _parse_and_generate_code(input_str, png_output_file):
 
     colour_theme_code = f', colour_theme="{colour_theme}"'
     process_map_width_code = f", width={process_map_width}"
+    file_extension = png_output_file.lower().split(".")[-1]
+
+    if file_extension == "png":
+        output_type_code = ", painter_type='PNG'"
+    elif file_extension == "svg":
+        output_type_code = ", painter_type='SVG'"
+    else:
+        # get png_output_file extension
+        raise ValueError(f"Unsupported file type [{file_extension}]")
+
     code_lines = [
         "from processpiper import ProcessMap, EventType, ActivityType, GatewayType",
         "from processpiper.coordinate import Side",
-        f'with ProcessMap("{process_map_title}"{colour_theme_code if colour_theme is not None else ""}{process_map_width_code if process_map_width > 0 else ""}) as my_process_map:',
+        f'with ProcessMap("{process_map_title}"{colour_theme_code if colour_theme is not None else ""}{output_type_code if output_type_code is not None else ""}{process_map_width_code if process_map_width > 0 else ""}) as my_process_map:',
     ]
 
     indent = ""
@@ -255,56 +265,56 @@ def _parse_lane_element(element_str):
     # --EventType--
     if element_str.startswith("(start"):
         element_type = "EventType.START"
-        element_name = element_str[1: element_str.index(")")].strip()
+        element_name = element_str[1 : element_str.index(")")].strip()
     elif element_str.startswith("(end"):
         element_type = "EventType.END"
-        element_name = element_str[1: element_str.index(")")].strip()
+        element_name = element_str[1 : element_str.index(")")].strip()
     elif element_str.startswith("(@timer"):
         element_type = "EventType.TIMER"
-        element_name = element_str[len("(@timer"): element_str.index(")")].strip()
+        element_name = element_str[len("(@timer") : element_str.index(")")].strip()
     elif element_str.startswith("(@intermediate"):
         element_type = "EventType.INTERMEDIATE"
         element_name = element_str[
-            len("(@intermediate"): element_str.index(")")
+            len("(@intermediate") : element_str.index(")")
         ].strip()
     elif element_str.startswith("(@message"):
         element_type = "EventType.MESSAGE"
-        element_name = element_str[len("(@message"): element_str.index(")")].strip()
+        element_name = element_str[len("(@message") : element_str.index(")")].strip()
     elif element_str.startswith("(@signal"):
         element_type = "EventType.SIGNAL"
-        element_name = element_str[len("(@signal"): element_str.index(")")].strip()
+        element_name = element_str[len("(@signal") : element_str.index(")")].strip()
     elif element_str.startswith("(@conditional"):
         element_type = "EventType.CONDITIONAL"
         element_name = element_str[
-            len("(@conditional"): element_str.index(")")
+            len("(@conditional") : element_str.index(")")
         ].strip()
     elif element_str.startswith("(@link"):
         element_type = "EventType.LINK"
-        element_name = element_str[len("(@link"): element_str.index(")")].strip()
+        element_name = element_str[len("(@link") : element_str.index(")")].strip()
 
     #  --ActivityType--
     elif element_str.startswith("[@subprocess"):
         element_type = "ActivityType.SUBPROCESS"
-        element_name = element_str[len("[@subprocess"): element_str.index("]")].strip()
+        element_name = element_str[len("[@subprocess") : element_str.index("]")].strip()
     elif element_str.startswith("["):
         element_type = "ActivityType.TASK"
-        element_name = element_str[1: element_str.index("]")].strip()
+        element_name = element_str[1 : element_str.index("]")].strip()
     #  --GatewayType--
     elif element_str.startswith("<@parallel"):
         element_type = "GatewayType.PARALLEL"
-        element_name = element_str[len("<@parallel"): element_str.index(">")].strip()
+        element_name = element_str[len("<@parallel") : element_str.index(">")].strip()
     elif element_str.startswith("<@inclusive"):
         element_type = "GatewayType.INCLUSIVE"
-        element_name = element_str[len("<@exclusive"): element_str.index(">")].strip()
+        element_name = element_str[len("<@exclusive") : element_str.index(">")].strip()
     elif element_str.startswith("<@exclusive"):
         element_type = "GatewayType.EXCLUSIVE"
-        element_name = element_str[len("<@exclusive"): element_str.index(">")].strip()
+        element_name = element_str[len("<@exclusive") : element_str.index(">")].strip()
     elif element_str.startswith("<"):
         element_type = "GatewayType.EXCLUSIVE"
-        element_name = element_str[1: element_str.index(">")].strip()
+        element_name = element_str[1 : element_str.index(">")].strip()
     elif element_str.startswith("(@event"):
         element_type = "GatewayType.EVENT"
-        element_name = element_str[len("(@event"): element_str.index(")")].strip()
+        element_name = element_str[len("(@event") : element_str.index(")")].strip()
 
     else:
         raise ValueError(f"Invalid element string: {element_str}")
@@ -333,25 +343,37 @@ def show_code_with_line_number(code: str):
         console.print(f"{i+1:3} {line}")
 
 
-def render(text: str, png_output_file: str = "", show_code: bool = False):
+def render(text: str, output_file: str = "", show_code: bool = False):
     """Render text to diagram"""
     output_file_provided = True
-    if not png_output_file.strip():
+    if not output_file.strip():
         output_file_provided = False
-        # add datetime to the file name
-        png_output_file = (
-            f"piper_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
-        )
+        # Generate default output file name
+        output_file = f"piper_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
 
-    generated_code = _parse_and_generate_code(text, png_output_file)
+    # check to make sure the output_file extension is either .png or .svg
+    file_extension = output_file.lower().split(".")[-1]
+    if output_file_provided and file_extension not in [
+        "png",
+        "svg",
+    ]:
+        raise ValueError("The output file extension must be either .png or .svg")
+
+    generated_code = _parse_and_generate_code(text, output_file)
     _validate_generated_code(generated_code)
     if show_code:
         show_code_with_line_number(generated_code)
     exec(generated_code)
-    generated_image = Image.open(png_output_file)
-    generated_image.load()
+    if file_extension == "svg":
+        with open(output_file, "r") as f:
+            generated_image = f.read()
+
+    elif file_extension == "png":
+        generated_image = Image.open(output_file)
+        generated_image.load()
+
     # Clean up the generated image file
     if not output_file_provided:
-        os.remove(png_output_file)
+        os.remove(output_file)
 
     return generated_code, generated_image
