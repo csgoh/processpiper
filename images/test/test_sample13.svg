@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="2209" height="609" viewBox="0 0 2209 609">
+<defs>
+<path d="M36.5,346.5 V50" id="d0" />
+<path d="M88.5,240.0 V50" id="d1" />
+<path d="M86.5,501.0 V50" id="d2" />
+</defs>
+<rect x="0" y="0" width="5000" height="5000" fill="white" />
+<text x="20" y="20" font-size="26" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#0B5394">Simulated Reality Assessment Process</text>
+<rect x="20" y="64" width="50" height="482" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d0">
+<tspan dy="0em">The World</tspan>
+</textPath></text>
+<rect x="72" y="64" width="2119" height="320" fill="#D9D9D9" />
+<rect x="72" y="64" width="50" height="320" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d1">
+<tspan dy="0em">You</tspan>
+</textPath></text>
+<path d="M122,64 L122,384" stroke="white" stroke-width="1" />
+<rect x="72" y="386" width="2119" height="160" fill="#D9D9D9" />
+<rect x="72" y="386" width="50" height="160" fill="#0B5394" />
+<text font-size="18" stroke="white" text-anchor="Start" dominant-baseline="Hanging" font-family="Arial"><textPath xlink:href="#d2">
+<tspan dy="0em">Stranger</tspan>
+</textPath></text>
+<path d="M122,386 L122,546" stroke="white" stroke-width="1" />
+<circle cx="237.0" cy="151.0" r="30" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="252.0" y="181.0" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="black">start</text>
+<rect x="402" y="114" width="130" height="74" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="445.0" y="126.0" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Create</text>
+<text x="434.0" y="144.0" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">simulation</text>
+<text x="429.0" y="163.5" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">hypotheses</text>
+<rect x="1322" y="114" width="130" height="74" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="1360.0" y="135.0" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Look for</text>
+<text x="1362.0" y="153.0" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">glitches</text>
+<path d="M1617.0,114 L1672,151.0 L1617.0,188 L1562,151.0 Z" fill="#9FC5E8" stroke="" stroke-width="1" />
+<text x="1549.0" y="188" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="black"><tspan x="1549.0" dy="0em">Did boss pass twice </tspan><tspan x="1549.0" dy="1em">in same way?</tspan></text>
+<text x="1609.0" y="140.5" font-size="23" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="black">X</text>
+<rect x="632" y="114" width="130" height="74" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="675.5" y="126.0" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Start a</text>
+<text x="655.0" y="144.0" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">conversation</text>
+<text x="648.5" y="163.5" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">with a stranger</text>
+<path d="M1157.0,114 L1212,151.0 L1157.0,188 L1102,151.0 Z" fill="#9FC5E8" stroke="" stroke-width="1" />
+<text x="1091.0" y="188" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="black">Sounds like a NPC?</text>
+<text x="1149.0" y="140.5" font-size="23" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="black">X</text>
+<rect x="1552" y="288" width="130" height="74" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="1576.0" y="309.0" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">The World is</text>
+<text x="1585.5" y="327.0" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">simulated</text>
+<rect x="1782" y="114" width="130" height="74" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="1793.5" y="135.0" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">The World is not</text>
+<text x="1815.5" y="153.0" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">simulated</text>
+<circle cx="2077.0" cy="151.0" r="30" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="2092.0" y="181.0" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="black">end</text>
+<circle cx="2077.0" cy="151.0" r="30" fill="none" stroke="black" stroke-width="3" />
+<rect x="862" y="436" width="130" height="74" fill="#9FC5E8" stroke="black" stroke-width="1" />
+<text x="889.5" y="443.5" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">Responded</text>
+<text x="874.5" y="466.0" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">'Princess needs</text>
+<text x="910.0" y="485.5" font-size="15" stroke="black" text-anchor="start" dominant-baseline="hanging" font-family="Arial">help!'</text>
+<path d="M267.0,151.0 L402,151" stroke="#000000" stroke-width="1" />
+<text x="334.5" y="156.0" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M402,151 L389.0,159.0 L389.0,143.0 L402,151 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M532,151 L632,151" stroke="#000000" stroke-width="1" />
+<text x="582.0" y="156" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M632,151 L619.0,159.0 L619.0,143.0 L632,151 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M697,188 L697,473" stroke="#000000" stroke-width="1" />
+<path d="M697,473 L862,473" stroke="#000000" stroke-width="1" />
+<text x="702" y="330.5" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M862,473 L849.0,481.0 L849.0,465.0 L862,473 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M992,473 L1047.0,473" stroke="#000000" stroke-width="1" />
+<path d="M1047.0,473 L1047.0,151" stroke="#000000" stroke-width="1" />
+<path d="M1047.0,151 L1102,151" stroke="#000000" stroke-width="1" />
+<text x="1052.0" y="312.0" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M1102,151 L1089.0,159.0 L1089.0,143.0 L1102,151 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1212,151 L1322,151" stroke="#000000" stroke-width="1" />
+<text x="1257.5" y="156" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000">No</text>
+<path d="M1322,151 L1309.0,159.0 L1309.0,143.0 L1322,151 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1452,151 L1562,151" stroke="#000000" stroke-width="1" />
+<text x="1507.0" y="156" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M1562,151 L1549.0,159.0 L1549.0,143.0 L1562,151 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1672,151 L1782,151" stroke="#000000" stroke-width="1" />
+<text x="1717.5" y="156" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000">No</text>
+<path d="M1782,151 L1769.0,159.0 L1769.0,143.0 L1782,151 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1912,151 L2047.0,151.0" stroke="#000000" stroke-width="1" />
+<text x="1979.5" y="156" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M2047.0,151.0 L2034.0,159.0 L2034.0,143.0 L2047.0,151.0 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1617,188 L1617,288" stroke="#000000" stroke-width="1" />
+<text x="1622" y="229.0" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000">Yes</text>
+<path d="M1617,288 L1609.0,275.0 L1625.0,275.0 L1617,288 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1682,325 L2077.0,325" stroke="#000000" stroke-width="1" />
+<path d="M2077.0,325 L2077.0,181.0" stroke="#000000" stroke-width="1" />
+<text x="1879.5" y="330" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000"></text>
+<path d="M2077.0,181.0 L2085.0,194.0 L2069.0,194.0 L2077.0,181.0 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<path d="M1157,188 L1157,325" stroke="#000000" stroke-width="1" />
+<path d="M1157,325 L1552,325" stroke="#000000" stroke-width="1" />
+<text x="1162" y="247.5" font-size="15" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#000000">Yes</text>
+<path d="M1552,325 L1539.0,333.0 L1539.0,317.0 L1552,325 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+<text x="20" y="568" font-size="18" text-anchor="start" dominant-baseline="Hanging" font-family="Arial" stroke="#0B5394"> Generated by ProcessPiper</text>
+</svg>
