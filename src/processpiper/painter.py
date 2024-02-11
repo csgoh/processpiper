@@ -1349,9 +1349,11 @@ class Painter:
         # _, _, right, bottom = image_font.getbbox(text)
         # font_width = right
         # font_height = bottom
-
-        text_lines = text.splitlines()
-        longest_text = max(text_lines, key=len)
+        if text:
+            text_lines = text.splitlines()
+            longest_text = max(text_lines, key=len)
+        else:
+            longest_text = ""
 
         _, _, font_width, font_height = self.get_char_width(
             longest_text, font, font_size
