@@ -24,12 +24,13 @@ def generate_diagram(input_syntax: str, painter_type: str = "PNG"):
             f"{inspect.currentframe().f_back.f_code.co_name}.svg"
         )
     _, img = text2diagram.render(input_syntax, output_file, show_code=True)
-    if painter_type == "PNG":
-        img.save(output_file)
-    else:
-        # save gen_code as SVG file
-        with open(output_file, "w") as f:
-            f.write(img)
+    
+    # if painter_type == "PNG":
+    #     img.save(output_file)
+    # else:
+    #     # save gen_code as SVG file
+    #     with open(output_file, "w") as f:
+    #         f.write(img)
 
 
 def test_text2diagram_01():
