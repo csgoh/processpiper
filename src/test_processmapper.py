@@ -486,12 +486,13 @@ def test_case17():
         event1.connect(task1).connect(task2).connect(event12)
 
         my_process_map.draw()
+        print(f"output_file : {output_file}")
         my_process_map.save(output_file)
 
 
 if __name__ == "__main__":
     # test_case1()
-    # test_case2() # TO DEBUG
+    # test_case2()
     # test_case3()
     # test_case4()
     # test_case5()
