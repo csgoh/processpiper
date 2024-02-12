@@ -82,6 +82,7 @@ def _parse_element(lines, code_lines, indent, lane_id):
         and not lines[0].strip().startswith("lane:")
         and not lines[0].strip().startswith("pool:")
         and not lines[0].strip().startswith("footer:")
+        and not lines[0].strip().startswith("#")
         and lines[0].strip() != ""
     ):
         lane_element = lines.pop(0).strip()
