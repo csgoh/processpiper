@@ -126,6 +126,7 @@ The generated diagram is as follows:
   * RUBYRED
   * TEALWATERS
   * SEAFOAMS
+* Diagrams can be saved to PNG or SVG formats
 
 
 ## Frontend Application

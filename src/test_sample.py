@@ -1,4 +1,5 @@
-from processpiper import ProcessMap, EventType, ActivityType, GatewayType
+from .processpiper import ProcessMap, EventType, ActivityType, GatewayType
+from .processpiper import text2diagram
 
 
 def test_sample01():
@@ -456,9 +457,7 @@ def test_sample07():
 
 
 def test_sample08():
-    with ProcessMap(
-        "Test Sample 08", colour_theme="TEALWATERS"
-    ) as my_process_map:
+    with ProcessMap("Test Sample 08", colour_theme="TEALWATERS") as my_process_map:
         with my_process_map.add_lane("Lane 1") as lane1:
             start = lane1.add_element("start", EventType.START)
             t11 = lane1.add_element("Task 1-1", ActivityType.TASK)
@@ -486,8 +485,7 @@ def test_sample08():
 
 
 def test_sample09():
-    with ProcessMap(
-        "Test Sample 09", colour_theme="TEALWATERS") as my_process_map:
+    with ProcessMap("Test Sample 09", colour_theme="TEALWATERS") as my_process_map:
         with my_process_map.add_lane("Lane 1") as lane1:
             start = lane1.add_element("start", EventType.START)
             t11 = lane1.add_element("Task 1-1", ActivityType.TASK)
@@ -506,14 +504,13 @@ def test_sample09():
                 end = lane3.add_element("end", EventType.END)
                 t23.connect(end)
                 t24.connect(end)
-            
+
         my_process_map.draw()
         my_process_map.save("images/test/test_sample09.png")
 
 
 def test_sample10():
-    with ProcessMap(
-        "Test Sample 10", colour_theme="RUBYRED") as my_process_map:
+    with ProcessMap("Test Sample 10", colour_theme="RUBYRED") as my_process_map:
         with my_process_map.add_lane("Lane 1") as lane1:
             start = lane1.add_element("start", EventType.START)
             t11 = lane1.add_element("Task 1-1", ActivityType.TASK)
@@ -539,14 +536,62 @@ def test_sample10():
         my_process_map.save("images/test/test_sample10.png")
 
 
+def test_sample11():
+    with ProcessMap(
+        "Are we living in simulation?", colour_theme="TEALWATERS"
+    ) as process_map:
+        with process_map.add_pool("The World") as pool:
+            with pool.add_lane("You") as you:
+                start = you.add_element("start", EventType.START)
+                t1 = you.add_element("Form simulation hypotheses", ActivityType.TASK)
+                t2 = you.add_element("Look for glitches", ActivityType.TASK)
+                g1 = you.add_element(
+                    "Did boss walk past twice \nin the same manner?",
+                    GatewayType.EXCLUSIVE,
+                )
+                t3 = you.add_element("Ask a stranger life purpose", ActivityType.TASK)
+                g2 = you.add_element(
+                    "Responded 'huh?' \nlike NPC?", GatewayType.EXCLUSIVE
+                )
+                start.connect(t1)
+                t1.connect(t2)
+                t2.connect(g1)
+                final_simulated = you.add_element(
+                    "The World is simulated", ActivityType.TASK
+                )
+                final_not_simulated = you.add_element(
+                    "The World is not simulated", ActivityType.TASK
+                )
+                g1.connect(final_simulated, "Yes")
+                g1.connect(t3, "No")
+                t3.connect(g2)
+                g2.connect(final_not_simulated, "No")
+                g2.connect(final_simulated, "Yes")
+                end = you.add_element("end", EventType.END)
+                final_not_simulated.connect(end)
+                final_simulated.connect(end)
+
+            # with pool.add_lane("Stranger") as stranger:
+            #     st1 = stranger.add_element("Responded ", ActivityType.TASK)
+            #     t3.connect(st1)
+            #     st1.connect(g2)
+        process_map.draw()
+        process_map.save("images/test/test_sample11.png")
+
+
+
+
+
 if __name__ == "__main__":
     # test_sample01()
     # test_sample02()
     # test_sample03()
-    # test_sample04()  
+    # test_sample04()
     # test_sample05()  # -- Test validation. Should fail
     # test_sample06()  # -- Test validation. Should fail
     # test_sample07()  # -- Test validation. Should fail
-    test_sample08()
+    # test_sample08()
     # test_sample09()  # -- Test validation. Should fail
     # test_sample10()  # -- Test validation. Should fail
+    test_sample11()
+
