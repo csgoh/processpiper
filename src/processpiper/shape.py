@@ -68,6 +68,7 @@ class Shape:
     outline_width: int = field(init=False)
     text_alignment: str = field(init=False)
 
+    bpmn_id: str = field(init=False)
     coord: Coordinate = field(init=True, default=Coordinate())
     origin_coord: Coordinate = field(init=True, default=Coordinate())
     width: int = field(init=False, default=0)
