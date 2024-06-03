@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 from rich.traceback import install
 from rich.console import Console
 from rich.table import Table
-import time
+import time, uuid
 from .event import *
 from .lane import Lane, ElementType, EventType
 from .pool import Pool
@@ -35,6 +35,7 @@ from .constants import Configs
 from .helper import Helper
 from .layout import Grid
 from .coordinate import Coordinate
+from .bpmn import BPMN
 
 import logging
 
@@ -120,6 +121,7 @@ class ProcessMap:
             text_alignment,
             self.__painter,
         )
+        pool.bpmn_id = str(uuid.uuid4())[:7]
         self._pools.append(pool)
         return pool
 
@@ -607,6 +609,11 @@ class ProcessMap:
 
         elapsed_time = (time.time() - self.start_time) * 1000
         Helper.info_log(f"Took [{elapsed_time:.2f}ms] to generate '{filename}' diagram")
+
+    def export_to_bpmn_xml(self, filename: str) -> None:
+        """This method exports the process map to a BPMN XML file"""
+        bpmn = BPMN()
+        bpmn.export_to_xml(self._pools, filename)
 
     def __enter__(self):
         """This method is called when the 'with' statement is used"""
