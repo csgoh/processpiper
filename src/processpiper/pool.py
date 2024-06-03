@@ -21,6 +21,8 @@
 # SOFTWARE.
 
 from dataclasses import dataclass, field
+from itertools import count
+import uuid
 from .painter import Painter
 from .lane import Lane
 from .constants import Configs
@@ -31,6 +33,7 @@ from .coordinate import Coordinate
 class Pool:
     """A pool is a collection of lanes."""
 
+    id: int = field(init=False, default_factory=count().__next__)
     name: str = field(init=True)
     font: str = field(init=True, default=None)
     font_size: int = field(init=True, default=None)
@@ -39,6 +42,7 @@ class Pool:
     text_alignment: str = field(init=True, default=None)
     painter: Painter = field(init=True, default=None)
 
+    bpmn_id: str = field(init=False)
     coord: Coordinate = field(init=False, default=None)
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
@@ -50,8 +54,7 @@ class Pool:
     def __enter__(self):
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback) -> None:
-        ...
+    def __exit__(self, exc_type, exc_value, traceback) -> None: ...
 
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
         """Set the position of the pool and return the position of the next shape to be drawn"""
@@ -132,5 +135,6 @@ class Pool:
             background_fill_colour,
             self.painter,
         )
+        lane.bpmn_id = str(uuid.uuid4())[:7]
         self.lanes.append(lane)
         return lane
