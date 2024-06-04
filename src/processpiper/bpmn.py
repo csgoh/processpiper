@@ -29,27 +29,58 @@ from xml.dom import minidom
 class BPMN:
     """BPMN diagram"""
 
-    id: str = None
-    name: str = None
-    documentation: str = None
-    process_id: str = None
-    process_name: str = None
-    process_documentation: str = None
-    process_executable: str = None
-    process_version: str = None
-    process_namespace: str = None
-    process_is_executable: bool = None
-    process_is_active: bool = None
-    process_is_instantiated: bool = None
-    process_is_suspended: bool = None
-    process_is_completed: bool = None
-    process_is_terminated: bool = None
-    process_is_cancelled: bool = None
-    process_is_failed: bool = None
-    process_is_error: bool = None
-    process_is_warning: bool = None
-
+    id: str = field(init=False)
+    name: str = field(init=False)
+    
     _pools: list = field(init=False, default_factory=list)
+    namespaces = {
+            "": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+            "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+            "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+            "dc": "http://www.omg.org/spec/DD/20100524/DC",
+            "di": "http://www.omg.org/spec/DD/20100524/DI",
+            "bioc": "http://bpmn.io/schema/bpmn/biocolor/1.0",
+            "color": "http://www.omg.org/spec/BPMN/non-normative/color/1.0",
+        }
+
+    # Create the root element
+    definitions = ET.Element(
+        "bpmn:definitions",
+        {
+            "id": "Definitions_1le5pqg",
+            "targetNamespace": "http://bpmn.io/schema/bpmn",
+            "exporter": "ProcessPiper (https://github.com/csgoh/processpiper)",
+            "exporterVersion": "0.1",
+        },
+    )
+
+    def __post_init__(self):
+        # Register namespaces
+        for prefix, uri in self.namespaces.items():
+            ET.register_namespace(prefix, uri)
+
+    def add_pool():
+        # This is add_process
+        ...
+
+    def add_lane():
+        ...
+
+    def add_lane_flow_node():
+        ...
+
+    def add_element():
+        ...
+
+    def add_sequence_flow():
+        ...
+
+    def add_collaboration():
+        ...
+
+
+    
 
     def export_to_xml(self, pools, filename):
         """Export the BPMN diagram to XML"""
@@ -65,35 +96,13 @@ class BPMN:
                 for shape in shapes:
                     print(f"        {shape.bpmn_id}, {shape.name}, type={type(shape).__name__}")
 
-        namespaces = {
-            "": "http://www.omg.org/spec/BPMN/20100524/MODEL",
-            "xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
-            "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
-            "dc": "http://www.omg.org/spec/DD/20100524/DC",
-            "di": "http://www.omg.org/spec/DD/20100524/DI",
-            "bioc": "http://bpmn.io/schema/bpmn/biocolor/1.0",
-            "color": "http://www.omg.org/spec/BPMN/non-normative/color/1.0",
-        }
+        # Identity connections within a pool
 
-        # Register namespaces
-        for prefix, uri in namespaces.items():
-            ET.register_namespace(prefix, uri)
-
-        # Create the root element
-        definitions = ET.Element(
-            "bpmn:definitions",
-            {
-                "id": "Definitions_1le5pqg",
-                "targetNamespace": "http://bpmn.io/schema/bpmn",
-                "exporter": "ProcessPiper (https://github.com/csgoh/processpiper)",
-                "exporterVersion": "0.1",
-            },
-        )
+        # Identity connections that span across pools
 
         # Add collaboration
         collaboration = ET.SubElement(
-            definitions, "bpmn:collaboration", {"id": "Collaboration_1d79bzk"}
+            self.definitions, "bpmn:collaboration", {"id": "Collaboration_1d79bzk"}
         )
         ET.SubElement(
             collaboration,
@@ -107,7 +116,7 @@ class BPMN:
 
         # Add process
         process = ET.SubElement(
-            definitions,
+            self.definitions,
             "bpmn:process",
             {"id": "Process_16iizmn", "isExecutable": "false"},
         )
@@ -184,7 +193,7 @@ class BPMN:
 
         # Add BPMN diagram
         bpmnDiagram = ET.SubElement(
-            definitions, "bpmndi:BPMNDiagram", {"id": "BPMNDiagram_1"}
+            self.definitions, "bpmndi:BPMNDiagram", {"id": "BPMNDiagram_1"}
         )
         bpmnPlane = ET.SubElement(
             bpmnDiagram,
@@ -321,7 +330,7 @@ class BPMN:
                 ET.SubElement(edge, "di:waypoint", waypoint)
 
         # Convert the ElementTree to a string and write to a file
-        tree = ET.ElementTree(definitions)
+        tree = ET.ElementTree(self.definitions)
         tree.write(filename, encoding="UTF-8", xml_declaration=True)
         # nicetree = minidom.parse("diagram.bpmn")
 
