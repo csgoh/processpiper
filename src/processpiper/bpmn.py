@@ -96,9 +96,18 @@ class BPMN:
                 for shape in shapes:
                     print(f"        {shape.bpmn_id}, {shape.name}, type={type(shape).__name__}")
 
-        # Identity connections within a pool
+        # Identify collaborations
+        #   a. Link to pools
+        #   b. Link to connections that span across pools
 
-        # Identity connections that span across pools
+        # Identify process/pool
+
+        # Identify connections that span across pools
+
+        
+
+
+        # Identify connections within a pool
 
         # Add collaboration
         collaboration = ET.SubElement(
