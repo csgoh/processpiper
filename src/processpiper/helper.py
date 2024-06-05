@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import uuid
 from rich.console import Console
 from rich.panel import Panel
 
@@ -83,3 +84,7 @@ class Helper:
     def info_log(message: str):
         """Log info message"""
         logging.info(message)
+
+    @staticmethod
+    def get_uuid():
+        return "PIPER_" + str(uuid.uuid4()) 
