@@ -27,6 +27,7 @@ from .painter import Painter
 from .lane import Lane
 from .constants import Configs
 from .coordinate import Coordinate
+from .helper import Helper
 
 
 @dataclass
@@ -135,6 +136,6 @@ class Pool:
             background_fill_colour,
             self.painter,
         )
-        lane.bpmn_id = str(uuid.uuid4())[:7]
+        lane.bpmn_id = Helper.get_uuid()
         self.lanes.append(lane)
         return lane

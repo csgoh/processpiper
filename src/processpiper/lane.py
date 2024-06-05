@@ -154,7 +154,7 @@ class Lane:
         element.outline_colour = outline_colour
         element.outline_width = outline_width
         element.text_alignment = text_alignment
-        element.bpmn_id = str(uuid.uuid4())[:7]
+        element.bpmn_id = Helper.get_uuid()
         self.shapes.append(element)
         return element
 
