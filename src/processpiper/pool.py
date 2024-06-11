@@ -22,7 +22,6 @@
 
 from dataclasses import dataclass, field
 from itertools import count
-import uuid
 from .painter import Painter
 from .lane import Lane
 from .constants import Configs
