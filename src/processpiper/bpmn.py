@@ -22,7 +22,10 @@
 
 from dataclasses import dataclass, field
 import xml.etree.ElementTree as ET
-from xml.dom import minidom
+from .event import *
+from .activity import *
+from .gateway import *
+from .helper import Helper
 
 
 @dataclass
@@ -31,85 +34,45 @@ class BPMN:
 
     id: str = field(init=False)
     name: str = field(init=False)
-    
+
     _pools: list = field(init=False, default_factory=list)
-    namespaces = {
-            "": "http://www.omg.org/spec/BPMN/20100524/MODEL",
-            "xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
-            "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
-            "dc": "http://www.omg.org/spec/DD/20100524/DC",
-            "di": "http://www.omg.org/spec/DD/20100524/DI",
-            "bioc": "http://bpmn.io/schema/bpmn/biocolor/1.0",
-            "color": "http://www.omg.org/spec/BPMN/non-normative/color/1.0",
-        }
 
     # Create the root element
     definitions = ET.Element(
         "bpmn:definitions",
         {
-            "id": "Definitions_1le5pqg",
-            "targetNamespace": "http://bpmn.io/schema/bpmn",
+            "id": f"Definitions_{Helper.get_uuid()}",
+            "targetNamespace": "https://github.com/csgoh/processpiper/schema/bpmn",
             "exporter": "ProcessPiper (https://github.com/csgoh/processpiper)",
             "exporterVersion": "0.1",
+            "xmlns:bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xmlns:bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+            "xmlns:dc": "http://www.omg.org/spec/DD/20100524/DC",
+            "xmlns:di": "http://www.omg.org/spec/DD/20100524/DI",
+            "xmlns:bioc": "http://bpmn.io/schema/bpmn/biocolor/1.0",
+            "xmlns:color": "http://www.omg.org/spec/BPMN/non-normative/color/1.0",
         },
     )
-
-    def __post_init__(self):
-        # Register namespaces
-        for prefix, uri in self.namespaces.items():
-            ET.register_namespace(prefix, uri)
 
     def add_pool():
         # This is add_process
         ...
 
-    def add_lane():
-        ...
+    def add_lane(): ...
 
-    def add_lane_flow_node():
-        ...
+    def add_lane_flow_node(): ...
 
-    def add_element():
-        ...
+    def add_element(): ...
 
-    def add_sequence_flow():
-        ...
+    def add_sequence_flow(): ...
 
-    def add_collaboration():
-        ...
+    def add_collaboration(): ...
 
+    def render_sample(self, pools, filename):
+        for prefix, uri in self.namespaces.items():
+            ET.register_namespace(prefix, uri)
 
-    
-
-    def export_to_xml(self, pools, filename):
-        """Export the BPMN diagram to XML"""
-        print("Exporting..")
-
-        # loop through _pools
-        for pool in pools:
-            print(f"{pool.bpmn_id},{pool.name}")
-            lanes = pool.lanes
-            for lane in lanes:
-                print(f"    {lane.bpmn_id},{lane.name}")
-                shapes = lane.shapes
-                for shape in shapes:
-                    print(f"        {shape.bpmn_id}, {shape.name}, type={type(shape).__name__}")
-
-        # Identify collaborations
-        #   a. Link to pools
-        #   b. Link to connections that span across pools
-
-        # Identify process/pool
-
-        # Identify connections that span across pools
-
-        
-
-
-        # Identify connections within a pool
-
-        # Add collaboration
         collaboration = ET.SubElement(
             self.definitions, "bpmn:collaboration", {"id": "Collaboration_1d79bzk"}
         )
@@ -341,17 +304,114 @@ class BPMN:
         # Convert the ElementTree to a string and write to a file
         tree = ET.ElementTree(self.definitions)
         tree.write(filename, encoding="UTF-8", xml_declaration=True)
-        # nicetree = minidom.parse("diagram.bpmn")
 
-        # # Get the root element
-        # root = nicetree.documentElement
+    def indent(self, elem, level=0):
+        i = "\n" + level * "    "
+        if len(elem):
+            if not elem.text or not elem.text.strip():
+                elem.text = f"{i}    "
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+            for elem in elem:
+                self.indent(elem, level + 1)
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+        elif level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
 
-        # # Create a new pretty print XML string
-        # pretty_xml = root.toprettyxml(indent="  ")
+    def export_to_xml(self, pools, filename):
+        """Export the BPMN diagram to XML"""
+        print("Exporting..")
+        # self.render_sample(pools, filename)
 
-        # # Write the formatted XML to a new file
-        # with open("formatted_diagram.bpmn", "w", encoding="UTF-8") as f:
-        #     f.write(pretty_xml)
+        # ** loop through pools for debugging **
+        # for pool in pools:
+        #     print(f"{pool.bpmn_id},{pool.name}")
+        #     lanes = pool.lanes
+        #     for lane in lanes:
+        #         print(f"    {lane.bpmn_id},{lane.name}")
+        #         shapes = lane.shapes
+        #         for shape in shapes:
+        #             print(
+        #                 f"        {shape.bpmn_id}, {shape.name}, type={type(shape).__name__}"
+        #             )
+
+        # Identify process/pool. If land without pool, there is no 'pool' xml attribute
+        #   a. Lane within the pool
+        #       i. flowNodeRef. Include ID to the element
+
+        for pool in pools:
+            # Add process
+            process = ET.SubElement(
+                self.definitions,
+                "bpmn:process",
+                {"id": pool.bpmn_id, "name": pool.name, "isExecutable": "false"},
+            )
+            lanes = pool.lanes
+            for lane in lanes:
+                # Add lane
+                bpmn_lane = ET.SubElement(
+                    process, "bpmn:lane", {"id": lane.bpmn_id, "name": lane.name}
+                )
+
+                # Add flowNodeRef
+                shapes = lane.shapes
+                for shape in shapes:
+                    ET.SubElement(bpmn_lane, "bpmn:flowNodeRef", {"id": shape.bpmn_id})
+
+            #   b. Elements
+            #           StartEvent (id, name, isInterrupting, parallelMultiple)
+            #           # UserTask (id, name, startQuantity, completionQuantity, isForCompensation, implementation)
+            #           Task (id, name, startQuantity, completionQuantity, isForCompensation)
+            #           EndEvent (id, name)
+            #           ExclusiveGateway (id, name, gatewayDirection)
+            #           SequenceFlow (id, name, sourceRef, targetRef)
+
+            for lane in pool.lanes:
+                for shape in lane.shapes:
+                    print(f"{shape.name}, {type(shape)}")
+                    if type(shape) is Start:
+                        ET.SubElement(
+                            process,
+                            "bpmn:startEvent",
+                            {"id": shape.bpmn_id, "name": shape.name},
+                        )
+                    elif type(shape) is End:
+                        ET.SubElement(
+                            process,
+                            "bpmn:endEvent",
+                            {"id": shape.bpmn_id, "name": shape.name},
+                        )
+                    elif type(shape) is Task:
+                        ET.SubElement(
+                            process,
+                            "bpmn:task",
+                            {"id": shape.bpmn_id, "name": shape.name},
+                        )
+                    elif type(shape) is Exclusive:
+                        ET.SubElement(
+                            process,
+                            "bpmn:exclusiveGateway",
+                            {"id": shape.bpmn_id, "name": shape.name},
+                        )
+
+        # Identify collaborations
+        #   a. Link to pools (bpmn:participant, bpmn:messageFlow)
+        #   b. Link to connections that span across pools
+
+        # Identify Diagram : BPMNDiagram (id, name)
+        #   a. BPMNPlane (id, bpmnElement)
+        #       i. BPMNShape (id, bpmnElement, isHorizontal)
+        #           1. Bounds (x, y, width, height)
+        #           2. BPMNLabel (id, labelStyle)
+        #       ii. BPMNEdge (id, bpmnElement)
+        #           a. Waypoint (x, y)
+        #   b. BPMNLabelStyle (id, labelStyle)
+        #       i. dc:Font (name, size, isBold, isItalic, isUnderline, isStrikeThrough)
+
+        tree = ET.ElementTree(self.definitions)
+        self.indent(self.definitions)
+        tree.write("test.bpmn", encoding="UTF-8", xml_declaration=True)
 
 
 if __name__ == "__main__":
