@@ -26,6 +26,7 @@ from .event import *
 from .activity import *
 from .gateway import *
 from .helper import Helper
+from .version import __version__
 
 
 @dataclass
@@ -37,14 +38,14 @@ class BPMN:
 
     _pools: list = field(init=False, default_factory=list)
 
-    # Create the root element
+    # *** Create the root element ***
     definitions = ET.Element(
         "bpmn:definitions",
         {
             "id": f"Definitions_{Helper.get_uuid()}",
             "targetNamespace": "https://github.com/csgoh/processpiper/schema/bpmn",
             "exporter": "ProcessPiper (https://github.com/csgoh/processpiper)",
-            "exporterVersion": "0.1",
+            "exporterVersion": __version__,
             "xmlns:bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xmlns:bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
@@ -54,20 +55,6 @@ class BPMN:
             "xmlns:color": "http://www.omg.org/spec/BPMN/non-normative/color/1.0",
         },
     )
-
-    def add_pool():
-        # This is add_process
-        ...
-
-    def add_lane(): ...
-
-    def add_lane_flow_node(): ...
-
-    def add_element(): ...
-
-    def add_sequence_flow(): ...
-
-    def add_collaboration(): ...
 
     def render_sample(self, pools, filename):
         for prefix, uri in self.namespaces.items():
@@ -336,40 +323,38 @@ class BPMN:
         #                 f"        {shape.bpmn_id}, {shape.name}, type={type(shape).__name__}"
         #             )
 
-        # Identify process/pool. If land without pool, there is no 'pool' xml attribute
-        #   a. Lane within the pool
-        #       i. flowNodeRef. Include ID to the element
-
+        # ------ (1) Process Section -------
         for pool in pools:
-            # Add process
+            # *** Generate bpmn:process elements ***
             process = ET.SubElement(
                 self.definitions,
                 "bpmn:process",
                 {"id": pool.bpmn_id, "name": pool.name, "isExecutable": "false"},
             )
             lanes = pool.lanes
-            for lane in lanes:
-                # Add lane
-                bpmn_lane = ET.SubElement(
-                    process, "bpmn:lane", {"id": lane.bpmn_id, "name": lane.name}
+            if lanes is not None:
+                # *** Generate bpmn:laneSet elements ***
+                lane_set = ET.SubElement(
+                    process, "bpmn:laneSet", {"id": Helper.get_uuid()}
                 )
 
-                # Add flowNodeRef
-                shapes = lane.shapes
-                for shape in shapes:
-                    ET.SubElement(bpmn_lane, "bpmn:flowNodeRef", {"id": shape.bpmn_id})
+                for lane in lanes:
+                    # *** Generate bpmn:lane elements ***
+                    bpmn_lane = ET.SubElement(
+                        lane_set, "bpmn:lane", {"id": lane.bpmn_id, "name": lane.name}
+                    )
 
-            #   b. Elements
-            #           StartEvent (id, name, isInterrupting, parallelMultiple)
-            #           # UserTask (id, name, startQuantity, completionQuantity, isForCompensation, implementation)
-            #           Task (id, name, startQuantity, completionQuantity, isForCompensation)
-            #           EndEvent (id, name)
-            #           ExclusiveGateway (id, name, gatewayDirection)
-            #           SequenceFlow (id, name, sourceRef, targetRef)
+                    # *** Generate bpmn:flowNodeRef ***
+                    shapes = lane.shapes
+                    for shape in shapes:
+                        ET.SubElement(
+                            bpmn_lane, "bpmn:flowNodeRef", {"id": shape.bpmn_id}
+                        )
 
             for lane in pool.lanes:
                 for shape in lane.shapes:
-                    print(f"{shape.name}, {type(shape)}")
+                    # *** Generate bpmn:<task/gateway/event> elements ***
+                    # print(f"{shape.name}, {type(shape)}")
                     if type(shape) is Start:
                         ET.SubElement(
                             process,
@@ -394,10 +379,62 @@ class BPMN:
                             "bpmn:exclusiveGateway",
                             {"id": shape.bpmn_id, "name": shape.name},
                         )
+                    if shape.connection_to is not None:
+                        for connection in shape.connection_to:
+                            if shape.is_same_pool(connection.source, connection.target):
+                                # *** Generate bpmn:sequenceFlow elements ***
+                                ET.SubElement(
+                                    process,
+                                    "bpmn:sequenceFlow",
+                                    {
+                                        "id": Helper.get_uuid(),
+                                        "name": connection.label,
+                                        "sourceRef": shape.bpmn_id,
+                                        "targetRef": connection.target.bpmn_id,
+                                    },
+                                )
 
-        # Identify collaborations
-        #   a. Link to pools (bpmn:participant, bpmn:messageFlow)
-        #   b. Link to connections that span across pools
+        # ------ (2) Collaboration Section -------
+        if len(pools) > 1:
+            # *** Generate bpmn:collaboration element ***
+            collaboration = ET.SubElement(
+                self.definitions, "bpmn:collaboration", {"id": Helper.get_uuid()}
+            )
+            for pool in pools:
+                # *** Generate bpmn:participant element ***
+                ET.SubElement(
+                    collaboration,
+                    "bpmn:participant",
+                    {"id": pool.bpmn_id, "processRef": pool.bpmn_id},
+                )
+
+                # *** Generate bpmn:messageFlow elements ***
+                for lane in pool.lanes:
+                    for shape in lane.shapes:
+                        if shape.connection_to is not None:
+                            for connection in shape.connection_to:
+                                if not shape.is_same_pool(
+                                    connection.source, connection.target
+                                ):
+                                    ET.SubElement(
+                                        collaboration,
+                                        "bpmn:messageFlow",
+                                        {
+                                            "id": Helper.get_uuid(),
+                                            "name": connection.label,
+                                            "sourceRef": shape.bpmn_id,
+                                            "targetRef": connection.target.bpmn_id,
+                                        },
+                                    )
+
+        # *** (3) BPMN Diagram Section
+        # *** Generate bpmndi:BPMNDiagram Elements ***
+        ET.SubElement(
+            self.definitions,
+            "bpmndi:BPMNDiagram",
+            {"id": Helper.get_uuid(), "name": "BPMN Diagram"},
+        )
+        # *** Generate bpmndi:BPMNPlane Elements ***
 
         # Identify Diagram : BPMNDiagram (id, name)
         #   a. BPMNPlane (id, bpmnElement)
