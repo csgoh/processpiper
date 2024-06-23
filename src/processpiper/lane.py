@@ -108,6 +108,7 @@ class Lane:
 
     id: int = field(init=False, default_factory=count().__next__)
     bpmn_id: str = field(init=False)
+    bpmn_collaboration_id: str = field(init=False)
     shapes: list = field(init=False, default_factory=list)
     coord: Coordinate = field(init=False, default=None)
     width: int = field(init=False, default=0)
