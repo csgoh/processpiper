@@ -326,30 +326,47 @@ class BPMN:
         # ------ (1) Process Section -------
         for pool in pools:
             # *** Generate bpmn:process elements ***
-            process = ET.SubElement(
-                self.definitions,
-                "bpmn:process",
-                {"id": pool.bpmn_id, "name": pool.name, "isExecutable": "false"},
-            )
+            if pool.name != "Default Pool":
+                process = ET.SubElement(
+                    self.definitions,
+                    "bpmn:process",
+                    {"id": pool.bpmn_id, "name": pool.name, "isExecutable": "false"},
+                )
             lanes = pool.lanes
             if lanes is not None:
                 # *** Generate bpmn:laneSet elements ***
-                lane_set = ET.SubElement(
-                    process, "bpmn:laneSet", {"id": Helper.get_uuid()}
-                )
+                if pool.name != "Default Pool":
+                    lane_set = ET.SubElement(
+                        process, "bpmn:laneSet", {"id": Helper.get_uuid()}
+                    )
 
                 for lane in lanes:
                     # *** Generate bpmn:lane elements ***
-                    bpmn_lane = ET.SubElement(
-                        lane_set, "bpmn:lane", {"id": lane.bpmn_id, "name": lane.name}
-                    )
+                    if pool.name != "Default Pool":
+                        bpmn_lane = ET.SubElement(
+                            lane_set,
+                            "bpmn:lane",
+                            {"id": lane.bpmn_id, "name": lane.name},
+                        )
+                    else:
+                        bpmn_lane = ET.SubElement(
+                            self.definitions,
+                            "bpmn:process",
+                            {"id": lane.bpmn_id, "name": lane.name},
+                        )
+                        process = bpmn_lane
 
                     # *** Generate bpmn:flowNodeRef ***
                     shapes = lane.shapes
                     for shape in shapes:
-                        ET.SubElement(
-                            bpmn_lane, "bpmn:flowNodeRef", {"id": shape.bpmn_id}
-                        )
+                        # for connection in shape.connection_to:
+                        # if shape.is_same_pool(connection.source, connection.target):
+                        if pool.name != "Default Pool":
+                            flowNodeRef = ET.SubElement(bpmn_lane, "bpmn:flowNodeRef")
+                            # add text to flowNodeRef
+                            flowNodeRef.text = shape.bpmn_id
+
+                        print(f"{shape.name}, {shape.bpmn_id}")
 
             for lane in pool.lanes:
                 for shape in lane.shapes:
@@ -395,21 +412,42 @@ class BPMN:
                                 )
 
         # ------ (2) Collaboration Section -------
+        collaboration_id = ""
         if len(pools) > 1:
             # *** Generate bpmn:collaboration element ***
             collaboration = ET.SubElement(
                 self.definitions, "bpmn:collaboration", {"id": Helper.get_uuid()}
             )
+            # get collaboration id
+            collaboration_id = collaboration.get("id")
+
             for pool in pools:
                 # *** Generate bpmn:participant element ***
-                ET.SubElement(
-                    collaboration,
-                    "bpmn:participant",
-                    {"id": pool.bpmn_id, "processRef": pool.bpmn_id},
-                )
+                if pool.name != "Default Pool":
+                    bpmn_participant = ET.SubElement(
+                        collaboration,
+                        "bpmn:participant",
+                        {
+                            "id": Helper.get_uuid(),
+                            "name": pool.name,
+                            "processRef": pool.bpmn_id,
+                        },
+                    )
+                    pool.bpmn_collaboration_id = bpmn_participant.get("id")
 
                 # *** Generate bpmn:messageFlow elements ***
                 for lane in pool.lanes:
+                    if pool.name == "Default Pool":
+                        bpmn_participant = ET.SubElement(
+                            collaboration,
+                            "bpmn:participant",
+                            {
+                                "id": Helper.get_uuid(),
+                                "name": lane.name,
+                                "processRef": lane.bpmn_id,
+                            },
+                        )
+                        lane.bpmn_collaboration_id = bpmn_participant.get("id")
                     for shape in lane.shapes:
                         if shape.connection_to is not None:
                             for connection in shape.connection_to:
@@ -429,12 +467,79 @@ class BPMN:
 
         # *** (3) BPMN Diagram Section
         # *** Generate bpmndi:BPMNDiagram Elements ***
-        ET.SubElement(
+        bpmn_diagram = ET.SubElement(
             self.definitions,
             "bpmndi:BPMNDiagram",
             {"id": Helper.get_uuid(), "name": "BPMN Diagram"},
         )
         # *** Generate bpmndi:BPMNPlane Elements ***
+        bpmn_plane = ET.SubElement(
+            bpmn_diagram,
+            "bpmndi:BPMNPlane",
+            {"id": Helper.get_uuid(), "bpmnElement": collaboration_id},
+        )
+
+        for pool in pools:
+            if pool.name != "Default Pool":
+                bpmn_shape = ET.SubElement(
+                    bpmn_plane,
+                    "bpmndi:BPMNShape",
+                    {"id": Helper.get_uuid(), "bpmnElement": pool.bpmn_collaboration_id},
+                )
+                # *** Generate dc:Bounds Elements ***
+                ET.SubElement(
+                    bpmn_shape,
+                    "dc:Bounds",
+                    {
+                        "x": str(pool.coord.x_pos),
+                        "y": str(pool.coord.y_pos),
+                        "width": str(pool.width),
+                        "height": str(pool.height),
+                    },
+                )
+            for lane in pool.lanes:
+                if pool.name == "Default Pool":
+                    bpmn_shape = ET.SubElement(
+                        bpmn_plane,
+                        "bpmndi:BPMNShape",
+                        {"id": Helper.get_uuid(), "bpmnElement": lane.bpmn_collaboration_id},
+                    )
+                    # *** Generate dc:Bounds Elements ***
+                    ET.SubElement(
+                        bpmn_shape,
+                        "dc:Bounds",
+                        {
+                            "x": str(lane.coord.x_pos),
+                            "y": str(lane.coord.y_pos),
+                            "width": str(lane.width),
+                            "height": str(lane.height),
+                        },
+                    )
+
+                for shape in lane.shapes:
+                    if (
+                        type(shape) is Start
+                        or type(shape) is End
+                        or type(shape) is Task
+                        or type(shape) is Exclusive
+                    ):
+                        # *** Generate bpmndi:BPMNShape Elements ***
+                        bpmn_shape = ET.SubElement(
+                            bpmn_plane,
+                            "bpmndi:BPMNShape",
+                            {"id": Helper.get_uuid(), "bpmnElement": shape.bpmn_id},
+                        )
+                        # *** Generate dc:Bounds Elements ***
+                        ET.SubElement(
+                            bpmn_shape,
+                            "dc:Bounds",
+                            {
+                                "x": str(shape.origin_coord.x_pos),
+                                "y": str(shape.origin_coord.y_pos),
+                                "width": str(shape.width),
+                                "height": str(shape.height),
+                            },
+                        )
 
         # Identify Diagram : BPMNDiagram (id, name)
         #   a. BPMNPlane (id, bpmnElement)
