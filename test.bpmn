@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn:definitions id="Definitions_PIPER_07eedc3a" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.8.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
+    <bpmn:process id="PIPER_2da9b66f" name="End User">
+        <bpmn:startEvent id="PIPER_f89d18d2" name="Start" />
+        <bpmn:task id="PIPER_ac5eed12" name="Enter Keyword" />
+    </bpmn:process>
+    <bpmn:process id="PIPER_362b84d2" name="System Search" isExecutable="false">
+        <bpmn:laneSet id="PIPER_016efce6">
+            <bpmn:lane id="PIPER_6ee9cfed" name="Database System">
+                <bpmn:flowNodeRef>PIPER_f69c2554</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_545cd512</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_6e963807</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_518d6582</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_b4efb8a6</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_ecff9945</bpmn:flowNodeRef>
+            </bpmn:lane>
+            <bpmn:lane id="PIPER_15b0ad3d" name="Log System">
+                <bpmn:flowNodeRef>PIPER_693e9ba7</bpmn:flowNodeRef>
+            </bpmn:lane>
+        </bpmn:laneSet>
+        <bpmn:task id="PIPER_f69c2554" name="Login" />
+        <bpmn:task id="PIPER_545cd512" name="Search Records" />
+        <bpmn:sequenceFlow id="PIPER_87916eb8" name="Result" sourceRef="PIPER_545cd512" targetRef="PIPER_6e963807" />
+        <bpmn:exclusiveGateway id="PIPER_6e963807" name="Result Found?" />
+        <bpmn:sequenceFlow id="PIPER_2193955d" name="Yes" sourceRef="PIPER_6e963807" targetRef="PIPER_518d6582" />
+        <bpmn:sequenceFlow id="PIPER_363f75b5" name="No" sourceRef="PIPER_6e963807" targetRef="PIPER_693e9ba7" />
+        <bpmn:task id="PIPER_518d6582" name="Display Result" />
+        <bpmn:sequenceFlow id="PIPER_51d72ea5" name="" sourceRef="PIPER_518d6582" targetRef="PIPER_b4efb8a6" />
+        <bpmn:task id="PIPER_b4efb8a6" name="Logout" />
+        <bpmn:sequenceFlow id="PIPER_3b05b280" name="" sourceRef="PIPER_b4efb8a6" targetRef="PIPER_ecff9945" />
+        <bpmn:endEvent id="PIPER_ecff9945" name="End" />
+        <bpmn:task id="PIPER_693e9ba7" name="Log Error" />
+        <bpmn:sequenceFlow id="PIPER_f6e64dad" name="" sourceRef="PIPER_693e9ba7" targetRef="PIPER_518d6582" />
+    </bpmn:process>
+    <bpmn:collaboration id="PIPER_bda23ab1">
+        <bpmn:participant id="PIPER_4f07e3e2" name="End User" processRef="PIPER_2da9b66f" />
+        <bpmn:messageFlow id="PIPER_35fb99f8" name="User &#10;Authenticates" sourceRef="PIPER_f89d18d2" targetRef="PIPER_f69c2554" />
+        <bpmn:messageFlow id="PIPER_36bfa4ac" name="Search Criteria" sourceRef="PIPER_ac5eed12" targetRef="PIPER_545cd512" />
+        <bpmn:participant id="PIPER_501c8971" name="System Search" processRef="PIPER_362b84d2" />
+        <bpmn:messageFlow id="PIPER_92654379" name="Authenticated" sourceRef="PIPER_f69c2554" targetRef="PIPER_ac5eed12" />
+    </bpmn:collaboration>
+    <bpmndi:BPMNDiagram id="PIPER_c8e1d8e3" name="BPMN Diagram">
+        <bpmndi:BPMNPlane id="PIPER_da90c368" bpmnElement="PIPER_bda23ab1">
+            <bpmndi:BPMNShape id="PIPER_a497bca5" bpmnElement="PIPER_4f07e3e2">
+                <dc:Bounds x="72" y="64" width="1429" height="160" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PIPER_cea5ed07" bpmnElement="PIPER_f89d18d2">
+                <dc:Bounds x="237.0" y="151.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PIPER_aeea6905" bpmnElement="PIPER_ac5eed12">
+                <dc:Bounds x="402" y="114" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PIPER_18082d0b" bpmnElement="PIPER_501c8971">
+                <dc:Bounds x="20" y="236" width="50" height="322" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PIPER_16741edb" bpmnElement="PIPER_f69c2554">
+                <dc:Bounds x="172" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PIPER_1001b000" bpmnElement="PIPER_545cd512">
+                <dc:Bounds x="402" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PIPER_1708f0a8" bpmnElement="PIPER_6e963807">
+                <dc:Bounds x="632" y="286" width="110" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PIPER_f1aeb723" bpmnElement="PIPER_518d6582">
+                <dc:Bounds x="862" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PIPER_ec3975d5" bpmnElement="PIPER_b4efb8a6">
+                <dc:Bounds x="1092" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PIPER_85229846" bpmnElement="PIPER_ecff9945">
+                <dc:Bounds x="1387.0" y="323.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PIPER_057909d3" bpmnElement="PIPER_693e9ba7">
+                <dc:Bounds x="632" y="448" width="130" height="74" />
+            </bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>
