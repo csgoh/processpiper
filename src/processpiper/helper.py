@@ -87,4 +87,8 @@ class Helper:
 
     @staticmethod
     def get_uuid():
-        return "PIPER_" + str(uuid.uuid4()) 
+        # replace uuid '-' with '_'
+        uuid_str = str(uuid.uuid4()).replace("-", "_")
+        # shorten to 8 chars
+        uuid_str = uuid_str[:8]
+        return f"PIPER_{uuid_str}"
