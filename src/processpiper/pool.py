@@ -43,6 +43,7 @@ class Pool:
     painter: Painter = field(init=True, default=None)
 
     bpmn_id: str = field(init=False)
+    bpmn_collaboration_id: str = field(init=False)
     coord: Coordinate = field(init=False, default=None)
     width: int = field(init=False, default=0)
     height: int = field(init=False, default=0)
