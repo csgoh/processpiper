@@ -400,7 +400,7 @@ class BPMN:
                         for connection in shape.connection_to:
                             if shape.is_same_pool(connection.source, connection.target):
                                 # *** Generate bpmn:sequenceFlow elements ***
-                                ET.SubElement(
+                                sequence_flow = ET.SubElement(
                                     process,
                                     "bpmn:sequenceFlow",
                                     {
@@ -410,6 +410,7 @@ class BPMN:
                                         "targetRef": connection.target.bpmn_id,
                                     },
                                 )
+                                connection.bpmn_id = sequence_flow.get("id")
 
         # ------ (2) Collaboration Section -------
         collaboration_id = ""
@@ -484,7 +485,10 @@ class BPMN:
                 bpmn_shape = ET.SubElement(
                     bpmn_plane,
                     "bpmndi:BPMNShape",
-                    {"id": Helper.get_uuid(), "bpmnElement": pool.bpmn_collaboration_id},
+                    {
+                        "id": Helper.get_uuid(),
+                        "bpmnElement": pool.bpmn_collaboration_id,
+                    },
                 )
                 # *** Generate dc:Bounds Elements ***
                 ET.SubElement(
@@ -502,7 +506,27 @@ class BPMN:
                     bpmn_shape = ET.SubElement(
                         bpmn_plane,
                         "bpmndi:BPMNShape",
-                        {"id": Helper.get_uuid(), "bpmnElement": lane.bpmn_collaboration_id},
+                        {
+                            "id": Helper.get_uuid(),
+                            "bpmnElement": lane.bpmn_collaboration_id,
+                        },
+                    )
+                    # *** Generate dc:Bounds Elements ***
+                    ET.SubElement(
+                        bpmn_shape,
+                        "dc:Bounds",
+                        {
+                            "x": str(lane.coord.x_pos),
+                            "y": str(lane.coord.y_pos),
+                            "width": str(lane.width),
+                            "height": str(lane.height),
+                        },
+                    )
+                else:
+                    bpmn_shape = ET.SubElement(
+                        bpmn_plane,
+                        "bpmndi:BPMNShape",
+                        {"id": Helper.get_uuid(), "bpmnElement": lane.bpmn_id},
                     )
                     # *** Generate dc:Bounds Elements ***
                     ET.SubElement(
@@ -540,6 +564,53 @@ class BPMN:
                                 "height": str(shape.height),
                             },
                         )
+                        print(
+                            f"{shape.name}, {shape.coord.x_pos}, {shape.coord.y_pos}, {shape.origin_coord.x_pos}, {shape.origin_coord.y_pos}"
+                        )
+
+                        # Generate BPMNEdge
+                        if shape.connection_to is not None:
+                            for connection in shape.connection_to:
+                                # *** Generate bpmndi:BPMNEdge Elements ***
+                                bpmn_edge = ET.SubElement(
+                                    bpmn_plane,
+                                    "bpmndi:BPMNEdge",
+                                    {
+                                        "id": Helper.get_uuid(),
+                                        "bpmnElement": connection.bpmn_id,
+                                    },
+                                )
+                                # *** Generate di:waypoint Elements ***
+
+                                if len(connection.source.outgoing_points) > 0:
+                                    print(f"=== {connection.source.outgoing_points}")
+                                    print(f"=== {connection.source.outgoing_points[0][0]}")
+                                    ET.SubElement(
+                                        bpmn_edge,
+                                        "di:waypoint",
+                                        {
+                                            "x": str(
+                                                connection.source.outgoing_points[0][0]
+                                            ),
+                                            "y": str(
+                                                connection.source.outgoing_points[0][1]
+                                            ),
+                                        },
+                                    )
+
+                                if len(connection.target.incoming_points) > 0:
+                                    ET.SubElement(
+                                        bpmn_edge,
+                                        "di:waypoint",
+                                        {
+                                            "x": str(
+                                                connection.target.incoming_points[0][0]
+                                            ),
+                                            "y": str(
+                                                connection.target.incoming_points[0][1]
+                                            ),
+                                        },
+                                    )
 
         # Identify Diagram : BPMNDiagram (id, name)
         #   a. BPMNPlane (id, bpmnElement)
