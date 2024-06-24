@@ -29,6 +29,7 @@ from .coordinate import Coordinate, Side
 
 
 from typing import TypeVar
+import copy
 
 
 # -- This is to allow the connect method to return the same type of shape
@@ -49,6 +50,7 @@ class Connection:
     connection_type: str = field(init=True)
     source_connection_side: Side = field(init=True)
     target_connection_side: Side = field(init=True)
+    bpmn_id: str = field(init=False, default="")
 
 
 @dataclass
@@ -1427,10 +1429,14 @@ class Circle(Shape):
 
     def set_draw_position(self, painter: Painter) -> tuple:
         """Set draw position of circle"""
-        self.origin_coord = self.coord
+        # self.origin_coord = self.coord
+        # copy coord to origin_coord without making reference
+        self.origin_coord = copy.copy(self.coord)
+        print(f">Circle coord: {self.coord}, {self.origin_coord}")
         self.coord.x_pos = self.coord.x_pos + (Configs.BOX_WIDTH / 2)
         self.coord.y_pos = self.coord.y_pos + (Configs.BOX_HEIGHT / 2)
-        self.coord.y_pos = self.coord.y_pos
+        #self.coord.y_pos = self.coord.y_pos
+        print(f">>Circle coord: {self.coord}, {self.origin_coord}")
 
         self.radius = Configs.CIRCLE_RADIUS
 
