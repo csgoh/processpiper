@@ -50,7 +50,7 @@ class Connection:
     connection_type: str = field(init=True)
     source_connection_side: Side = field(init=True)
     target_connection_side: Side = field(init=True)
-    bpmn_id: str = field(init=False, default="")
+    bpmn_id: str = field(init=True, default="")
 
 
 @dataclass
@@ -135,6 +135,7 @@ class Shape:
             connection_type,
             source_connection_side,
             target_connection_side,
+            Helper.get_uuid(),
         )
         self.connection_to.append(connection)
         target.connection_from.append(self)
@@ -669,8 +670,10 @@ class Shape:
                     all_shapes,
                 )
 
-                self.outgoing_points.append(connection_points[0])
-                connection.target.incoming_points.append(connection_points[-1])
+                # *** TEMP FIX (Start)
+                self.outgoing_points.append(connection_points)
+                connection.target.incoming_points.append(connection_points)
+                # *** TEMP FIX (End)
                 painter.draw_connection(
                     connection_points,
                     connection.label,
@@ -1435,7 +1438,7 @@ class Circle(Shape):
         print(f">Circle coord: {self.coord}, {self.origin_coord}")
         self.coord.x_pos = self.coord.x_pos + (Configs.BOX_WIDTH / 2)
         self.coord.y_pos = self.coord.y_pos + (Configs.BOX_HEIGHT / 2)
-        #self.coord.y_pos = self.coord.y_pos
+        # self.coord.y_pos = self.coord.y_pos
         print(f">>Circle coord: {self.coord}, {self.origin_coord}")
 
         self.radius = Configs.CIRCLE_RADIUS
@@ -1472,13 +1475,13 @@ class Circle(Shape):
         self.text_width, self.text_height = painter.get_text_dimension(
             self.name, self.font, self.font_size
         )
-        
+
         # self.text_coord.x_pos = (
         #     self.coord.x_pos
         #     + (self.width / 2)
         #     - (self.text_width / 2)
         # )
-        self.text_coord.x_pos = (self.coord.x_pos + ((self.width / 8) * 2))
+        self.text_coord.x_pos = self.coord.x_pos + ((self.width / 8) * 2)
         self.text_coord.y_pos = self.coord.y_pos + self.radius
 
         return self.coord.x_pos, self.coord.y_pos, self.radius, self.radius
@@ -1558,7 +1561,7 @@ class Diamond(Shape):
         self.text_coord.x_pos = (
             self.coord.x_pos + (self.width / 2) - (self.text_width / 2)
         )
-        
+
         self.text_coord.y_pos = self.coord.y_pos + self.height
 
         return self.coord.x_pos, self.coord.y_pos, self.width, self.height
