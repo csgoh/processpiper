@@ -404,13 +404,13 @@ class BPMN:
                                     process,
                                     "bpmn:sequenceFlow",
                                     {
-                                        "id": Helper.get_uuid(),
+                                        "id": connection.bpmn_id,
                                         "name": connection.label,
                                         "sourceRef": shape.bpmn_id,
                                         "targetRef": connection.target.bpmn_id,
                                     },
                                 )
-                                connection.bpmn_id = sequence_flow.get("id")
+                                # connection.bpmn_id = sequence_flow.get("id")
 
         # ------ (2) Collaboration Section -------
         collaboration_id = ""
@@ -459,7 +459,7 @@ class BPMN:
                                         collaboration,
                                         "bpmn:messageFlow",
                                         {
-                                            "id": Helper.get_uuid(),
+                                            "id": connection.bpmn_id,
                                             "name": connection.label,
                                             "sourceRef": shape.bpmn_id,
                                             "targetRef": connection.target.bpmn_id,
@@ -582,35 +582,45 @@ class BPMN:
                                 )
                                 # *** Generate di:waypoint Elements ***
 
-                                if len(connection.source.outgoing_points) > 0:
-                                    print(f"=== {connection.source.outgoing_points}")
-                                    print(f"=== {connection.source.outgoing_points[0][0]}")
-                                    ET.SubElement(
-                                        bpmn_edge,
-                                        "di:waypoint",
-                                        {
-                                            "x": str(
-                                                connection.source.outgoing_points[0][0]
-                                            ),
-                                            "y": str(
-                                                connection.source.outgoing_points[0][1]
-                                            ),
-                                        },
-                                    )
+                                print(
+                                    f"    *** {bpmn_edge.get('id')}, {connection.source.name} -> {connection.target.name}"
+                                )
 
-                                if len(connection.target.incoming_points) > 0:
-                                    ET.SubElement(
-                                        bpmn_edge,
-                                        "di:waypoint",
-                                        {
-                                            "x": str(
-                                                connection.target.incoming_points[0][0]
-                                            ),
-                                            "y": str(
-                                                connection.target.incoming_points[0][1]
-                                            ),
-                                        },
+                                if len(connection.source.outgoing_points) > 0:
+                                    print(
+                                        f"        === {connection.source.outgoing_points}"
                                     )
+                                    # print(f"=== {connection.source.outgoing_points[0][0]}, {connection.target.incoming_points[0]}")
+                                    for waypoints in connection.source.outgoing_points:
+                                        for waypoint in waypoints:
+                                            print(
+                                                f"          outgoing waypoint: {waypoint}, {connection.target.name}"
+                                            )
+                                            ET.SubElement(
+                                                bpmn_edge,
+                                                "di:waypoint",
+                                                {
+                                                    "x": str(waypoint[0]),
+                                                    "y": str(waypoint[1]),
+                                                },
+                                            )
+
+                                # if len(connection.target.incoming_points) > 0:
+                                #     print(
+                                #         f"      incoming waypoint: {connection.target.name}, {connection.target.incoming_points[0][0]}, {connection.target.incoming_points[0][1]}"
+                                #     )
+                                #     ET.SubElement(
+                                #         bpmn_edge,
+                                #         "di:waypoint",
+                                #         {
+                                #             "x": str(
+                                #                 connection.target.incoming_points[0][0]
+                                #             ),
+                                #             "y": str(
+                                #                 connection.target.incoming_points[0][1]
+                                #             ),
+                                #         },
+                                #     )
 
         # Identify Diagram : BPMNDiagram (id, name)
         #   a. BPMNPlane (id, bpmnElement)
