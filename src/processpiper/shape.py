@@ -51,6 +51,7 @@ class Connection:
     source_connection_side: Side = field(init=True)
     target_connection_side: Side = field(init=True)
     bpmn_id: str = field(init=True, default="")
+    connection_points: list = field(init=False, default_factory=list)
 
 
 @dataclass
@@ -674,6 +675,10 @@ class Shape:
                 self.outgoing_points.append(connection_points)
                 connection.target.incoming_points.append(connection_points)
                 # *** TEMP FIX (End)
+                # *** TEMP FIX 2 (Start)
+                connection.connection_points = connection_points
+                # *** TEMP FIX 2 (End)
+
                 painter.draw_connection(
                     connection_points,
                     connection.label,
@@ -1435,11 +1440,11 @@ class Circle(Shape):
         # self.origin_coord = self.coord
         # copy coord to origin_coord without making reference
         self.origin_coord = copy.copy(self.coord)
-        print(f">Circle coord: {self.coord}, {self.origin_coord}")
+        print(f">Circle coord: {self.name} = {self.coord}, {self.origin_coord}")
         self.coord.x_pos = self.coord.x_pos + (Configs.BOX_WIDTH / 2)
         self.coord.y_pos = self.coord.y_pos + (Configs.BOX_HEIGHT / 2)
         # self.coord.y_pos = self.coord.y_pos
-        print(f">>Circle coord: {self.coord}, {self.origin_coord}")
+        print(f">>Circle coord: {self.name} = {self.coord}, {self.origin_coord}")
 
         self.radius = Configs.CIRCLE_RADIUS
 
