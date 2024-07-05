@@ -554,16 +554,28 @@ class BPMN:
                             {"id": Helper.get_uuid(), "bpmnElement": shape.bpmn_id},
                         )
                         # *** Generate dc:Bounds Elements ***
-                        ET.SubElement(
-                            bpmn_shape,
-                            "dc:Bounds",
-                            {
-                                "x": str(shape.origin_coord.x_pos),
-                                "y": str(shape.origin_coord.y_pos),
-                                "width": str(shape.width),
-                                "height": str(shape.height),
-                            },
-                        )
+                        if type(shape) is Start or type(shape) is End:
+                            ET.SubElement(
+                                bpmn_shape,
+                                "dc:Bounds",
+                                {
+                                    "x": str(shape.coord.x_pos - shape.radius),
+                                    "y": str(shape.coord.y_pos - shape.radius),
+                                    "width": str(shape.width),
+                                    "height": str(shape.height),
+                                },
+                            )
+                        else:
+                            ET.SubElement(
+                                bpmn_shape,
+                                "dc:Bounds",
+                                {
+                                    "x": str(shape.coord.x_pos),
+                                    "y": str(shape.coord.y_pos),
+                                    "width": str(shape.width),
+                                    "height": str(shape.height),
+                                },
+                            )
                         print(
                             f"{shape.name}, {shape.coord.x_pos}, {shape.coord.y_pos}, {shape.origin_coord.x_pos}, {shape.origin_coord.y_pos}"
                         )
@@ -586,41 +598,21 @@ class BPMN:
                                     f"    *** {bpmn_edge.get('id')}, {connection.source.name} -> {connection.target.name}"
                                 )
 
-                                if len(connection.source.outgoing_points) > 0:
-                                    print(
-                                        f"        === {connection.source.outgoing_points}"
-                                    )
+                                if len(connection.connection_points) > 0:
+                                    print(f"        === {connection.connection_points}")
                                     # print(f"=== {connection.source.outgoing_points[0][0]}, {connection.target.incoming_points[0]}")
-                                    for waypoints in connection.source.outgoing_points:
-                                        for waypoint in waypoints:
-                                            print(
-                                                f"          outgoing waypoint: {waypoint}, {connection.target.name}"
-                                            )
-                                            ET.SubElement(
-                                                bpmn_edge,
-                                                "di:waypoint",
-                                                {
-                                                    "x": str(waypoint[0]),
-                                                    "y": str(waypoint[1]),
-                                                },
-                                            )
-
-                                # if len(connection.target.incoming_points) > 0:
-                                #     print(
-                                #         f"      incoming waypoint: {connection.target.name}, {connection.target.incoming_points[0][0]}, {connection.target.incoming_points[0][1]}"
-                                #     )
-                                #     ET.SubElement(
-                                #         bpmn_edge,
-                                #         "di:waypoint",
-                                #         {
-                                #             "x": str(
-                                #                 connection.target.incoming_points[0][0]
-                                #             ),
-                                #             "y": str(
-                                #                 connection.target.incoming_points[0][1]
-                                #             ),
-                                #         },
-                                #     )
+                                    for x_pos, y_pos in connection.connection_points:
+                                        print(
+                                            f"          outgoing waypoint: {x_pos}, {y_pos}, {connection.target.name}"
+                                        )
+                                        ET.SubElement(
+                                            bpmn_edge,
+                                            "di:waypoint",
+                                            {
+                                                "x": str(x_pos),
+                                                "y": str(y_pos),
+                                            },
+                                        )
 
         # Identify Diagram : BPMNDiagram (id, name)
         #   a. BPMNPlane (id, bpmnElement)
