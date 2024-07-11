@@ -488,6 +488,8 @@ class BPMN:
                     {
                         "id": Helper.get_uuid(),
                         "bpmnElement": pool.bpmn_collaboration_id,
+                        # "bpmnElement": pool.bpmn_id,
+                        "color:background-color": pool.fill_colour,
                     },
                 )
                 # *** Generate dc:Bounds Elements ***
@@ -551,7 +553,11 @@ class BPMN:
                         bpmn_shape = ET.SubElement(
                             bpmn_plane,
                             "bpmndi:BPMNShape",
-                            {"id": Helper.get_uuid(), "bpmnElement": shape.bpmn_id},
+                            {
+                                "id": Helper.get_uuid(),
+                                "bpmnElement": shape.bpmn_id,
+                                "color:background-color": shape.fill_colour,
+                            },
                         )
                         # *** Generate dc:Bounds Elements ***
                         if type(shape) is Start or type(shape) is End:
@@ -615,18 +621,12 @@ class BPMN:
                                         )
 
         # Identify Diagram : BPMNDiagram (id, name)
-        #   a. BPMNPlane (id, bpmnElement)
-        #       i. BPMNShape (id, bpmnElement, isHorizontal)
-        #           1. Bounds (x, y, width, height)
-        #           2. BPMNLabel (id, labelStyle)
-        #       ii. BPMNEdge (id, bpmnElement)
-        #           a. Waypoint (x, y)
         #   b. BPMNLabelStyle (id, labelStyle)
         #       i. dc:Font (name, size, isBold, isItalic, isUnderline, isStrikeThrough)
 
         tree = ET.ElementTree(self.definitions)
         self.indent(self.definitions)
-        tree.write("test.bpmn", encoding="UTF-8", xml_declaration=True)
+        tree.write(filename, encoding="UTF-8", xml_declaration=True)
 
 
 if __name__ == "__main__":
