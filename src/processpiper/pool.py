@@ -57,6 +57,12 @@ class Pool:
 
     def __exit__(self, exc_type, exc_value, traceback) -> None: ...
 
+    def has_lane_only(self):
+        return bool(self.name == "Default Pool")
+
+    def has_pool(self):
+        return bool(self.name != "Default Pool")
+
     def set_draw_position(self, x: int, y: int, painter: Painter) -> tuple:
         """Set the position of the pool and return the position of the next shape to be drawn"""
         self.coord = Coordinate()
