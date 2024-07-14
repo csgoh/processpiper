@@ -1440,11 +1440,9 @@ class Circle(Shape):
         # self.origin_coord = self.coord
         # copy coord to origin_coord without making reference
         self.origin_coord = copy.copy(self.coord)
-        print(f">Circle coord: {self.name} = {self.coord}, {self.origin_coord}")
         self.coord.x_pos = self.coord.x_pos + (Configs.BOX_WIDTH / 2)
         self.coord.y_pos = self.coord.y_pos + (Configs.BOX_HEIGHT / 2)
         # self.coord.y_pos = self.coord.y_pos
-        print(f">>Circle coord: {self.name} = {self.coord}, {self.origin_coord}")
 
         self.radius = Configs.CIRCLE_RADIUS
 
