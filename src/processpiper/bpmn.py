@@ -26,7 +26,7 @@ from typing import List, Dict, Any, Optional
 from .shape import Shape
 from .event import Start, End
 from .activity import Task
-from .gateway import Exclusive
+from .gateway import Exclusive, Inclusive, Parallel
 from .helper import Helper
 from .version import __version__
 
@@ -108,6 +108,12 @@ class BPMNElementCreator:
     def _add_exclusive_gateway(self, parent: ET.Element, shape: Exclusive):
         self._add_sub_element(parent, "bpmn:exclusiveGateway", shape)
 
+    def _add_inclusive_gateway(self, parent: ET.Element, shape: Inclusive):
+        self._add_sub_element(parent, "bpmn:inclusiveGateway", shape)
+
+    def _add_parallel_gateway(self, parent: ET.Element, shape: Parallel):
+        self._add_sub_element(parent, "bpmn:parallelGateway", shape)
+
     def _add_sub_element(self, parent: ET.Element, bpmn_element: str, shape: Any):
         ET.SubElement(
             parent,
@@ -127,12 +133,12 @@ class BPMNElementCreator:
     def _add_collaboration_element(self, parent: ET.Element, id: str):
         return ET.SubElement(parent, "bpmn:collaboration", {"id": id})
 
-    def _add_participant_element(self, parent: ET.Element, id: str, pool: Any):
+    def _add_participant_element(self, parent: ET.Element, pool: Any):
         return ET.SubElement(
             parent,
             "bpmn:participant",
             {
-                "id": Helper.get_uuid(),
+                "id": pool.bpmn_collaboration_id,
                 "name": pool.name,
                 "processRef": pool.bpmn_id,
             },
@@ -176,7 +182,7 @@ class BPMNElementCreator:
                 parent,
                 "bpmndi:BPMNShape",
                 {
-                    "id": Helper.get_uuid(),
+                    "id": Helper.get_uuid(f"shape_{element.name}"),
                     "bpmnElement": collaboration_id,
                     # "bpmnElement": pool.bpmn_id,
                     "color:background-color": element.fill_colour,
@@ -187,7 +193,7 @@ class BPMNElementCreator:
                 parent,
                 "bpmndi:BPMNShape",
                 {
-                    "id": Helper.get_uuid(),
+                    "id": Helper.get_uuid(f"shape_{element.name}"),
                     "bpmnElement": collaboration_id,
                 },
             )
@@ -221,7 +227,7 @@ class BPMNElementCreator:
             parent,
             "bpmndi:BPMNEdge",
             {
-                "id": Helper.get_uuid(),
+                "id": Helper.get_uuid(f"connection_{connection.label}"),
                 "bpmnElement": connection.bpmn_id,
             },
         )
@@ -274,6 +280,10 @@ class BPMNElementCreator:
                             self._add_task(process, shape)
                         elif type(shape) is Exclusive:
                             self._add_exclusive_gateway(process, shape)
+                        elif type(shape) is Inclusive:
+                            self._add_inclusive_gateway(process, shape)
+                        elif type(shape) is Parallel:
+                            self._add_parallel_gateway(process, shape)
                         if shape.connection_to is not None:
                             for connection in shape.connection_to:
                                 if shape.is_same_pool(
@@ -289,26 +299,27 @@ class BPMNElementCreator:
                                     )
 
     def create_collaboration_section(self, root: ET.Element, pools: list[Any]) -> str:
-        collaboration_id = ""
+        collaboration = self._add_collaboration_element(root, Helper.get_uuid())
+        collaboration_id = collaboration.get("id")
         if (
             len(pools) > 1
         ):  # *** Only generate collaboration if there are more than one pool
             # *** Generate bpmn:collaboration element ***
-            collaboration = self._add_collaboration_element(root, Helper.get_uuid())
-            collaboration_id = collaboration.get("id")
+            for pool in pools:
+                print(f">>>{pool.name}=,{pool.bpmn_id}=,{pool.bpmn_collaboration_id}=")
 
             for pool in pools:
                 # *** Generate bpmn:participant element ***
                 if pool.has_pool():
                     bpmn_participant = self._add_participant_element(
-                        collaboration, Helper.get_uuid(), pool
+                        collaboration, pool
                     )
-                    pool.bpmn_collaboration_id = bpmn_participant.get("id")
+                    # pool.bpmn_collaboration_id = bpmn_participant.get("id")
                 else:  # ** lane only pool
                     bpmn_participant = self._add_participant_element(
-                        collaboration, Helper.get_uuid(), pool.lanes[0]
+                        collaboration, pool.lanes[0]
                     )
-                    pool.lanes[0].bpmn_collaboration_id = bpmn_participant.get("id")
+                    # pool.lanes[0].bpmn_collaboration_id = bpmn_participant.get("id")
 
                 # *** Generate bpmn:messageFlow elements ***
                 for lane in pool.lanes:
@@ -322,6 +333,18 @@ class BPMNElementCreator:
                                         collaboration,
                                         connection,
                                     )
+        else:
+            for pool in pools:
+                # *** Generate bpmn:participant element ***
+                if pool.has_pool():
+                    bpmn_participant = self._add_participant_element(
+                        collaboration, pool
+                    )
+                    # pool.bpmn_collaboration_id = bpmn_participant.get("id")
+                else:  # ** lane only pool
+                    bpmn_participant = self._add_participant_element(
+                        collaboration, pool.lanes[0]
+                    )
         return collaboration_id
 
     def create_diagram_section(
@@ -333,6 +356,7 @@ class BPMNElementCreator:
         # *** Generate bpmndi:BPMNPlane Element ***
         bpmn_plane = self._add_plane_element(bpmn_diagram, collaboration_id)
 
+        # *** Generate pools and lanes first to prevent pool/lane overlapping connections
         for pool in pools:
             if pool.has_pool():
                 # *** Add shape for pool ***
@@ -349,6 +373,22 @@ class BPMNElementCreator:
                 else:
                     self._add_shape_element(bpmn_plane, lane, lane.bpmn_id, False)
 
+        for pool in pools:
+            # if pool.has_pool():
+            #     # *** Add shape for pool ***
+            #     self._add_shape_element(
+            #         bpmn_plane, pool, pool.bpmn_collaboration_id, True
+            #     )
+
+            for lane in pool.lanes:
+                # if pool.has_lane_only():
+                #     # *** Add shape for lane ***
+                #     self._add_shape_element(
+                #         bpmn_plane, lane, lane.bpmn_collaboration_id, False
+                #     )
+                # else:
+                #     self._add_shape_element(bpmn_plane, lane, lane.bpmn_id, False)
+
                 for shape in lane.shapes:
                     # *** Generate bpmndi:BPMNShape Elements ***
                     self._add_shape_element(bpmn_plane, shape, shape.bpmn_id, True)
@@ -361,16 +401,16 @@ class BPMNElementCreator:
                         for connection in shape.connection_to:
                             # *** Generate bpmndi:BPMNEdge Elements ***
                             bpmn_edge = self._add_edge_element(bpmn_plane, connection)
-                            print(
-                                f"    *** {bpmn_edge.get('id')}, {connection.source.name} -> {connection.target.name}"
-                            )
+                            # print(
+                            #     f"    *** {bpmn_edge.get('id')}, {connection.source.name} -> {connection.target.name}"
+                            # )
 
                             if len(connection.connection_points) > 0:
                                 print(f"        === {connection.connection_points}")
                                 for x_pos, y_pos in connection.connection_points:
-                                    print(
-                                        f"          outgoing waypoint: {x_pos}, {y_pos}, {connection.target.name}"
-                                    )
+                                    # print(
+                                    #     f"          outgoing waypoint: {x_pos}, {y_pos}, {connection.target.name}"
+                                    # )
                                     self._add_waypoint_element(bpmn_edge, x_pos, y_pos)
 
 
