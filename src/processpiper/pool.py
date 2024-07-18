@@ -142,6 +142,7 @@ class Pool:
             background_fill_colour,
             self.painter,
         )
-        lane.bpmn_id = Helper.get_uuid()
+        lane.bpmn_id = Helper.get_uuid("lane")
+        lane.bpmn_collaboration_id = Helper.get_uuid("lane_colab")
         self.lanes.append(lane)
         return lane
