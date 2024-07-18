@@ -86,9 +86,10 @@ class Helper:
         logging.info(message)
 
     @staticmethod
-    def get_uuid():
+    def get_uuid(prefix: str = "PIPER"):
         # replace uuid '-' with '_'
         uuid_str = str(uuid.uuid4()).replace("-", "_")
         # shorten to 8 chars
         uuid_str = uuid_str[:8]
-        return f"PIPER_{uuid_str}"
+        prefix = "".join(e for e in prefix if e.isalnum() or e == "_")
+        return f"{prefix.upper()}_{uuid_str}"
