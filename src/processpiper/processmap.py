@@ -121,7 +121,8 @@ class ProcessMap:
             text_alignment,
             self.__painter,
         )
-        pool.bpmn_id = Helper.get_uuid()
+        pool.bpmn_id = Helper.get_uuid("pool")
+        pool.bpmn_collaboration_id = Helper.get_uuid("pool_colab")
         self._pools.append(pool)
         return pool
 
