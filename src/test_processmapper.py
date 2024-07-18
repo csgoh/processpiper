@@ -61,7 +61,7 @@ def test_case2():
             end = lane2.add_element("End", EventType.END)
         with my_process_map.add_lane("Credit & Invoicing") as lane3:
             order_received = lane3.add_element("Order is received", ActivityType.TASK)
-            branching1 = lane3.add_element("", GatewayType.PARALLEL)
+            branching1 = lane3.add_element("Received?", GatewayType.PARALLEL)
             credit_check = lane3.add_element("Perform Credit Check", ActivityType.TASK)
             pending_credit = lane3.add_element("Pending Credit?", GatewayType.EXCLUSIVE)
             prepare_invoice = lane3.add_element("Prepare Invoice", ActivityType.TASK)
@@ -526,8 +526,8 @@ def test_case17():
 
 
 if __name__ == "__main__":
-    # test_case1() # to be fixed
-    # test_case2() # to be fixed
+    # test_case1()  # ok
+    # test_case2()  # ok
     # test_case3()
     # test_case4()
     # test_case5()
@@ -552,4 +552,4 @@ if __name__ == "__main__":
     # test_case14()
     # test_case15()
     # test_case16()
-    test_case17()
+    # test_case17()
