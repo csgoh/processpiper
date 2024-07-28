@@ -1,151 +1,151 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<bpmn:definitions id="Definitions_PIPER_536b92d9" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.8.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
-    <bpmn:process id="POOL_d3bcbe4c" name="Hardware Retailer" isExecutable="false">
-        <bpmn:laneSet id="PIPER_ad80dd34">
-            <bpmn:lane id="LANE_d658de34" name="Logistics Manager">
-                <bpmn:flowNodeRef>PIPER_0621a15c</bpmn:flowNodeRef>
+<bpmn:definitions id="Definitions_PIPER_5904a447" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.8.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
+    <bpmn:process id="POOL_ac9516a4" name="Hardware Retailer" isExecutable="false">
+        <bpmn:laneSet id="PIPER_aeec18b5">
+            <bpmn:lane id="LANE_b2a03444" name="Logistics Manager">
+                <bpmn:flowNodeRef>PIPER_59ac1a85</bpmn:flowNodeRef>
             </bpmn:lane>
-            <bpmn:lane id="LANE_746b0ccb" name="Clerk">
-                <bpmn:flowNodeRef>PIPER_4b0a3f91</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_ba1ab035</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_a1d05bb9</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_c529ff11</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_abfcb27f</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_029c5667</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_72564399</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_87a0b171</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_64977543</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_a72b1862</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_18bdfaa0</bpmn:flowNodeRef>
+            <bpmn:lane id="LANE_1a5d60eb" name="Clerk">
+                <bpmn:flowNodeRef>PIPER_ab46ac98</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_441fb032</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_8f8bf063</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_97a3ee31</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_85089573</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_8c19f7a9</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_77503b35</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_b56b7453</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_f6a96ecb</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_75ad5eef</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_27d23eb5</bpmn:flowNodeRef>
             </bpmn:lane>
-            <bpmn:lane id="LANE_2c0f0e37" name="Warehouse Worker">
-                <bpmn:flowNodeRef>PIPER_0a65770a</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_9ceb05a8</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_1e0511d1</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_2f83e940</bpmn:flowNodeRef>
+            <bpmn:lane id="LANE_54697cf8" name="Warehouse Worker">
+                <bpmn:flowNodeRef>PIPER_ad2ba9d2</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_9ee07fd5</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_da7228ff</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_9ed6ace4</bpmn:flowNodeRef>
             </bpmn:lane>
         </bpmn:laneSet>
-        <bpmn:task id="PIPER_0621a15c" name="Take Insurance" />
-        <bpmn:sequenceFlow id="PIPER_d0711953" name="" sourceRef="PIPER_0621a15c" targetRef="PIPER_87a0b171" />
-        <bpmn:startEvent id="PIPER_4b0a3f91" name="Goods to ship" />
-        <bpmn:sequenceFlow id="PIPER_774f5cde" name="" sourceRef="PIPER_4b0a3f91" targetRef="PIPER_ba1ab035" />
-        <bpmn:parallelGateway id="PIPER_ba1ab035" name="Branching 1" />
-        <bpmn:sequenceFlow id="PIPER_1a752c39" name="" sourceRef="PIPER_ba1ab035" targetRef="PIPER_a1d05bb9" />
-        <bpmn:sequenceFlow id="PIPER_d45e9de1" name="" sourceRef="PIPER_ba1ab035" targetRef="PIPER_0a65770a" />
-        <bpmn:task id="PIPER_a1d05bb9" name="Decide if normal post or special shipment" />
-        <bpmn:sequenceFlow id="PIPER_aab0fc77" name="" sourceRef="PIPER_a1d05bb9" targetRef="PIPER_c529ff11" />
-        <bpmn:exclusiveGateway id="PIPER_c529ff11" name="Mode of Delivery" />
-        <bpmn:sequenceFlow id="PIPER_d60275a8" name="" sourceRef="PIPER_c529ff11" targetRef="PIPER_abfcb27f" />
-        <bpmn:sequenceFlow id="PIPER_c0409724" name="" sourceRef="PIPER_c529ff11" targetRef="PIPER_64977543" />
-        <bpmn:task id="PIPER_abfcb27f" name="Check if extra insurance is needed" />
-        <bpmn:sequenceFlow id="PIPER_e4f8740c" name="" sourceRef="PIPER_abfcb27f" targetRef="PIPER_029c5667" />
-        <bpmn:inclusiveGateway id="PIPER_029c5667" name="Branching 3" />
-        <bpmn:sequenceFlow id="PIPER_9ba606dd" name="" sourceRef="PIPER_029c5667" targetRef="PIPER_0621a15c" />
-        <bpmn:sequenceFlow id="PIPER_56c238ce" name="" sourceRef="PIPER_029c5667" targetRef="PIPER_72564399" />
-        <bpmn:task id="PIPER_72564399" name="Fill in a Post label" />
-        <bpmn:sequenceFlow id="PIPER_89ca4880" name="" sourceRef="PIPER_72564399" targetRef="PIPER_87a0b171" />
-        <bpmn:inclusiveGateway id="PIPER_87a0b171" name="Branching 4" />
-        <bpmn:sequenceFlow id="PIPER_61aa121d" name="" sourceRef="PIPER_87a0b171" targetRef="PIPER_18bdfaa0" />
-        <bpmn:task id="PIPER_64977543" name="Request quotes from carriers" />
-        <bpmn:sequenceFlow id="PIPER_de485134" name="" sourceRef="PIPER_64977543" targetRef="PIPER_a72b1862" />
-        <bpmn:task id="PIPER_a72b1862" name="Assign carrier &amp; prepare paper work" />
-        <bpmn:sequenceFlow id="PIPER_885ecea4" name="" sourceRef="PIPER_a72b1862" targetRef="PIPER_18bdfaa0" />
-        <bpmn:exclusiveGateway id="PIPER_18bdfaa0" name="Branching 5" />
-        <bpmn:sequenceFlow id="PIPER_893db369" name="" sourceRef="PIPER_18bdfaa0" targetRef="PIPER_9ceb05a8" />
-        <bpmn:task id="PIPER_0a65770a" name="Package goods" />
-        <bpmn:sequenceFlow id="PIPER_479b56d0" name="" sourceRef="PIPER_0a65770a" targetRef="PIPER_9ceb05a8" />
-        <bpmn:parallelGateway id="PIPER_9ceb05a8" name="Branching 6" />
-        <bpmn:sequenceFlow id="PIPER_8232d6ca" name="" sourceRef="PIPER_9ceb05a8" targetRef="PIPER_1e0511d1" />
-        <bpmn:task id="PIPER_1e0511d1" name="Add paperwork to move package to pick area" />
-        <bpmn:sequenceFlow id="PIPER_d43f8443" name="" sourceRef="PIPER_1e0511d1" targetRef="PIPER_2f83e940" />
-        <bpmn:endEvent id="PIPER_2f83e940" name="Goods available for pick up" />
+        <bpmn:task id="PIPER_59ac1a85" name="Take Insurance" />
+        <bpmn:sequenceFlow id="PIPER_a7677bf2" name="" sourceRef="PIPER_59ac1a85" targetRef="PIPER_b56b7453" />
+        <bpmn:startEvent id="PIPER_ab46ac98" name="Goods to ship" />
+        <bpmn:sequenceFlow id="PIPER_64be94c1" name="" sourceRef="PIPER_ab46ac98" targetRef="PIPER_441fb032" />
+        <bpmn:parallelGateway id="PIPER_441fb032" name="Branching 1" />
+        <bpmn:sequenceFlow id="PIPER_0a59343b" name="" sourceRef="PIPER_441fb032" targetRef="PIPER_8f8bf063" />
+        <bpmn:sequenceFlow id="PIPER_f227ed10" name="" sourceRef="PIPER_441fb032" targetRef="PIPER_ad2ba9d2" />
+        <bpmn:task id="PIPER_8f8bf063" name="Decide if normal post or special shipment" />
+        <bpmn:sequenceFlow id="PIPER_5ee57e04" name="" sourceRef="PIPER_8f8bf063" targetRef="PIPER_97a3ee31" />
+        <bpmn:exclusiveGateway id="PIPER_97a3ee31" name="Mode of Delivery" />
+        <bpmn:sequenceFlow id="PIPER_2a1d0e36" name="" sourceRef="PIPER_97a3ee31" targetRef="PIPER_85089573" />
+        <bpmn:sequenceFlow id="PIPER_e4a959b2" name="" sourceRef="PIPER_97a3ee31" targetRef="PIPER_f6a96ecb" />
+        <bpmn:task id="PIPER_85089573" name="Check if extra insurance is needed" />
+        <bpmn:sequenceFlow id="PIPER_e14db8a2" name="" sourceRef="PIPER_85089573" targetRef="PIPER_8c19f7a9" />
+        <bpmn:inclusiveGateway id="PIPER_8c19f7a9" name="Branching 3" />
+        <bpmn:sequenceFlow id="PIPER_814f31db" name="" sourceRef="PIPER_8c19f7a9" targetRef="PIPER_59ac1a85" />
+        <bpmn:sequenceFlow id="PIPER_32e7944c" name="" sourceRef="PIPER_8c19f7a9" targetRef="PIPER_77503b35" />
+        <bpmn:task id="PIPER_77503b35" name="Fill in a Post label" />
+        <bpmn:sequenceFlow id="PIPER_0d11140d" name="" sourceRef="PIPER_77503b35" targetRef="PIPER_b56b7453" />
+        <bpmn:inclusiveGateway id="PIPER_b56b7453" name="Branching 4" />
+        <bpmn:sequenceFlow id="PIPER_e04a3dc8" name="" sourceRef="PIPER_b56b7453" targetRef="PIPER_27d23eb5" />
+        <bpmn:task id="PIPER_f6a96ecb" name="Request quotes from carriers" />
+        <bpmn:sequenceFlow id="PIPER_d5b99a2e" name="" sourceRef="PIPER_f6a96ecb" targetRef="PIPER_75ad5eef" />
+        <bpmn:task id="PIPER_75ad5eef" name="Assign carrier &amp; prepare paper work" />
+        <bpmn:sequenceFlow id="PIPER_37905fb9" name="" sourceRef="PIPER_75ad5eef" targetRef="PIPER_27d23eb5" />
+        <bpmn:exclusiveGateway id="PIPER_27d23eb5" name="Branching 5" />
+        <bpmn:sequenceFlow id="PIPER_100bed35" name="" sourceRef="PIPER_27d23eb5" targetRef="PIPER_9ee07fd5" />
+        <bpmn:task id="PIPER_ad2ba9d2" name="Package goods" />
+        <bpmn:sequenceFlow id="PIPER_75c08058" name="" sourceRef="PIPER_ad2ba9d2" targetRef="PIPER_9ee07fd5" />
+        <bpmn:parallelGateway id="PIPER_9ee07fd5" name="Branching 6" />
+        <bpmn:sequenceFlow id="PIPER_2da2c4bc" name="" sourceRef="PIPER_9ee07fd5" targetRef="PIPER_da7228ff" />
+        <bpmn:task id="PIPER_da7228ff" name="Add paperwork to move package to pick area" />
+        <bpmn:sequenceFlow id="PIPER_1b2d4673" name="" sourceRef="PIPER_da7228ff" targetRef="PIPER_9ed6ace4" />
+        <bpmn:endEvent id="PIPER_9ed6ace4" name="Goods available for pick up" />
     </bpmn:process>
-    <bpmn:collaboration id="PIPER_09af9a03">
-        <bpmn:participant id="POOL_COLAB_69425fd9" name="Hardware Retailer" processRef="POOL_d3bcbe4c" />
+    <bpmn:collaboration id="PIPER_2447f130">
+        <bpmn:participant id="POOL_COLAB_69503f64" name="Hardware Retailer" processRef="POOL_ac9516a4" />
     </bpmn:collaboration>
-    <bpmndi:BPMNDiagram id="PIPER_1e8941d2" name="BPMN Diagram">
-        <bpmndi:BPMNPlane id="PIPER_be4e259a" bpmnElement="PIPER_09af9a03">
-            <bpmndi:BPMNShape id="SHAPE_HARDWARERETAILER_d4f8c7a2" bpmnElement="POOL_COLAB_69425fd9" color:background-color="#008B8B">
+    <bpmndi:BPMNDiagram id="PIPER_c1d2cd4d" name="BPMN Diagram">
+        <bpmndi:BPMNPlane id="PIPER_6d983066" bpmnElement="PIPER_2447f130">
+            <bpmndi:BPMNShape id="SHAPE_HARDWARERETAILER_3d7eb69e" bpmnElement="POOL_COLAB_69503f64" color:background-color="#008B8B">
                 <dc:Bounds x="20" y="64" width="50" height="644" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape id="SHAPE_LOGISTICSMANAGER_d9fb4b67" bpmnElement="LANE_d658de34">
+            <bpmndi:BPMNShape id="SHAPE_LOGISTICSMANAGER_5845efbd" bpmnElement="LANE_b2a03444">
                 <dc:Bounds x="72" y="64" width="2809" height="160" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape id="SHAPE_CLERK_41a9c1f6" bpmnElement="LANE_746b0ccb">
+            <bpmndi:BPMNShape id="SHAPE_CLERK_5383a0b5" bpmnElement="LANE_1a5d60eb">
                 <dc:Bounds x="72" y="226" width="2809" height="320" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape id="SHAPE_WAREHOUSEWORKER_c3f4ab90" bpmnElement="LANE_2c0f0e37">
+            <bpmndi:BPMNShape id="SHAPE_WAREHOUSEWORKER_63ff9e45" bpmnElement="LANE_54697cf8">
                 <dc:Bounds x="72" y="548" width="2809" height="160" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape id="SHAPE_TAKEINSURANCE_cf8790f3" bpmnElement="PIPER_0621a15c" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_TAKEINSURANCE_dac39272" bpmnElement="PIPER_59ac1a85" color:background-color="#00CCCC">
                 <dc:Bounds x="1552" y="114" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__350a14ce" bpmnElement="PIPER_d0711953">
+            <bpmndi:BPMNEdge id="CONNECTION__22d00a90" bpmnElement="PIPER_a7677bf2">
                 <di:waypoint x="1682" y="151" />
                 <di:waypoint x="1737.0" y="151" />
                 <di:waypoint x="1737.0" y="313" />
                 <di:waypoint x="1792" y="313" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_GOODSTOSHIP_08f0735f" bpmnElement="PIPER_4b0a3f91" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_GOODSTOSHIP_e42accc8" bpmnElement="PIPER_ab46ac98" color:background-color="#00CCCC">
                 <dc:Bounds x="207.0" y="283.0" width="60" height="60" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__8040b00a" bpmnElement="PIPER_774f5cde">
+            <bpmndi:BPMNEdge id="CONNECTION__3e9af7f4" bpmnElement="PIPER_64be94c1">
                 <di:waypoint x="267.0" y="313.0" />
                 <di:waypoint x="412" y="313" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_BRANCHING1_35b6c6a4" bpmnElement="PIPER_ba1ab035" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_BRANCHING1_095a5207" bpmnElement="PIPER_441fb032" color:background-color="#00CCCC">
                 <dc:Bounds x="412" y="276" width="110" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__f5a622f0" bpmnElement="PIPER_1a752c39">
+            <bpmndi:BPMNEdge id="CONNECTION__e2bcbd75" bpmnElement="PIPER_0a59343b">
                 <di:waypoint x="522" y="313" />
                 <di:waypoint x="632" y="313" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge id="CONNECTION__18678fec" bpmnElement="PIPER_d45e9de1">
+            <bpmndi:BPMNEdge id="CONNECTION__1794021c" bpmnElement="PIPER_f227ed10">
                 <di:waypoint x="467" y="350" />
                 <di:waypoint x="467" y="598" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_DECIDEIFNORMALPOSTORSPECIALSHIPMENT_623e7f59" bpmnElement="PIPER_a1d05bb9" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_DECIDEIFNORMALPOSTORSPECIALSHIPMENT_6473c261" bpmnElement="PIPER_8f8bf063" color:background-color="#00CCCC">
                 <dc:Bounds x="632" y="276" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__6144f6fb" bpmnElement="PIPER_aab0fc77">
+            <bpmndi:BPMNEdge id="CONNECTION__d90416b1" bpmnElement="PIPER_5ee57e04">
                 <di:waypoint x="762" y="313" />
                 <di:waypoint x="872" y="313" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_MODEOFDELIVERY_dfe161ed" bpmnElement="PIPER_c529ff11" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_MODEOFDELIVERY_18abd8b7" bpmnElement="PIPER_97a3ee31" color:background-color="#00CCCC">
                 <dc:Bounds x="872" y="276" width="110" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__e2abfac8" bpmnElement="PIPER_d60275a8">
+            <bpmndi:BPMNEdge id="CONNECTION__c09d7bb8" bpmnElement="PIPER_2a1d0e36">
                 <di:waypoint x="982" y="313" />
                 <di:waypoint x="1092" y="313" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge id="CONNECTION__b5756056" bpmnElement="PIPER_c0409724">
+            <bpmndi:BPMNEdge id="CONNECTION__253ac5aa" bpmnElement="PIPER_e4a959b2">
                 <di:waypoint x="927" y="350" />
                 <di:waypoint x="927" y="450" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_CHECKIFEXTRAINSURANCEISNEEDED_e556c8ca" bpmnElement="PIPER_abfcb27f" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_CHECKIFEXTRAINSURANCEISNEEDED_704c4950" bpmnElement="PIPER_85089573" color:background-color="#00CCCC">
                 <dc:Bounds x="1092" y="276" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__d498984b" bpmnElement="PIPER_e4f8740c">
+            <bpmndi:BPMNEdge id="CONNECTION__6a13b287" bpmnElement="PIPER_e14db8a2">
                 <di:waypoint x="1222" y="313" />
                 <di:waypoint x="1332" y="313" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_BRANCHING3_51fd79b3" bpmnElement="PIPER_029c5667" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_BRANCHING3_c6026e51" bpmnElement="PIPER_8c19f7a9" color:background-color="#00CCCC">
                 <dc:Bounds x="1332" y="276" width="110" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__470f6839" bpmnElement="PIPER_9ba606dd">
+            <bpmndi:BPMNEdge id="CONNECTION__ac691d9b" bpmnElement="PIPER_814f31db">
                 <di:waypoint x="1442" y="313" />
                 <di:waypoint x="1497.0" y="313" />
                 <di:waypoint x="1497.0" y="151" />
                 <di:waypoint x="1552" y="151" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge id="CONNECTION__e3c80ef0" bpmnElement="PIPER_56c238ce">
+            <bpmndi:BPMNEdge id="CONNECTION__18c12cad" bpmnElement="PIPER_32e7944c">
                 <di:waypoint x="1387" y="350" />
                 <di:waypoint x="1387" y="450" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_FILLINAPOSTLABEL_a0835259" bpmnElement="PIPER_72564399" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_FILLINAPOSTLABEL_b29186cb" bpmnElement="PIPER_77503b35" color:background-color="#00CCCC">
                 <dc:Bounds x="1322" y="450" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__83d3259c" bpmnElement="PIPER_89ca4880">
+            <bpmndi:BPMNEdge id="CONNECTION__4b784e25" bpmnElement="PIPER_0d11140d">
                 <di:waypoint x="1387" y="524" />
                 <di:waypoint x="1387" y="554" />
                 <di:waypoint x="1447" y="554" />
@@ -153,61 +153,61 @@
                 <di:waypoint x="1847" y="380" />
                 <di:waypoint x="1847" y="350" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_BRANCHING4_a98bc2af" bpmnElement="PIPER_87a0b171" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_BRANCHING4_1c49470e" bpmnElement="PIPER_b56b7453" color:background-color="#00CCCC">
                 <dc:Bounds x="1792" y="276" width="110" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__0ae95040" bpmnElement="PIPER_61aa121d">
+            <bpmndi:BPMNEdge id="CONNECTION__c93f9c40" bpmnElement="PIPER_e04a3dc8">
                 <di:waypoint x="1902" y="313" />
                 <di:waypoint x="2022" y="313" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_REQUESTQUOTESFROMCARRIERS_f84ae452" bpmnElement="PIPER_64977543" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_REQUESTQUOTESFROMCARRIERS_0eec4224" bpmnElement="PIPER_f6a96ecb" color:background-color="#00CCCC">
                 <dc:Bounds x="862" y="450" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__fdb3bae2" bpmnElement="PIPER_de485134">
+            <bpmndi:BPMNEdge id="CONNECTION__885746f9" bpmnElement="PIPER_d5b99a2e">
                 <di:waypoint x="927" y="524" />
                 <di:waypoint x="927" y="574" />
                 <di:waypoint x="1522" y="574" />
                 <di:waypoint x="1522" y="487" />
                 <di:waypoint x="1552" y="487" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_ASSIGNCARRIERPREPAREPAPERWORK_637d8160" bpmnElement="PIPER_a72b1862" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_ASSIGNCARRIERPREPAREPAPERWORK_60ab35e0" bpmnElement="PIPER_75ad5eef" color:background-color="#00CCCC">
                 <dc:Bounds x="1552" y="450" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__557bafbf" bpmnElement="PIPER_885ecea4">
+            <bpmndi:BPMNEdge id="CONNECTION__59e8f126" bpmnElement="PIPER_37905fb9">
                 <di:waypoint x="1682" y="487" />
                 <di:waypoint x="2077" y="487" />
                 <di:waypoint x="2077" y="350" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_BRANCHING5_911313ab" bpmnElement="PIPER_18bdfaa0" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_BRANCHING5_09be3654" bpmnElement="PIPER_27d23eb5" color:background-color="#00CCCC">
                 <dc:Bounds x="2022" y="276" width="110" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__8617530c" bpmnElement="PIPER_893db369">
+            <bpmndi:BPMNEdge id="CONNECTION__a71d09c0" bpmnElement="PIPER_100bed35">
                 <di:waypoint x="2132" y="313" />
                 <di:waypoint x="2307" y="313" />
                 <di:waypoint x="2307" y="598" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_PACKAGEGOODS_19d4bab7" bpmnElement="PIPER_0a65770a" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_PACKAGEGOODS_59d0692b" bpmnElement="PIPER_ad2ba9d2" color:background-color="#00CCCC">
                 <dc:Bounds x="402" y="598" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__f23f708f" bpmnElement="PIPER_479b56d0">
+            <bpmndi:BPMNEdge id="CONNECTION__fd24ccbd" bpmnElement="PIPER_75c08058">
                 <di:waypoint x="532" y="635" />
                 <di:waypoint x="2252" y="635" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_BRANCHING6_7d9ce8ae" bpmnElement="PIPER_9ceb05a8" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_BRANCHING6_97b0bafe" bpmnElement="PIPER_9ee07fd5" color:background-color="#00CCCC">
                 <dc:Bounds x="2252" y="598" width="110" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__9891a6ab" bpmnElement="PIPER_8232d6ca">
+            <bpmndi:BPMNEdge id="CONNECTION__de384ece" bpmnElement="PIPER_2da2c4bc">
                 <di:waypoint x="2362" y="635" />
                 <di:waypoint x="2472" y="635" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_ADDPAPERWORKTOMOVEPACKAGETOPICKAREA_a76de2a1" bpmnElement="PIPER_1e0511d1" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_ADDPAPERWORKTOMOVEPACKAGETOPICKAREA_d777295a" bpmnElement="PIPER_da7228ff" color:background-color="#00CCCC">
                 <dc:Bounds x="2472" y="598" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__39b56b23" bpmnElement="PIPER_d43f8443">
+            <bpmndi:BPMNEdge id="CONNECTION__0a91ff45" bpmnElement="PIPER_1b2d4673">
                 <di:waypoint x="2602" y="635" />
                 <di:waypoint x="2737.0" y="635.0" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_GOODSAVAILABLEFORPICKUP_b6213d1d" bpmnElement="PIPER_2f83e940" color:background-color="#00CCCC">
+            <bpmndi:BPMNShape id="SHAPE_GOODSAVAILABLEFORPICKUP_f3292597" bpmnElement="PIPER_9ed6ace4" color:background-color="#00CCCC">
                 <dc:Bounds x="2737.0" y="605.0" width="60" height="60" />
             </bpmndi:BPMNShape>
         </bpmndi:BPMNPlane>

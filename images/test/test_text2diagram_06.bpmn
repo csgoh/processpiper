@@ -1,51 +1,51 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<bpmn:definitions id="Definitions_PIPER_6d083c51" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.8.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
-    <bpmn:process id="POOL_05407898" name="pool 1" isExecutable="false">
-        <bpmn:laneSet id="PIPER_55f970ea">
-            <bpmn:lane id="LANE_db5b7f48" name="lane 1">
-                <bpmn:flowNodeRef>PIPER_b67b50ca</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_ff8fa6d8</bpmn:flowNodeRef>
-                <bpmn:flowNodeRef>PIPER_bc79afec</bpmn:flowNodeRef>
+<bpmn:definitions id="Definitions_PIPER_034c402f" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.8.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
+    <bpmn:process id="POOL_729ac16f" name="pool 1" isExecutable="false">
+        <bpmn:laneSet id="PIPER_75adae61">
+            <bpmn:lane id="LANE_b970b537" name="lane 1">
+                <bpmn:flowNodeRef>PIPER_1c2ac2e5</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_1d17f637</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_7f3b7d94</bpmn:flowNodeRef>
             </bpmn:lane>
         </bpmn:laneSet>
-        <bpmn:startEvent id="PIPER_b67b50ca" name="signal 1">
-            <bpmn:signalEventDefinition id="PIPER_94d047f7" />
+        <bpmn:startEvent id="PIPER_1c2ac2e5" name="signal 1">
+            <bpmn:signalEventDefinition id="PIPER_3f8f5d86" />
         </bpmn:startEvent>
-        <bpmn:sequenceFlow id="PIPER_2ff6b837" name="" sourceRef="PIPER_b67b50ca" targetRef="PIPER_ff8fa6d8" />
-        <bpmn:intermediateCatchEvent id="PIPER_ff8fa6d8" name="signal 2">
-            <bpmn:signalEventDefinition id="PIPER_17c5dd2f" />
+        <bpmn:sequenceFlow id="PIPER_a163d047" name="" sourceRef="PIPER_1c2ac2e5" targetRef="PIPER_1d17f637" />
+        <bpmn:intermediateCatchEvent id="PIPER_1d17f637" name="signal 2">
+            <bpmn:signalEventDefinition id="PIPER_c30c8ff1" />
         </bpmn:intermediateCatchEvent>
-        <bpmn:sequenceFlow id="PIPER_21db7a77" name="" sourceRef="PIPER_ff8fa6d8" targetRef="PIPER_bc79afec" />
-        <bpmn:endEvent id="PIPER_bc79afec" name="signal 3">
-            <bpmn:signalEventDefinition id="PIPER_addc6076" />
+        <bpmn:sequenceFlow id="PIPER_94e2224f" name="" sourceRef="PIPER_1d17f637" targetRef="PIPER_7f3b7d94" />
+        <bpmn:endEvent id="PIPER_7f3b7d94" name="signal 3">
+            <bpmn:signalEventDefinition id="PIPER_4e9398e0" />
         </bpmn:endEvent>
     </bpmn:process>
-    <bpmn:collaboration id="PIPER_1cdb4d9f">
-        <bpmn:participant id="POOL_COLAB_03325f79" name="pool 1" processRef="POOL_05407898" />
+    <bpmn:collaboration id="PIPER_1c2eaba1">
+        <bpmn:participant id="POOL_COLAB_886234f5" name="pool 1" processRef="POOL_729ac16f" />
     </bpmn:collaboration>
-    <bpmndi:BPMNDiagram id="PIPER_7bc46380" name="BPMN Diagram">
-        <bpmndi:BPMNPlane id="PIPER_a418072d" bpmnElement="PIPER_1cdb4d9f">
-            <bpmndi:BPMNShape id="SHAPE_POOL1_61b9ea5c" bpmnElement="POOL_COLAB_03325f79" color:background-color="#38761D">
+    <bpmndi:BPMNDiagram id="PIPER_cb1e9c57" name="BPMN Diagram">
+        <bpmndi:BPMNPlane id="PIPER_c6b4b8e2" bpmnElement="PIPER_1c2eaba1">
+            <bpmndi:BPMNShape id="SHAPE_POOL1_e6b72e8e" bpmnElement="POOL_COLAB_886234f5" color:background-color="#38761D">
                 <dc:Bounds x="20" y="64" width="50" height="160" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape id="SHAPE_LANE1_25452842" bpmnElement="LANE_db5b7f48">
+            <bpmndi:BPMNShape id="SHAPE_LANE1_6fd7f78d" bpmnElement="LANE_b970b537">
                 <dc:Bounds x="72" y="64" width="739" height="160" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape id="SHAPE_SIGNAL1_52cd4702" bpmnElement="PIPER_b67b50ca" color:background-color="#93C47D">
+            <bpmndi:BPMNShape id="SHAPE_SIGNAL1_cefcbf25" bpmnElement="PIPER_1c2ac2e5" color:background-color="#93C47D">
                 <dc:Bounds x="207.0" y="121.0" width="60" height="60" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__c3aeba13" bpmnElement="PIPER_2ff6b837">
+            <bpmndi:BPMNEdge id="CONNECTION__1f1f257c" bpmnElement="PIPER_a163d047">
                 <di:waypoint x="267.0" y="151.0" />
                 <di:waypoint x="437.0" y="151.0" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_SIGNAL2_364d831d" bpmnElement="PIPER_ff8fa6d8" color:background-color="#93C47D">
+            <bpmndi:BPMNShape id="SHAPE_SIGNAL2_5372cdba" bpmnElement="PIPER_1d17f637" color:background-color="#93C47D">
                 <dc:Bounds x="437.0" y="121.0" width="60" height="60" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__e12dd3e3" bpmnElement="PIPER_21db7a77">
+            <bpmndi:BPMNEdge id="CONNECTION__7cfd2f74" bpmnElement="PIPER_94e2224f">
                 <di:waypoint x="497.0" y="151.0" />
                 <di:waypoint x="667.0" y="151.0" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_SIGNAL3_f8f074f6" bpmnElement="PIPER_bc79afec" color:background-color="#93C47D">
+            <bpmndi:BPMNShape id="SHAPE_SIGNAL3_9b353854" bpmnElement="PIPER_7f3b7d94" color:background-color="#93C47D">
                 <dc:Bounds x="667.0" y="121.0" width="60" height="60" />
             </bpmndi:BPMNShape>
         </bpmndi:BPMNPlane>

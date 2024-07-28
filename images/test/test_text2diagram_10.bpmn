@@ -1,187 +1,187 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<bpmn:definitions id="Definitions_PIPER_b59b807d" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.8.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
-    <bpmn:process id="LANE_699c6839" name="customer" isExecutable="false">
-        <bpmn:startEvent id="PIPER_667b3205" name="start" />
-        <bpmn:sequenceFlow id="PIPER_7b385f02" name="" sourceRef="PIPER_667b3205" targetRef="PIPER_93346857" />
-        <bpmn:task id="PIPER_93346857" name="brings a defective computer" />
-        <bpmn:sequenceFlow id="PIPER_3c073b2c" name="" sourceRef="PIPER_93346857" targetRef="PIPER_938886a4" />
+<bpmn:definitions id="Definitions_PIPER_83a60a2d" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.8.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
+    <bpmn:process id="LANE_e509b0de" name="customer" isExecutable="false">
+        <bpmn:startEvent id="PIPER_b554d810" name="start" />
+        <bpmn:sequenceFlow id="PIPER_e73f863b" name="" sourceRef="PIPER_b554d810" targetRef="PIPER_ef0e3a15" />
+        <bpmn:task id="PIPER_ef0e3a15" name="brings a defective computer" />
+        <bpmn:sequenceFlow id="PIPER_62fcfe21" name="" sourceRef="PIPER_ef0e3a15" targetRef="PIPER_982779c4" />
     </bpmn:process>
-    <bpmn:process id="LANE_45b9bbeb" name="crs" isExecutable="false">
-        <bpmn:task id="PIPER_938886a4" name="checks the defect" />
-        <bpmn:sequenceFlow id="PIPER_6d27e65b" name="" sourceRef="PIPER_938886a4" targetRef="PIPER_93309cd8" />
-        <bpmn:task id="PIPER_93309cd8" name="hand out a repair cost calculation" />
-        <bpmn:sequenceFlow id="PIPER_ff9118c2" name="" sourceRef="PIPER_93309cd8" targetRef="PIPER_0031ccbc" />
-        <bpmn:exclusiveGateway id="PIPER_0031ccbc" name="the customer decide" />
-        <bpmn:sequenceFlow id="PIPER_be6139fd" name="" sourceRef="PIPER_0031ccbc" targetRef="PIPER_452723a2" />
-        <bpmn:sequenceFlow id="PIPER_e60a7948" name="" sourceRef="PIPER_0031ccbc" targetRef="PIPER_a3bab573" />
-        <bpmn:task id="PIPER_452723a2" name="are acceptable" />
-        <bpmn:sequenceFlow id="PIPER_6c252294" name="" sourceRef="PIPER_452723a2" targetRef="PIPER_d5ccb7a6" />
-        <bpmn:task id="PIPER_d5ccb7a6" name="continues" />
-        <bpmn:sequenceFlow id="PIPER_5f185bc0" name="" sourceRef="PIPER_d5ccb7a6" targetRef="PIPER_4a3e4927" />
-        <bpmn:task id="PIPER_a3bab573" name="takes her computer" />
-        <bpmn:sequenceFlow id="PIPER_3f564726" name="" sourceRef="PIPER_a3bab573" targetRef="PIPER_4a3e4927" />
-        <bpmn:task id="PIPER_4a3e4927" name="consists of two activities" />
-        <bpmn:sequenceFlow id="PIPER_3f61375d" name="" sourceRef="PIPER_4a3e4927" targetRef="PIPER_a1f34e4e" />
-        <bpmn:task id="PIPER_a1f34e4e" name="execute two activities in an arbitrary order" />
-        <bpmn:sequenceFlow id="PIPER_c28b5ea4" name="" sourceRef="PIPER_a1f34e4e" targetRef="PIPER_686a4769" />
-        <bpmn:task id="PIPER_686a4769" name="is" />
-        <bpmn:sequenceFlow id="PIPER_58555788" name="" sourceRef="PIPER_686a4769" targetRef="PIPER_5598e0bd" />
-        <bpmn:task id="PIPER_5598e0bd" name="check the hardware" />
-        <bpmn:sequenceFlow id="PIPER_4d5c5472" name="" sourceRef="PIPER_5598e0bd" targetRef="PIPER_e01a8380" />
-        <bpmn:task id="PIPER_e01a8380" name="repair the hardware" />
-        <bpmn:sequenceFlow id="PIPER_ab4b850d" name="" sourceRef="PIPER_e01a8380" targetRef="PIPER_34c2c9b1" />
-        <bpmn:task id="PIPER_34c2c9b1" name="checks the software" />
-        <bpmn:sequenceFlow id="PIPER_acdf3f49" name="" sourceRef="PIPER_34c2c9b1" targetRef="PIPER_19fd08e4" />
-        <bpmn:task id="PIPER_19fd08e4" name="configure the software" />
-        <bpmn:sequenceFlow id="PIPER_532212fc" name="" sourceRef="PIPER_19fd08e4" targetRef="PIPER_4f59967d" />
-        <bpmn:task id="PIPER_4f59967d" name="test the proper system functionality after each of these activities" />
-        <bpmn:sequenceFlow id="PIPER_aa587f5e" name="" sourceRef="PIPER_4f59967d" targetRef="PIPER_aa6ff3e0" />
-        <bpmn:exclusiveGateway id="PIPER_aa6ff3e0" name="detect an error" />
-        <bpmn:sequenceFlow id="PIPER_ecfbddf4" name="" sourceRef="PIPER_aa6ff3e0" targetRef="PIPER_9182f60f" />
-        <bpmn:sequenceFlow id="PIPER_1d173b0b" name="" sourceRef="PIPER_aa6ff3e0" targetRef="PIPER_4a7d26c3" />
-        <bpmn:task id="PIPER_9182f60f" name="execute another arbitrary repair activity" />
-        <bpmn:sequenceFlow id="PIPER_1c50d13b" name="" sourceRef="PIPER_9182f60f" targetRef="PIPER_4a7d26c3" />
-        <bpmn:endEvent id="PIPER_4a7d26c3" name="end" />
+    <bpmn:process id="LANE_614ec70d" name="crs" isExecutable="false">
+        <bpmn:task id="PIPER_982779c4" name="checks the defect" />
+        <bpmn:sequenceFlow id="PIPER_c75b9678" name="" sourceRef="PIPER_982779c4" targetRef="PIPER_1704c213" />
+        <bpmn:task id="PIPER_1704c213" name="hand out a repair cost calculation" />
+        <bpmn:sequenceFlow id="PIPER_4a6c00b7" name="" sourceRef="PIPER_1704c213" targetRef="PIPER_f70db107" />
+        <bpmn:exclusiveGateway id="PIPER_f70db107" name="the customer decide" />
+        <bpmn:sequenceFlow id="PIPER_ce3ae55f" name="" sourceRef="PIPER_f70db107" targetRef="PIPER_0e91199e" />
+        <bpmn:sequenceFlow id="PIPER_cfa30881" name="" sourceRef="PIPER_f70db107" targetRef="PIPER_ec715ed9" />
+        <bpmn:task id="PIPER_0e91199e" name="are acceptable" />
+        <bpmn:sequenceFlow id="PIPER_51bba761" name="" sourceRef="PIPER_0e91199e" targetRef="PIPER_b7378c45" />
+        <bpmn:task id="PIPER_b7378c45" name="continues" />
+        <bpmn:sequenceFlow id="PIPER_90d4a062" name="" sourceRef="PIPER_b7378c45" targetRef="PIPER_8109efbe" />
+        <bpmn:task id="PIPER_ec715ed9" name="takes her computer" />
+        <bpmn:sequenceFlow id="PIPER_3e99bfe8" name="" sourceRef="PIPER_ec715ed9" targetRef="PIPER_8109efbe" />
+        <bpmn:task id="PIPER_8109efbe" name="consists of two activities" />
+        <bpmn:sequenceFlow id="PIPER_dc1c3215" name="" sourceRef="PIPER_8109efbe" targetRef="PIPER_b5138522" />
+        <bpmn:task id="PIPER_b5138522" name="execute two activities in an arbitrary order" />
+        <bpmn:sequenceFlow id="PIPER_d3fe58bc" name="" sourceRef="PIPER_b5138522" targetRef="PIPER_0a815160" />
+        <bpmn:task id="PIPER_0a815160" name="is" />
+        <bpmn:sequenceFlow id="PIPER_5fe2b8b3" name="" sourceRef="PIPER_0a815160" targetRef="PIPER_7ccd9630" />
+        <bpmn:task id="PIPER_7ccd9630" name="check the hardware" />
+        <bpmn:sequenceFlow id="PIPER_b02cc133" name="" sourceRef="PIPER_7ccd9630" targetRef="PIPER_001bd245" />
+        <bpmn:task id="PIPER_001bd245" name="repair the hardware" />
+        <bpmn:sequenceFlow id="PIPER_a863ec44" name="" sourceRef="PIPER_001bd245" targetRef="PIPER_59526da2" />
+        <bpmn:task id="PIPER_59526da2" name="checks the software" />
+        <bpmn:sequenceFlow id="PIPER_12201808" name="" sourceRef="PIPER_59526da2" targetRef="PIPER_1b092f3a" />
+        <bpmn:task id="PIPER_1b092f3a" name="configure the software" />
+        <bpmn:sequenceFlow id="PIPER_3d184dec" name="" sourceRef="PIPER_1b092f3a" targetRef="PIPER_ececa8e7" />
+        <bpmn:task id="PIPER_ececa8e7" name="test the proper system functionality after each of these activities" />
+        <bpmn:sequenceFlow id="PIPER_5687a307" name="" sourceRef="PIPER_ececa8e7" targetRef="PIPER_25bc17c3" />
+        <bpmn:exclusiveGateway id="PIPER_25bc17c3" name="detect an error" />
+        <bpmn:sequenceFlow id="PIPER_9f8fe760" name="" sourceRef="PIPER_25bc17c3" targetRef="PIPER_1dd28b6a" />
+        <bpmn:sequenceFlow id="PIPER_7da04479" name="" sourceRef="PIPER_25bc17c3" targetRef="PIPER_a227f7b0" />
+        <bpmn:task id="PIPER_1dd28b6a" name="execute another arbitrary repair activity" />
+        <bpmn:sequenceFlow id="PIPER_d10880ca" name="" sourceRef="PIPER_1dd28b6a" targetRef="PIPER_a227f7b0" />
+        <bpmn:endEvent id="PIPER_a227f7b0" name="end" />
     </bpmn:process>
-    <bpmn:collaboration id="PIPER_e7ea8a4a">
-        <bpmn:participant id="LANE_COLAB_3e45271a" name="customer" processRef="LANE_699c6839" />
-        <bpmn:participant id="LANE_COLAB_4ac4c327" name="crs" processRef="LANE_45b9bbeb" />
+    <bpmn:collaboration id="PIPER_e2af0a08">
+        <bpmn:participant id="LANE_COLAB_dba1428c" name="customer" processRef="LANE_e509b0de" />
+        <bpmn:participant id="LANE_COLAB_6fee90eb" name="crs" processRef="LANE_614ec70d" />
     </bpmn:collaboration>
-    <bpmndi:BPMNDiagram id="PIPER_20b080ee" name="BPMN Diagram">
-        <bpmndi:BPMNPlane id="PIPER_285dc956" bpmnElement="PIPER_e7ea8a4a">
-            <bpmndi:BPMNShape id="SHAPE_CUSTOMER_7104944b" bpmnElement="LANE_COLAB_3e45271a">
+    <bpmndi:BPMNDiagram id="PIPER_687898f2" name="BPMN Diagram">
+        <bpmndi:BPMNPlane id="PIPER_2ed93b2c" bpmnElement="PIPER_e2af0a08">
+            <bpmndi:BPMNShape id="SHAPE_CUSTOMER_5353ddd2" bpmnElement="LANE_COLAB_dba1428c">
                 <dc:Bounds x="72" y="64" width="4189" height="160" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape id="SHAPE_CRS_b4a16a66" bpmnElement="LANE_COLAB_4ac4c327">
+            <bpmndi:BPMNShape id="SHAPE_CRS_af83701c" bpmnElement="LANE_COLAB_6fee90eb">
                 <dc:Bounds x="72" y="236" width="4189" height="320" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape id="SHAPE_START_92b14a12" bpmnElement="PIPER_667b3205" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_START_24ad0b45" bpmnElement="PIPER_b554d810" color:background-color="#9FC5E8">
                 <dc:Bounds x="207.0" y="121.0" width="60" height="60" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__36d0b887" bpmnElement="PIPER_7b385f02">
+            <bpmndi:BPMNEdge id="CONNECTION__d8f4b66b" bpmnElement="PIPER_e73f863b">
                 <di:waypoint x="267.0" y="151.0" />
                 <di:waypoint x="402" y="151" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_BRINGSADEFECTIVECOMPUTER_4c5c2b24" bpmnElement="PIPER_93346857" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_BRINGSADEFECTIVECOMPUTER_bd761938" bpmnElement="PIPER_ef0e3a15" color:background-color="#9FC5E8">
                 <dc:Bounds x="402" y="114" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__0b0ff441" bpmnElement="PIPER_3c073b2c">
+            <bpmndi:BPMNEdge id="CONNECTION__65568754" bpmnElement="PIPER_62fcfe21">
                 <di:waypoint x="532" y="151" />
                 <di:waypoint x="582.0" y="151" />
                 <di:waypoint x="582.0" y="323" />
                 <di:waypoint x="632" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_CHECKSTHEDEFECT_9f258147" bpmnElement="PIPER_938886a4" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_CHECKSTHEDEFECT_f7320ddf" bpmnElement="PIPER_982779c4" color:background-color="#9FC5E8">
                 <dc:Bounds x="632" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__1d195619" bpmnElement="PIPER_6d27e65b">
+            <bpmndi:BPMNEdge id="CONNECTION__2bb66611" bpmnElement="PIPER_c75b9678">
                 <di:waypoint x="762" y="323" />
                 <di:waypoint x="862" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_HANDOUTAREPAIRCOSTCALCULATION_e3a959c3" bpmnElement="PIPER_93309cd8" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_HANDOUTAREPAIRCOSTCALCULATION_0f7caddc" bpmnElement="PIPER_1704c213" color:background-color="#9FC5E8">
                 <dc:Bounds x="862" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__3b68e3d7" bpmnElement="PIPER_ff9118c2">
+            <bpmndi:BPMNEdge id="CONNECTION__0cd7e70c" bpmnElement="PIPER_4a6c00b7">
                 <di:waypoint x="992" y="323" />
                 <di:waypoint x="1102" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_THECUSTOMERDECIDE_896a9f5c" bpmnElement="PIPER_0031ccbc" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_THECUSTOMERDECIDE_409db5cd" bpmnElement="PIPER_f70db107" color:background-color="#9FC5E8">
                 <dc:Bounds x="1102" y="286" width="110" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__95f73034" bpmnElement="PIPER_be6139fd">
+            <bpmndi:BPMNEdge id="CONNECTION__e440d85a" bpmnElement="PIPER_ce3ae55f">
                 <di:waypoint x="1212" y="323" />
                 <di:waypoint x="1322" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge id="CONNECTION__b236ad7a" bpmnElement="PIPER_e60a7948">
+            <bpmndi:BPMNEdge id="CONNECTION__59d47e2a" bpmnElement="PIPER_cfa30881">
                 <di:waypoint x="1157" y="360" />
                 <di:waypoint x="1157" y="460" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_AREACCEPTABLE_a739377c" bpmnElement="PIPER_452723a2" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_AREACCEPTABLE_f1b28b53" bpmnElement="PIPER_0e91199e" color:background-color="#9FC5E8">
                 <dc:Bounds x="1322" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__ca38a89b" bpmnElement="PIPER_6c252294">
+            <bpmndi:BPMNEdge id="CONNECTION__aea69813" bpmnElement="PIPER_51bba761">
                 <di:waypoint x="1452" y="323" />
                 <di:waypoint x="1552" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_CONTINUES_89d051f2" bpmnElement="PIPER_d5ccb7a6" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_CONTINUES_46d597c6" bpmnElement="PIPER_b7378c45" color:background-color="#9FC5E8">
                 <dc:Bounds x="1552" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__9bd3340b" bpmnElement="PIPER_5f185bc0">
+            <bpmndi:BPMNEdge id="CONNECTION__f7f4481b" bpmnElement="PIPER_90d4a062">
                 <di:waypoint x="1682" y="323" />
                 <di:waypoint x="1782" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_TAKESHERCOMPUTER_7b7acdcd" bpmnElement="PIPER_a3bab573" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_TAKESHERCOMPUTER_6825705a" bpmnElement="PIPER_ec715ed9" color:background-color="#9FC5E8">
                 <dc:Bounds x="1092" y="460" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__5c660101" bpmnElement="PIPER_3f564726">
+            <bpmndi:BPMNEdge id="CONNECTION__a6faa859" bpmnElement="PIPER_3e99bfe8">
                 <di:waypoint x="1222" y="497" />
                 <di:waypoint x="1847" y="497" />
                 <di:waypoint x="1847" y="360" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_CONSISTSOFTWOACTIVITIES_5492aa0d" bpmnElement="PIPER_4a3e4927" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_CONSISTSOFTWOACTIVITIES_5892a7aa" bpmnElement="PIPER_8109efbe" color:background-color="#9FC5E8">
                 <dc:Bounds x="1782" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__81bef7db" bpmnElement="PIPER_3f61375d">
+            <bpmndi:BPMNEdge id="CONNECTION__04b231c1" bpmnElement="PIPER_dc1c3215">
                 <di:waypoint x="1912" y="323" />
                 <di:waypoint x="2012" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_EXECUTETWOACTIVITIESINANARBITRARYORDER_b36e34b0" bpmnElement="PIPER_a1f34e4e" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_EXECUTETWOACTIVITIESINANARBITRARYORDER_f56bf715" bpmnElement="PIPER_b5138522" color:background-color="#9FC5E8">
                 <dc:Bounds x="2012" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__71fa3dec" bpmnElement="PIPER_c28b5ea4">
+            <bpmndi:BPMNEdge id="CONNECTION__d6099fc9" bpmnElement="PIPER_d3fe58bc">
                 <di:waypoint x="2142" y="323" />
                 <di:waypoint x="2242" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_IS_aa2b9154" bpmnElement="PIPER_686a4769" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_IS_d8024672" bpmnElement="PIPER_0a815160" color:background-color="#9FC5E8">
                 <dc:Bounds x="2242" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__70104954" bpmnElement="PIPER_58555788">
+            <bpmndi:BPMNEdge id="CONNECTION__c4373683" bpmnElement="PIPER_5fe2b8b3">
                 <di:waypoint x="2372" y="323" />
                 <di:waypoint x="2472" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_CHECKTHEHARDWARE_c129ae32" bpmnElement="PIPER_5598e0bd" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_CHECKTHEHARDWARE_d128b4d3" bpmnElement="PIPER_7ccd9630" color:background-color="#9FC5E8">
                 <dc:Bounds x="2472" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__b34a5ded" bpmnElement="PIPER_4d5c5472">
+            <bpmndi:BPMNEdge id="CONNECTION__44009b53" bpmnElement="PIPER_b02cc133">
                 <di:waypoint x="2602" y="323" />
                 <di:waypoint x="2702" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_REPAIRTHEHARDWARE_7535daf8" bpmnElement="PIPER_e01a8380" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_REPAIRTHEHARDWARE_673a8984" bpmnElement="PIPER_001bd245" color:background-color="#9FC5E8">
                 <dc:Bounds x="2702" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__384a5ed2" bpmnElement="PIPER_ab4b850d">
+            <bpmndi:BPMNEdge id="CONNECTION__afa8dd01" bpmnElement="PIPER_a863ec44">
                 <di:waypoint x="2832" y="323" />
                 <di:waypoint x="2932" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_CHECKSTHESOFTWARE_eb0d39bb" bpmnElement="PIPER_34c2c9b1" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_CHECKSTHESOFTWARE_bd61064d" bpmnElement="PIPER_59526da2" color:background-color="#9FC5E8">
                 <dc:Bounds x="2932" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__083c0870" bpmnElement="PIPER_acdf3f49">
+            <bpmndi:BPMNEdge id="CONNECTION__7e775e21" bpmnElement="PIPER_12201808">
                 <di:waypoint x="3062" y="323" />
                 <di:waypoint x="3162" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_CONFIGURETHESOFTWARE_041162e0" bpmnElement="PIPER_19fd08e4" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_CONFIGURETHESOFTWARE_971c1665" bpmnElement="PIPER_1b092f3a" color:background-color="#9FC5E8">
                 <dc:Bounds x="3162" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__78086061" bpmnElement="PIPER_532212fc">
+            <bpmndi:BPMNEdge id="CONNECTION__66c867b6" bpmnElement="PIPER_3d184dec">
                 <di:waypoint x="3292" y="323" />
                 <di:waypoint x="3392" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_TESTTHEPROPERSYSTEMFUNCTIONALITYAFTEREACHOFTHESEACTIVITIES_7866186a" bpmnElement="PIPER_4f59967d" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_TESTTHEPROPERSYSTEMFUNCTIONALITYAFTEREACHOFTHESEACTIVITIES_b86f8a21" bpmnElement="PIPER_ececa8e7" color:background-color="#9FC5E8">
                 <dc:Bounds x="3392" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__fc666345" bpmnElement="PIPER_aa587f5e">
+            <bpmndi:BPMNEdge id="CONNECTION__413dd015" bpmnElement="PIPER_5687a307">
                 <di:waypoint x="3522" y="323" />
                 <di:waypoint x="3632" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_DETECTANERROR_3d6a8969" bpmnElement="PIPER_aa6ff3e0" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_DETECTANERROR_4b8b8088" bpmnElement="PIPER_25bc17c3" color:background-color="#9FC5E8">
                 <dc:Bounds x="3632" y="286" width="110" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__b84c7943" bpmnElement="PIPER_ecfbddf4">
+            <bpmndi:BPMNEdge id="CONNECTION__5faaad57" bpmnElement="PIPER_9f8fe760">
                 <di:waypoint x="3742" y="323" />
                 <di:waypoint x="3852" y="323" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge id="CONNECTION__14c2caed" bpmnElement="PIPER_1d173b0b">
+            <bpmndi:BPMNEdge id="CONNECTION__c05bcbb7" bpmnElement="PIPER_7da04479">
                 <di:waypoint x="3687" y="360" />
                 <di:waypoint x="3687" y="390" />
                 <di:waypoint x="3747" y="390" />
@@ -189,14 +189,14 @@
                 <di:waypoint x="4147.0" y="383.0" />
                 <di:waypoint x="4147.0" y="353.0" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_EXECUTEANOTHERARBITRARYREPAIRACTIVITY_25a98090" bpmnElement="PIPER_9182f60f" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_EXECUTEANOTHERARBITRARYREPAIRACTIVITY_ddfadfa3" bpmnElement="PIPER_1dd28b6a" color:background-color="#9FC5E8">
                 <dc:Bounds x="3852" y="286" width="130" height="74" />
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge id="CONNECTION__10ccc9ea" bpmnElement="PIPER_1c50d13b">
+            <bpmndi:BPMNEdge id="CONNECTION__8936340d" bpmnElement="PIPER_d10880ca">
                 <di:waypoint x="3982" y="323" />
                 <di:waypoint x="4117.0" y="323.0" />
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNShape id="SHAPE_END_a37fdb42" bpmnElement="PIPER_4a7d26c3" color:background-color="#9FC5E8">
+            <bpmndi:BPMNShape id="SHAPE_END_32d127fc" bpmnElement="PIPER_a227f7b0" color:background-color="#9FC5E8">
                 <dc:Bounds x="4117.0" y="293.0" width="60" height="60" />
             </bpmndi:BPMNShape>
         </bpmndi:BPMNPlane>
