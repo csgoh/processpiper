@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn:definitions id="Definitions_PIPER_9e33d2c2" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.8.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
+    <bpmn:process id="LANE_791d55ae" name="Lane 1" isExecutable="false">
+        <bpmn:startEvent id="PIPER_f2a75f1e" name="Start" />
+        <bpmn:sequenceFlow id="PIPER_78ff1048" name="label 1" sourceRef="PIPER_f2a75f1e" targetRef="PIPER_74e1c57f" />
+        <bpmn:task id="PIPER_74e1c57f" name="Task 1" />
+        <bpmn:sequenceFlow id="PIPER_1fcc0bcc" name="label 2&#10;addition&#10;text" sourceRef="PIPER_74e1c57f" targetRef="PIPER_ea1a7f8f" />
+        <bpmn:task id="PIPER_ea1a7f8f" name="Task 2" />
+        <bpmn:sequenceFlow id="PIPER_00771501" name="label 3" sourceRef="PIPER_ea1a7f8f" targetRef="PIPER_c513daad" />
+        <bpmn:task id="PIPER_c513daad" name="Task 3" />
+        <bpmn:sequenceFlow id="PIPER_693f7b48" name="label 4" sourceRef="PIPER_c513daad" targetRef="PIPER_ae37e3ff" />
+        <bpmn:endEvent id="PIPER_ae37e3ff" name="End" />
+    </bpmn:process>
+    <bpmn:collaboration id="PIPER_207ee9e3">
+        <bpmn:participant id="LANE_COLAB_1bc3bb55" name="Lane 1" processRef="LANE_791d55ae" />
+    </bpmn:collaboration>
+    <bpmndi:BPMNDiagram id="PIPER_29edcb48" name="BPMN Diagram">
+        <bpmndi:BPMNPlane id="PIPER_cc0ee60b" bpmnElement="PIPER_207ee9e3">
+            <bpmndi:BPMNShape id="SHAPE_LANE1_201f5fd7" bpmnElement="LANE_COLAB_1bc3bb55">
+                <dc:Bounds x="72" y="64" width="1199" height="160" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_START_12bd4e32" bpmnElement="PIPER_f2a75f1e" color:background-color="darkgrey">
+                <dc:Bounds x="207.0" y="121.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION_LABEL1_faa641c4" bpmnElement="PIPER_78ff1048">
+                <di:waypoint x="267.0" y="151.0" />
+                <di:waypoint x="402" y="151" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_TASK1_0ede64b7" bpmnElement="PIPER_74e1c57f" color:background-color="darkgrey">
+                <dc:Bounds x="402" y="114" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION_LABEL2ADDITIONTEXT_94a0b36d" bpmnElement="PIPER_1fcc0bcc">
+                <di:waypoint x="532" y="151" />
+                <di:waypoint x="632" y="151" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_TASK2_84f0b0c8" bpmnElement="PIPER_ea1a7f8f" color:background-color="darkgrey">
+                <dc:Bounds x="632" y="114" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION_LABEL3_228abc32" bpmnElement="PIPER_00771501">
+                <di:waypoint x="762" y="151" />
+                <di:waypoint x="862" y="151" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_TASK3_b272d184" bpmnElement="PIPER_c513daad" color:background-color="darkgrey">
+                <dc:Bounds x="862" y="114" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION_LABEL4_c2d1f0db" bpmnElement="PIPER_693f7b48">
+                <di:waypoint x="992" y="151" />
+                <di:waypoint x="1127.0" y="151.0" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_END_09e795d6" bpmnElement="PIPER_ae37e3ff" color:background-color="darkgrey">
+                <dc:Bounds x="1127.0" y="121.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>

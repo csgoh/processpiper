@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn:definitions id="Definitions_PIPER_f4d2f5f8" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.8.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
+    <bpmn:process id="POOL_40ce008b" name="pool 1" isExecutable="false">
+        <bpmn:laneSet id="PIPER_1bd14731">
+            <bpmn:lane id="LANE_e5e62128" name="lane 1">
+                <bpmn:flowNodeRef>PIPER_6518f647</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_9637037b</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_1bd61fae</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_6d9ee457</bpmn:flowNodeRef>
+            </bpmn:lane>
+        </bpmn:laneSet>
+        <bpmn:startEvent id="PIPER_6518f647" name="signal 1">
+            <bpmn:messageEventDefinition id="PIPER_43ac98ca" />
+        </bpmn:startEvent>
+        <bpmn:sequenceFlow id="PIPER_dc3f7497" name="" sourceRef="PIPER_6518f647" targetRef="PIPER_9637037b" />
+        <bpmn:intermediateCatchEvent id="PIPER_9637037b" name="signal 2">
+            <bpmn:messageEventDefinition id="PIPER_d50fec9c" />
+        </bpmn:intermediateCatchEvent>
+        <bpmn:sequenceFlow id="PIPER_42953672" name="" sourceRef="PIPER_9637037b" targetRef="PIPER_1bd61fae" />
+        <bpmn:intermediateCatchEvent id="PIPER_1bd61fae" name="signal 3">
+            <bpmn:messageEventDefinition id="PIPER_24cc90bd" />
+        </bpmn:intermediateCatchEvent>
+        <bpmn:sequenceFlow id="PIPER_1d16b648" name="" sourceRef="PIPER_1bd61fae" targetRef="PIPER_6d9ee457" />
+        <bpmn:endEvent id="PIPER_6d9ee457" name="signal 4">
+            <bpmn:linkEventDefinition id="PIPER_0c3c8ca6" />
+        </bpmn:endEvent>
+    </bpmn:process>
+    <bpmn:collaboration id="PIPER_6cc5296b">
+        <bpmn:participant id="POOL_COLAB_c1a79507" name="pool 1" processRef="POOL_40ce008b" />
+    </bpmn:collaboration>
+    <bpmndi:BPMNDiagram id="PIPER_904c5af5" name="BPMN Diagram">
+        <bpmndi:BPMNPlane id="PIPER_7210065b" bpmnElement="PIPER_6cc5296b">
+            <bpmndi:BPMNShape id="SHAPE_POOL1_f565f095" bpmnElement="POOL_COLAB_c1a79507" color:background-color="#38761D">
+                <dc:Bounds x="20" y="64" width="50" height="160" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_LANE1_56f97753" bpmnElement="LANE_e5e62128">
+                <dc:Bounds x="72" y="64" width="969" height="160" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_SIGNAL1_21e85366" bpmnElement="PIPER_6518f647" color:background-color="#93C47D">
+                <dc:Bounds x="207.0" y="121.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__f78c9802" bpmnElement="PIPER_dc3f7497">
+                <di:waypoint x="267.0" y="151.0" />
+                <di:waypoint x="437.0" y="151.0" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_SIGNAL2_a4eaeba3" bpmnElement="PIPER_9637037b" color:background-color="#93C47D">
+                <dc:Bounds x="437.0" y="121.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__88dc89ce" bpmnElement="PIPER_42953672">
+                <di:waypoint x="497.0" y="151.0" />
+                <di:waypoint x="667.0" y="151.0" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_SIGNAL3_c4089509" bpmnElement="PIPER_1bd61fae" color:background-color="#93C47D">
+                <dc:Bounds x="667.0" y="121.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__8b57a888" bpmnElement="PIPER_1d16b648">
+                <di:waypoint x="727.0" y="151.0" />
+                <di:waypoint x="897.0" y="151.0" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_SIGNAL4_df72f463" bpmnElement="PIPER_6d9ee457" color:background-color="#93C47D">
+                <dc:Bounds x="897.0" y="121.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>

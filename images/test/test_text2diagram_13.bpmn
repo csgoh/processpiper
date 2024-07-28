@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn:definitions id="Definitions_PIPER_f8ca08da" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.8.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
+    <bpmn:process id="POOL_eab9c4a7" name="The World" isExecutable="false">
+        <bpmn:laneSet id="PIPER_67689157">
+            <bpmn:lane id="LANE_30ff9e7d" name="You">
+                <bpmn:flowNodeRef>PIPER_394b0d16</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_eb7041e7</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_31ba51a1</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_cb6d3546</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_fe21383e</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_6ed8ad7b</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_7524fc7b</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_8e7d13e5</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_5c64d1da</bpmn:flowNodeRef>
+            </bpmn:lane>
+            <bpmn:lane id="LANE_ee9db3ea" name="Stranger">
+                <bpmn:flowNodeRef>PIPER_bc768e59</bpmn:flowNodeRef>
+            </bpmn:lane>
+        </bpmn:laneSet>
+        <bpmn:startEvent id="PIPER_394b0d16" name="start" />
+        <bpmn:sequenceFlow id="PIPER_5d37ae65" name="" sourceRef="PIPER_394b0d16" targetRef="PIPER_eb7041e7" />
+        <bpmn:task id="PIPER_eb7041e7" name="Create simulation hypotheses" />
+        <bpmn:sequenceFlow id="PIPER_c0ec0506" name="" sourceRef="PIPER_eb7041e7" targetRef="PIPER_fe21383e" />
+        <bpmn:task id="PIPER_31ba51a1" name="Look for glitches" />
+        <bpmn:sequenceFlow id="PIPER_6cd76ef4" name="" sourceRef="PIPER_31ba51a1" targetRef="PIPER_cb6d3546" />
+        <bpmn:exclusiveGateway id="PIPER_cb6d3546" name="Did boss pass twice &#10;in same way?" />
+        <bpmn:sequenceFlow id="PIPER_3bc1eb96" name="No" sourceRef="PIPER_cb6d3546" targetRef="PIPER_8e7d13e5" />
+        <bpmn:sequenceFlow id="PIPER_3766b21f" name="Yes" sourceRef="PIPER_cb6d3546" targetRef="PIPER_7524fc7b" />
+        <bpmn:task id="PIPER_fe21383e" name="Start a conversation with a stranger" />
+        <bpmn:sequenceFlow id="PIPER_f28fd6d5" name="" sourceRef="PIPER_fe21383e" targetRef="PIPER_bc768e59" />
+        <bpmn:exclusiveGateway id="PIPER_6ed8ad7b" name="Sounds like a NPC?" />
+        <bpmn:sequenceFlow id="PIPER_05cdf34f" name="No" sourceRef="PIPER_6ed8ad7b" targetRef="PIPER_31ba51a1" />
+        <bpmn:sequenceFlow id="PIPER_db430c51" name="Yes" sourceRef="PIPER_6ed8ad7b" targetRef="PIPER_7524fc7b" />
+        <bpmn:task id="PIPER_7524fc7b" name="The World is simulated" />
+        <bpmn:sequenceFlow id="PIPER_f03f24d8" name="" sourceRef="PIPER_7524fc7b" targetRef="PIPER_5c64d1da" />
+        <bpmn:task id="PIPER_8e7d13e5" name="The World is not simulated" />
+        <bpmn:sequenceFlow id="PIPER_acc02e90" name="" sourceRef="PIPER_8e7d13e5" targetRef="PIPER_5c64d1da" />
+        <bpmn:endEvent id="PIPER_5c64d1da" name="end" />
+        <bpmn:task id="PIPER_bc768e59" name="Responded 'Princess needs help!'" />
+        <bpmn:sequenceFlow id="PIPER_10859470" name="" sourceRef="PIPER_bc768e59" targetRef="PIPER_6ed8ad7b" />
+    </bpmn:process>
+    <bpmn:collaboration id="PIPER_dc5bfbd7">
+        <bpmn:participant id="POOL_COLAB_49d2b2e2" name="The World" processRef="POOL_eab9c4a7" />
+    </bpmn:collaboration>
+    <bpmndi:BPMNDiagram id="PIPER_89dba9d6" name="BPMN Diagram">
+        <bpmndi:BPMNPlane id="PIPER_12605a84" bpmnElement="PIPER_dc5bfbd7">
+            <bpmndi:BPMNShape id="SHAPE_THEWORLD_3962e5d4" bpmnElement="POOL_COLAB_49d2b2e2" color:background-color="#0B5394">
+                <dc:Bounds x="20" y="64" width="50" height="482" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_YOU_1be334cd" bpmnElement="LANE_30ff9e7d">
+                <dc:Bounds x="72" y="64" width="2119" height="320" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_STRANGER_a7eaed76" bpmnElement="LANE_ee9db3ea">
+                <dc:Bounds x="72" y="386" width="2119" height="160" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_START_07219bae" bpmnElement="PIPER_394b0d16" color:background-color="#9FC5E8">
+                <dc:Bounds x="207.0" y="121.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__92c27362" bpmnElement="PIPER_5d37ae65">
+                <di:waypoint x="267.0" y="151.0" />
+                <di:waypoint x="402" y="151" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_CREATESIMULATIONHYPOTHESES_9f446dd7" bpmnElement="PIPER_eb7041e7" color:background-color="#9FC5E8">
+                <dc:Bounds x="402" y="114" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__69c409e6" bpmnElement="PIPER_c0ec0506">
+                <di:waypoint x="532" y="151" />
+                <di:waypoint x="632" y="151" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_LOOKFORGLITCHES_181e9dcb" bpmnElement="PIPER_31ba51a1" color:background-color="#9FC5E8">
+                <dc:Bounds x="1322" y="114" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__68080bc3" bpmnElement="PIPER_6cd76ef4">
+                <di:waypoint x="1452" y="151" />
+                <di:waypoint x="1562" y="151" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_DIDBOSSPASSTWICEINSAMEWAY_d5ca05dc" bpmnElement="PIPER_cb6d3546" color:background-color="#9FC5E8">
+                <dc:Bounds x="1562" y="114" width="110" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION_NO_da38fa76" bpmnElement="PIPER_3bc1eb96">
+                <di:waypoint x="1672" y="151" />
+                <di:waypoint x="1782" y="151" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="CONNECTION_YES_ed65a9f0" bpmnElement="PIPER_3766b21f">
+                <di:waypoint x="1617" y="188" />
+                <di:waypoint x="1617" y="288" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_STARTACONVERSATIONWITHASTRANGER_ce1f9eb5" bpmnElement="PIPER_fe21383e" color:background-color="#9FC5E8">
+                <dc:Bounds x="632" y="114" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__0a42e572" bpmnElement="PIPER_f28fd6d5">
+                <di:waypoint x="697" y="188" />
+                <di:waypoint x="697" y="473" />
+                <di:waypoint x="862" y="473" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_SOUNDSLIKEANPC_14d3d8f5" bpmnElement="PIPER_6ed8ad7b" color:background-color="#9FC5E8">
+                <dc:Bounds x="1102" y="114" width="110" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION_NO_78a01bd3" bpmnElement="PIPER_05cdf34f">
+                <di:waypoint x="1212" y="151" />
+                <di:waypoint x="1322" y="151" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="CONNECTION_YES_788d01eb" bpmnElement="PIPER_db430c51">
+                <di:waypoint x="1157" y="188" />
+                <di:waypoint x="1157" y="325" />
+                <di:waypoint x="1552" y="325" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_THEWORLDISSIMULATED_62b8f75b" bpmnElement="PIPER_7524fc7b" color:background-color="#9FC5E8">
+                <dc:Bounds x="1552" y="288" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__be43ad4d" bpmnElement="PIPER_f03f24d8">
+                <di:waypoint x="1682" y="325" />
+                <di:waypoint x="2077.0" y="325" />
+                <di:waypoint x="2077.0" y="181.0" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_THEWORLDISNOTSIMULATED_a1a72aca" bpmnElement="PIPER_8e7d13e5" color:background-color="#9FC5E8">
+                <dc:Bounds x="1782" y="114" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__bb2d07e6" bpmnElement="PIPER_acc02e90">
+                <di:waypoint x="1912" y="151" />
+                <di:waypoint x="2047.0" y="151.0" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_END_12330a02" bpmnElement="PIPER_5c64d1da" color:background-color="#9FC5E8">
+                <dc:Bounds x="2047.0" y="121.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_RESPONDEDPRINCESSNEEDSHELP_652dd6ae" bpmnElement="PIPER_bc768e59" color:background-color="#9FC5E8">
+                <dc:Bounds x="862" y="436" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__cb7f7875" bpmnElement="PIPER_10859470">
+                <di:waypoint x="992" y="473" />
+                <di:waypoint x="1047.0" y="473" />
+                <di:waypoint x="1047.0" y="151" />
+                <di:waypoint x="1102" y="151" />
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn:definitions id="Definitions_PIPER_0c630b1a" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.8.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
+    <bpmn:process id="LANE_d1567076" name="End User" isExecutable="false">
+        <bpmn:startEvent id="PIPER_a1060c05" name="Start" />
+        <bpmn:task id="PIPER_cbcff214" name="Enter Keyword" />
+    </bpmn:process>
+    <bpmn:process id="POOL_c3cbd474" name="System Search" isExecutable="false">
+        <bpmn:laneSet id="PIPER_792a049e">
+            <bpmn:lane id="LANE_b871a7a6" name="Database System">
+                <bpmn:flowNodeRef>PIPER_ec59aabb</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_6c001c54</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_8a4a7ba8</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_1905b960</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_ba2d7383</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER_14d982e7</bpmn:flowNodeRef>
+            </bpmn:lane>
+            <bpmn:lane id="LANE_96361b5c" name="Log System">
+                <bpmn:flowNodeRef>PIPER_20cdef24</bpmn:flowNodeRef>
+            </bpmn:lane>
+        </bpmn:laneSet>
+        <bpmn:task id="PIPER_ec59aabb" name="Login" />
+        <bpmn:task id="PIPER_6c001c54" name="Search Records" />
+        <bpmn:sequenceFlow id="PIPER_9dee248e" name="Result" sourceRef="PIPER_6c001c54" targetRef="PIPER_8a4a7ba8" />
+        <bpmn:exclusiveGateway id="PIPER_8a4a7ba8" name="Result Found?" />
+        <bpmn:sequenceFlow id="PIPER_72570033" name="Yes" sourceRef="PIPER_8a4a7ba8" targetRef="PIPER_1905b960" />
+        <bpmn:sequenceFlow id="PIPER_dcefb420" name="No" sourceRef="PIPER_8a4a7ba8" targetRef="PIPER_20cdef24" />
+        <bpmn:task id="PIPER_1905b960" name="Display Result" />
+        <bpmn:sequenceFlow id="PIPER_31a1ec6e" name="" sourceRef="PIPER_1905b960" targetRef="PIPER_ba2d7383" />
+        <bpmn:task id="PIPER_ba2d7383" name="Logout" />
+        <bpmn:sequenceFlow id="PIPER_7f11d978" name="" sourceRef="PIPER_ba2d7383" targetRef="PIPER_14d982e7" />
+        <bpmn:endEvent id="PIPER_14d982e7" name="End" />
+        <bpmn:task id="PIPER_20cdef24" name="Log Error" />
+        <bpmn:sequenceFlow id="PIPER_c32f1594" name="" sourceRef="PIPER_20cdef24" targetRef="PIPER_1905b960" />
+    </bpmn:process>
+    <bpmn:collaboration id="PIPER_e54cfacc">
+        <bpmn:participant id="LANE_COLAB_b45064f9" name="End User" processRef="LANE_d1567076" />
+        <bpmn:messageFlow id="PIPER_64aa834f" name="User &#10;Authenticates" sourceRef="PIPER_a1060c05" targetRef="PIPER_ec59aabb" />
+        <bpmn:messageFlow id="PIPER_0a77f4e6" name="Search Criteria" sourceRef="PIPER_cbcff214" targetRef="PIPER_6c001c54" />
+        <bpmn:participant id="POOL_COLAB_b618b899" name="System Search" processRef="POOL_c3cbd474" />
+        <bpmn:messageFlow id="PIPER_66cfc9fa" name="Authenticated" sourceRef="PIPER_ec59aabb" targetRef="PIPER_cbcff214" />
+    </bpmn:collaboration>
+    <bpmndi:BPMNDiagram id="PIPER_89881986" name="BPMN Diagram">
+        <bpmndi:BPMNPlane id="PIPER_6039c02c" bpmnElement="PIPER_e54cfacc">
+            <bpmndi:BPMNShape id="SHAPE_ENDUSER_b4f12e3e" bpmnElement="LANE_COLAB_b45064f9">
+                <dc:Bounds x="72" y="64" width="1429" height="160" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_SYSTEMSEARCH_3b9f392e" bpmnElement="POOL_COLAB_b618b899" color:background-color="#0B5394">
+                <dc:Bounds x="20" y="236" width="50" height="322" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_DATABASESYSTEM_92c938dd" bpmnElement="LANE_b871a7a6">
+                <dc:Bounds x="72" y="236" width="1429" height="160" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_LOGSYSTEM_ed135650" bpmnElement="LANE_96361b5c">
+                <dc:Bounds x="72" y="398" width="1429" height="160" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_START_077f4393" bpmnElement="PIPER_a1060c05" color:background-color="#9FC5E8">
+                <dc:Bounds x="207.0" y="121.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION_USERAUTHENTICATES_4d65f79f" bpmnElement="PIPER_64aa834f">
+                <di:waypoint x="237.0" y="181.0" />
+                <di:waypoint x="237" y="286" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_ENTERKEYWORD_bf45f778" bpmnElement="PIPER_cbcff214" color:background-color="#9FC5E8">
+                <dc:Bounds x="402" y="114" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION_SEARCHCRITERIA_e068e820" bpmnElement="PIPER_0a77f4e6">
+                <di:waypoint x="467" y="188" />
+                <di:waypoint x="467" y="286" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_LOGIN_9f4de8cb" bpmnElement="PIPER_ec59aabb" color:background-color="#9FC5E8">
+                <dc:Bounds x="172" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION_AUTHENTICATED_c2b688bc" bpmnElement="PIPER_66cfc9fa">
+                <di:waypoint x="302" y="323" />
+                <di:waypoint x="352.0" y="323" />
+                <di:waypoint x="352.0" y="151" />
+                <di:waypoint x="402" y="151" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_SEARCHRECORDS_944dc1c6" bpmnElement="PIPER_6c001c54" color:background-color="#9FC5E8">
+                <dc:Bounds x="402" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION_RESULT_bf570e51" bpmnElement="PIPER_9dee248e">
+                <di:waypoint x="532" y="323" />
+                <di:waypoint x="642" y="323" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_RESULTFOUND_1049e95d" bpmnElement="PIPER_8a4a7ba8" color:background-color="#9FC5E8">
+                <dc:Bounds x="642" y="286" width="110" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION_YES_df3d38e4" bpmnElement="PIPER_72570033">
+                <di:waypoint x="752" y="323" />
+                <di:waypoint x="862" y="323" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="CONNECTION_NO_19f4c926" bpmnElement="PIPER_dcefb420">
+                <di:waypoint x="697" y="360" />
+                <di:waypoint x="697" y="448" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_DISPLAYRESULT_dbf8a0f0" bpmnElement="PIPER_1905b960" color:background-color="#9FC5E8">
+                <dc:Bounds x="862" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__46c6dcda" bpmnElement="PIPER_31a1ec6e">
+                <di:waypoint x="992" y="323" />
+                <di:waypoint x="1092" y="323" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_LOGOUT_99a3bab8" bpmnElement="PIPER_ba2d7383" color:background-color="#9FC5E8">
+                <dc:Bounds x="1092" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__ff47200c" bpmnElement="PIPER_7f11d978">
+                <di:waypoint x="1222" y="323" />
+                <di:waypoint x="1357.0" y="323.0" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="SHAPE_END_fb8b4166" bpmnElement="PIPER_14d982e7" color:background-color="#9FC5E8">
+                <dc:Bounds x="1357.0" y="293.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="SHAPE_LOGERROR_a3fcb5db" bpmnElement="PIPER_20cdef24" color:background-color="#9FC5E8">
+                <dc:Bounds x="632" y="448" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="CONNECTION__b91b1cd9" bpmnElement="PIPER_c32f1594">
+                <di:waypoint x="762" y="485" />
+                <di:waypoint x="927" y="485" />
+                <di:waypoint x="927" y="360" />
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>
