@@ -293,7 +293,6 @@ class Conditional(Event):
 
         # painter.draw_circle(self.coord.x_pos,  self.coord.y_pos,  self.radius, "black")
         # painter.draw_circle(self.coord.x_pos,  self.coord.y_pos,  self.radius - 3, self.fill_colour)
-
         rectangle_radius = self.radius
         rectangle_width = rectangle_radius * math.sqrt(0.8)
         rectangle_height = rectangle_radius * 0.9
