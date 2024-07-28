@@ -34,7 +34,7 @@ def test_case1():
         my_process_map.save(output_file)
         # replace output_file with .bpmn extension
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
         # my_process_map.print()
 
 
@@ -98,7 +98,7 @@ def test_case2():
         my_process_map.draw()
         my_process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_case3():
@@ -126,7 +126,7 @@ def test_case3():
         my_process_map.draw()
         my_process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_case4():
@@ -156,7 +156,7 @@ def test_case4():
         my_process_map.draw()
         my_process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_case5():
@@ -191,7 +191,7 @@ def test_case5():
         my_process_map.draw()
         my_process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_case6():
@@ -212,7 +212,7 @@ def test_case6():
         my_process_map.draw()
         my_process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_case7():
@@ -238,7 +238,7 @@ def test_case7():
         my_process_map.draw()
         my_process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_case8():
@@ -264,7 +264,7 @@ def test_case8():
     my_process_map.draw()
     my_process_map.save(output_file)
     output_file = output_file.replace(".png", ".bpmn")
-    my_process_map.export_to_bpmn_xml(output_file)
+    my_process_map.export_to_bpmn(output_file)
 
 
 def test_case9():
@@ -285,7 +285,7 @@ def test_case9():
     my_process_map.draw()
     my_process_map.save(output_file)
     output_file = output_file.replace(".png", ".bpmn")
-    my_process_map.export_to_bpmn_xml(output_file)
+    my_process_map.export_to_bpmn(output_file)
 
 
 def test_case10(colour_theme: str = "BLUEMOUNTAIN"):
@@ -369,7 +369,7 @@ def test_case10(colour_theme: str = "BLUEMOUNTAIN"):
             my_process_map.draw()
             my_process_map.save(output_file)
             output_file = output_file.replace(".png", ".bpmn")
-            my_process_map.export_to_bpmn_xml(output_file)
+            my_process_map.export_to_bpmn(output_file)
 
 
 def test_case11():
@@ -389,7 +389,7 @@ def test_case11():
             my_process_map.draw()
             my_process_map.save(output_file)
             output_file = output_file.replace(".png", ".bpmn")
-            my_process_map.export_to_bpmn_xml(output_file)
+            my_process_map.export_to_bpmn(output_file)
 
 
 def test_case12():
@@ -410,7 +410,7 @@ def test_case12():
                 my_process_map.draw()
                 my_process_map.save(output_file)
                 output_file = output_file.replace(".png", ".bpmn")
-                my_process_map.export_to_bpmn_xml(output_file)
+                my_process_map.export_to_bpmn(output_file)
 
 
 def test_case13():
@@ -429,7 +429,7 @@ def test_case13():
         my_process_map.draw()
         my_process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_case14():
@@ -446,7 +446,7 @@ def test_case14():
         my_process_map.draw()
         my_process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_case15():
@@ -464,7 +464,7 @@ def test_case15():
         my_process_map.draw()
         my_process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_case16():
@@ -497,7 +497,7 @@ def test_case16():
         my_process_map.draw()
         my_process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_case17():
@@ -522,34 +522,34 @@ def test_case17():
         print(f"output_file : {output_file}")
         my_process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
-        my_process_map.export_to_bpmn_xml(output_file)
+        my_process_map.export_to_bpmn(output_file)
 
 
 if __name__ == "__main__":
     # test_case1()  # ok
     # test_case2()  # ok
-    # test_case3()
-    # test_case4()
-    # test_case5()
-    # test_case6()
-    # test_case7()
-    # test_case8()
-    # test_case9()
-    # test_case10(colour_theme="DEFAULT")
-    # test_case10(colour_theme="BLUEMOUNTAIN")
-    # test_case10(colour_theme="ORANGEPEEL")
-    # test_case10(colour_theme="GREENTURTLE")
-    # test_case10(colour_theme="GREYWOOF")
-    # test_case10(colour_theme="SUNFLOWER")
-    # test_case10(colour_theme="PURPLERAIN")
-    # test_case10(colour_theme="RUBYRED")
-    # test_case10(colour_theme="TEALWATERS")
-    # test_case10(colour_theme="SEAFOAMS")
+    # test_case3()  # ok
+    # test_case4()  # ok
+    # test_case5()  # ok
+    # test_case6()  # ok
+    # test_case7()  # ok
+    # test_case8()  # ok
+    # test_case9()  # ok
+    # test_case10(colour_theme="DEFAULT")  # ok
+    # test_case10(colour_theme="BLUEMOUNTAIN")  # ok
+    # test_case10(colour_theme="ORANGEPEEL")  # ok
+    # test_case10(colour_theme="GREENTURTLE")  # ok
+    # test_case10(colour_theme="GREYWOOF")  # ok
+    # test_case10(colour_theme="SUNFLOWER")  # ok
+    # test_case10(colour_theme="PURPLERAIN")  # ok
+    # test_case10(colour_theme="RUBYRED")  # ok
+    # test_case10(colour_theme="TEALWATERS")  # ok
+    # test_case10(colour_theme="SEAFOAMS")  # ok
 
     # test_case11()  # should fail
     # test_case12()  # should fail
-    # test_case13()
-    # test_case14()
-    # test_case15()
-    # test_case16()
-    # test_case17()
+    test_case13()  # ok
+    test_case14()  # ok
+    test_case15()  # ok
+    test_case16()  # ok
+    test_case17()  # ok
