@@ -126,7 +126,8 @@ The generated diagram is as follows:
   * RUBYRED
   * TEALWATERS
   * SEAFOAMS
-* Diagrams can be saved to PNG or SVG formats
+* Diagrams can be saved to PNG or SVG image formats
+* :new::fire: Diagrams can be exported to .bpmn XML file format
 
 
 ## Frontend Application
