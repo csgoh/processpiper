@@ -22,6 +22,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from itertools import count
+import uuid
 from .shape import Shape
 from .painter import Painter
 from .constants import Configs
@@ -106,6 +107,8 @@ class Lane:
     painter: Painter = field(init=True, default=None)
 
     id: int = field(init=False, default_factory=count().__next__)
+    bpmn_id: str = field(init=False)
+    bpmn_collaboration_id: str = field(init=False)
     shapes: list = field(init=False, default_factory=list)
     coord: Coordinate = field(init=False, default=None)
     width: int = field(init=False, default=0)
@@ -152,6 +155,7 @@ class Lane:
         element.outline_colour = outline_colour
         element.outline_width = outline_width
         element.text_alignment = text_alignment
+        element.bpmn_id = Helper.get_uuid()
         self.shapes.append(element)
         return element
 

@@ -23,8 +23,22 @@ from dataclasses import dataclass, field
 from rich.traceback import install
 from rich.console import Console
 from rich.table import Table
-import time
-from .event import *
+import time, uuid
+from .event import (
+    Start,
+    End,
+    Conditional,
+    ConditionalIntermediate,
+    Timer,
+    Intermediate,
+    Message,
+    MessageIntermediate,
+    MessageEnd,
+    Signal,
+    SignalIntermediate,
+    SignalEnd,
+    Link,
+)
 from .lane import Lane, ElementType, EventType
 from .pool import Pool
 from .painter import PainterFactory
@@ -35,6 +49,7 @@ from .constants import Configs
 from .helper import Helper
 from .layout import Grid
 from .coordinate import Coordinate
+from .bpmn import BPMN
 
 import logging
 
@@ -78,7 +93,7 @@ class ProcessMap:
 
         logging.basicConfig(
             # filename="processpiper.log",
-            level=logging.INFO,
+            level=logging.DEBUG,
             format="%(asctime)s [%(levelname)s] : %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
@@ -120,6 +135,8 @@ class ProcessMap:
             text_alignment,
             self.__painter,
         )
+        pool.bpmn_id = Helper.get_uuid("pool")
+        pool.bpmn_collaboration_id = Helper.get_uuid("pool_colab")
         self._pools.append(pool)
         return pool
 
@@ -453,9 +470,9 @@ class ProcessMap:
         for pool in self._pools:
             for lane in pool.lanes:
                 for index, shape in enumerate(lane.shapes):
-                    self._replace_signal_element(lane, index, shape)
-                    self._replace_conditional_element(lane, index, shape)
-                    self._replace_message_element(lane, index, shape)
+                    self._replace_signal_element(pool, lane, index, shape)
+                    self._replace_conditional_element(pool, lane, index, shape)
+                    self._replace_message_element(pool, lane, index, shape)
 
         # --Set the draw position of pools, lanes and shapes
         self._set_draw_position()
@@ -499,64 +516,76 @@ class ProcessMap:
         if self.auto_size is True:
             self.__painter.set_surface_size(self.width, self.height)
 
-    def _replace_message_element(self, lane, index, shape):
-        if type(shape) == Message:
+    def _replace_message_element(self, pool, lane, index, shape):
+        if isinstance(shape, Message):
             # --Check if the signal is a start signal. i.e it has no connection from
             if len(shape.connection_to) > 0 and len(shape.connection_from) == 0:
-                new_shape = self._replace_element_type(lane, shape, ElementType.MESSAGE)
+                new_shape = self._replace_element_type(
+                    pool, lane, shape, ElementType.MESSAGE
+                )
 
             elif (  # --Check if the signal is an intermediate signal. i.e it has both connection from and to
                 len(shape.connection_to) > 0 and len(shape.connection_from) > 0
             ):
                 new_shape = self._replace_element_type(
-                    lane, shape, ElementType.MESSAGE_INTERMEDIATE
+                    pool, lane, shape, ElementType.MESSAGE_INTERMEDIATE
                 )
             else:  # --Check if the signal is an end signal. i.e it has no connection to
                 new_shape = self._replace_element_type(
-                    lane, shape, ElementType.MESSAGE_END
+                    pool, lane, shape, ElementType.MESSAGE_END
                 )
 
+            new_shape.bpmn_id = shape.bpmn_id
+            new_shape.coord = shape.coord
+            new_shape.origin_coord = shape.origin_coord
             lane.shapes[index] = self._replace_connections(shape, new_shape)
 
-    def _replace_conditional_element(self, lane, index, shape):
+    def _replace_conditional_element(self, pool, lane, index, shape):
         if type(shape) == Conditional and len(shape.connection_to) > 0:
             if len(shape.connection_from) == 0:
                 new_shape = self._replace_element_type(
-                    lane, shape, ElementType.CONDITIONAL
+                    pool, lane, shape, ElementType.CONDITIONAL
                 )
-
-                lane.shapes[index] = self._replace_connections(shape, new_shape)
-
             elif len(shape.connection_from) > 0:
                 new_shape = self._replace_element_type(
-                    lane, shape, ElementType.CONDITIONAL_INTERMEDIATE
+                    pool, lane, shape, ElementType.CONDITIONAL_INTERMEDIATE
                 )
-                lane.shapes[index] = self._replace_connections(shape, new_shape)
 
-    def _replace_signal_element(self, lane, index, shape):
+            new_shape.bpmn_id = shape.bpmn_id
+            new_shape.coord = shape.coord
+            new_shape.origin_coord = shape.origin_coord
+            lane.shapes[index] = self._replace_connections(shape, new_shape)
+
+    def _replace_signal_element(self, pool, lane, index, shape):
         if type(shape) == Signal:
             # --Check if the signal is a start signal. i.e it has no connection from
             if len(shape.connection_to) > 0 and len(shape.connection_from) == 0:
-                new_shape = self._replace_element_type(lane, shape, ElementType.SIGNAL)
+                new_shape = self._replace_element_type(
+                    pool, lane, shape, ElementType.SIGNAL
+                )
 
             elif (  # --Check if the signal is an intermediate signal. i.e it has both connection from and to
                 len(shape.connection_to) > 0 and len(shape.connection_from) > 0
             ):
                 new_shape = self._replace_element_type(
-                    lane, shape, ElementType.SIGNAL_INTERMEDIATE
+                    pool, lane, shape, ElementType.SIGNAL_INTERMEDIATE
                 )
             else:  # --Check if the signal is an end signal. i.e it has no connection to
                 new_shape = self._replace_element_type(
-                    lane, shape, ElementType.SIGNAL_END
+                    pool, lane, shape, ElementType.SIGNAL_END
                 )
 
+            new_shape.bpmn_id = shape.bpmn_id
+            new_shape.coord = shape.coord
+            new_shape.origin_coord = shape.origin_coord
             lane.shapes[index] = self._replace_connections(shape, new_shape)
 
-    def _replace_element_type(self, lane, shape, new_shape_type: ElementType):
+    def _replace_element_type(self, pool, lane, shape, new_shape_type: ElementType):
         event_class = globals()[new_shape_type]
         return event_class(
             shape.name,
-            lane.name,
+            lane.id,
+            pool.name,
         )
 
     def _replace_connections(self, current_shape, new_shape):
@@ -570,6 +599,7 @@ class ProcessMap:
         new_shape.outline_width = current_shape.outline_width
         new_shape.text_alignment = current_shape.text_alignment
         new_shape.connection_to = current_shape.connection_to
+        new_shape.connection_from = current_shape.connection_from
         for connection_index, connection in enumerate(current_shape.connection_to):
             new_connection = Connection(
                 new_shape,
@@ -578,10 +608,12 @@ class ProcessMap:
                 connection.connection_type,
                 connection.source_connection_side,
                 connection.target_connection_side,
+                connection.bpmn_id,
             )
 
             new_shape.connection_to[connection_index] = new_connection
         self._replace_connection_from(current_shape, new_shape)
+        new_shape.connection_from = current_shape.connection_from
         return new_shape
 
     def _replace_connection_from(self, current_shape, new_shape):
@@ -594,6 +626,7 @@ class ProcessMap:
                     connection_to.connection_type,
                     connection_to.source_connection_side,
                     connection_to.target_connection_side,
+                    connection_to.bpmn_id,
                 )
                 shape.connection_to[shape_index] = new_connection
 
@@ -607,6 +640,11 @@ class ProcessMap:
 
         elapsed_time = (time.time() - self.start_time) * 1000
         Helper.info_log(f"Took [{elapsed_time:.2f}ms] to generate '{filename}' diagram")
+
+    def export_to_bpmn(self, filename: str) -> None:
+        """This method exports the process map to a BPMN XML file"""
+        bpmn = BPMN()
+        bpmn.export_to_xml(self._pools, filename)
 
     def __enter__(self):
         """This method is called when the 'with' statement is used"""

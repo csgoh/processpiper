@@ -21,4 +21,4 @@
 # SOFTWARE.
 
 """Version information for processpiper."""
-__version__ = "v0.7.0"
+__version__ = "v0.8.0"

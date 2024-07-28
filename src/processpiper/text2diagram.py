@@ -5,7 +5,7 @@ from PIL import Image
 from rich.console import Console
 
 
-def _parse_and_generate_code(input_str, png_output_file):
+def _parse_and_generate_code(input_str, png_output_file, export_to_bpmn):
     """
     Parse input string and generate code to create a diagram
     """
@@ -68,6 +68,11 @@ def _parse_and_generate_code(input_str, png_output_file):
 
     code_lines.append(f"{indent}my_process_map.draw()")
     code_lines.append(f'{indent}my_process_map.save("{png_output_file}")')
+    bpmn_output_file = png_output_file.replace(".png", ".bpmn")
+    if export_to_bpmn:
+        code_lines.append(
+            f'{indent}my_process_map.export_to_bpmn("{bpmn_output_file}")'
+        )
 
     return "\n".join(code_lines)
 
@@ -344,7 +349,12 @@ def show_code_with_line_number(code: str):
         console.print(f"{i+1:3} {line}")
 
 
-def render(text: str, output_file: str = "", show_code: bool = False):
+def render(
+    text: str,
+    output_file: str = "",
+    show_code: bool = False,
+    export_to_bpmn: bool = False,
+):
     """Render text to diagram"""
     output_file_provided = True
     if not output_file.strip():
@@ -358,9 +368,9 @@ def render(text: str, output_file: str = "", show_code: bool = False):
         "png",
         "svg",
     ]:
-        raise ValueError("The output file extension must be either .png or .svg")
+        raise ValueError("The output file extension must be either .png, .svg or .bpmn")
 
-    generated_code = _parse_and_generate_code(text, output_file)
+    generated_code = _parse_and_generate_code(text, output_file, export_to_bpmn)
     _validate_generated_code(generated_code)
     if show_code:
         show_code_with_line_number(generated_code)

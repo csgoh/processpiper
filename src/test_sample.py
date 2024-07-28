@@ -1,5 +1,5 @@
-from .processpiper import ProcessMap, EventType, ActivityType, GatewayType
-from .processpiper import text2diagram
+from processpiper import ProcessMap, EventType, ActivityType, GatewayType
+from processpiper import text2diagram
 
 
 def test_sample01():
@@ -577,9 +577,7 @@ def test_sample11():
             #     st1.connect(g2)
         process_map.draw()
         process_map.save("images/test/test_sample11.png")
-
-
-
+        process_map.export_to_bpmn("images/test/test_sample11.bpmn")
 
 
 if __name__ == "__main__":
@@ -594,4 +592,3 @@ if __name__ == "__main__":
     # test_sample09()  # -- Test validation. Should fail
     # test_sample10()  # -- Test validation. Should fail
     test_sample11()
-

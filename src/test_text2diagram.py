@@ -2,7 +2,6 @@ import inspect
 import os
 import os.path
 from processpiper import text2diagram
-from rich.console import Console
 
 
 def prep_for_test(filename: str):
@@ -23,6 +22,17 @@ def generate_diagram(input_syntax: str, painter_type: str = "PNG"):
         output_file = prep_for_test(
             f"{inspect.currentframe().f_back.f_code.co_name}.svg"
         )
+<<<<<<< HEAD
+    _, img = text2diagram.render(
+        input_syntax, output_file, show_code=True, export_to_bpmn=True
+    )
+    if painter_type == "PNG":
+        img.save(output_file)
+    else:
+        # save gen_code as SVG file
+        with open(output_file, "w") as f:
+            f.write(img)
+=======
     _, img = text2diagram.render(input_syntax, output_file, show_code=True)
     
     # if painter_type == "PNG":
@@ -31,6 +41,7 @@ def generate_diagram(input_syntax: str, painter_type: str = "PNG"):
     #     # save gen_code as SVG file
     #     with open(output_file, "w") as f:
     #         f.write(img)
+>>>>>>> main
 
 
 def test_text2diagram_01():
@@ -403,10 +414,3 @@ if __name__ == "__main__":
     test_text2diagram_12()
     test_text2diagram_13()
     test_text2diagram_14()
-    print("All tests passed!")
-    print("Please check the output folder for the generated diagrams")
-    print("You can also run the tests with the command 'pytest'")
-    print("Thank you for using ProcessPiper!")
-    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-    print("XXXXXXXXXXXXXXXXXXXXXXXX")
-    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")

@@ -29,6 +29,7 @@ from .coordinate import Coordinate, Side
 
 
 from typing import TypeVar
+import copy
 
 
 # -- This is to allow the connect method to return the same type of shape
@@ -49,6 +50,8 @@ class Connection:
     connection_type: str = field(init=True)
     source_connection_side: Side = field(init=True)
     target_connection_side: Side = field(init=True)
+    bpmn_id: str = field(init=True, default="")
+    connection_points: list = field(init=False, default_factory=list)
 
 
 @dataclass
@@ -68,6 +71,7 @@ class Shape:
     outline_width: int = field(init=False)
     text_alignment: str = field(init=False)
 
+    bpmn_id: str = field(init=False)
     coord: Coordinate = field(init=True, default=Coordinate())
     origin_coord: Coordinate = field(init=True, default=Coordinate())
     width: int = field(init=False, default=0)
@@ -132,6 +136,7 @@ class Shape:
             connection_type,
             source_connection_side,
             target_connection_side,
+            Helper.get_uuid(),
         )
         self.connection_to.append(connection)
         target.connection_from.append(self)
@@ -551,15 +556,7 @@ class Shape:
         collision_found = False
         collision_shape = ""
         for shape in shapes:
-            # Helper.printc(
-            #     f"                * COMPARING: {shape.name=}, {shape.coord.get_xy()=}",
-            #     show_level="draw_connection",
-            # )
             if self == shape or target_shape == shape:
-                # Helper.printc(
-                #     f"                * SAME: {shape.name=}, {target_shape.name=}",
-                #     show_level="draw_connection",
-                # )
                 ...
             elif self.check_shape_collision(line_start, line_end, shape):
                 # Helper.printc(
@@ -602,6 +599,12 @@ class Shape:
         """
         # for point in self.points.values():
         #     painter.draw_circle(point[0], point[1], 2, "red")
+
+    def is_first_shape(self):
+        return bool(len(self.connection_from) == 0)
+
+    def is_last_shape(self):
+        return bool(len(self.connection_to) == 0)
 
     def is_same_lane(self, source: TShape, target: TShape):
         """Check if source and target shapes are in the same lane
@@ -666,8 +669,14 @@ class Shape:
                     all_shapes,
                 )
 
-                self.outgoing_points.append(connection_points[0])
-                connection.target.incoming_points.append(connection_points[-1])
+                # *** TEMP FIX (Start)
+                self.outgoing_points.append(connection_points)
+                connection.target.incoming_points.append(connection_points)
+                # *** TEMP FIX (End)
+                # *** TEMP FIX 2 (Start)
+                connection.connection_points = connection_points
+                # *** TEMP FIX 2 (End)
+
                 painter.draw_connection(
                     connection_points,
                     connection.label,
@@ -1426,10 +1435,12 @@ class Circle(Shape):
 
     def set_draw_position(self, painter: Painter) -> tuple:
         """Set draw position of circle"""
-        self.origin_coord = self.coord
+        # self.origin_coord = self.coord
+        # copy coord to origin_coord without making reference
+        self.origin_coord = copy.copy(self.coord)
         self.coord.x_pos = self.coord.x_pos + (Configs.BOX_WIDTH / 2)
         self.coord.y_pos = self.coord.y_pos + (Configs.BOX_HEIGHT / 2)
-        self.coord.y_pos = self.coord.y_pos
+        # self.coord.y_pos = self.coord.y_pos
 
         self.radius = Configs.CIRCLE_RADIUS
 
@@ -1465,13 +1476,13 @@ class Circle(Shape):
         self.text_width, self.text_height = painter.get_text_dimension(
             self.name, self.font, self.font_size
         )
-        
+
         # self.text_coord.x_pos = (
         #     self.coord.x_pos
         #     + (self.width / 2)
         #     - (self.text_width / 2)
         # )
-        self.text_coord.x_pos = (self.coord.x_pos + ((self.width / 8) * 2))
+        self.text_coord.x_pos = self.coord.x_pos + ((self.width / 8) * 2)
         self.text_coord.y_pos = self.coord.y_pos + self.radius
 
         return self.coord.x_pos, self.coord.y_pos, self.radius, self.radius
@@ -1551,7 +1562,7 @@ class Diamond(Shape):
         self.text_coord.x_pos = (
             self.coord.x_pos + (self.width / 2) - (self.text_width / 2)
         )
-        
+
         self.text_coord.y_pos = self.coord.y_pos + self.height
 
         return self.coord.x_pos, self.coord.y_pos, self.width, self.height
