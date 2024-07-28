@@ -556,15 +556,7 @@ class Shape:
         collision_found = False
         collision_shape = ""
         for shape in shapes:
-            # Helper.printc(
-            #     f"                * COMPARING: {shape.name=}, {shape.coord.get_xy()=}",
-            #     show_level="draw_connection",
-            # )
             if self == shape or target_shape == shape:
-                # Helper.printc(
-                #     f"                * SAME: {shape.name=}, {target_shape.name=}",
-                #     show_level="draw_connection",
-                # )
                 ...
             elif self.check_shape_collision(line_start, line_end, shape):
                 # Helper.printc(
@@ -607,6 +599,12 @@ class Shape:
         """
         # for point in self.points.values():
         #     painter.draw_circle(point[0], point[1], 2, "red")
+
+    def is_first_shape(self):
+        return bool(len(self.connection_from) == 0)
+
+    def is_last_shape(self):
+        return bool(len(self.connection_to) == 0)
 
     def is_same_lane(self, source: TShape, target: TShape):
         """Check if source and target shapes are in the same lane
