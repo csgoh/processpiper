@@ -33,6 +33,7 @@ class Helper:
     show_draw_position = False
     show_draw = False
     show_draw_connection = False
+    show_export_to_bpmn = False
     show_general = False
 
     @staticmethod
@@ -56,6 +57,7 @@ class Helper:
             or (show_level == "draw_connection" and Helper.show_draw_connection)
             or (show_level == "draw_position" and Helper.show_draw_position)
             or (show_level == "draw" and Helper.show_draw)
+            or (show_level == "export_to_bpmn" and Helper.show_export_to_bpmn)
             or (show_level == "general" and Helper.show_general)
         ):
             console = Console()
