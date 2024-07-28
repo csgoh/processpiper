@@ -526,25 +526,25 @@ def test_case17():
 
 
 if __name__ == "__main__":
-    # test_case1()  # ok
-    # test_case2()  # ok
-    # test_case3()  # ok
-    # test_case4()  # ok
-    # test_case5()  # ok
-    # test_case6()  # ok
-    # test_case7()  # ok
-    # test_case8()  # ok
-    # test_case9()  # ok
-    # test_case10(colour_theme="DEFAULT")  # ok
-    # test_case10(colour_theme="BLUEMOUNTAIN")  # ok
-    # test_case10(colour_theme="ORANGEPEEL")  # ok
-    # test_case10(colour_theme="GREENTURTLE")  # ok
-    # test_case10(colour_theme="GREYWOOF")  # ok
-    # test_case10(colour_theme="SUNFLOWER")  # ok
-    # test_case10(colour_theme="PURPLERAIN")  # ok
-    # test_case10(colour_theme="RUBYRED")  # ok
-    # test_case10(colour_theme="TEALWATERS")  # ok
-    # test_case10(colour_theme="SEAFOAMS")  # ok
+    test_case1()  # ok
+    test_case2()  # ok
+    test_case3()  # ok
+    test_case4()  # ok
+    test_case5()  # ok
+    test_case6()  # ok
+    test_case7()  # ok
+    test_case8()  # ok
+    test_case9()  # ok
+    test_case10(colour_theme="DEFAULT")  # ok
+    test_case10(colour_theme="BLUEMOUNTAIN")  # ok
+    test_case10(colour_theme="ORANGEPEEL")  # ok
+    test_case10(colour_theme="GREENTURTLE")  # ok
+    test_case10(colour_theme="GREYWOOF")  # ok
+    test_case10(colour_theme="SUNFLOWER")  # ok
+    test_case10(colour_theme="PURPLERAIN")  # ok
+    test_case10(colour_theme="RUBYRED")  # ok
+    test_case10(colour_theme="TEALWATERS")  # ok
+    test_case10(colour_theme="SEAFOAMS")  # ok
 
     # test_case11()  # should fail
     # test_case12()  # should fail
