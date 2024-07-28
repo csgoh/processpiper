@@ -23,9 +23,23 @@
 from dataclasses import dataclass, field
 import xml.etree.ElementTree as ET
 from typing import List, Dict, Any, Optional
-from .shape import Shape
-from .event import Start, End
-from .activity import Task
+from .shape import Shape, Circle
+from .event import (
+    Start,
+    End,
+    Conditional,
+    ConditionalIntermediate,
+    Timer,
+    Intermediate,
+    Message,
+    MessageIntermediate,
+    MessageEnd,
+    Signal,
+    SignalIntermediate,
+    SignalEnd,
+    Link,
+)
+from .activity import Task, Subprocess, ServiceTask
 from .gateway import Exclusive, Inclusive, Parallel
 from .helper import Helper
 from .version import __version__
@@ -97,13 +111,114 @@ class BPMNElementCreator:
         ET.SubElement(parent, "bpmn:flowNodeRef").text = id
 
     def _add_start_event(self, parent: ET.Element, shape: Start):
-        self._add_sub_element(parent, "bpmn:startEvent", shape)
+        return self._add_sub_element(parent, "bpmn:startEvent", shape)
 
     def _add_end_event(self, parent: ET.Element, shape: End):
-        self._add_sub_element(parent, "bpmn:endEvent", shape)
+        return self._add_sub_element(parent, "bpmn:endEvent", shape)
+
+    def _add_timer_event(self, parent: ET.Element, shape: Timer):
+        if shape.is_first_shape():
+            start_event = self._add_start_event(parent, shape)
+            self._add_sub_element(start_event, "bpmn:timerEventDefinition", None)
+        else:
+            intermediate_event = self._add_sub_element(
+                parent, "bpmn:intermediateCatchEvent", shape
+            )
+            self._add_sub_element(intermediate_event, "bpmn:timerEventDefinition", None)
+
+    def _add_intermediate_event(self, parent: ET.Element, shape: Intermediate):
+        self._add_sub_element(parent, "bpmn:intermediateCatchEvent", shape)
+
+    def _add_message_event(self, parent: ET.Element, shape: Message):
+        if shape.is_first_shape():
+            start_event = self._add_start_event(parent, shape)
+            self._add_sub_element(start_event, "bpmn:messageEventDefinition", None)
+        elif shape.is_last_shape():
+            end_event = self._add_end_event(parent, shape)
+            self._add_sub_element(end_event, "bpmn:messageEventDefinition", None)
+        else:
+            intermediate_event = self._add_sub_element(
+                parent, "bpmn:intermediateCatchEvent", shape
+            )
+            self._add_sub_element(
+                intermediate_event, "bpmn:messageEventDefinition", None
+            )
+
+    def _add_message_intermediate_event(
+        self, parent: ET.Element, shape: MessageIntermediate
+    ):
+        intermediate_event = self._add_sub_element(
+            parent, "bpmn:intermediateCatchEvent", shape
+        )
+        self._add_sub_element(intermediate_event, "bpmn:messageEventDefinition", shape)
+
+    def _add_message_end_event(self, parent: ET.Element, shape: MessageEnd):
+        self._add_sub_element(parent, "bpmn:messageEventDefinition", shape)
+
+    def _add_signal_event(self, parent: ET.Element, shape: Signal):
+        if shape.is_first_shape():
+            start_event = self._add_start_event(parent, shape)
+            self._add_sub_element(start_event, "bpmn:signalEventDefinition", None)
+        elif shape.is_last_shape():
+            end_event = self._add_end_event(parent, shape)
+            self._add_sub_element(end_event, "bpmn:signalEventDefinition", None)
+        else:
+            intermediate_event = self._add_sub_element(
+                parent, "bpmn:intermediateCatchEvent", shape
+            )
+            self._add_sub_element(
+                intermediate_event, "bpmn:signalEventDefinition", None
+            )
+
+    def _add_signal_intermediate_event(
+        self, parent: ET.Element, shape: SignalIntermediate
+    ):
+        self._add_sub_element(parent, "bpmn:signalEventDefinition", shape)
+
+    def _add_signal_end_event(self, parent: ET.Element, shape: SignalEnd):
+        self._add_sub_element(parent, "bpmn:signalEventDefinition", shape)
+
+    def _add_conditional_event(self, parent: ET.Element, shape: Conditional):
+        if shape.is_first_shape():
+            start_event = self._add_start_event(parent, shape)
+            self._add_sub_element(start_event, "bpmn:conditionalEventDefinition", None)
+        elif shape.is_last_shape():
+            end_event = self._add_end_event(parent, shape)
+            self._add_sub_element(end_event, "bpmn:conditionalEventDefinition", None)
+        else:
+            intermediate_event = self._add_sub_element(
+                parent, "bpmn:intermediateCatchEvent", shape
+            )
+            self._add_sub_element(
+                intermediate_event, "bpmn:conditionalEventDefinition", None
+            )
+
+    def _add_conditional_intermediate_event(
+        self, parent: ET.Element, shape: ConditionalIntermediate
+    ):
+        self._add_sub_element(parent, "bpmn:intermediateCatchEvent", shape)
+
+    def _add_link_event(self, parent: ET.Element, shape: Link):
+        if shape.is_first_shape():
+            start_event = self._add_start_event(parent, shape)
+            self._add_sub_element(start_event, "bpmn:linkEventDefinition", None)
+        elif shape.is_last_shape():
+            end_event = self._add_end_event(parent, shape)
+            self._add_sub_element(end_event, "bpmn:linkEventDefinition", None)
+        else:
+            intermediate_event = self._add_sub_element(
+                parent, "bpmn:intermediateCatchEvent", shape
+            )
+            self._add_sub_element(intermediate_event, "bpmn:linkEventDefinition", None)
 
     def _add_task(self, parent: ET.Element, shape: Task):
         self._add_sub_element(parent, "bpmn:task", shape)
+
+    def _add_subprocess(self, parent: ET.Element, shape: Subprocess):
+        self._add_sub_element(parent, "bpmn:subProcess", shape)
+
+    def _add_service_task(self, parent: ET.Element, shape: ServiceTask):
+        self._add_sub_element(parent, "bpmn:serviceTask", shape)
 
     def _add_exclusive_gateway(self, parent: ET.Element, shape: Exclusive):
         self._add_sub_element(parent, "bpmn:exclusiveGateway", shape)
@@ -115,11 +230,14 @@ class BPMNElementCreator:
         self._add_sub_element(parent, "bpmn:parallelGateway", shape)
 
     def _add_sub_element(self, parent: ET.Element, bpmn_element: str, shape: Any):
-        ET.SubElement(
-            parent,
-            bpmn_element,
-            {"id": shape.bpmn_id, "name": shape.name},
-        )
+        if shape is not None:
+            return ET.SubElement(
+                parent,
+                bpmn_element,
+                {"id": shape.bpmn_id, "name": shape.name},
+            )
+        else:
+            return ET.SubElement(parent, bpmn_element, {"id": Helper.get_uuid()})
 
     def _add_sequence_flow(
         self, parent: ET.Element, id: str, name: str, source: str, target: str
@@ -198,7 +316,8 @@ class BPMNElementCreator:
                 },
             )
         # *** Generate dc:Bounds Elements ***
-        if type(element) is Start or type(element) is End:
+        # if type(element) is Start or type(element) is End:
+        if isinstance(element, Circle):
             ET.SubElement(
                 bpmn_shape,
                 "dc:Bounds",
@@ -244,6 +363,7 @@ class BPMNElementCreator:
 
     def create_process_section(self, root: ET.Element, pools: list[Any]):
         for pool in pools:
+            Helper.printc(f"[yellow][{pool.name}]", reverse=True, show_level="export_to_bpmn")
             # *** Generate bpmn:process elements ***
             if pool.has_pool():
                 process = self._add_process_element(root, pool)
@@ -260,6 +380,7 @@ class BPMNElementCreator:
                     lane_set = self._add_laneset_element(process, Helper.get_uuid())
 
                 for lane in lanes:
+                    Helper.printc(f"[green]\t({lane.name})", reverse=True, show_level="export_to_bpmn")
                     # *** Generate bpmn:lane elements ***
                     if pool.has_pool():
                         bpmn_lane = self._add_lane_element(lane_set, lane)
@@ -272,17 +393,43 @@ class BPMNElementCreator:
 
                     for shape in lane.shapes:
                         # *** Generate bpmn event, activity, gateway elements
-                        if type(shape) is Start:
+                        if isinstance(shape, Start):
                             self._add_start_event(process, shape)
-                        elif type(shape) is End:
+                        elif isinstance(shape, End):
                             self._add_end_event(process, shape)
-                        elif type(shape) is Task:
+                        elif isinstance(shape, Conditional):
+                            self._add_conditional_event(process, shape)
+                        elif isinstance(shape, ConditionalIntermediate):
+                            self._add_conditional_intermediate_event(process, shape)
+                        elif isinstance(shape, Timer):
+                            self._add_timer_event(process, shape)
+                        elif isinstance(shape, Intermediate):
+                            self._add_intermediate_event(process, shape)
+                        elif isinstance(shape, Message):
+                            self._add_message_event(process, shape)
+                        elif isinstance(shape, MessageIntermediate):
+                            self._add_message_intermediate_event(process, shape)
+                        elif isinstance(shape, MessageEnd):
+                            self._add_message_end_event(process, shape)
+                        elif isinstance(shape, Signal):
+                            self._add_signal_event(process, shape)
+                        elif isinstance(shape, SignalIntermediate):
+                            self._add_signal_intermediate_event(process, shape)
+                        elif isinstance(shape, SignalEnd):
+                            self._add_signal_end_event(process, shape)
+                        elif isinstance(shape, Link):
+                            self._add_link_event(process, shape)
+                        elif isinstance(shape, Task):
                             self._add_task(process, shape)
-                        elif type(shape) is Exclusive:
+                        elif isinstance(shape, Subprocess):
+                            self._add_subprocess(process, shape)
+                        elif isinstance(shape, ServiceTask):
+                            self._add_service_task(process, shape)
+                        elif isinstance(shape, Exclusive):
                             self._add_exclusive_gateway(process, shape)
-                        elif type(shape) is Inclusive:
+                        elif isinstance(shape, Inclusive):
                             self._add_inclusive_gateway(process, shape)
-                        elif type(shape) is Parallel:
+                        elif isinstance(shape, Parallel):
                             self._add_parallel_gateway(process, shape)
                         if shape.connection_to is not None:
                             for connection in shape.connection_to:
@@ -305,9 +452,6 @@ class BPMNElementCreator:
             len(pools) > 1
         ):  # *** Only generate collaboration if there are more than one pool
             # *** Generate bpmn:collaboration element ***
-            for pool in pools:
-                print(f">>>{pool.name}=,{pool.bpmn_id}=,{pool.bpmn_collaboration_id}=")
-
             for pool in pools:
                 # *** Generate bpmn:participant element ***
                 if pool.has_pool():
@@ -374,26 +518,13 @@ class BPMNElementCreator:
                     self._add_shape_element(bpmn_plane, lane, lane.bpmn_id, False)
 
         for pool in pools:
-            # if pool.has_pool():
-            #     # *** Add shape for pool ***
-            #     self._add_shape_element(
-            #         bpmn_plane, pool, pool.bpmn_collaboration_id, True
-            #     )
-
             for lane in pool.lanes:
-                # if pool.has_lane_only():
-                #     # *** Add shape for lane ***
-                #     self._add_shape_element(
-                #         bpmn_plane, lane, lane.bpmn_collaboration_id, False
-                #     )
-                # else:
-                #     self._add_shape_element(bpmn_plane, lane, lane.bpmn_id, False)
-
                 for shape in lane.shapes:
                     # *** Generate bpmndi:BPMNShape Elements ***
                     self._add_shape_element(bpmn_plane, shape, shape.bpmn_id, True)
-                    print(
-                        f"{shape.name}, {shape.coord.x_pos}, {shape.coord.y_pos}, {shape.origin_coord.x_pos}, {shape.origin_coord.y_pos}"
+                    Helper.printc(
+                        f"\t\t{shape.name}, {shape.coord.x_pos}, {shape.coord.y_pos}, {shape.origin_coord.x_pos}, {shape.origin_coord.y_pos}",
+                        show_level="export_to_bpmn",
                     )
 
                     # Generate BPMNEdge
@@ -401,16 +532,9 @@ class BPMNElementCreator:
                         for connection in shape.connection_to:
                             # *** Generate bpmndi:BPMNEdge Elements ***
                             bpmn_edge = self._add_edge_element(bpmn_plane, connection)
-                            # print(
-                            #     f"    *** {bpmn_edge.get('id')}, {connection.source.name} -> {connection.target.name}"
-                            # )
 
                             if len(connection.connection_points) > 0:
-                                print(f"        === {connection.connection_points}")
                                 for x_pos, y_pos in connection.connection_points:
-                                    # print(
-                                    #     f"          outgoing waypoint: {x_pos}, {y_pos}, {connection.target.name}"
-                                    # )
                                     self._add_waypoint_element(bpmn_edge, x_pos, y_pos)
 
 
@@ -429,7 +553,9 @@ class BPMN:
 
     def export_to_xml(self, pools, filename):
         """Export the BPMN diagram to XML"""
-        print("Exporting diagram to .bpmn format..")
+        Helper.printc(
+            "Exporting diagram to .bpmn format..", show_level="export_to_bpmn"
+        )
 
         root = self.xml_exporter.create_root_element()
 
