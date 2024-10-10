@@ -1,4 +1,5 @@
 from processpiper import ProcessMap, EventType, ActivityType, GatewayType
+from util_test import get_test_file_path
 
 
 def test_case01():
@@ -16,11 +17,8 @@ def test_case01():
         process_map.set_footer("My footer", font_size=20)
 
         process_map.draw()
-        output_file = "images/test/test_appearance01.png"
+
+        output_file = get_test_file_path("test_appearance_01.png")
         process_map.save(output_file)
         output_file = output_file.replace(".png", ".bpmn")
         process_map.export_to_bpmn(output_file)
-
-
-if __name__ == "__main__":
-    test_case01()

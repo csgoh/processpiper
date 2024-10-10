@@ -1,10 +1,14 @@
+import pytest
+
 from processpiper import ProcessMap, EventType, ActivityType, GatewayType
-from processpiper import text2diagram
+from processpiper.processmap import DanglingElementException
+from processpiper.shape import TooManyConnectionsException
+from util_test import get_test_file_path
 
 
 def test_sample01():
     with ProcessMap(
-        "debug01", colour_theme="BLUEMOUNTAIN", width=8192
+            "debug01", colour_theme="BLUEMOUNTAIN", width=8192
     ) as my_process_map:
         with my_process_map.add_lane("customer") as lane1:
             start = lane1.add_element("start", EventType.START)
@@ -32,7 +36,7 @@ def test_sample01():
             activity_17 = lane2.add_element("checks the software", ActivityType.TASK)
             activity_18 = lane2.add_element("configure the software", ActivityType.TASK)
             activity_19 = lane2.add_element(
-                "test the proper system functionality after each of these activities",
+                "data the proper system functionality after each of these activities",
                 ActivityType.TASK,
             )
             gateway_6 = lane2.add_element("detect an error", GatewayType.EXCLUSIVE)
@@ -61,12 +65,16 @@ def test_sample01():
             activity_8.connect(end)
             gateway_6.connect(end)
         my_process_map.draw()
-        my_process_map.save("images/test/test_sample01.png")
+
+        output_file = get_test_file_path("test_sample_01.png")
+        my_process_map.save(output_file)
+        output_file = output_file.replace(".png", ".bpmn")
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_sample02():
     with ProcessMap(
-        "debug", colour_theme="BLUEMOUNTAIN", width=10000
+            "debug", colour_theme="BLUEMOUNTAIN", width=10000
     ) as my_process_map:
         with my_process_map.add_pool("Pool") as pool1:
             with pool1.add_lane("lane1") as lane1:
@@ -97,12 +105,16 @@ def test_sample02():
             gateway_1_end.connect(t5)
             t5.connect(end)
         my_process_map.draw()
-        my_process_map.save("images/test/test_sample02.png")
+
+        output_file = get_test_file_path("test_sample_02.png")
+        my_process_map.save(output_file)
+        output_file = output_file.replace(".png", ".bpmn")
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_sample03():
     with ProcessMap(
-        "Break Glass Process", colour_theme="BLUEMOUNTAIN"
+            "Break Glass Process", colour_theme="BLUEMOUNTAIN"
     ) as my_process_map:
         with my_process_map.add_pool("Organisation") as pool1:
             with pool1.add_lane("ProductA User") as lane1:
@@ -172,12 +184,16 @@ def test_sample03():
             access_account.connect(logout_account)
             logout_account.connect(end)
         my_process_map.draw()
-        my_process_map.save("images/test/test_sample03.png")
+
+        output_file = get_test_file_path("test_sample_03.png")
+        my_process_map.save(output_file)
+        output_file = output_file.replace(".png", ".bpmn")
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_sample04():
     with ProcessMap(
-        "Break Glass Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
+            "Break Glass Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
     ) as my_process_map:
         with my_process_map.add_pool("Organisation") as pool1:
             with pool1.add_lane("ProductA User") as lane1:
@@ -247,75 +263,90 @@ def test_sample04():
             access_account.connect(logout_account)
             logout_account.connect(end)
         my_process_map.draw()
-        my_process_map.save("images/test/test_sample04.svg")
+
+        output_file = get_test_file_path("test_sample_04.svg")
+        my_process_map.save(output_file)
+        output_file = output_file.replace(".png", ".bpmn")
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_sample05():
-    with ProcessMap(
-        "Test Max Connection Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
-    ) as my_process_map:
-        with my_process_map.add_lane("Test Lane") as lane1:
-            start = lane1.add_element("start", EventType.START)
-            t1 = lane1.add_element("Task 1", ActivityType.TASK)
-            t2 = lane1.add_element("Task 2", ActivityType.TASK)
-            t3 = lane1.add_element("Task 3", ActivityType.TASK)
-            t4 = lane1.add_element("Task 4", ActivityType.TASK)
-            t5 = lane1.add_element("Task 5", ActivityType.TASK)
-            t6 = lane1.add_element("Task 6", ActivityType.TASK)
-            end = lane1.add_element("end", EventType.END)
+    with pytest.raises(TooManyConnectionsException):
+        with ProcessMap(
+                "Test Max Connection Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
+        ) as my_process_map:
+            with my_process_map.add_lane("Test Lane") as lane1:
+                start = lane1.add_element("start", EventType.START)
+                t1 = lane1.add_element("Task 1", ActivityType.TASK)
+                t2 = lane1.add_element("Task 2", ActivityType.TASK)
+                t3 = lane1.add_element("Task 3", ActivityType.TASK)
+                t4 = lane1.add_element("Task 4", ActivityType.TASK)
+                t5 = lane1.add_element("Task 5", ActivityType.TASK)
+                t6 = lane1.add_element("Task 6", ActivityType.TASK)
+                end = lane1.add_element("end", EventType.END)
 
-            start.connect(t1)
-            t1.connect(t2)
-            t1.connect(t3)
-            t1.connect(t4)
-            t1.connect(t5)
-            t1.connect(t6)
-            t6.connect(end)
-        my_process_map.draw()
-        my_process_map.save("images/test/test_sample05.svg")
+                start.connect(t1)
+                t1.connect(t2)
+                t1.connect(t3)
+                t1.connect(t4)
+                t1.connect(t5)
+                t1.connect(t6)
+                t6.connect(end)
+            my_process_map.draw()
+
+            output_file = get_test_file_path("test_sample_05.svg")
+            my_process_map.save(output_file)
+            output_file = output_file.replace(".png", ".bpmn")
+            my_process_map.export_to_bpmn(output_file)
 
 
 def test_sample06():
-    with ProcessMap(
-        "Test Max Connection Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
-    ) as my_process_map:
-        with my_process_map.add_lane("Test Lane") as lane1:
-            start = lane1.add_element("start", EventType.START)
-            t1 = lane1.add_element("Task 1", ActivityType.TASK)
-            g1 = lane1.add_element("Gateway 1", GatewayType.EXCLUSIVE)
-            g2 = lane1.add_element("Gateway 2", GatewayType.EXCLUSIVE)
+    with pytest.raises(TooManyConnectionsException):
+        with ProcessMap(
+                "Test Max Connection Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
+        ) as my_process_map:
+            with my_process_map.add_lane("Test Lane") as lane1:
+                start = lane1.add_element("start", EventType.START)
+                t1 = lane1.add_element("Task 1", ActivityType.TASK)
+                g1 = lane1.add_element("Gateway 1", GatewayType.EXCLUSIVE)
+                g2 = lane1.add_element("Gateway 2", GatewayType.EXCLUSIVE)
 
-            t2 = lane1.add_element("Task 2", ActivityType.TASK)
-            t3 = lane1.add_element("Task 3", ActivityType.TASK)
-            t4 = lane1.add_element("Task 4", ActivityType.TASK)
-            t5 = lane1.add_element("Task 5", ActivityType.TASK)
-            t51 = lane1.add_element("Task 5.1", ActivityType.TASK)
-            t6 = lane1.add_element("Task 6", ActivityType.TASK)
-            end = lane1.add_element("end", EventType.END)
+                t2 = lane1.add_element("Task 2", ActivityType.TASK)
+                t3 = lane1.add_element("Task 3", ActivityType.TASK)
+                t4 = lane1.add_element("Task 4", ActivityType.TASK)
+                t5 = lane1.add_element("Task 5", ActivityType.TASK)
+                t51 = lane1.add_element("Task 5.1", ActivityType.TASK)
+                t6 = lane1.add_element("Task 6", ActivityType.TASK)
+                end = lane1.add_element("end", EventType.END)
 
-            start.connect(t1)
-            t1.connect(g1)
-            g1.connect(t2)
-            g1.connect(t3)
-            g1.connect(g2)
-            g2.connect(t4)
-            g2.connect(t5)
-            g2.connect(t51)
-            t2.connect(t6)
-            t3.connect(t6)
-            t4.connect(t6)
-            t5.connect(t6)
-            t51.connect(t6)
-            t6.connect(end)
-        my_process_map.draw()
-        my_process_map.save("images/test/test_sample06.svg")
+                start.connect(t1)
+                t1.connect(g1)
+                g1.connect(t2)
+                g1.connect(t3)
+                g1.connect(g2)
+                g2.connect(t4)
+                g2.connect(t5)
+                g2.connect(t51)
+                t2.connect(t6)
+                t3.connect(t6)
+                t4.connect(t6)
+                t5.connect(t6)
+                t51.connect(t6)
+                t6.connect(end)
+            my_process_map.draw()
+
+            output_file = get_test_file_path("test_sample_06.svg")
+            my_process_map.save(output_file)
+            output_file = output_file.replace(".png", ".bpmn")
+            my_process_map.export_to_bpmn(output_file)
 
 
 def test_sample07():
     with ProcessMap(
-        "Product Feature Interface", colour_theme="BLUEMOUNTAIN"
+            "Product Feature Interface", colour_theme="BLUEMOUNTAIN"
     ) as my_process_map:
         with my_process_map.add_lane("system") as lane_system:
+            node_start = lane_system.add_element("start", EventType.START)
             node_Initiative = lane_system.add_element("Initiative", ActivityType.TASK)
             node_SI = lane_system.add_element("SI", ActivityType.TASK)
             node_Feature = lane_system.add_element("Feature", ActivityType.TASK)
@@ -329,6 +360,7 @@ def test_sample07():
 
             g2 = lane_system.add_element("g2", GatewayType.INCLUSIVE)
 
+            node_start.connect(node_Initiative)
             g2.connect(node_Figma_Design)
             g1 = lane_system.add_element("g1", GatewayType.INCLUSIVE)
             g1.connect(g2)
@@ -383,7 +415,7 @@ def test_sample07():
                 g3.connect(node_Update_Figma_Design_, "")
 
             with pool_Product_How.add_lane(
-                "Brokerage Squad; UXD"
+                    "Brokerage Squad; UXD"
             ) as lane_Product_How_Brokerage_Squad__UXD:
                 node_Work_with_Domains_SL = lane_Product_How_Brokerage_Squad__UXD.add_element(
                     "Work with Domains SL (Bob\nTaiani, Chris Coale) to\ndevelop features UI stories",
@@ -397,7 +429,7 @@ def test_sample07():
 
             with pool_Product_How.add_lane("CSB") as lane_Product_How_CSB:
                 node_Create_feature_test_ = lane_Product_How_CSB.add_element(
-                    "Create feature test cases", ActivityType.TASK
+                    "Create feature data cases", ActivityType.TASK
                 )
                 node_Create_feature_test_.connect(g7, "")
                 g4 = lane_Product_How_CSB.add_element("g4", GatewayType.INCLUSIVE)
@@ -405,7 +437,7 @@ def test_sample07():
                 g4.connect(node_Create_feature_test_, "")
 
             with pool_Product_How.add_lane(
-                "Brokerage Squad"
+                    "Brokerage Squad"
             ) as lane_Product_How_Brokerage_Squad:
                 node_Implement_feature_UI = (
                     lane_Product_How_Brokerage_Squad.add_element(
@@ -420,7 +452,7 @@ def test_sample07():
                 g2.connect(g5)
                 g5.connect(node_Implement_feature_UI, "")
                 node_Verify_UI_in_virtual = lane_Product_How_UXD.add_element(
-                    "Verify UI in virtual ui test\nenvironment implemented as\nspeced in Figma Design",
+                    "Verify UI in virtual ui data\nenvironment implemented as\nspeced in Figma Design",
                     ActivityType.TASK,
                 )
                 g5.connect(node_Verify_UI_in_virtual, "")
@@ -453,7 +485,11 @@ def test_sample07():
                 node_Bug.connect(node_Modify_screens_based, "")
 
         my_process_map.draw()
-        my_process_map.save("images/test/test_sample07.png")
+
+        output_file = get_test_file_path("test_sample_07.png")
+        my_process_map.save(output_file)
+        output_file = output_file.replace(".png", ".bpmn")
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_sample08():
@@ -481,64 +517,78 @@ def test_sample08():
                 t24.connect(end)
 
         my_process_map.draw()
-        my_process_map.save("images/test/test_sample08.png")
+
+        output_file = get_test_file_path("test_sample_08.png")
+        my_process_map.save(output_file)
+        output_file = output_file.replace(".png", ".bpmn")
+        my_process_map.export_to_bpmn(output_file)
 
 
 def test_sample09():
-    with ProcessMap("Test Sample 09", colour_theme="TEALWATERS") as my_process_map:
-        with my_process_map.add_lane("Lane 1") as lane1:
-            start = lane1.add_element("start", EventType.START)
-            t11 = lane1.add_element("Task 1-1", ActivityType.TASK)
-            start.connect(t11)
-        with my_process_map.add_pool("Pool 1") as pool1:
-            with pool1.add_lane("Lane 2") as lane2:
-                t21 = lane2.add_element("Task 2-1", ActivityType.TASK)
-                g22 = lane2.add_element("Gateway 2-2", GatewayType.EXCLUSIVE)
-                t23 = lane2.add_element("Task 2-3", ActivityType.TASK)
-                t24 = lane2.add_element("Task 2-4", ActivityType.TASK)
-                t11.connect(t21)
-                t21.connect(g22)
-                g22.connect(t21, "Yes")
-                g22.connect(t23, "No")
-            with pool1.add_lane("Lane 3") as lane3:
-                end = lane3.add_element("end", EventType.END)
-                t23.connect(end)
-                t24.connect(end)
+    with pytest.raises(DanglingElementException):
+        with ProcessMap("Test Sample 09", colour_theme="TEALWATERS") as my_process_map:
+            with my_process_map.add_lane("Lane 1") as lane1:
+                start = lane1.add_element("start", EventType.START)
+                t11 = lane1.add_element("Task 1-1", ActivityType.TASK)
+                start.connect(t11)
+            with my_process_map.add_pool("Pool 1") as pool1:
+                with pool1.add_lane("Lane 2") as lane2:
+                    t21 = lane2.add_element("Task 2-1", ActivityType.TASK)
+                    g22 = lane2.add_element("Gateway 2-2", GatewayType.EXCLUSIVE)
+                    t23 = lane2.add_element("Task 2-3", ActivityType.TASK)
+                    t24 = lane2.add_element("Task 2-4", ActivityType.TASK)
+                    t11.connect(t21)
+                    t21.connect(g22)
+                    g22.connect(t21, "Yes")
+                    g22.connect(t23, "No")
+                with pool1.add_lane("Lane 3") as lane3:
+                    end = lane3.add_element("end", EventType.END)
+                    t23.connect(end)
+                    t24.connect(end)
 
-        my_process_map.draw()
-        my_process_map.save("images/test/test_sample09.png")
+            my_process_map.draw()
+
+            output_file = get_test_file_path("test_sample_09.png")
+            my_process_map.save(output_file)
+            output_file = output_file.replace(".png", ".bpmn")
+            my_process_map.export_to_bpmn(output_file)
 
 
 def test_sample10():
-    with ProcessMap("Test Sample 10", colour_theme="RUBYRED") as my_process_map:
-        with my_process_map.add_lane("Lane 1") as lane1:
-            start = lane1.add_element("start", EventType.START)
-            t11 = lane1.add_element("Task 1-1", ActivityType.TASK)
-            start.connect(t11)
-        with my_process_map.add_pool("Pool 1") as pool1:
-            with pool1.add_lane("Lane 2") as lane2:
-                t21 = lane2.add_element("Task 2-1", ActivityType.TASK)
-                g22 = lane2.add_element("Gateway 2-2", GatewayType.EXCLUSIVE)
-                t23 = lane2.add_element("Task 2-3", ActivityType.TASK)
-                t24 = lane2.add_element("Task 2-4", ActivityType.TASK)
-                t11.connect(t21)
-                t21.connect(g22)
-                g22.connect(t21, "Yes")
-                g22.connect(t23, "No")
-                t23.connect(t24)
-            with pool1.add_lane("Lane 3") as lane3:
-                g31 = lane3.add_element("Gateway 3-1", GatewayType.EXCLUSIVE)
-                end = lane3.add_element("end", EventType.END)
-                g31.connect(t11, "Yes")
-                t24.connect(end)
+    with pytest.raises(DanglingElementException):
+        with ProcessMap("Test Sample 10", colour_theme="RUBYRED") as my_process_map:
+            with my_process_map.add_lane("Lane 1") as lane1:
+                start = lane1.add_element("start", EventType.START)
+                t11 = lane1.add_element("Task 1-1", ActivityType.TASK)
+                start.connect(t11)
+            with my_process_map.add_pool("Pool 1") as pool1:
+                with pool1.add_lane("Lane 2") as lane2:
+                    t21 = lane2.add_element("Task 2-1", ActivityType.TASK)
+                    g22 = lane2.add_element("Gateway 2-2", GatewayType.EXCLUSIVE)
+                    t23 = lane2.add_element("Task 2-3", ActivityType.TASK)
+                    t24 = lane2.add_element("Task 2-4", ActivityType.TASK)
+                    t11.connect(t21)
+                    t21.connect(g22)
+                    g22.connect(t21, "Yes")
+                    g22.connect(t23, "No")
+                    t23.connect(t24)
+                with pool1.add_lane("Lane 3") as lane3:
+                    g31 = lane3.add_element("Gateway 3-1", GatewayType.EXCLUSIVE)
+                    end = lane3.add_element("end", EventType.END)
+                    g31.connect(t11, "Yes")
+                    t24.connect(end)
 
-        my_process_map.draw()
-        my_process_map.save("images/test/test_sample10.png")
+            my_process_map.draw()
+
+            output_file = get_test_file_path("test_sample_10.png")
+            my_process_map.save(output_file)
+            output_file = output_file.replace(".png", ".bpmn")
+            my_process_map.export_to_bpmn(output_file)
 
 
 def test_sample11():
     with ProcessMap(
-        "Are we living in simulation?", colour_theme="TEALWATERS"
+            "Are we living in simulation?", colour_theme="TEALWATERS"
     ) as process_map:
         with process_map.add_pool("The World") as pool:
             with pool.add_lane("You") as you:
@@ -576,19 +626,8 @@ def test_sample11():
             #     t3.connect(st1)
             #     st1.connect(g2)
         process_map.draw()
-        process_map.save("images/test/test_sample11.png")
-        process_map.export_to_bpmn("images/test/test_sample11.bpmn")
 
-
-if __name__ == "__main__":
-    # test_sample01()
-    # test_sample02()
-    # test_sample03()
-    # test_sample04()
-    # test_sample05()  # -- Test validation. Should fail
-    # test_sample06()  # -- Test validation. Should fail
-    # test_sample07()  # -- Test validation. Should fail
-    # test_sample08()
-    # test_sample09()  # -- Test validation. Should fail
-    # test_sample10()  # -- Test validation. Should fail
-    test_sample11()
+        output_file = get_test_file_path("test_sample_11.png")
+        process_map.save(output_file)
+        output_file = output_file.replace(".png", ".bpmn")
+        process_map.export_to_bpmn(output_file)

@@ -1,27 +1,17 @@
-import inspect
-import os
-import os.path
 from processpiper import text2diagram
-
-
-def prep_for_test(filename: str):
-    path = os.path.join("images/", "test/")
-
-    if not os.path.exists(path):
-        os.mkdir(path)
-
-    return os.path.join(path, filename)
+from util_test import get_test_file_path
 
 
 def generate_diagram(input_syntax: str, painter_type: str = "PNG"):
     if painter_type == "PNG":
-        output_file = prep_for_test(
-            f"{inspect.currentframe().f_back.f_code.co_name}.png"
-        )
+        output_file = get_test_file_path("test_text2diagram_01.png")
     else:
-        output_file = prep_for_test(
-            f"{inspect.currentframe().f_back.f_code.co_name}.svg"
-        )
+        output_file = get_test_file_path("test_text2diagram_01.svg")
+
+    # Replace \ or \\ with / on Windows
+    if "\\" in output_file or "\\\\" in output_file:
+        output_file = output_file.replace("\\", "/")
+
     _, img = text2diagram.render(
         input_syntax, output_file, show_code=True, export_to_bpmn=True
     )
@@ -123,7 +113,7 @@ def test_text2diagram_03():
 
 def test_text2diagram_04():
     input_syntax = """
-    title: This is a test diagram
+    title: This is a data diagram
     colourtheme: GREENTURTLE
     lane: Customer
     (start) as start
@@ -240,7 +230,7 @@ def test_text2diagram_10():
         [repair the hardware] as activity_16
         [checks the software] as activity_17
         [configure the software] as activity_18
-        [test the proper system functionality after each of these activities] as activity_19
+        [data the proper system functionality after each of these activities] as activity_19
         <detect an error> as gateway_6
         [execute another arbitrary repair activity] as activity_8
         (end) as end
@@ -386,20 +376,3 @@ def test_text2diagram_14():
     """
     generate_diagram(input_syntax, "PNG")
     generate_diagram(input_syntax, "SVG")
-
-
-if __name__ == "__main__":
-    test_text2diagram_01()
-    test_text2diagram_02()
-    test_text2diagram_03()
-    test_text2diagram_04()
-    test_text2diagram_05()
-    test_text2diagram_06()
-    test_text2diagram_07()
-    test_text2diagram_08()
-    test_text2diagram_09()
-    test_text2diagram_10()
-    test_text2diagram_11()
-    test_text2diagram_12()
-    test_text2diagram_13()
-    test_text2diagram_14()
