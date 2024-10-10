@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn:definitions id="Definitions_PIPER-1234" targetNamespace="https://github.com/csgoh/processpiper/schema/bpmn" exporter="ProcessPiper (https://github.com/csgoh/processpiper)" exporterVersion="v0.9.0" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0">
+    <bpmn:process id="lane-1234" name="End User" isExecutable="false">
+        <bpmn:startEvent id="PIPER-1234" name="Start">
+            <bpmn:outgoing>PIPER-1234</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:task id="PIPER-1234" name="Enter Keyword">
+            <bpmn:outgoing>PIPER-1234</bpmn:outgoing>
+            <bpmn:incoming>PIPER-1234</bpmn:incoming>
+        </bpmn:task>
+    </bpmn:process>
+    <bpmn:process id="pool-1234" name="System Search" isExecutable="false">
+        <bpmn:laneSet id="PIPER-1234">
+            <bpmn:lane id="lane-1234" name="Database System">
+                <bpmn:flowNodeRef>PIPER-1234</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER-1234</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER-1234</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER-1234</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER-1234</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>PIPER-1234</bpmn:flowNodeRef>
+            </bpmn:lane>
+            <bpmn:lane id="lane-1234" name="Log System">
+                <bpmn:flowNodeRef>PIPER-1234</bpmn:flowNodeRef>
+            </bpmn:lane>
+        </bpmn:laneSet>
+        <bpmn:task id="PIPER-1234" name="Login">
+            <bpmn:outgoing>PIPER-1234</bpmn:outgoing>
+            <bpmn:incoming>PIPER-1234</bpmn:incoming>
+        </bpmn:task>
+        <bpmn:task id="PIPER-1234" name="Search Records">
+            <bpmn:outgoing>PIPER-1234</bpmn:outgoing>
+            <bpmn:incoming>PIPER-1234</bpmn:incoming>
+        </bpmn:task>
+        <bpmn:sequenceFlow id="PIPER-1234" name="Result" sourceRef="PIPER-1234" targetRef="PIPER-1234" />
+        <bpmn:exclusiveGateway id="PIPER-1234" name="Result Found?">
+            <bpmn:outgoing>PIPER-1234</bpmn:outgoing>
+            <bpmn:outgoing>PIPER-1234</bpmn:outgoing>
+            <bpmn:incoming>PIPER-1234</bpmn:incoming>
+        </bpmn:exclusiveGateway>
+        <bpmn:sequenceFlow id="PIPER-1234" name="Yes" sourceRef="PIPER-1234" targetRef="PIPER-1234" />
+        <bpmn:sequenceFlow id="PIPER-1234" name="No" sourceRef="PIPER-1234" targetRef="PIPER-1234" />
+        <bpmn:task id="PIPER-1234" name="Display Result">
+            <bpmn:outgoing>PIPER-1234</bpmn:outgoing>
+            <bpmn:incoming>PIPER-1234</bpmn:incoming>
+            <bpmn:incoming>PIPER-1234</bpmn:incoming>
+        </bpmn:task>
+        <bpmn:sequenceFlow id="PIPER-1234" name="" sourceRef="PIPER-1234" targetRef="PIPER-1234" />
+        <bpmn:task id="PIPER-1234" name="Logout">
+            <bpmn:outgoing>PIPER-1234</bpmn:outgoing>
+            <bpmn:incoming>PIPER-1234</bpmn:incoming>
+        </bpmn:task>
+        <bpmn:sequenceFlow id="PIPER-1234" name="" sourceRef="PIPER-1234" targetRef="PIPER-1234" />
+        <bpmn:endEvent id="PIPER-1234" name="End">
+            <bpmn:incoming>PIPER-1234</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:task id="PIPER-1234" name="Log Error">
+            <bpmn:outgoing>PIPER-1234</bpmn:outgoing>
+            <bpmn:incoming>PIPER-1234</bpmn:incoming>
+        </bpmn:task>
+        <bpmn:sequenceFlow id="PIPER-1234" name="" sourceRef="PIPER-1234" targetRef="PIPER-1234" />
+    </bpmn:process>
+    <bpmn:collaboration id="PIPER-1234">
+        <bpmn:participant id="lane_colab-1234" name="End User" processRef="lane-1234" />
+        <bpmn:messageFlow id="PIPER-1234" name="User &#10;Authenticates" sourceRef="PIPER-1234" targetRef="PIPER-1234" />
+        <bpmn:messageFlow id="PIPER-1234" name="Search Criteria" sourceRef="PIPER-1234" targetRef="PIPER-1234" />
+        <bpmn:participant id="pool_colab-1234" name="System Search" processRef="pool-1234" />
+        <bpmn:messageFlow id="PIPER-1234" name="Authenticated" sourceRef="PIPER-1234" targetRef="PIPER-1234" />
+    </bpmn:collaboration>
+    <bpmndi:BPMNDiagram id="PIPER-1234" name="BPMN Diagram">
+        <bpmndi:BPMNPlane id="PIPER-1234" bpmnElement="PIPER-1234">
+            <bpmndi:BPMNShape id="shape_End User-1234" bpmnElement="lane_colab-1234">
+                <dc:Bounds x="72" y="64" width="1429" height="160" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="shape_System Search-1234" bpmnElement="pool_colab-1234" color:background-color="#0B5394">
+                <dc:Bounds x="20" y="236" width="50" height="322" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="shape_Database System-1234" bpmnElement="lane-1234">
+                <dc:Bounds x="72" y="236" width="1429" height="160" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="shape_Log System-1234" bpmnElement="lane-1234">
+                <dc:Bounds x="72" y="398" width="1429" height="160" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="shape_Start-1234" bpmnElement="PIPER-1234" color:background-color="#9FC5E8">
+                <dc:Bounds x="207.0" y="121.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="connection_User &#10;Authenticates-1234" bpmnElement="PIPER-1234">
+                <di:waypoint x="237.0" y="181.0" />
+                <di:waypoint x="237" y="286" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="shape_Enter Keyword-1234" bpmnElement="PIPER-1234" color:background-color="#9FC5E8">
+                <dc:Bounds x="402" y="114" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="connection_Search Criteria-1234" bpmnElement="PIPER-1234">
+                <di:waypoint x="467" y="188" />
+                <di:waypoint x="467" y="286" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="shape_Login-1234" bpmnElement="PIPER-1234" color:background-color="#9FC5E8">
+                <dc:Bounds x="172" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="connection_Authenticated-1234" bpmnElement="PIPER-1234">
+                <di:waypoint x="302" y="323" />
+                <di:waypoint x="352.0" y="323" />
+                <di:waypoint x="352.0" y="151" />
+                <di:waypoint x="402" y="151" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="shape_Search Records-1234" bpmnElement="PIPER-1234" color:background-color="#9FC5E8">
+                <dc:Bounds x="402" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="connection_Result-1234" bpmnElement="PIPER-1234">
+                <di:waypoint x="532" y="323" />
+                <di:waypoint x="642" y="323" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="shape_Result Found?-1234" bpmnElement="PIPER-1234" color:background-color="#9FC5E8">
+                <dc:Bounds x="642" y="286" width="110" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="connection_Yes-1234" bpmnElement="PIPER-1234">
+                <di:waypoint x="752" y="323" />
+                <di:waypoint x="862" y="323" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="connection_No-1234" bpmnElement="PIPER-1234">
+                <di:waypoint x="697" y="360" />
+                <di:waypoint x="697" y="448" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="shape_Display Result-1234" bpmnElement="PIPER-1234" color:background-color="#9FC5E8">
+                <dc:Bounds x="862" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="connection_-1234" bpmnElement="PIPER-1234">
+                <di:waypoint x="992" y="323" />
+                <di:waypoint x="1092" y="323" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="shape_Logout-1234" bpmnElement="PIPER-1234" color:background-color="#9FC5E8">
+                <dc:Bounds x="1092" y="286" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="connection_-1234" bpmnElement="PIPER-1234">
+                <di:waypoint x="1222" y="323" />
+                <di:waypoint x="1357.0" y="323.0" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="shape_End-1234" bpmnElement="PIPER-1234" color:background-color="#9FC5E8">
+                <dc:Bounds x="1357.0" y="293.0" width="60" height="60" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="shape_Log Error-1234" bpmnElement="PIPER-1234" color:background-color="#9FC5E8">
+                <dc:Bounds x="632" y="448" width="130" height="74" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="connection_-1234" bpmnElement="PIPER-1234">
+                <di:waypoint x="762" y="485" />
+                <di:waypoint x="927" y="485" />
+                <di:waypoint x="927" y="360" />
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>

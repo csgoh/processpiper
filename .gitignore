@@ -135,3 +135,6 @@ test01.png
 pizza*.png
 .vscode/
 *.txt
+
+# PyTest
+/src/tests/data/results/
