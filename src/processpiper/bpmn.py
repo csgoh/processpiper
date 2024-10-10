@@ -23,7 +23,7 @@
 from dataclasses import dataclass, field
 import xml.etree.ElementTree as ET
 from typing import List, Dict, Any, Optional
-from .shape import Shape, Circle
+from .shape import Shape, Circle, Connection
 from .event import (
     Start,
     End,
@@ -231,11 +231,36 @@ class BPMNElementCreator:
 
     def _add_sub_element(self, parent: ET.Element, bpmn_element: str, shape: Any):
         if shape is not None:
-            return ET.SubElement(
+            element = ET.SubElement(
                 parent,
                 bpmn_element,
                 {"id": shape.bpmn_id, "name": shape.name},
             )
+
+            # *** Generate bpmn:outgoing and bpmn:incoming elements ***
+            if shape.connection_to is not None:
+                for connection in shape.connection_to:
+                    # Check if connection is of type Connection
+                    if isinstance(connection, Connection):
+                        # Use the bpmn_id of the target as the target is a Connection which references a different shape
+                        if connection.target is not None:
+                            ET.SubElement(element, "bpmn:outgoing").text = connection.target.bpmn_id
+                    else:
+                        # The bpmn_id can be used directly as the target is one of:
+                        # Activity, Event or Gateway
+                        ET.SubElement(element, "bpmn:outgoing").text = connection.bpmn_id
+            if shape.connection_from is not None:
+                for connection in shape.connection_from:
+                    # Check if connection is of type Connection
+                    if isinstance(connection, Connection):
+                        # Use the bpmn_id of the source as the source is a Connection which references a different shape
+                        if connection.source is not None:
+                            ET.SubElement(element, "bpmn:incoming").text = connection.source.bpmn_id
+                    else:
+                        # The bpmn_id can be used directly as the source is one of:
+                        # Activity, Event or Gateway
+                        ET.SubElement(element, "bpmn:incoming").text = connection.bpmn_id
+            return element
         else:
             return ET.SubElement(parent, bpmn_element, {"id": Helper.get_uuid()})
 
