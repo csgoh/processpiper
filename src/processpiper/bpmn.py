@@ -153,7 +153,8 @@ class BPMNElementCreator:
         self._add_sub_element(intermediate_event, "bpmn:messageEventDefinition", shape)
 
     def _add_message_end_event(self, parent: ET.Element, shape: MessageEnd):
-        self._add_sub_element(parent, "bpmn:messageEventDefinition", shape)
+        end_event = self._add_end_event(parent, shape)
+        self._add_sub_element(end_event, "bpmn:messageEventDefinition", shape)
 
     def _add_signal_event(self, parent: ET.Element, shape: Signal):
         if shape.is_first_shape():
@@ -173,10 +174,14 @@ class BPMNElementCreator:
     def _add_signal_intermediate_event(
         self, parent: ET.Element, shape: SignalIntermediate
     ):
-        self._add_sub_element(parent, "bpmn:signalEventDefinition", shape)
+        intermediate_event = self._add_sub_element(
+            parent, "bpmn:intermediateCatchEvent", shape
+        )
+        self._add_sub_element(intermediate_event, "bpmn:signalEventDefinition", shape)
 
     def _add_signal_end_event(self, parent: ET.Element, shape: SignalEnd):
-        self._add_sub_element(parent, "bpmn:signalEventDefinition", shape)
+        end_event = self._add_end_event(parent, shape)
+        self._add_sub_element(end_event, "bpmn:signalEventDefinition", shape)
 
     def _add_conditional_event(self, parent: ET.Element, shape: Conditional):
         if shape.is_first_shape():
