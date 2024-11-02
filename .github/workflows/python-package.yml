@@ -48,8 +48,17 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if (Test-Path requirements.txt) { pip install -r requirements.txt }
-    - name: Test with pytest
+    - name: Create test directory (Unix)
+      if: matrix.os != 'windows-latest'
       run: |
         mkdir -p src/tests/data/results
         test -d src/tests/data/results || exit 1
+
+    - name: Create test directory (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        New-Item -Path "src/tests/data/results" -ItemType Directory -Force
+        if (-not (Test-Path "src/tests/data/results")) { exit 1 }
+    - name: Test with pytest
+      run: |
         pytest src/tests/
