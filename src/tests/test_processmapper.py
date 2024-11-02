@@ -1,3 +1,8 @@
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+
 from processpiper import ProcessMap, EventType, ActivityType, GatewayType
 from processpiper.coordinate import Side
 from util_test import get_test_file_path
@@ -29,7 +34,7 @@ def test_case1():
 
 def test_case2():
     with ProcessMap(
-            "Product Order Processing", colour_theme="BLUEMOUNTAIN"
+        "Product Order Processing", colour_theme="BLUEMOUNTAIN"
     ) as my_process_map:
         with my_process_map.add_lane("Customer") as lane1:
             start = lane1.add_element("Start", EventType.START)
@@ -153,7 +158,7 @@ def test_case4():
 
 def test_case5():
     with ProcessMap(
-            "Sample Test Process", colour_theme="BLUEMOUNTAIN"
+        "Sample Test Process", colour_theme="BLUEMOUNTAIN"
     ) as my_process_map:
         with my_process_map.add_lane("End User") as lane1:
             start = lane1.add_element("Start", EventType.START)
@@ -287,7 +292,7 @@ def test_case9():
 
 def test_case10(colour_theme: str = "BLUEMOUNTAIN"):
     with ProcessMap(
-            "Shipment Process of a Hardware Retailer", colour_theme=colour_theme
+        "Shipment Process of a Hardware Retailer", colour_theme=colour_theme
     ) as my_process_map:
         with my_process_map.add_pool("Hardware Retailer") as pool1:
             with pool1.add_lane("Logistics Manager") as lane1:

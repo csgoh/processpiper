@@ -1,3 +1,8 @@
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+
 from processpiper import ProcessMap, EventType, ActivityType, GatewayType
 from util_test import get_test_file_path
 

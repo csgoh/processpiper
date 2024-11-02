@@ -1,5 +1,9 @@
 import re
 import xml.etree.ElementTree as ET
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from processpiper import ProcessMap, EventType, ActivityType, GatewayType
 from util_test import get_test_file_path, get_solution_file_path, mock_uuid

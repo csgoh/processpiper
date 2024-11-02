@@ -1,3 +1,7 @@
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import pytest
 
 from processpiper import ProcessMap, EventType, ActivityType, GatewayType
@@ -8,7 +12,7 @@ from util_test import get_test_file_path
 
 def test_sample01():
     with ProcessMap(
-            "debug01", colour_theme="BLUEMOUNTAIN", width=8192
+        "debug01", colour_theme="BLUEMOUNTAIN", width=8192
     ) as my_process_map:
         with my_process_map.add_lane("customer") as lane1:
             start = lane1.add_element("start", EventType.START)
@@ -74,7 +78,7 @@ def test_sample01():
 
 def test_sample02():
     with ProcessMap(
-            "debug", colour_theme="BLUEMOUNTAIN", width=10000
+        "debug", colour_theme="BLUEMOUNTAIN", width=10000
     ) as my_process_map:
         with my_process_map.add_pool("Pool") as pool1:
             with pool1.add_lane("lane1") as lane1:
@@ -114,7 +118,7 @@ def test_sample02():
 
 def test_sample03():
     with ProcessMap(
-            "Break Glass Process", colour_theme="BLUEMOUNTAIN"
+        "Break Glass Process", colour_theme="BLUEMOUNTAIN"
     ) as my_process_map:
         with my_process_map.add_pool("Organisation") as pool1:
             with pool1.add_lane("ProductA User") as lane1:
@@ -193,7 +197,7 @@ def test_sample03():
 
 def test_sample04():
     with ProcessMap(
-            "Break Glass Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
+        "Break Glass Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
     ) as my_process_map:
         with my_process_map.add_pool("Organisation") as pool1:
             with pool1.add_lane("ProductA User") as lane1:
@@ -273,7 +277,9 @@ def test_sample04():
 def test_sample05():
     with pytest.raises(TooManyConnectionsException):
         with ProcessMap(
-                "Test Max Connection Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
+            "Test Max Connection Process",
+            colour_theme="BLUEMOUNTAIN",
+            painter_type="SVG",
         ) as my_process_map:
             with my_process_map.add_lane("Test Lane") as lane1:
                 start = lane1.add_element("start", EventType.START)
@@ -303,7 +309,9 @@ def test_sample05():
 def test_sample06():
     with pytest.raises(TooManyConnectionsException):
         with ProcessMap(
-                "Test Max Connection Process", colour_theme="BLUEMOUNTAIN", painter_type="SVG"
+            "Test Max Connection Process",
+            colour_theme="BLUEMOUNTAIN",
+            painter_type="SVG",
         ) as my_process_map:
             with my_process_map.add_lane("Test Lane") as lane1:
                 start = lane1.add_element("start", EventType.START)
@@ -343,7 +351,7 @@ def test_sample06():
 
 def test_sample07():
     with ProcessMap(
-            "Product Feature Interface", colour_theme="BLUEMOUNTAIN"
+        "Product Feature Interface", colour_theme="BLUEMOUNTAIN"
     ) as my_process_map:
         with my_process_map.add_lane("system") as lane_system:
             node_start = lane_system.add_element("start", EventType.START)
@@ -415,7 +423,7 @@ def test_sample07():
                 g3.connect(node_Update_Figma_Design_, "")
 
             with pool_Product_How.add_lane(
-                    "Brokerage Squad; UXD"
+                "Brokerage Squad; UXD"
             ) as lane_Product_How_Brokerage_Squad__UXD:
                 node_Work_with_Domains_SL = lane_Product_How_Brokerage_Squad__UXD.add_element(
                     "Work with Domains SL (Bob\nTaiani, Chris Coale) to\ndevelop features UI stories",
@@ -437,7 +445,7 @@ def test_sample07():
                 g4.connect(node_Create_feature_test_, "")
 
             with pool_Product_How.add_lane(
-                    "Brokerage Squad"
+                "Brokerage Squad"
             ) as lane_Product_How_Brokerage_Squad:
                 node_Implement_feature_UI = (
                     lane_Product_How_Brokerage_Squad.add_element(
@@ -588,7 +596,7 @@ def test_sample10():
 
 def test_sample11():
     with ProcessMap(
-            "Are we living in simulation?", colour_theme="TEALWATERS"
+        "Are we living in simulation?", colour_theme="TEALWATERS"
     ) as process_map:
         with process_map.add_pool("The World") as pool:
             with pool.add_lane("You") as you:
