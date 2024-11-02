@@ -50,5 +50,6 @@ jobs:
         if (Test-Path requirements.txt) { pip install -r requirements.txt }
     - name: Test with pytest
       run: |
-        mkdir src/tests/data/results
+        mkdir -p src/tests/data/results
+        test -d src/tests/data/results || exit 1
         pytest src/tests/
